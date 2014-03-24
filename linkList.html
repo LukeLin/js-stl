@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>链表</title>
+</head>
+<body>
+
+<script>
+  // 单链表
+
+  function LNode(data, node){
+    this.data = data;
+    this.next = node || null;
+  }
+  LNode.prototype = {
+    // 时间复杂度O(n)
+    getElem: function(i){
+      // 初始化，p指向第一个节点，j为计数器
+      var p = this.next;
+      var j = 1;
+      // 顺指针向后查找，知道p指向第i个元素或p为空
+      while(p && j < i){
+        p = p.next;
+        ++j;
+      }
+      // 第i个元素不存在
+      // 或者取第i个元素
+      return (!p || j > i) ? null : p.data;
+    },
+    // 时间复杂度O(n)
+    listInsert: function(i, data){
+      var j = 0;
+      var p = this;
+      // 寻找第i-1个节点
+      while(p && j < i - 1){
+        p = p.next;
+        ++j;
+      }
+      // i < 1或者大于表长+1
+      if(!p || j > i - 1) return false;
+      // 生成新节点，插入p节点后面
+      p.next = new LNode(data, p.next);
+      return true;
+    },
+    listDelete: function(i){
+      var j = 0;
+      var p = this;
+
+      while(p.next && j < i - 1){
+        p = p.next;
+        ++j;
+      }
+
+      if(!p.next || j > i - 1) return false;
+      var q = p.next;
+      p.next = q.next;
+      return q.data;
+    }
+  };
+
+  void function test(){
+    var a1 = new LNode(1);
+    a1.listInsert(1, 2);
+    a1.listInsert(2, 3);
+    a1.listInsert(1, 4);
+    console.log(a1.getElem(1));
+    console.log(a1);
+    a1.listDelete(1);
+    console.log(a1);
+  }();
+</script>
+
+</body>
+</html>
