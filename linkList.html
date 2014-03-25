@@ -59,6 +59,30 @@
     }
   };
 
+  LNode.createList_L = function(n){
+    var deferred = require('D:\\node\\node_modules\\rsvp').defer();
+    var l = new LNode();
+    var count = n;
+    process.stdin.setEncoding('utf8');
+
+    process.stdin.on('data', function handler(data){
+      console.log(123);
+      data = data.replace('\n', '');
+      l.next = new LNode(data, l.next);
+      if(!(--count)) {
+        console.log('pausing');
+        process.stdin.pause();
+        deferred.resolve(l);
+      }
+    });
+
+    return deferred.promise;
+  };
+
+  LNode.mergeList = function(a, b){
+
+  };
+
   void function test(){
     var a1 = new LNode(1);
     a1.listInsert(1, 2);
@@ -68,6 +92,11 @@
     console.log(a1);
     a1.listDelete(1);
     console.log(a1);
+
+    LNode.createList_L(5)
+      .then(function(list){
+        console.log(list);
+      });
   }();
 </script>
 
