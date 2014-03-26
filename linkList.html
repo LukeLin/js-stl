@@ -79,9 +79,54 @@
     return deferred.promise;
   };
 
-  LNode.mergeList = function(a, b){
+  function deepCopy(obj){
+    var newObj = {};
 
+    for(var i in obj) {
+      if(typeof obj[i] === 'object'){
+        newObj[i] = deepCopy(obj[i]);
+      } else {
+        newObj[i] = obj[i];
+      }
+    }
+
+    return newObj;
+  }
+
+  // TODO
+  LNode.mergeList = function(a, b){
+    var pa = a.next;
+    var pb = b.next;
+    var c = a;
+    var pc = a;
+
+    while(pa && pb){
+      if(pa.data <= pb.data){
+        pc.next = pa;
+        pc = pa;
+        pa = pa.next;
+      } else {
+        pc.next = pb;
+        pc = pb;
+        pb = pb.next;
+      }
+    }
+
+    pc.next = pa ? pa : pb;
+
+    return c;
   };
+
+  function log(list){
+    var arr = [];
+
+    do {
+      arr.push(list.data);
+      list = list.next;
+    } while(list);
+
+    console.log(arr.join(','));
+  }
 
   void function test(){
     var a1 = new LNode(1);
@@ -90,13 +135,29 @@
     a1.listInsert(1, 4);
     console.log(a1.getElem(1));
     console.log(a1);
+    log(a1);
     a1.listDelete(1);
+    console.log('a1 linkList:');
     console.log(a1);
-
+    log(a1);
+/*
     LNode.createList_L(5)
       .then(function(list){
         console.log(list);
       });
+    */
+    var a2 = new LNode(3);
+    a2.listInsert(1, 3);
+    a2.listInsert(2, 8);
+    a2.listInsert(1, 4);
+    a2.listDelete(2);
+    console.log('a2 linkList');
+    log(a2);
+
+    var a3 = LNode.mergeList(a2, a1);
+    console.log('merging linkLists');
+    console.log(a3);
+    log(a3);
   }();
 </script>
 
