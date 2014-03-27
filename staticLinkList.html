@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+
+<script>
+  // 静态单链表
+
+  function SLinkList(data, cur, MAXSIZE){
+    this[0] = {};
+    this[0].data = data;
+    this[0].cur = cur;
+    this.MAXSIZE = MAXSIZE || 1000;
+  }
+  SLinkList.prototype = {
+    /**
+     * 在静态单链线性表L中查找第1个值为e的元素，
+     * 若找到，则返回它在L中的位序
+     * @param data
+     */
+    locateElem: function(data){
+      var i = this[0].cur;
+      while(i && this[i].data !== data){
+        i = this[i].cur;
+      }
+      return i;
+    },
+    initSpace: function(){
+      for(var i = 0; i < this.MAXSIZE - 1; ++i) {
+        this[i] = this[i] || {};
+        this[i].cur = i + 1;
+      }
+
+      this[this.MAXSIZE - 1] = this[this.MAXSIZE - 1] || {};
+      this[this.MAXSIZE - 1].cur = 0;
+    },
+    malloc: function(){
+      var i = this[0].cur;
+      if(this[0].cur) this[0].cur = this[i].cur;
+      return i;
+    },
+    free: function(k){
+      this[k].cur = this[0].cur;
+      this[0].cur = k;
+    },
+    difference: function(){
+      this.initSpace();
+      var s = this.malloc();
+      var r = s;
+
+      var m = prompt('A length:');
+      var n = prompt('B length:');
+
+      for(var j = 1; j <= m; ++j) {
+        var i = this.malloc();
+        this[i].data = prompt('A value:');
+        this[r].cur = i;
+        r = i;
+      }
+
+      this[r].cur = 0;
+
+      for(j = 1; j <= n; ++j){
+        var b = prompt('B value:');
+        var p = s;
+        var k = this[s].cur;
+        while(k !== this[r].cur && this[k].data !== b){
+          p = k;
+          k = this[k].cur;
+        }
+
+        if(k === this[r].cur){
+          i = this.malloc();
+          this[i].data = b;
+          this[i].cur = this[r].cur;
+          this[r].cur = i;
+        } else {
+          this[p].cur = this[k].cur;
+          this.free(k);
+          if(r === k) r = p;
+        }
+      }
+
+      return s;
+    }
+  };
+
+  // TODO bugs...
+  var sl = new SLinkList(1, 0, 10);
+  var ret = sl.difference();
+  console.log(ret);
+</script>
+</body>
+</html>
