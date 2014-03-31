@@ -95,6 +95,22 @@
       }
     }
   };
+
+  var list = new List();
+  list.add('b');
+  list.insertAsFirst('a');
+  list.insertAfter('c');
+  console.log(list.item(2));
+  console.log(JSON.stringify(list));
+  list.each(function(node){
+    if(node.data === 'b'){
+      console.log('get b in each');
+    }
+  });
+  list['delete']('c');
+  list['delete']('a');
+  console.log(list);
+
 </script>
 </body>
 </html>
