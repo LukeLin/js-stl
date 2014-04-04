@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+
+<script>
+  /**
+   * 栈
+   *
+   * 是限定仅在表尾进行插入或删除操作的线性表。表尾为栈顶（top），表头为栈底（bottom），不含元素的空表为空栈。
+   * 栈又称为后进先出（last in first out）的线性表。
+   */
+
+  /**
+   * 顺序栈
+   * 栈的顺序存储结构是利用一组地址连续的存储单元依次存放至栈底到栈顶的元素，同时附设指针top指示栈顶元素在顺序栈中的位置。
+   *
+   */
+
+  function Stack() {
+    this.top = null;
+    this.size = 0;
+  }
+  Stack.prototype = {
+    push: function (data) {
+      var node = {
+        data: data,
+        next: null
+      };
+
+      node.next = this.top;
+      this.top = node;
+      this.size++;
+    },
+    peek: function () {
+      return this.top === null ?
+        null :
+        this.top.data;
+    },
+    pop: function () {
+      if (this.top === null) return null;
+
+      var out = this.top;
+      this.top = this.top.next;
+
+      if (this.size > 0) this.size--;
+
+      return out.data;
+    },
+    displayAll: function () {
+      if (this.top === null) return null;
+
+      var arr = [];
+      var current = this.top;
+
+      for (var i = 0, len = this.size; i < len; i++) {
+        arr[i] = current.data;
+        current = current.next;
+      }
+
+      return arr;
+    }
+  };
+
+  var stack = new Stack();
+
+  stack.push(1);
+  stack.push('asd');
+
+  stack.pop();
+  stack.push({a: 1});
+  console.log(stack);
+
+
+  // 数值转换
+  // 公式： N = (N / d) * d + N % d
+  // N：十进制数值， d：需要转换的进制数
+  function numTransform(number, rad) {
+    var s = new Stack();
+
+    while (number) {
+      s.push(number % rad);
+      number = parseInt(number / 8, 10);
+    }
+
+    var arr = [];
+    while (s.top) {
+      arr.push(s.pop());
+    }
+    console.log(arr.join(''));
+  }
+
+  numTransform(1348, 8);
+  numTransform(1348, 2);
+
+
+  // 括号匹配检查
+
+</script>
+</body>
+</html>
