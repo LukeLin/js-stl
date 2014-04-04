@@ -11,8 +11,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'complete-linked-list-test/test.js',
-      'complete-linked-list-test/spec.js'
+      'polyn-test.js'
     ],
 
     // list of files / patterns to exclude
