@@ -150,11 +150,11 @@ List.prototype = {
   }
 };
 
-function Term() {
+function Term(coef, expn) {
   // 系数
-  this.coef = null;
+  this.coef = coef || null;
   // 指数
-  this.expn = null;
+  this.expn = expn || null;
 }
 
 // 一元多项式
@@ -202,7 +202,6 @@ Polynomial.prototype = {
     }
   },
   // 输入m项的系数和指数，建立表示一元多项式的有序链表p
-  // TODO bug
   createPolyn: function (elems, elems2) {
     var m = elems.length;
     this.initList();
@@ -262,10 +261,10 @@ Polynomial.prototype = {
           qb = hb;
           qa = ha.next;
           break;
-        // TODO
+        // 多项式a中当前结点的指数值大
         case 1:
           a.insertAsFirst(b.delFirst().data);
-          qb = hb;
+          qb = b.head;
           ha = a.head;
           break;
       }

@@ -98,6 +98,56 @@
 
 
   // 括号匹配检查
+  var r_brackets = /[\[{(]/;
+  var brackets = {
+    '{': '}',
+    '(': ')',
+    '[': ']'
+  };
+  function bracketsMatch(str){
+    var stack = new Stack();
+    var text = '';
+
+    for(var i = 0, len = str.length; i < len; i++){
+      var c = str[i];
+      if(c === '['){
+        stack.push(c);
+      } else if(c === ']'){
+        if(!stack.top || stack.pop() !== '[') throw new Error('unexpected brackets:' + c);
+      } else {
+        text += c;
+      }
+    }
+    console.log(text);
+  }
+
+  console.log(bracketsMatch('[asd]'));
+
+  function Matcher(left, right){
+    this.left = left;
+    this.right = right;
+    this.stack = new Stack();
+  }
+  Matcher.prototype = {
+    match: function(str){
+      var text = '';
+
+      for(var i = 0, len = str.length; i < len; i++){
+        var c = str[i];
+        if(c === this.left){
+          this.stack.push(c);
+        } else if(c === this.right){
+          if(!this.stack.top || this.stack.pop() !== this.left) throw new Error('unexpected brackets:' + c);
+        } else {
+          text += c;
+        }
+      }
+      console.log(text);
+      return text;
+    }
+  };
+  var m = new Matcher('{', '}');
+  m.match('{123}');
 
 </script>
 </body>

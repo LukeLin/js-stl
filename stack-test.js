@@ -46,8 +46,6 @@ Stack.prototype = {
 describe('stack tests', function(){
   var stack = new Stack();
 
-
-
   it('should push into stack', function(){
     stack.push(1);
     expect(stack.peek()).toBe(1);
