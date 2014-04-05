@@ -50,6 +50,10 @@
 
       return out.data;
     },
+    clear: function(){
+      this.top = null;
+      this.size = 0;
+    },
     displayAll: function () {
       if (this.top === null) return null;
 
@@ -98,12 +102,6 @@
 
 
   // 括号匹配检查
-  var r_brackets = /[\[{(]/;
-  var brackets = {
-    '{': '}',
-    '(': ')',
-    '[': ']'
-  };
   function bracketsMatch(str){
     var stack = new Stack();
     var text = '';
@@ -137,7 +135,11 @@
         if(c === this.left){
           this.stack.push(c);
         } else if(c === this.right){
-          if(!this.stack.top || this.stack.pop() !== this.left) throw new Error('unexpected brackets:' + c);
+          if(!this.stack.top || this.stack.pop() !== this.left) {
+            throw new Error('unexpected brackets:' + c);
+          } else {
+            text += ',';
+          }
         } else {
           text += c;
         }
@@ -147,7 +149,45 @@
     }
   };
   var m = new Matcher('{', '}');
-  m.match('{123}');
+  m.match('[{123}123');
+
+  function LineEditor(str){
+    this.stack = new Stack();
+    this.str = str || ''
+  }
+  LineEditor.prototype = {
+    getResult: function(){
+      var stack = this.stack;
+      var str = this.str;
+      for(var i = 0, len = str.length; i < len; i++){
+        var c = str[i];
+        switch(c){
+          case '#':
+            stack.pop();
+            break;
+          case '@':
+            stack.clear();
+            break;
+          default:
+            stack.push(c);
+            break;
+        }
+      }
+
+      var result = '';
+      var current = stack.top;
+      while(current){
+        result = current.data + result;
+        current = current.next;
+      }
+
+      return result;
+    }
+  };
+
+  var le = new LineEditor('whli##ilr#e(s#*s)\
+    \noutcha@putchar(*s=#++)');
+  console.log(le.getResult());
 
 </script>
 </body>
