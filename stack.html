@@ -239,18 +239,26 @@ function calInfixExpression(exp) {
   var opn2;
   for (var i = 0; i < exp.length; ++i) {
     c = exp[i];
+    // 如果是操作符
     if (c in prioty) {
-      //op
+      // 如果右边不是左括号且操作符栈的栈顶元素优先权比右边大
+      // 循环遍历进行连续运算
       while (c != '(' && cs.length && opcomp(cs[cs.length - 1], c) >= 0) {
+        // 出栈的操作符
         op = cs.pop();
+        // 如果不是左括号或者右括号，说明是运算符
         if (op != '(' && op != ')') {
+          // 出栈保存数字的栈的两个元素
           opn2 = ns.pop();
           opn1 = ns.pop();
+          // 将与操作符运算后的结果保存到栈顶
           ns.push(doop(op, opn1, opn2));
         }
       }
+      // 如果右边不是右括号，保存到操作符栈中
       if (c != ')') cs.push(c);
     } else {
+      // 多位数的数字的情况
       while (!(exp[i] in prioty)) {
         i++;
         c += exp[i];
