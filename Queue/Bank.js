@@ -91,6 +91,7 @@ Bank.prototype = {
   // 处理客户离开事件
   customerDeparture: function(){
     // 删除第i队列的排头客户
+    // TODO bugs exist
     var i = this.event.eventType;
     var customer = this.queues[i].deQueue();
     // 累计客户逗留时间
