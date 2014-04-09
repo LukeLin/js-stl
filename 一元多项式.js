@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-  <meta charset="UTF-8">
-  <title></title>
-</head>
-<body>
 
-<script>
 function List() {
   this.head = null;
   this.tail = null;
@@ -289,6 +281,3 @@ test3.createPolyn([1, 5, 2], [1, 5, 2]);
 test.addPolyn(test3);
 
 console.log(test);
-</script>
-</body>
-</html>

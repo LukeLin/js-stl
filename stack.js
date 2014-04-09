@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-  <meta charset="UTF-8">
-  <title></title>
-</head>
-<body>
-
-<script>
 /**
  * 栈
  *
@@ -272,7 +263,3 @@ function calInfixExpression(exp) {
 
 var exp1 = calInfixExpression('5+3*4/2-2^3+5%2');
 console.log(exp1);
-
-</script>
-</body>
-</html>
