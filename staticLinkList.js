@@ -12,6 +12,7 @@ function SLinkList(data, cur, MAXSIZE) {
   this[0].cur = cur;
   this.MAXSIZE = MAXSIZE || 1000;
 }
+module.exports = SLinkList;
 SLinkList.prototype = {
   /**
    * 在静态单链线性表L中查找第1个值为e的元素，

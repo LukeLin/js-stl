@@ -15,6 +15,7 @@ function Stack() {
   this.top = null;
   this.size = 0;
 }
+module.exports = Stack;
 Stack.prototype = {
   push: function (data) {
     var node = {

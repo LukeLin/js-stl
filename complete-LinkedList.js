@@ -2,6 +2,7 @@ function List() {
   this.head = null;
   this.tail = null;
 }
+module.exports = List;
 
 List.makeNode = function () {
   return {
@@ -140,7 +141,7 @@ List.prototype = {
     }
   }
 };
-
+/*
 var list = new List();
 list.add('b');
 list.insertAsFirst('a');
@@ -164,3 +165,4 @@ console.log(JSON.stringify(list2));
 
 var list3 = List.mergeList(list, list2);
 console.log(list3);
+*/

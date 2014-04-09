@@ -10,6 +10,7 @@ function Queue() {
   this.rear = this.front = null;
   this.size = 0;
 }
+exports.Queue = Queue;
 Queue.prototype = {
   clear: function () {
     this.rear = this.front = null;
@@ -96,6 +97,7 @@ function CycleQueue() {
   this.front = this.rear = 0;
   this.MAXQSIZE = 100;
 }
+exports.CycleQueue = CycleQueue;
 CycleQueue.prototype = {
   enQueue: function (data) {
     if ((this.rear + 1) % this.MAXQSIZE === 0) throw new Error('cycleQueue is already full!');

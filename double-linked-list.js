@@ -9,6 +9,7 @@ function DuLNode(data, prior, next) {
   this.prior = prior || this;
   this.next = next || this;
 }
+module.exports = DuLNode;
 DuLNode.prototype = {
   getElem: function (i) {
     // 初始化，p指向第一个节点，j为计数器
@@ -47,7 +48,7 @@ DuLNode.prototype = {
     return e;
   }
 };
-
+/*
 var a = new DuLNode(1);
 
 a.listInsert(0, 1);
@@ -55,3 +56,4 @@ a.listInsert(1, 2);
 a.listInsert(2, 3);
 a.listDelete(1);
 console.log(a);
+*/
