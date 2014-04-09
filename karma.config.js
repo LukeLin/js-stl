@@ -11,7 +11,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'Queue-test.js'
+      'Queue/Queue-test.js'
     ],
 
     // list of files / patterns to exclude

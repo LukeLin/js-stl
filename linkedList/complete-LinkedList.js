@@ -4,13 +4,6 @@ function List() {
 }
 module.exports = List;
 
-List.makeNode = function () {
-  return {
-    data: null,
-    next: null
-  };
-};
-
 List.mergeList = function (a, b, compare) {
   var ha = a.head;
   var hb = b.head;
@@ -49,10 +42,18 @@ List.mergeList = function (a, b, compare) {
 };
 
 List.prototype = {
+  makeNode: function(data, next){
+    return {
+      data: data != null ?  data : null,
+      next: next || null
+    };
+  },
   delFirst: function () {
     var head = this.head;
     this.head = this.head.next;
     head.next = null;
+
+    if(this.head === null) this.tail = null;
     return head;
   },
   append: function (node) {
@@ -66,10 +67,10 @@ List.prototype = {
   },
   add: function (data) {
     if (this.head === null) {
-      this.head = List.makeNode();
+      this.head = this.makeNode(data);
       this.tail = this.head;
     } else {
-      this.tail.next = List.makeNode();
+      this.tail.next = this.makeNode(data);
       this.tail = this.tail.next;
     }
 
@@ -78,38 +79,41 @@ List.prototype = {
   'delete': function (data) {
     var current = this.head;
     var previous = this.head;
+    var elem;
 
     while (current !== null) {
       if (data === current.data) {
         if (current === this.head) {
           this.head = current.next;
-          return true;
+          elem =  current.data;
+          break;
         }
 
         if (current === this.tail) this.tail = previous;
 
         previous.next = current.next;
-        return true;
+        elem =  current.data;
+        break;
       }
 
       previous = current;
       current = current.next;
     }
 
-    return false;
+    if(this.head === null) this.tail = null;
+
+    return elem ? elem : false;
   },
   insertAsFirst: function (data) {
-    var temp = List.makeNode();
+    var temp = this.makeNode(data);
     temp.next = this.head;
     this.head = temp;
-    temp.data = data;
   },
   insertAfter: function (target, data) {
     var current = this.head;
     while (current !== null) {
       if (current.data === target) {
-        var temp = List.makeNode();
-        temp.data = data;
+        var temp = this.makeNode(data);
         temp.next = current.next;
 
         if (current === this.tail) this.tail = temp;
