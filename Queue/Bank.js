@@ -1,25 +1,24 @@
-
 var List = require('../linkedList/complete-LinkedList');
 var Queue = require('./Queue');
 
 
 // 事件类型，有序链表LinkList的数据元素类型
-function Event(occurTime, eventType){
+function Event(occurTime, eventType) {
   // 事件发生时刻
   this.occurTime = occurTime || 0;
-  // 事件类型，0表示到达时间，1至4表示四个窗口的离开事件
+  // 事件类型，0表示到达事件，1至4表示四个窗口的离开事件
   this.eventType = eventType || 0;
 }
 
 // 队列的数据元素类型
-function QueueElemType(arrivalTime, duration){
+function QueueElemType(arrivalTime, duration) {
   // 到达时刻
   this.arrivalTime = arrivalTime || 0;
   // 办理事务所需时间
   this.duration = duration || 0;
 }
 
-function Bank(){
+function Bank() {
   // 事件表
   this.eventList = null;
   this.event = null;
@@ -30,17 +29,17 @@ function Bank(){
   this.closeTime = 0;
 }
 Bank.prototype = {
-  cmp: function(event1, event2){
-    if(event1.occurTime < event2.occurTime){
+  cmp: function (event1, event2) {
+    if (event1.occurTime < event2.occurTime) {
       return -1;
-    } else if(event1.occurTime === event2.occurTime){
+    } else if (event1.occurTime === event2.occurTime) {
       return 0;
     } else {
       return 1;
     }
   },
   // 初始化操作
-  openForDay: function(){
+  openForDay: function () {
     // 初始化累计时间和客户数为0
     this.totalTime = 0;
     this.customerNum = 0;
@@ -52,12 +51,12 @@ Bank.prototype = {
     this.eventList.add(this.event);
 
     // 置空队列
-    for(var i = 0, len = this.queues.length; i < len; i++){
+    for (var i = 0, len = this.queues.length; i < len; i++) {
       this.queues[i] = new Queue();
     }
   },
   // 处理客户到达事件
-  customerArrived: function(){
+  customerArrived: function () {
     ++this.customerNum;
 
     // 生成随机数
@@ -65,50 +64,51 @@ Bank.prototype = {
     var intertime = Math.floor(Math.random() * 5);  // 两个相邻客户时间间隔
     // 下一客户到达时刻
     var t = this.event.occurTime += intertime;
-    // 银行尚未关门，插入时间表
-    if(t < this.closeTime){
+    // 银行尚未关门，插入事件表
+    if (t < this.closeTime) {
       this.eventList.add(new Event(t, 0));
     }
 
     // 求长度最短队列
     var minQueueIndex = 0;
-    for(var i = 0, len = this.queues.length; i < len; i++){
-      if(this.queues[i].size === 0) {
+    for (var i = 0, len = this.queues.length; i < len; i++) {
+      if (this.queues[i].size === 0) {
         minQueueIndex = i;
         break;
-      } else if(this.queues[i].size > minQueueIndex){
+      } else if (this.queues[i].size > minQueueIndex) {
         minQueueIndex = i;
       }
     }
+    this.event.eventType = minQueueIndex + 1;
     this.queues[minQueueIndex]
       .enQueue(new QueueElemType(this.event.occurTime, durtime));
 
     // 设定第i队列的一个离开事件并插入事件表
-    if(this.queues[minQueueIndex].size === 1){
+    if (this.queues[minQueueIndex].size === 1) {
       this.eventList.add(new Event(this.event.occurTime + durtime, i + 1));
     }
   },
   // 处理客户离开事件
-  customerDeparture: function(){
+  customerDeparture: function () {
     // 删除第i队列的排头客户
     // TODO bugs exist
-    var i = this.event.eventType;
+    var i = this.event.eventType -1 || 0;
     var customer = this.queues[i].deQueue();
     // 累计客户逗留时间
     this.totalTime += this.event.occurTime - customer.arrivalTime;
 
     // 设定第i队列的一个离开时间并插入事件表
-    if(this.queues[i].size){
+    if (this.queues[i].size) {
       customer = this.queues[i].getHead();
       this.eventList.add(new Event(this.event.occurTime + customer.duration, i));
     }
   },
-  simulation: function(closeTime){
+  simulation: function (closeTime) {
     this.closeTime = closeTime || 0;
     this.openForDay();
-    while(this.eventList.head){
+    while (this.eventList.head) {
       var elem = this.eventList.delFirst().data;
-      if(elem.eventType === 0){
+      if (elem.eventType === 0) {
         this.customerArrived();
       } else {
         this.customerDeparture();
