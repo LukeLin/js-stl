@@ -30,13 +30,12 @@ function Bank() {
 }
 Bank.prototype = {
   cmp: function (event1, event2) {
-    if (event1.occurTime < event2.occurTime) {
+    if (event1.occurTime < event2.occurTime)
       return -1;
-    } else if (event1.occurTime === event2.occurTime) {
+    else if (event1.occurTime === event2.occurTime)
       return 0;
-    } else {
+    else
       return 1;
-    }
   },
   // 初始化操作
   openForDay: function () {
@@ -48,59 +47,70 @@ Bank.prototype = {
     // 设定第一个用户到达事件
     this.event = new Event(0, 0);
     // 插入到事件表
-    this.eventList.add(this.event);
+    this.eventList.orderInsert(this.event, this.cmp);
 
     // 置空队列
-    for (var i = 0, len = this.queues.length; i < len; i++) {
+    for (var i = 0, len = this.queues.length; i < len; i++)
       this.queues[i] = new Queue();
-    }
   },
   // 处理客户到达事件
-  customerArrived: function () {
+  customerArrived: function (durtime, intertime) {
     ++this.customerNum;
 
     // 生成随机数
-    var durtime = Math.floor(Math.random() * 30);   // 办理业务所需时间
-    var intertime = Math.floor(Math.random() * 5);  // 两个相邻客户时间间隔
+    durtime = durtime || Math.floor(Math.random() * 20) + 1;   // 办理业务所需时间
+    intertime = intertime || Math.floor(Math.random() * 5) + 1;  // 两个相邻客户时间间隔
     // 下一客户到达时刻
-    var t = this.event.occurTime += intertime;
-    // 银行尚未关门，插入事件表
-    if (t < this.closeTime) {
-      this.eventList.add(new Event(t, 0));
+    var t = this.event.occurTime + intertime;
+    // 银行尚未关门，插入事件表，这里还包括客户的离开时间
+    if (t < this.closeTime && t + durtime < this.closeTime) {
+      this.eventList.orderInsert(new Event(t, 0), this.cmp);
     }
 
     // 求长度最短队列
     var minQueueIndex = 0;
-    for (var i = 0, len = this.queues.length; i < len; i++) {
-      if (this.queues[i].size === 0) {
+    var allEqualed = false;
+    for(var i = 0, len = this.queues.length; i < len && this.queues[i + 1]; i++){
+      if(this.queues[i].size === 0) {
         minQueueIndex = i;
         break;
-      } else if (this.queues[i].size > minQueueIndex) {
+      }
+      if(this.queues[i].size < this.queues[i + 1].size){
         minQueueIndex = i;
+        allEqualed = false;
+      } else if(this.queues[i].size < this.queues[i + 1].size){
+        minQueueIndex = i;
+        allEqualed = true;
+      } else {
+        minQueueIndex = i + 1;
+        allEqualed = false;
       }
     }
-    this.event.eventType = minQueueIndex + 1;
+    // 如果所有队列长度都相等，取第一个
+    if(allEqualed) minQueueIndex = 0;
+
     this.queues[minQueueIndex]
       .enQueue(new QueueElemType(this.event.occurTime, durtime));
 
     // 设定第i队列的一个离开事件并插入事件表
     if (this.queues[minQueueIndex].size === 1) {
-      this.eventList.add(new Event(this.event.occurTime + durtime, i + 1));
+      this.eventList.orderInsert(new Event(this.event.occurTime + durtime, minQueueIndex + 1), this.cmp);
     }
+    // 保存最新客户的到达时间
+    this.event.occurTime = t;
   },
   // 处理客户离开事件
-  customerDeparture: function () {
+  customerDeparture: function (type) {
     // 删除第i队列的排头客户
-    // TODO bugs exist
-    var i = this.event.eventType -1 || 0;
+    var i = type - 1 || 0;
     var customer = this.queues[i].deQueue();
     // 累计客户逗留时间
     this.totalTime += this.event.occurTime - customer.arrivalTime;
 
-    // 设定第i队列的一个离开时间并插入事件表
+    // 设定第i队列的一个离开事件并插入事件表
     if (this.queues[i].size) {
       customer = this.queues[i].getHead();
-      this.eventList.add(new Event(this.event.occurTime + customer.duration, i));
+      this.eventList.orderInsert(new Event(this.event.occurTime + customer.duration, i), this.cmp);
     }
   },
   simulation: function (closeTime) {
@@ -108,13 +118,12 @@ Bank.prototype = {
     this.openForDay();
     while (this.eventList.head) {
       var elem = this.eventList.delFirst().data;
-      if (elem.eventType === 0) {
+      if (elem.eventType === 0)
         this.customerArrived();
-      } else {
-        this.customerDeparture();
-      }
+      else
+        this.customerDeparture(elem.eventType);
     }
-    console.log('The average time is' + this.totalTime / this.customerNum);
+    console.log('The average time is ' + this.totalTime / this.customerNum);
   }
 };
 

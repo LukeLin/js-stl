@@ -143,6 +143,57 @@ List.prototype = {
       callback(current);
       current = current.next;
     }
+  },
+  orderInsert: function(data, cmp){
+    cmp = typeof cmp === 'function' ? cmp : function (a, b){
+      if(a > b)
+        return 1;
+      else if(a === b)
+        return 0;
+      else
+        return -1;
+    };
+    var previous = this.head;
+    var current = this.head;
+
+    if(current === null){
+      this.head = this.tail = this.makeNode(data);
+      return;
+    }
+
+    var me = this;
+    while(current){
+      var ret = cmp(data, current.data);
+      // 如果插入元素大于当前元素，准备下次遍历
+      if(ret > 0){
+        previous = current;
+        current = current.next;
+
+        // 如果等于，直接插入到后面
+      } else if(ret === 0){
+        return insertBetween(data, previous, current);
+
+        // 如果小于则插入到前节点和当前节点中
+        // 因为已经是排序了，所以不需要多余判断了
+      } else {
+        if(this.head === previous && previous === current){
+          return this.insertAsFirst(data);
+        } else {
+          return insertBetween(data, previous, current);
+        }
+      }
+    }
+
+    // 插入到最后一个结点
+    previous.next = this.makeNode(data);
+    this.tail = previous.next;
+
+    function insertBetween(data, a, b){
+      var temp = me.makeNode(data);
+      temp.next = b;
+      a.next = temp;
+      return true;
+    }
   }
 };
 /*
@@ -169,4 +220,14 @@ console.log(JSON.stringify(list2));
 
 var list3 = List.mergeList(list, list2);
 console.log(list3);
+*/
+/*
+var list = new List();
+
+list.orderInsert('e');
+list.orderInsert('b');
+list.orderInsert('c');
+list.orderInsert('a');
+list.orderInsert('d');
+list.orderInsert('f');
 */
