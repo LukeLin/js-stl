@@ -10,7 +10,7 @@ function Queue() {
   this.rear = this.front = null;
   this.size = 0;
 }
-module.exports = Queue;
+exports.Queue = Queue;
 Queue.prototype = {
   clear: function () {
     this.rear = this.front = null;

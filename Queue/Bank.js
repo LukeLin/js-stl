@@ -1,5 +1,5 @@
 var List = require('../linkedList/complete-LinkedList');
-var Queue = require('./Queue');
+var Queue = require('./Queue').Queue;
 
 
 // 事件类型，有序链表LinkList的数据元素类型
