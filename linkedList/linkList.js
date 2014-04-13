@@ -11,7 +11,7 @@ function LNode(data, node) {
 }
 LNode.prototype = {
   // 时间复杂度O(n)
-  getElem: function (i) {
+  getElem: function getElem(i) {
     // 初始化，p指向第一个节点，j为计数器
     var p = this.next;
     var j = 1;
@@ -25,7 +25,7 @@ LNode.prototype = {
     return (!p || j > i) ? null : p.data;
   },
   // 时间复杂度O(n)
-  listInsert: function (i, data) {
+  listInsert: function listInsert(i, data) {
     var j = 0;
     var p = this;
     // 寻找第i-1个节点
@@ -39,7 +39,7 @@ LNode.prototype = {
     p.next = new LNode(data, p.next);
     return true;
   },
-  listDelete: function (i) {
+  listDelete: function listDelete(i) {
     var j = 0;
     var p = this;
 
@@ -55,7 +55,7 @@ LNode.prototype = {
   }
 };
 
-LNode.createList_L = function (n) {
+LNode.createList_L = function createList_L(n) {
   var deferred = require('D:\\node\\node_modules\\rsvp').defer();
   var l = new LNode();
   var count = n;
@@ -94,7 +94,7 @@ function deepCopy(obj) {
 已知单链线性表a和b的元素按值非递减排列。
 归并a和b得到新的单链线性表c，c的元素也按值非递减排列。
 */
-LNode.mergeList = function (a, b) {
+LNode.mergeList = function mergeList(a, b) {
   var pa = a.next;
   var pb = b.next;
   // 用a的头结点作为c的头结点
@@ -129,6 +129,7 @@ function log(list) {
 
   console.log(arr.join(','));
 }
+
 
 void function test() {
   var a1 = new LNode(1);

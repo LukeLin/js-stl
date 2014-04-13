@@ -57,7 +57,7 @@ SLinkList.prototype = {
     this[0].cur = k;
   },
   /**
-   * 依次输入集合A和B的元素，在一维数组中建立表示集合(A-B)U(B-A)
+   * 在一维数组中建立表示集合(A-B)U(B-A)
    * 的静态链表，s为其头指针。
    * @returns {*}
    */

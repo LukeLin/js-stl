@@ -38,7 +38,7 @@
   var a = [3, 5, 8, 11];
   var b = [2, 6, 8, 9, 11, 15, 20];
 
-  function mergeArray(a, b) {
+  function mergeList(a, b) {
     var c = [], aElem, bElem;
     var i = 0, j = 0, k = 0;
     var aLen = a.length;
@@ -68,7 +68,7 @@
     return c;
   }
 
-  var c = mergeArray(a, b);
+  var c = mergeList(a, b);
   console.log(c);
   // [2, 3, 5, 6, 8, 8, 9, 11, 11, 15, 20]
 
