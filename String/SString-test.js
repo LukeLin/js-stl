@@ -41,4 +41,13 @@ describe('SString tests', function(){
     expect(t[0]).toBe(10);
     expect(t + '').toBe('0123456789');
   });
+
+  it('should get substring', function(){
+    console.log(a);
+    var t = a.substring(1, 10);
+    expect(t + '').toBe('0123456789');
+
+    t = a.substring(3, 5);
+    expect(t + '').toBe('23456');
+  });
 });
