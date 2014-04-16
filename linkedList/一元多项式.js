@@ -18,9 +18,10 @@ Polynomial.prototype = {
   locateElem: function (elem, compare) {
     var current = this.head;
     var prev = current;
+    var obj;
 
     while (current !== null) {
-      var obj = {};
+      obj = {};
       var ret = compare(current.data, elem);
       if (ret === 0) {
         obj.data = current;
