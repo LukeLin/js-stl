@@ -236,4 +236,4 @@
   list.orderInsert('d');
   list.orderInsert('f');
   */
-})(this.module || this);
+}(this.module || this));
