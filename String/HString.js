@@ -62,8 +62,8 @@
       return t;
     },
     substring: function(position, len){
-      position = position || 0;
-      len = len || this.length;
+      position = ~~position || 0;
+      len = ~~len || this.length;
       if(position < 0 || position > this.length - 1 || len < 0 || len > this.length - position)
         throw new Error('unexpected paramater');
 

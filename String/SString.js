@@ -53,9 +53,9 @@
       }
     },
     substring: function (position, len) {
-      position = ~~position || 1;
+      position = ~~position || 0;
       len = ~~len || this[0];
-      if(position < 1 || position > this[0] || len < 0 || len > this[0] - position + 1)
+      if(position < 0 || position > this[0] - 1 || len < 0 || len > this[0] - position)
         throw new Error('unexpected parameter');
 
       var sub = new SString();

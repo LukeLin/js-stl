@@ -46,36 +46,7 @@
 
       if(!tLSting.length) return;
 
-      if(this.head === null){
-        this.head = this.tail = tLSting.head;
-        this.length = tLSting.length;
-      } else {
-        var index = this.tail.ch.indexOf('#');
-        if(index === -1){
-          this.tail.next = tLSting.head;
-          this.tail = tLSting.tail;
-          this.length += tLSting.length;
-        } else {
-          var curT = tLSting.head;
-          var cur = this.tail;
-          var a, b;
-          while(curT){
-            for(var i = index ; i % this.chunkSize < this.chunkSize - 1; i++){
-              a = i % this.chunkSize;
-              b = (i - index) % 4;
-              cur.ch[a] = curT.ch[b];
-              index++;
-            }
 
-            if(a === this.chunkSize - 1){
-              cur = cur.next;
-            }
-            if(b === this.chunkSize - 1){
-              curT = curT.next;
-            }
-          }
-        }
-      }
 
     },
     // 将字符串转换成LString类型
@@ -131,26 +102,28 @@
         } else {
           var curT = tLSting.head;
           var cur = this.tail;
-          var a, b;
+
           while(curT){
-            for(var i = index ; i % this.chunkSize < this.chunkSize - 1; i++){
-              a = i % this.chunkSize;
-              b = (i - index) % 4;
-              cur.ch[a] = curT.ch[b];
-              index++;
+            for(var i = 0, len = this.chunkSize; i < len; i++){
+              var j = i + index;
+              cur.ch[j % this.chunkSize] = curT.ch[i];
+
+              if((j + 1) % this.chunkSize === 0) {
+                cur.next = new Chunk();
+                cur = cur.next;
+              }
             }
 
-            if(a === this.chunkSize - 1){
-              cur = cur.next;
-            }
-            if(b === this.chunkSize - 1){
-              curT = curT.next;
-            }
+            curT = curT.next;
           }
+          this.tail = cur;
+          this.length += tLSting.length;
         }
       }
     },
-    substring: function(position, len){},
+    substring: function(position, len){
+
+    },
     toString: function(){
       var current = this.head;
 
@@ -185,5 +158,6 @@
   console.log(a.strCompare(b));
   console.log(a.strCompare(c));
   a.concat(b);
+  console.log(a + '');
 
 })(this.exports || this);
