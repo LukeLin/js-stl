@@ -35,7 +35,9 @@
     this.curLen = 0;
   }
   LString.prototype = {
-    strInsert: function(){},
+    strInsert: function(pos, tLSting){
+
+    },
     strAssign: function(){},
     strCompare: function(){},
     clearString: function(){},
