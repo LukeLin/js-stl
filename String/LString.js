@@ -20,30 +20,170 @@
 (function (exports) {
 
   function Chunk(chunkSize) {
-    chunkSize = chunkSize || 4;
-    this.ch = new Array(chunkSize);
+    this.chunkSize = chunkSize || 4;
+    this.ch = [];
+    for(var i = 0; i < this.chunkSize; i++){
+      this.ch[i] = '#';
+    }
     // type: Chunk
     this.next = null;
   }
-
-  function LString() {
+  exports.LString = LString;
+  function LString(chunkSize) {
     // type Chunk
     this.head = null;
     // type: chunk
     this.tail = null;
     // 串的当前长度
-    this.curLen = 0;
+    this.length = 0;
+    this.chunkSize = chunkSize || 4;
   }
   LString.prototype = {
+    // 1 <= position <= this.length.在串的第position个字符之前插入串tHString
     strInsert: function(pos, tLSting){
+      if(pos < 1 || pos > this.length + 1)
+        throw new Error('expected position');
+
+      if(!tLSting.length) return;
+
+      if(this.head === null){
+        this.head = this.tail = tLSting.head;
+        this.length = tLSting.length;
+      } else {
+        var index = this.tail.ch.indexOf('#');
+        if(index === -1){
+          this.tail.next = tLSting.head;
+          this.tail = tLSting.tail;
+          this.length += tLSting.length;
+        } else {
+          var curT = tLSting.head;
+          var cur = this.tail;
+          var a, b;
+          while(curT){
+            for(var i = index ; i % this.chunkSize < this.chunkSize - 1; i++){
+              a = i % this.chunkSize;
+              b = (i - index) % 4;
+              cur.ch[a] = curT.ch[b];
+              index++;
+            }
+
+            if(a === this.chunkSize - 1){
+              cur = cur.next;
+            }
+            if(b === this.chunkSize - 1){
+              curT = curT.next;
+            }
+          }
+        }
+      }
 
     },
-    strAssign: function(){},
-    strCompare: function(){},
-    clearString: function(){},
-    concat: function(){},
-    substring: function(){},
-    toString: function(){}
+    // 将字符串转换成LString类型
+    strAssign: function(chars){
+      this.head = this.tail = new Chunk();
+      this.length = chars.length;
+
+      var current = this.head;
+      for(var i = 0, len = chars.length; i < len; i++){
+        current.ch[i % this.chunkSize] = chars[i];
+        if(i + 1 < len && (i + 1) % this.chunkSize === 0){
+          current.next = new Chunk();
+          current = current.next;
+        }
+      }
+
+      this.tail = current;
+    },
+    // 字符串对比
+    strCompare: function(tLString){
+      var current = this.head;
+      var curT = tLString.head;
+
+      if(this.length !== tLString.length) return false;
+
+      while(current){
+        for(var i = 0; i < this.chunkSize; i++){
+          if(current.ch[i] !== curT.ch[i]) return false;
+        }
+
+        current = current.next;
+        curT = curT.next;
+      }
+
+      return true;
+    },
+    clearString: function(){
+      this.head = this.tail = null;
+      this.length = 0;
+    },
+    concat: function(tLSting){
+      if(!tLSting.length) return;
+
+      if(this.head === null){
+        this.head = this.tail = tLSting.head;
+        this.length = tLSting.length;
+      } else {
+        var index = this.tail.ch.indexOf('#');
+        if(index === -1){
+          this.tail.next = tLSting.head;
+          this.tail = tLSting.tail;
+          this.length += tLSting.length;
+        } else {
+          var curT = tLSting.head;
+          var cur = this.tail;
+          var a, b;
+          while(curT){
+            for(var i = index ; i % this.chunkSize < this.chunkSize - 1; i++){
+              a = i % this.chunkSize;
+              b = (i - index) % 4;
+              cur.ch[a] = curT.ch[b];
+              index++;
+            }
+
+            if(a === this.chunkSize - 1){
+              cur = cur.next;
+            }
+            if(b === this.chunkSize - 1){
+              curT = curT.next;
+            }
+          }
+        }
+      }
+    },
+    substring: function(position, len){},
+    toString: function(){
+      var current = this.head;
+
+      if(current === null) return '';
+
+      var str = '';
+      while(current){
+        for(var i = 0, len = this.chunkSize; i < len; i++){
+          var ch = current.ch[i];
+          if(ch === '#') {
+            return str;
+          } else {
+            str += current.ch[i];
+          }
+        }
+        current = current.next;
+      }
+
+      return str;
+    }
   };
+
+  var a = new LString();
+  var b = new LString();
+  var c = new LString();
+
+  a.strAssign('abcdefg');
+  console.log(a + '');
+  b.strAssign('hijklmno');
+  console.log(b + '');
+  c.strAssign('abcdefg');
+  console.log(a.strCompare(b));
+  console.log(a.strCompare(c));
+  a.concat(b);
 
 })(this.exports || this);
