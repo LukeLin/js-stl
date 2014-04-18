@@ -22,12 +22,13 @@
   function Chunk(chunkSize) {
     this.chunkSize = chunkSize || 4;
     this.ch = [];
-    for(var i = 0; i < this.chunkSize; i++){
+    for (var i = 0; i < this.chunkSize; i++) {
       this.ch[i] = '#';
     }
     // type: Chunk
     this.next = null;
   }
+
   exports.LString = LString;
   function LString(chunkSize) {
     // type Chunk
@@ -38,26 +39,42 @@
     this.length = 0;
     this.chunkSize = chunkSize || 4;
   }
+
   LString.prototype = {
     // 1 <= position <= this.length.在串的第position个字符之前插入串tHString
-    strInsert: function(pos, tLSting){
-      if(pos < 1 || pos > this.length + 1)
+    strInsert: function (pos, tLSting) {
+      if (pos < 1 || pos > this.length + 1)
         throw new Error('expected position');
 
-      if(!tLSting.length) return;
+      if (!tLSting.length) return;
 
+      var me = this;
 
+      function findPosChunk(pos) {
+        var current = me.head;
+        while (current) {
+          for (var i = 0, len = me.chunkSize; i < len; i++) {
+            if (pos-- === 0) return current;
+          }
+          current = current.next;
+        }
+      }
 
+      var curT = tLSting.head;
+      var cur = findPosChunk(pos);
+      var index = cur.ch.indexOf('#');
+
+      // TODO 先后移，空出位置，再插入
     },
     // 将字符串转换成LString类型
-    strAssign: function(chars){
+    strAssign: function (chars) {
       this.head = this.tail = new Chunk();
       this.length = chars.length;
 
       var current = this.head;
-      for(var i = 0, len = chars.length; i < len; i++){
+      for (var i = 0, len = chars.length; i < len; i++) {
         current.ch[i % this.chunkSize] = chars[i];
-        if(i + 1 < len && (i + 1) % this.chunkSize === 0){
+        if (i + 1 < len && (i + 1) % this.chunkSize === 0) {
           current.next = new Chunk();
           current = current.next;
         }
@@ -66,15 +83,15 @@
       this.tail = current;
     },
     // 字符串对比
-    strCompare: function(tLString){
+    strCompare: function (tLString) {
       var current = this.head;
       var curT = tLString.head;
 
-      if(this.length !== tLString.length) return false;
+      if (this.length !== tLString.length) return false;
 
-      while(current){
-        for(var i = 0; i < this.chunkSize; i++){
-          if(current.ch[i] !== curT.ch[i]) return false;
+      while (current) {
+        for (var i = 0; i < this.chunkSize; i++) {
+          if (current.ch[i] !== curT.ch[i]) return false;
         }
 
         current = current.next;
@@ -83,57 +100,44 @@
 
       return true;
     },
-    clearString: function(){
+    clearString: function () {
       this.head = this.tail = null;
       this.length = 0;
     },
-    concat: function(tLSting){
-      if(!tLSting.length) return;
+    concat: function (tLSting) {
+      if (!tLSting.length) return;
 
-      if(this.head === null){
-        this.head = this.tail = tLSting.head;
-        this.length = tLSting.length;
+      var ret = new LString();
+
+      if (this.head === null) {
+        copyString(ret, tLSting);
       } else {
-        var index = this.tail.ch.indexOf('#');
-        if(index === -1){
-          this.tail.next = tLSting.head;
-          this.tail = tLSting.tail;
-          this.length += tLSting.length;
+        ret.head = ret.tail = new Chunk();
+        copyString(ret, this);
+
+        var index = ret.tail.ch.indexOf('#');
+        if (index === -1) {
+          copyString(ret, tLSting);
         } else {
-          var curT = tLSting.head;
-          var cur = this.tail;
-
-          while(curT){
-            for(var i = 0, len = this.chunkSize; i < len; i++){
-              var j = i + index;
-              cur.ch[j % this.chunkSize] = curT.ch[i];
-
-              if((j + 1) % this.chunkSize === 0) {
-                cur.next = new Chunk();
-                cur = cur.next;
-              }
-            }
-
-            curT = curT.next;
-          }
-          this.tail = cur;
-          this.length += tLSting.length;
+          copyString(ret, tLSting, ret.tail, tLSting.head, index);
         }
       }
+
+      return ret;
     },
-    substring: function(position, len){
+    substring: function (position, len) {
 
     },
-    toString: function(){
+    toString: function () {
       var current = this.head;
 
-      if(current === null) return '';
+      if (current === null) return '';
 
       var str = '';
-      while(current){
-        for(var i = 0, len = this.chunkSize; i < len; i++){
+      while (current) {
+        for (var i = 0, len = this.chunkSize; i < len; i++) {
           var ch = current.ch[i];
-          if(ch === '#') {
+          if (ch === '#') {
             return str;
           } else {
             str += current.ch[i];
@@ -145,6 +149,29 @@
       return str;
     }
   };
+
+  function copyString(destination, target, curD, currT, offset) {
+    offset = offset || 0;
+    currT = currT || target.head;
+    curD = curD || destination.head;
+
+    while (currT) {
+      for (var i = 0, len = target.chunkSize; i < len; i++) {
+        var j = i + offset;
+        curD.ch[j % curD.chunkSize] = currT.ch[i];
+
+        if ((j + 1) % curD.chunkSize === 0 && (currT.ch[i + 1] || currT.next)) {
+          curD.next = new Chunk();
+          curD = curD.next;
+        }
+      }
+
+      currT = currT.next;
+    }
+
+    destination.tail = curD;
+    destination.length += target.length;
+  }
 
   var a = new LString();
   var b = new LString();
@@ -158,6 +185,8 @@
   console.log(a.strCompare(b));
   console.log(a.strCompare(c));
   a.concat(b);
+  console.log(a + '');
+  a.strInsert(5, b);
   console.log(a + '');
 
 })(this.exports || this);
