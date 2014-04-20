@@ -82,7 +82,7 @@
     concat: function (tLSting) {
       if (!tLSting.length) return;
 
-      var ret = new LString();
+      var ret = new LString(this.chunkSize);
 
       if (this.head === null) {
         copyString(ret, tLSting);
@@ -108,26 +108,29 @@
 
       var sub = new LString(this.chunkSize);
       var current = findPosChunk(this, pos);
-      var curS = sub.head;
+      var curS = sub.head = new Chunk(this.chunkSize);
       var i = 0;
       sub.length = len;
 
       while(current){
-        if(!len--){
-
-        } else {
-          curS.ch[i] = current.ch[i + pos];
-          i++;
-          if(pos % this.chunkSize === 0){
-            curS.next = new Chunk(this.chunkSize);
-            curS = curS.next;
+        for(var j = 0, size = this.chunkSize; j < size; j++){
+          if(i === len){
+            return sub;
           } else {
-
+            curS.ch[j] = current.ch[(i + pos) % this.chunkSize];
+            i++;
+            if((i + pos) % this.chunkSize === 0){
+              current = current.next;
+            }
+            if(i % this.chunkSize === 0 && (current.ch[i]  || current.next)){
+              curS.next = new Chunk(this.chunkSize);
+              curS = curS.next;
+            }
           }
         }
-
-        current = current.next;
       }
+
+      return sub;
     },
     toString: function () {
       var current = this.head;
