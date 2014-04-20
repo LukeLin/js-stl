@@ -41,34 +41,9 @@
   }
 
   LString.prototype = {
-    // 1 <= position <= this.length.在串的第position个字符之前插入串tHString
-    strInsert: function (pos, tLSting) {
-      if (pos < 1 || pos > this.length + 1)
-        throw new Error('expected position');
-
-      if (!tLSting.length) return;
-
-      var me = this;
-
-      function findPosChunk(pos) {
-        var current = me.head;
-        while (current) {
-          for (var i = 0, len = me.chunkSize; i < len; i++) {
-            if (pos-- === 0) return current;
-          }
-          current = current.next;
-        }
-      }
-
-      var curT = tLSting.head;
-      var cur = findPosChunk(pos);
-      var index = cur.ch.indexOf('#');
-
-      // TODO 先后移，空出位置，再插入
-    },
     // 将字符串转换成LString类型
     strAssign: function (chars) {
-      this.head = this.tail = new Chunk();
+      this.head = this.tail = new Chunk(this.chunkSize);
       this.length = chars.length;
 
       var current = this.head;
@@ -112,7 +87,7 @@
       if (this.head === null) {
         copyString(ret, tLSting);
       } else {
-        ret.head = ret.tail = new Chunk();
+        ret.head = ret.tail = new Chunk(this.chunkSize);
         copyString(ret, this);
 
         var index = ret.tail.ch.indexOf('#');
@@ -124,9 +99,6 @@
       }
 
       return ret;
-    },
-    substring: function (position, len) {
-
     },
     toString: function () {
       var current = this.head;
@@ -150,6 +122,16 @@
     }
   };
 
+  function findPosChunk(lString, pos) {
+    var current = lString.head;
+    while (current) {
+      for (var i = 0, len = lString.chunkSize; i < len; i++) {
+        if (pos-- === 0) return current;
+      }
+      current = current.next;
+    }
+  }
+
   function copyString(destination, target, curD, currT, offset) {
     offset = offset || 0;
     currT = currT || target.head;
@@ -161,7 +143,7 @@
         curD.ch[j % curD.chunkSize] = currT.ch[i];
 
         if ((j + 1) % curD.chunkSize === 0 && (currT.ch[i + 1] || currT.next)) {
-          curD.next = new Chunk();
+          curD.next = new Chunk(destination.chunkSize);
           curD = curD.next;
         }
       }
@@ -184,9 +166,9 @@
   c.strAssign('abcdefg');
   console.log(a.strCompare(b));
   console.log(a.strCompare(c));
-  a.concat(b);
-  console.log(a + '');
-  a.strInsert(5, b);
-  console.log(a + '');
+  var t = a.concat(b);
+  console.log(t + '');
+  t = t.substring(2, 5);
+  console.log(t + '');
 
 })(this.exports || this);
