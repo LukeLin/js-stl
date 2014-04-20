@@ -102,8 +102,8 @@
     },
     substring: function(pos, len){
       pos = ~~pos || 0;
-      len = ~~len || this[0];
-      if(pos < 0 || pos > this[0] - 1 || len < 0 || len > this[0] - pos)
+      len = ~~len || this.length;
+      if(pos < 0 || pos > this.length - 1 || len < 0 || len > this.length - pos)
         throw new Error('unexpected parameter');
 
       var sub = new LString(this.chunkSize);
@@ -122,7 +122,7 @@
             if((i + pos) % this.chunkSize === 0){
               current = current.next;
             }
-            if(i % this.chunkSize === 0 && (current.ch[i]  || current.next)){
+            if(i % this.chunkSize === 0 && (current.ch[i] || current.next)){
               curS.next = new Chunk(this.chunkSize);
               curS = curS.next;
             }
