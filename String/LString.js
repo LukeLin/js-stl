@@ -129,8 +129,6 @@
           }
         }
       }
-
-      return sub;
     },
     toString: function () {
       var current = this.head;
