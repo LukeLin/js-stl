@@ -100,6 +100,35 @@
 
       return ret;
     },
+    substring: function(pos, len){
+      pos = ~~pos || 0;
+      len = ~~len || this[0];
+      if(pos < 0 || pos > this[0] - 1 || len < 0 || len > this[0] - pos)
+        throw new Error('unexpected parameter');
+
+      var sub = new LString(this.chunkSize);
+      var current = findPosChunk(this, pos);
+      var curS = sub.head;
+      var i = 0;
+      sub.length = len;
+
+      while(current){
+        if(!len--){
+
+        } else {
+          curS.ch[i] = current.ch[i + pos];
+          i++;
+          if(pos % this.chunkSize === 0){
+            curS.next = new Chunk(this.chunkSize);
+            curS = curS.next;
+          } else {
+
+          }
+        }
+
+        current = current.next;
+      }
+    },
     toString: function () {
       var current = this.head;
 
