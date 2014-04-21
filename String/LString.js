@@ -19,186 +19,190 @@
 
 (function (exports) {
 
-  function Chunk(chunkSize) {
-    this.chunkSize = chunkSize || 4;
-    this.ch = [];
-    for (var i = 0; i < this.chunkSize; i++) {
-      this.ch[i] = '#';
-    }
-    // type: Chunk
-    this.next = null;
-  }
-
-  exports.LString = LString;
-  function LString(chunkSize) {
-    // type Chunk
-    this.head = null;
-    // type: chunk
-    this.tail = null;
-    // 串的当前长度
-    this.length = 0;
-    this.chunkSize = chunkSize || 4;
-  }
-
-  LString.prototype = {
-    // 将字符串转换成LString类型
-    strAssign: function (chars) {
-      this.head = this.tail = new Chunk(this.chunkSize);
-      this.length = chars.length;
-
-      var current = this.head;
-      for (var i = 0, len = chars.length; i < len; i++) {
-        current.ch[i % this.chunkSize] = chars[i];
-        if (i + 1 < len && (i + 1) % this.chunkSize === 0) {
-          current.next = new Chunk();
-          current = current.next;
-        }
-      }
-
-      this.tail = current;
-    },
-    // 字符串对比
-    strCompare: function (tLString) {
-      var current = this.head;
-      var curT = tLString.head;
-
-      if (this.length !== tLString.length) return false;
-
-      while (current) {
+    function Chunk(chunkSize) {
+        this.chunkSize = chunkSize || 4;
+        this.ch = [];
         for (var i = 0; i < this.chunkSize; i++) {
-          if (current.ch[i] !== curT.ch[i]) return false;
+            this.ch[i] = '#';
         }
+        // type: Chunk
+        this.next = null;
+    }
 
-        current = current.next;
-        curT = curT.next;
-      }
+    exports.LString = LString;
+    function LString(chunkSize) {
+        // type Chunk
+        this.head = null;
+        // type: chunk
+        this.tail = null;
+        // 串的当前长度
+        this.length = 0;
+        this.chunkSize = chunkSize || 4;
+    }
 
-      return true;
-    },
-    clearString: function () {
-      this.head = this.tail = null;
-      this.length = 0;
-    },
-    concat: function (tLSting) {
-      if (!tLSting.length) return;
+    LString.prototype = {
+        // 将字符串转换成LString类型
+        strAssign: function (chars) {
+            this.head = this.tail = new Chunk(this.chunkSize);
+            this.length = chars.length;
 
-      var ret = new LString(this.chunkSize);
+            var current = this.head;
+            for (var i = 0, len = chars.length; i < len; i++) {
+                current.ch[i % this.chunkSize] = chars[i];
+                if (i + 1 < len && (i + 1) % this.chunkSize === 0) {
+                    current.next = new Chunk();
+                    current = current.next;
+                }
+            }
 
-      if (this.head === null) {
-        copyString(ret, tLSting);
-      } else {
-        ret.head = ret.tail = new Chunk(this.chunkSize);
-        copyString(ret, this);
+            this.tail = current;
+        },
+        // 字符串对比
+        // TODO 是否去掉chunkSize的对比
+        strCompare: function (tLString) {
+            var current = this.head;
+            var curT = tLString.head;
 
-        var index = ret.tail.ch.indexOf('#');
-        if (index === -1) {
-          copyString(ret, tLSting);
-        } else {
-          copyString(ret, tLSting, ret.tail, tLSting.head, index);
-        }
-      }
+            if (this.length !== tLString.length) return false;
 
-      return ret;
-    },
-    substring: function(pos, len){
-      pos = ~~pos || 0;
-      len = ~~len || this.length;
-      if(pos < 0 || pos > this.length - 1 || len < 0 || len > this.length - pos)
-        throw new Error('unexpected parameter');
+            while (current) {
+                for (var i = 0; i < this.chunkSize; i++) {
+                    if (current.ch[i] !== curT.ch[i]) return false;
+                }
 
-      var sub = new LString(this.chunkSize);
-      var current = findPosChunk(this, pos);
-      var curS = sub.head = new Chunk(this.chunkSize);
-      var i = 0;
-      sub.length = len;
+                current = current.next;
+                curT = curT.next;
+            }
 
-      while(current){
-        for(var j = 0, size = this.chunkSize; j < size; j++){
-          if(i === len){
+            return true;
+        },
+        clearString: function () {
+            this.head = this.tail = null;
+            this.length = 0;
+        },
+        concat: function (tLSting) {
+            if (!tLSting.length) return;
+
+            var ret = new LString(this.chunkSize);
+
+            if (this.head === null) {
+                copyString(ret, tLSting);
+            } else {
+                ret.head = ret.tail = new Chunk(this.chunkSize);
+                copyString(ret, this);
+
+                var index = ret.tail.ch.indexOf('#');
+                if (index === -1) {
+                    copyString(ret, tLSting);
+                } else {
+                    copyString(ret, tLSting, ret.tail, tLSting.head, index);
+                }
+            }
+
+            return ret;
+        },
+        substring: function (pos, len) {
+            pos = ~~pos || 0;
+            len = ~~len || this.length;
+            if (pos < 0 || pos > this.length - 1 || len < 0 || len > this.length - pos)
+                throw new Error('unexpected parameter');
+
+            var sub = new LString(this.chunkSize);
+            var current = findPosChunk(this, pos);
+            var curS = sub.head = new Chunk(this.chunkSize);
+            var i = 0;
+            sub.length = len;
+
+            outerloop: while (current) {
+                for (var j = 0, size = this.chunkSize; j < size; j++) {
+                    if (i === len) {
+                        break outerloop;
+                    } else {
+                        curS.ch[j] = current.ch[(i + pos) % this.chunkSize];
+                        i++;
+                        if ((i + pos) % this.chunkSize === 0) {
+                            current = current.next;
+                        }
+                        if (i % this.chunkSize === 0 && (current.ch[i] || current.next)) {
+                            curS.next = new Chunk(this.chunkSize);
+                            curS = curS.next;
+                        }
+                    }
+                }
+            }
+
             return sub;
-          } else {
-            curS.ch[j] = current.ch[(i + pos) % this.chunkSize];
-            i++;
-            if((i + pos) % this.chunkSize === 0){
-              current = current.next;
-            }
-            if(i % this.chunkSize === 0 && (current.ch[i] || current.next)){
-              curS.next = new Chunk(this.chunkSize);
-              curS = curS.next;
-            }
-          }
-        }
-      }
-    },
-    toString: function () {
-      var current = this.head;
+        },
+        toString: function () {
+            var current = this.head;
 
-      if (current === null) return '';
+            if (current === null) return '';
 
-      var str = '';
-      while (current) {
-        for (var i = 0, len = this.chunkSize; i < len; i++) {
-          var ch = current.ch[i];
-          if (ch === '#') {
+            var str = '';
+            while (current) {
+                for (var i = 0, len = this.chunkSize; i < len; i++) {
+                    var ch = current.ch[i];
+                    if (ch === '#') {
+                        return str;
+                    } else {
+                        str += current.ch[i];
+                    }
+                }
+                current = current.next;
+            }
+
             return str;
-          } else {
-            str += current.ch[i];
-          }
         }
-        current = current.next;
-      }
+    };
 
-      return str;
-    }
-  };
-
-  function findPosChunk(lString, pos) {
-    var current = lString.head;
-    while (current) {
-      for (var i = 0, len = lString.chunkSize; i < len; i++) {
-        if (pos-- === 0) return current;
-      }
-      current = current.next;
-    }
-  }
-
-  function copyString(destination, target, curD, currT, offset) {
-    offset = offset || 0;
-    currT = currT || target.head;
-    curD = curD || destination.head;
-
-    while (currT) {
-      for (var i = 0, len = target.chunkSize; i < len; i++) {
-        var j = i + offset;
-        curD.ch[j % curD.chunkSize] = currT.ch[i];
-
-        if ((j + 1) % curD.chunkSize === 0 && (currT.ch[i + 1] || currT.next)) {
-          curD.next = new Chunk(destination.chunkSize);
-          curD = curD.next;
+    function findPosChunk(lString, pos) {
+        var current = lString.head;
+        while (current) {
+            for (var i = 0, len = lString.chunkSize; i < len; i++) {
+                if (pos-- === 0) return current;
+            }
+            current = current.next;
         }
-      }
-
-      currT = currT.next;
     }
 
-    destination.tail = curD;
-    destination.length += target.length;
-  }
+    function copyString(destination, target, curD, currT, offset) {
+        offset = offset || 0;
+        currT = currT || target.head;
+        curD = curD || destination.head;
+        var k = 0;
 
-  var a = new LString();
-  var b = new LString();
-  var c = new LString();
+        while (currT) {
+            for (var i = 0, len = target.chunkSize; i < len; i++, k++) {
+                var j = k % curD.chunkSize + offset;
+                curD.ch[j % curD.chunkSize] = currT.ch[i];
 
-  a.strAssign('abcdefg');
-  console.log(a + '');
-  b.strAssign('hijklmno');
-  console.log(b + '');
-  c.strAssign('abcdefg');
-  console.log(a.strCompare(b));
-  console.log(a.strCompare(c));
-  var t = a.concat(b);
-  console.log(t + '');
-  t = t.substring(2, 5);
-  console.log(t + '');
+                if ((j + 1) % curD.chunkSize === 0 && (currT.ch[i + 1] || currT.next)) {
+                    curD.next = new Chunk(destination.chunkSize);
+                    curD = curD.next;
+                }
+            }
+
+            currT = currT.next;
+        }
+
+        destination.tail = curD;
+        destination.length += target.length;
+    }
+
+    var a = new LString();
+    var b = new LString();
+    var c = new LString();
+
+    a.strAssign('abcdefg');
+    console.log(a + '');
+    b.strAssign('hijklmno');
+    console.log(b + '');
+    c.strAssign('abcdefg');
+    console.log(a.strCompare(b));
+    console.log(a.strCompare(c));
+    var t = a.concat(b);
+    console.log(t + '');
+    t = t.substring(2, 5);
+    console.log(t + '');
 
 })(this.exports || this);
