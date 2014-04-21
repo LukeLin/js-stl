@@ -21,6 +21,7 @@
   }
   module.exports = DuLNode;
   DuLNode.prototype = {
+    constructor: DuLNode,
     getElem: function (i) {
       // 初始化，p指向第一个节点，j为计数器
       var p = this.next;
@@ -58,7 +59,7 @@
       return e;
     }
   };
-  /*
+
   var a = new DuLNode(1);
 
   a.listInsert(0, 1);
@@ -66,5 +67,5 @@
   a.listInsert(2, 3);
   a.listDelete(1);
   console.log(a);
-  */
+
 })(this.module || this);

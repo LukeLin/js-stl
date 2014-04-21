@@ -47,6 +47,7 @@
   };
 
   List.prototype = {
+    constructor: List,
     makeNode: function(data, next){
       return {
         data: data != null ?  data : null,
@@ -201,7 +202,7 @@
       }
     }
   };
-  /*
+
   var list = new List();
   list.add('b');
   list.insertAsFirst('a');
@@ -225,8 +226,8 @@
 
   var list3 = List.mergeList(list, list2);
   console.log(list3);
-  */
-  /*
+
+
   var list = new List();
 
   list.orderInsert('e');
@@ -235,5 +236,5 @@
   list.orderInsert('a');
   list.orderInsert('d');
   list.orderInsert('f');
-  */
+
 }(this.module || this));

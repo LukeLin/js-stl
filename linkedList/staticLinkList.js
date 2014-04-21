@@ -17,6 +17,7 @@
   }
   module.exports = SLinkList;
   SLinkList.prototype = {
+    constructor: SLinkList,
     /**
      * 在静态单链线性表L中查找第1个值为e的元素，
      * 若找到，则返回它在L中的位序

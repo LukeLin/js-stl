@@ -10,6 +10,7 @@ function LNode(data, node) {
   this.next = node || null;
 }
 LNode.prototype = {
+  constructor: LNode,
   // 时间复杂度O(n)
   getElem: function getElem(i) {
     // 初始化，p指向第一个节点，j为计数器

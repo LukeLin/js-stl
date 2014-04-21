@@ -11,12 +11,14 @@
  *
  */
 
+// 找的链式表示
 function Stack() {
   this.top = null;
   this.size = 0;
 }
 module.exports = Stack;
 Stack.prototype = {
+  constructor: Stack,
   push: function (data) {
     var node = {
       data: data,
