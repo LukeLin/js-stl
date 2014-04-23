@@ -16,79 +16,151 @@
  */
 
 (function (exports) {
-  function SString() {
-    this.MAXSTRLEN = 10;
-  }
-
-  exports.SString = SString;
-  SString.prototype = {
-    // 返回由s1和s2连接而成的新串
-    concat: function (s2) {
-      var t = new SString();
-      // 未截断
-      if (this[0] + s2[0] <= this.MAXSTRLEN) {
-        copyStr2T(this);
-        copyStr2T(s2, this[0]);
-        t[0] = this[0] + s2[0];
-
-        // 截断
-      } else if (this[0] < this.MAXSTRLEN) {
-        copyStr2T(this);
-        copyStr2T(s2, this[0], this.MAXSTRLEN - this[0]);
-        t[0] = this.MAXSTRLEN;
-
-        // 截断（仅取s1）
-      } else {
-        copyStr2T(this, 0, this.MAXSTRLEN);
-        t[0] = this[0] = this.MAXSTRLEN;
-      }
-
-      return t;
-
-      function copyStr2T(str, start, end) {
-        start = start || 0;
-        for (var i = 1, len = end || str[0]; i <= len; i++) {
-          t[start + i] = str[i];
-        }
-      }
-    },
-    substring: function (position, len) {
-      position = ~~position || 0;
-      len = ~~len || this[0];
-      if(position < 0 || position > this[0] - 1 || len < 0 || len > this[0] - position)
-        throw new Error('unexpected parameter');
-
-      var sub = new SString();
-      for(var i = 1; i <= len; i++){
-        sub[i] = this[position + i - 1];
-      }
-      sub[0] = len;
-
-      return sub;
-    },
-    toString: function () {
-      var str = '';
-      for (var i = 1; this[i]; i++) {
-        str += this[i];
-      }
-      return str;
+    function SString() {
+        this.MAXSTRLEN = 10;
     }
-  };
 
-//  var a = new SString();
-//  var b = new SString();
-//  for(var i = 0; i < 4; i++){
-//    a[i + 1] = i + '';
-//    b[i + 1] = i + '';
-//  }
-//  a[0] = b[0] = 4;
-//  var t = a.concat(b) + '';
-//  console.log(t);
+    exports.SString = SString;
+    SString.prototype = {
+        constructor: SString,
+        // 返回由s1和s2连接而成的新串
+        concat: function (s2) {
+            var t = new SString();
+            // 未截断
+            if (this[0] + s2[0] <= this.MAXSTRLEN) {
+                copyStr2T(this);
+                copyStr2T(s2, this[0]);
+                t[0] = this[0] + s2[0];
 
-  /*
-  在顺序存储结构中，实现串操作的原操作为“字符串序列的复制”，操作时间复杂度基于复制的字符串序列的长度。
-  另一操作特点是，如果在操作中出现串值序列的长度超过MAXSTRLEN时，约定用截尾法处理，这种情况不仅在求连接串时可能发生，在串的其他操作中，如插入，置换等也可能发生，克服这个弊病唯有不限定串长的最大长度，即动态分配串值的存储空间。
-   */
+                // 截断
+            } else if (this[0] < this.MAXSTRLEN) {
+                copyStr2T(this);
+                copyStr2T(s2, this[0], this.MAXSTRLEN - this[0]);
+                t[0] = this.MAXSTRLEN;
+
+                // 截断（仅取s1）
+            } else {
+                copyStr2T(this, 0, this.MAXSTRLEN);
+                t[0] = this[0] = this.MAXSTRLEN;
+            }
+
+            return t;
+
+            function copyStr2T(str, start, end) {
+                start = start || 0;
+                for (var i = 1, len = end || str[0]; i <= len; i++) {
+                    t[start + i] = str[i];
+                }
+            }
+        },
+        substring: function (position, len) {
+            position = ~~position || 0;
+            len = ~~len || this[0];
+            if (position < 0 || position > this[0] - 1 || len < 0 || len > this[0] - position)
+                throw new Error('unexpected parameter');
+
+            var sub = new SString();
+            for (var i = 1; i <= len; i++) {
+                sub[i] = this[position + i - 1];
+            }
+            sub[0] = len;
+
+            return sub;
+        },
+        toString: function () {
+            var str = '';
+            for (var i = 1; this[i]; i++) {
+                str += this[i];
+            }
+            return str;
+        },
+        // 返回子串sstring在主串中的第position个字符之后的位置
+        index: function (sstring, position) {
+            var i = position || 0;
+            var j = 1;
+
+            while (i <= this[0] && j <= sstring[0]) {
+                if (this[i] === sstring[j]) {
+                    i++;
+                    j++;
+                } else {
+                    i = i - j + 2;
+                    j = 1;
+                }
+            }
+
+            return j > sstring[0] ? i - sstring[0] : -1;
+        },
+        kmpIndex: function (sstring, position) {
+            var i = position || 0;
+            var j = 1;
+            var next = getNext(sstring);
+
+            while (i <= this[0] && j <= sstring[0]) {
+                if (j === 0 || this[i] === sstring[j]) {
+                    ++i;
+                    ++j;
+                } else {
+                    j = next[j];
+                }
+            }
+
+            return j > sstring[0] ? i - sstring[0] : -1;
+        }
+    };
+
+    function getNext(sstring) {
+        var i = 1;
+        var next = {1: 0};
+        var j = 0;
+
+        while (i < sstring[0]) {
+            if (j === 0 || sstring[i] === sstring[j]) {
+                if(sstring[++i] !== sstring[++j]){
+                    next[i] = j;
+                } else {
+                    next[i] = next[j];
+                }
+//                next[++i] = ++j;
+            } else {
+                j = next[j];
+            }
+        }
+
+        return next;
+    }
+
+    var a = new SString();
+    var b = new SString();
+    for (var i = 0; i < 4; i++) {
+        a[i + 1] = i + '';
+        b[i + 1] = i + '';
+    }
+    a[0] = b[0] = 4;
+    var t = a.concat(b);
+    console.log(t + '');       // 01230123
+
+    var d = new SString();
+    var str = 'acabaabaabcacaabc';
+    for(i = 0; i < str.length; i++){
+        d[i + 1] = str[i];
+    }
+    d[0] = str.length;
+
+    var c = new SString();
+    str = 'abaabc';
+    for(i = 0; i < str.length; i++){
+        c[i + 1] = str[i];
+    }
+    c[0] = str.length;
+
+    console.log(d.index(c));
+    console.log(d.kmpIndex(c));
+
+    /*
+    在顺序存储结构中，实现串操作的原操作为“字符串序列的复制”，操作时间复杂度基于复制的字符串序列的长度。
+    另一操作特点是，如果在操作中出现串值序列的长度超过MAXSTRLEN时，约定用截尾法处理，这种情况不仅在求连接串时可能发生，在串的其他操作中，如插入，置换等也可能发生，克服这个弊病唯有不限定串长的最大长度，即动态分配串值的存储空间。
+     */
 
 })(this.exports || this);
 
