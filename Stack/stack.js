@@ -73,7 +73,7 @@ stack.push({a: 1});
 console.log(stack);
 
 
-// 数值转换
+// 数值进制转换
 // 公式： N = (N / d) * d + N % d
 // N：十进制数值， d：需要转换的进制数
 function numTransform(number, rad) {
