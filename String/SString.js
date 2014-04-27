@@ -92,7 +92,7 @@
             return j > sstring[0] ? i - sstring[0] : -1;
         },
         kmpIndex: function (sstring, position) {
-            var i = position || 0;
+            var i = position || 1;
             var j = 1;
             var next = getNext(sstring);
 
