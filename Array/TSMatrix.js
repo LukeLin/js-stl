@@ -64,7 +64,7 @@ TSMatrix.prototype = {
     cpot[0] = 1;
     cpot[col] = cpot[col - 1] + num[col - 1]    2 <= col <= a.nu
      */
-    fastTranposeSMatrix: function(){
+    fastTransposeSMatrix: function(){
         var t = new TSMatrix();
         t.mu = this.nu;
         t.nu = this.mu;
@@ -111,4 +111,4 @@ matrix.addTriple(a7);
 matrix.addTriple(a8);
 
 console.log(matrix.transposeSMatrix());
-console.log(matrix.fastTranposeSMatrix());
+console.log(matrix.fastTransposeSMatrix());
