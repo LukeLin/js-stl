@@ -11,8 +11,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'String/LString.js',
-      'String/LString-test.js'
+      'String/HString.js',
+      'String/HString-test.js'
     ],
 
     // list of files / patterns to exclude
