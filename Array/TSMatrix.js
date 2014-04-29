@@ -76,7 +76,7 @@ TSMatrix.prototype = {
             for(var i = 0; i < this.data.length; i++)
                 ++num[this.data[i].j];  // 求矩阵中每一列含非零元个数
             // 求第col列中第一个非零元在b.data中的序号
-            var cpot = [1];
+            var cpot = [0];
             for(col = 1; col < this.nu; col++)
                 cpot[col] = cpot[col - 1] + num[col - 1];
             for(var p = 0; p < this.data.length; p++){
