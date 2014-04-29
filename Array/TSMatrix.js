@@ -21,12 +21,11 @@ TSMatrix.prototype = {
     constructor: TSMatrix,
     addTriple: function (triple) {
         if (triple instanceof Triple) {
-            if(triple.i >= this.mu){
+            if(triple.i >= this.mu)
                 this.mu = triple.i + 1;
-            }
-            if(triple.j >= this.nu){
+            if(triple.j >= this.nu)
                 this.nu = triple.j + 1;
-            }
+
             this.data.push(triple);
             return true;
         }
@@ -43,10 +42,8 @@ TSMatrix.prototype = {
             var q = 0;
             for (var col = 0; col < this.nu; col++) {
                 for (var p = 0; p < this.data.length; p++) {
-                    if (this.data[p].j === col) {
-                        t.data[q] = new Triple(this.data[p].j, this.data[p].i, this.data[p].e);
-                        ++q;
-                    }
+                    if (this.data[p].j === col)
+                        t.data[q++] = new Triple(this.data[p].j, this.data[p].i, this.data[p].e);
                 }
             }
         }
