@@ -78,11 +78,13 @@ TSMatrix.prototype = {
             // 求第col列中第一个非零元在b.data中的序号
             var cpot = [0];
             for(col = 1; col < this.nu; col++)
+                // 上一列之前的序号+上一列的非零元个数 = 该列的序号
                 cpot[col] = cpot[col - 1] + num[col - 1];
             for(var p = 0; p < this.data.length; p++){
                 col = this.data[p].j;
                 var q = cpot[col];
                 t.data[q] = new Triple(this.data[p].j, this.data[p].i, this.data[p].e);
+                // 给该列的序号+1，用作相同列数的情况
                 ++cpot[col];
             }
         }
@@ -112,3 +114,8 @@ matrix.addTriple(a8);
 
 console.log(matrix.transposeSMatrix());
 console.log(matrix.fastTransposeSMatrix());
+
+/*
+三元组顺序表又称有序的双下标法，它的特点是，非零元在表中按行序有序存储，因此便于进行依行顺序处理的矩阵运算。
+然而，若需按行号存取某一行的非零元，则从头开始进行查找。
+ */
