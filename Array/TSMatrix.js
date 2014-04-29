@@ -119,3 +119,106 @@ console.log(matrix.fastTransposeSMatrix());
 三元组顺序表又称有序的双下标法，它的特点是，非零元在表中按行序有序存储，因此便于进行依行顺序处理的矩阵运算。
 然而，若需按行号存取某一行的非零元，则从头开始进行查找。
  */
+
+/**
+ * 行逻辑链接的顺序表
+ *
+ * 为了便于随机存取任意一行的非零元，则需知道每一行的第一个非零元在三元组表中的位置。
+ * 为此可将快速转置矩阵的算法中创建的，指示“行”信息的辅助数组cpot固定在稀疏矩阵的存储结构中。
+ * 称这种“带行链接信息”的三元组表为行逻辑链接的顺序表
+ */
+
+function RLSMatrix(mu, nu){
+    this.data = [];
+    this.rpos = [];
+    this.mu = mu || 0;
+    this.nu = nu || 0;
+}
+RLSMatrix.MAXSIZE = 100;
+RLSMatrix.prototype = {
+    constructor: RLSMatrix,
+    __proto__: TSMatrix.prototype,
+    // todo
+    multSMatrix: function(nMatrix){
+        if(this.nu !== nMatrix.mu) throw Error('nu is not equivalent to mu');
+
+        var qMatrix = new RLSMatrix(this.mu, nMatrix.nu);
+        // Q是非零矩阵
+        if(this.data.length * nMatrix.data.length !== 0){
+            for(var arow = 0; arow < this.mu; arow++){
+                var ctemp = [];
+                qMatrix.rpos[arow] = qMatrix.data.length + 1;
+                var tp, ccol;
+
+                if(arow < this.mu)
+                    tp = this.rpos[arow + 1];
+                 else
+                    tp = this.data.length + 1;
+
+                for(var p = this.rpos[arow]; p < tp; p++){
+                    var brow = this.data[p].j;
+                    var t;
+                    if(brow < nMatrix.mu)
+                        t = nMatrix.rpos[brow + 1];
+                    else
+                        t = nMatrix.data.length + 1;
+
+                    for(var q = nMatrix.rpos[brow]; q < t; q++){
+                         ccol = nMatrix.data[q].j;
+                        ctemp[ccol] += this.data[p].e * nMatrix.data[q].e;
+                    }
+                }
+
+                for(ccol = 0; ccol < qMatrix.nu; ccol++){
+                    if(ctemp[ccol]){
+                        if(++qMatrix.tu > RLSMatrix.MAXSIZE) throw Error('overflow');
+                        qMatrix.data[qMatrix.data.length] = new Triple(arow, ccol, ctemp[ccol]);
+                    }
+                }
+            }
+        }
+
+        return qMatrix;
+    }
+};
+
+function CalcPos(matrix){
+    var num = [];
+    for(var col = 0; col < matrix.nu; col++)
+        num[col] = 0;
+    for(var i = 0; i < matrix.data.length; i++)
+        ++num[matrix.data[i].j];  // 求矩阵中每一列含非零元个数
+    // 求第col列中第一个非零元在b.data中的序号
+    var cpot = [0];
+    for(col = 1; col < matrix.nu; col++)
+        // 上一列之前的序号+上一列的非零元个数 = 该列的序号
+        cpot[col] = cpot[col - 1] + num[col - 1];
+
+    return cpot;
+}
+
+var b1 = new Triple(1, 1, 3);
+var b2 = new Triple(1, 3, 5);
+var b3 = new Triple(2, 2, -1);
+var b4 = new Triple(3, 1, 2);
+
+var t1 = new RLSMatrix();
+t1.addTriple(b1);
+t1.addTriple(b2);
+t1.addTriple(b3);
+t1.addTriple(b4);
+t1.rpos = CalcPos(t1);
+
+var c1 = new Triple(1, 2, 2);
+var c2 = new Triple(2, 1, 1);
+var c3 = new Triple(3, 1, -2);
+var c4 = new Triple(3, 2, 4);
+
+var t2 = new RLSMatrix();
+t2.addTriple(c1);
+t2.addTriple(c2);
+t2.addTriple(c3);
+t2.addTriple(c4);
+t2.rpos = CalcPos(t2);
+
+t1.multSMatrix(t2)
