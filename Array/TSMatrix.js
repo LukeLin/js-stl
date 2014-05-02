@@ -168,7 +168,7 @@ RLSMatrix.prototype = {
 
                 for(ccol = 0; ccol < qMatrix.nu; ccol++){
                     if(ctemp[ccol]){
-                        if(++qMatrix.tu > RLSMatrix.MAXSIZE) throw Error('overflow');
+                        if(++qMatrix.data.length > RLSMatrix.MAXSIZE) throw Error('overflow');
                         qMatrix.data[qMatrix.data.length] = new Triple(arow, ccol, ctemp[ccol]);
                     }
                 }
