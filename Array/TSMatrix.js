@@ -126,10 +126,8 @@ console.log(matrix.fastTransposeSMatrix());
  */
 
 function RLSMatrix(mu, nu){
-    this.data = [];
+    TSMatrix.apply(this, arguments);
     this.rpos = [];
-    this.mu = mu || 0;
-    this.nu = nu || 0;
 }
 RLSMatrix.MAXSIZE = 100;
 RLSMatrix.prototype = {
