@@ -134,13 +134,21 @@ RLSMatrix.prototype = {
     constructor: RLSMatrix,
     __proto__: TSMatrix.prototype,
     // todo
+    /**
+     * 求矩阵乘积Q = M * N，采用行逻辑链接存储表示
+     * @param nMatrix
+     * @returns {RLSMatrix}
+     */
     multSMatrix: function(nMatrix){
         if(this.nu !== nMatrix.mu) throw Error('nu is not equivalent to mu');
 
+        // 初始化Q
         var qMatrix = new RLSMatrix(this.mu, nMatrix.nu);
         // Q是非零矩阵
         if(this.data.length * nMatrix.data.length !== 0){
+            // 处理M的每一行
             for(var arow = 0; arow < this.mu; arow++){
+                // 当前行各元素累加器清零
                 var ctemp = [];
                 qMatrix.rpos[arow] = qMatrix.data.length + 1;
                 var tp, ccol;
@@ -150,6 +158,7 @@ RLSMatrix.prototype = {
                  else
                     tp = this.data.length + 1;
 
+                //对当前行中每一个非零元找到对应元在N中的行号
                 for(var p = this.rpos[arow]; p < tp; p++){
                     var brow = this.data[p].j;
                     var t;
@@ -159,11 +168,13 @@ RLSMatrix.prototype = {
                         t = nMatrix.data.length + 1;
 
                     for(var q = nMatrix.rpos[brow]; q < t; q++){
-                         ccol = nMatrix.data[q].j;
-                        ctemp[ccol] += this.data[p].e * nMatrix.data[q].e;
+                        // 乘积元素在Q中的序号
+                        ccol = nMatrix.data[q].j;
+                        ctemp[ccol] = (ctemp[ccol] || 0) + this.data[p].e * nMatrix.data[q].e;
                     }
                 }
 
+                // 压缩存储该行非零元
                 for(ccol = 0; ccol < qMatrix.nu; ccol++){
                     if(ctemp[ccol]){
                         if(++qMatrix.data.length > RLSMatrix.MAXSIZE) throw Error('overflow');
