@@ -127,7 +127,7 @@ console.log(matrix.fastTransposeSMatrix());
 
 function RLSMatrix(mu, nu){
     TSMatrix.apply(this, arguments);
-    this.rpos = [];
+    this.rpos = [0];
 }
 RLSMatrix.MAXSIZE = 100;
 RLSMatrix.prototype = {
@@ -178,30 +178,26 @@ RLSMatrix.prototype = {
                 for(ccol = 0; ccol < qMatrix.nu; ccol++){
                     if(ctemp[ccol]){
                         if(++qMatrix.data.length > RLSMatrix.MAXSIZE) throw Error('overflow');
-                        qMatrix.data[qMatrix.data.length] = new Triple(arow, ccol, ctemp[ccol]);
+                        qMatrix.data[qMatrix.data.length - 1] = new Triple(arow, ccol, ctemp[ccol]);
                     }
                 }
             }
         }
 
         return qMatrix;
+    },
+    _CalcPos: function CalcPos(){
+        var num = [];
+        for(var col = 0; col < this.nu; col++)
+            num[col] = 0;
+        for(var i = 0; i < this.data.length; i++)
+            ++num[this.data[i].j];  // 求矩阵中每一列含非零元个数
+        // 求第col列中第一个非零元在b.data中的序号
+        for(col = 1; col < this.nu; col++)
+            // 上一列之前的序号+上一列的非零元个数 = 该列的序号
+            this.rpos[col] = this.rpos[col - 1] + num[col - 1];
     }
 };
-
-function CalcPos(matrix){
-    var num = [];
-    for(var col = 0; col < matrix.nu; col++)
-        num[col] = 0;
-    for(var i = 0; i < matrix.data.length; i++)
-        ++num[matrix.data[i].j];  // 求矩阵中每一列含非零元个数
-    // 求第col列中第一个非零元在b.data中的序号
-    var cpot = [0];
-    for(col = 1; col < matrix.nu; col++)
-        // 上一列之前的序号+上一列的非零元个数 = 该列的序号
-        cpot[col] = cpot[col - 1] + num[col - 1];
-
-    return cpot;
-}
 
 var b1 = new Triple(1, 1, 3);
 var b2 = new Triple(1, 3, 5);
@@ -213,7 +209,7 @@ t1.addTriple(b1);
 t1.addTriple(b2);
 t1.addTriple(b3);
 t1.addTriple(b4);
-t1.rpos = CalcPos(t1);
+t1._CalcPos();
 
 var c1 = new Triple(1, 2, 2);
 var c2 = new Triple(2, 1, 1);
@@ -225,6 +221,6 @@ t2.addTriple(c1);
 t2.addTriple(c2);
 t2.addTriple(c3);
 t2.addTriple(c4);
-t2.rpos = CalcPos(t2);
+t2._CalcPos();
 
-t1.multSMatrix(t2)
+t1.multSMatrix(t2);
