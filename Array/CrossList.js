@@ -22,8 +22,8 @@ function OLNode(i, j, e){
 
 function CrossList(){
     // 行和列链表头指针向量基址由CreateSMatrix分配
-    this.rhead = null;
-    this.chead = null;
+    this.rhead = [];
+    this.chead = [];
     // 稀疏矩阵的行数，列数
     this.mu = 0;
     this.nu = 0;
@@ -45,10 +45,10 @@ CrossList.prototype.createSMatrix = function(m, n, t, list){
         var p = {};
         OLNode.apply(p, list[row]);
         var i = list[row][0];
-        var j = list[row[1]];
+        var j = list[row][1];
         var q;
 
-        if(this.rhead[i] === null || this.rhead[i].j > j){
+        if(this.rhead[i] == null || this.rhead[i].j > j){
             p.right = this.rhead[i];
             this.rhead[i] = p;
         } else {
@@ -58,7 +58,7 @@ CrossList.prototype.createSMatrix = function(m, n, t, list){
             q.right = p;
         }
 
-        if(this.chead[j] === null || this.chead[j].i > i){
+        if(this.chead[j] == null || this.chead[j].i > i){
             p.down = this.chead[j];
             this.chead[j] = p;
         } else {
@@ -68,3 +68,13 @@ CrossList.prototype.createSMatrix = function(m, n, t, list){
         }
     }
 };
+
+var lists = [
+    [1, 4, 5],
+    [2, 2, -1],
+    [1, 1, 3],
+    [3, 1, 2]
+];
+var a = new CrossList();
+a.createSMatrix(4, 4, 4, lists);
+console.log(a);
