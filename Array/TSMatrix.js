@@ -175,7 +175,7 @@ RLSMatrix.prototype = {
                 }
 
                 // 压缩存储该行非零元
-                for(ccol = 0; ccol < qMatrix.nu; ccol++){
+                for(ccol = 1; ccol < qMatrix.nu; ccol++){
                     if(ctemp[ccol]){
                         if(++qMatrix.data.length > RLSMatrix.MAXSIZE) throw Error('overflow');
                         qMatrix.data[qMatrix.data.length - 1] = new Triple(arow, ccol, ctemp[ccol]);
@@ -186,7 +186,7 @@ RLSMatrix.prototype = {
 
         return qMatrix;
     },
-    _CalcPos: function CalcPos(){
+    _calcPos: function clcPos(){
         var num = [];
         for(var col = 0; col < this.nu; col++)
             num[col] = 0;
@@ -209,7 +209,7 @@ t1.addTriple(b1);
 t1.addTriple(b2);
 t1.addTriple(b3);
 t1.addTriple(b4);
-t1._CalcPos();
+t1._calcPos();
 
 var c1 = new Triple(1, 2, 2);
 var c2 = new Triple(2, 1, 1);
@@ -221,6 +221,6 @@ t2.addTriple(c1);
 t2.addTriple(c2);
 t2.addTriple(c3);
 t2.addTriple(c4);
-t2._CalcPos();
+t2._calcPos();
 
 t1.multSMatrix(t2);
