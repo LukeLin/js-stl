@@ -8,11 +8,11 @@
  * 可用两个分别存储行链表的头指针和列链表的头指针的一维数组来表示。
  */
 
-// 稀疏矩阵的十字链表存储表示
+    // 稀疏矩阵的十字链表存储表示
 
-function OLNode(i, j, e){
+function OLNode(i, j, e) {
     // 该非零元的行和列下标
-    this.i =i || 0;
+    this.i = i || 0;
     this.j = j || 0;
     this.e = e;
     // 该非零元所在行表和列表的后继链域
@@ -20,7 +20,7 @@ function OLNode(i, j, e){
     this.down = null;   // type: OLNode
 }
 
-function CrossList(){
+function CrossList() {
     // 行和列链表头指针向量基址由CreateSMatrix分配
     this.rhead = [];
     this.chead = [];
@@ -30,41 +30,108 @@ function CrossList(){
     this.tu = 0;
 }
 /**
- *
+ * 矩阵初始化
  * @param m
  * @param n
  * @param t
  * @param {Array} list 二维数组，每行的元素分别是[i, j, e]
  */
-CrossList.prototype.createSMatrix = function(m, n, t, list){
+CrossList.prototype.createSMatrix = function (m, n, t, list) {
     this.mu = m;
     this.nu = n;
     this.tu = t;
 
-    for(var row = 0; row < list.length; row++){
+    for (var row = 0; row < list.length; row++) {
         var p = {};
         OLNode.apply(p, list[row]);
         var i = list[row][0];
         var j = list[row][1];
         var q;
 
-        if(this.rhead[i] == null || this.rhead[i].j > j){
+        if (this.rhead[i] == null || this.rhead[i].j > j) {
             p.right = this.rhead[i];
             this.rhead[i] = p;
         } else {
             // 查询在行表中的插入位置
-            for(q = this.rhead[i]; q.right && q.right.j < j; q = q.right);
+            for (q = this.rhead[i]; q.right && q.right.j < j; q = q.right);
             p.right = q.right;
             q.right = p;
         }
 
-        if(this.chead[j] == null || this.chead[j].i > i){
+        if (this.chead[j] == null || this.chead[j].i > i) {
             p.down = this.chead[j];
             this.chead[j] = p;
         } else {
-            for(q = this.chead[j]; q.down && q.down.i < i; q = q.down);
+            for (q = this.chead[j]; q.down && q.down.i < i; q = q.down);
             p.down = q.down;
             q.down = p;
+        }
+    }
+};
+
+CrossList.prototype.addMatrix = function (crossList) {
+    var i = 0;
+    var pa = this.rhead[i];
+    var pb = crossList.rhead[i];
+    var pre = null;
+
+    var hl = [];
+    for (var j = 0; j < this.nu; j++) hl[j] = this.chead[j];
+
+    // TODO bug exists
+    while (i < crossList.rhead.length) {
+        if(pb == null) continue;
+
+        var p;
+        // pa == null或A的这一行中非零元素已处理完
+        if (pa == null || pa.j > pb.j) {
+            // 行表中的指针变化
+            p = pb;
+            if (pre === null) this.rhead[p.i] = p;
+            else pre.right = p;
+
+            p.right = pa;
+            pre = p;
+
+            // 列表中的指针变化
+            if (this.chead[p.j] == null || this.chead[p.j].i > p.i) {
+                p.down = this.chead[p.j];
+                this.chead[p.j].down = p;
+            } else {
+                p.down = hl[p.j].down;
+                hl[p.j].down = p;
+            }
+            hl[p.j] = p;
+        } else if (pa.j < pb.j) {
+            // 令pa指向本行下一个非零元结点
+            pre = pa;
+            pa = pa.right;
+        } else if (pa.j === pb.j) {
+            // 将B中当前结点的值加到A中当前结点上
+            pa.e += pb.e;
+            if (pa.e === 0) {
+                // 删除A中该结点
+                if (pre === null) this.rhead[pa.i] = pa.right;
+                else pre.right = pa.right;
+
+                p = pa;
+                pa = pa.right;
+
+                // 为了改变列表中的指针，需要先找到用一列的前驱结点，
+                // 且让hl[pa.j]指向该结点，然后修改相应指针
+                if (this.chead[p.j] == p) this.chead[p.j] = hl[p.j] = p.down;
+                else hl[p.j].down = p.down;
+            }
+
+            // 若本行不是最后一行，则令pa和pb指向下一行的第一个非零元结点
+        } else {
+            if (pb !== crossList.rhead[crossList.rhead.length - 1]) {
+                i++;
+                pa = this.rhead[i];
+                pb = crossList.rhead[i];
+            } else {
+                break;
+            }
         }
     }
 };
@@ -77,4 +144,17 @@ var lists = [
 ];
 var a = new CrossList();
 a.createSMatrix(4, 4, 4, lists);
+console.log(a);
+
+var lists2 = [
+    [1, 4, -5],
+    [2, 3, 1],
+    [1, 1, 3],
+    [3, 2, 2]
+];
+var b = new CrossList();
+b.createSMatrix(4, 4, 4, lists2);
+console.log(b);
+
+a.addMatrix(b);
 console.log(a);
