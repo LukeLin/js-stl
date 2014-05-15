@@ -80,7 +80,7 @@ CrossList.prototype.addMatrix = function (crossList) {
 
     // TODO bug exists
     while (i < crossList.rhead.length) {
-        if(pb == null) continue;
+        if((pb = crossList.rhead[i++]) == null) continue;
 
         var p;
         // pa == null或A的这一行中非零元素已处理完
