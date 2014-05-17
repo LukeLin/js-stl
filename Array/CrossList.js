@@ -71,113 +71,87 @@ CrossList.prototype.createSMatrix = function (m, n, t, list) {
 
 CrossList.prototype.addMatrix = function (crossList) {
     var hl = [];
+    //hl初始化
     for(var j = 0; j <= this.nu; j++)
         hl[j] = this.chead[j];
 
     for(var i = 0; i <= this.mu; i++){
+        //pa和pb指向每一行的第一个非0元结点，直至最后一行
         var pa = this.rhead[i];
         var pb = crossList.rhead[i];
         var pre = null;
 
+        //处理B的一行，直至本行中无非0元素的结点
         while(pb){
-            var p;
+            var p, q;
             // 新插入一个结点
             if(pa == null || pa.j > pb.j){
-                p = new OLNode(i, pb.j, pb.e);
+                p = new OLNode(pb.i, pb.j, pb.e);
 
-                if(!pre) this.rhead[i] = p;
+                //行表的指针变化
+                if(!pre) this.rhead[p.i] = p;
                 else pre.right = p;
 
                 p.right = pa;
                 pre = p;
 
-                if(!this.chead[p.j]){
-                    this.chead[p.j] = p;
-                    p.down = null;
-                } else {
-                    while(hl[p.j].down){
-                        hl[p.j] = hl[p.j].down;
+                //列表的指针变化
+                if(hl[p.j]){
+                    // 从hl【p->j】开始找到新结点在同一列中的前驱结点，并让hl【p->j】指向它
+                    for(q = hl[p.j]; q.i < p.i;){
+                        hl[p.j] = q;
+                        q = q.down;
+                        if(!q) break;
                     }
+                }
+
+                //在列表中插入新结点
+                if((!this.chead[p.j]) || (this.chead[p.j].i > p.i)){
+                    p.wodn = this.chead[p.j];
+                    this.chead[p.j] = p;
+                } else {
                     p.down = hl[p.j].down;
                     hl[p.j].down = p;
                 }
 
                 hl[p.j] = p;
+                pb = pb.right;
             } else if(pa.j < pb.j){
                 pre = pa;
                 pa = pa.right;
-            } else if(pa.e + pb.e){
-                pa.e += pb.e;
-                pre = pa;
-                pa = pa.right;
-                pb = pb.right;
             } else {
-                if(!pre) this.rhead[i] = pa.right;
-                else pre.right = pa.right;
+                //当pa->j==pb->j时，将B中当前结点的值加到A中当前结点上
+                pa.e += pb.e;
 
-                p = pa;
-                pa = pa.right;
+                //当pa->e==0时，删除该结点
+                if(pa.e === 0){
+                    if(!pre) this.rhead[pa.i] = pa.right;
+                    else pre.right = pa.right;
 
-                if(this.chead[p.j] == p){
-                    this.chead[p.j] = hl[p.j] = p.down;
-                } else {
-                    hl[p.j].down = p.down;
+                    p = pa;
+                    pa = pa.right;
+
+                    //列表的指针变化
+                    if(hl[p.j]){
+                        //从hl【p->j】开始找到新结点在同一列中的前驱结点，并让hl【p->j】指向它
+                        for(q = hl[p.j]; q.i < p.i;){
+                            hl[p.j] = q;
+                            q = q.down;
+                            if(!q) break;
+                        }
+                    }
+
+                    if(this.chead[p.j] == p){
+                        this.chead[p.j] = hl[p.j] = p.down;
+                    } else {
+                        hl[p.j].down = p.down;
+                    }
                 }
+
+                pb = pb.right;
             }
         }
     }
-//
-//    // TODO bug exists
-//    while (i < crossList.rhead.length) {
-//        if(pb){
-//            var p;
-//            // pa == null或A的这一行中非零元素已处理完
-//            if (pa == null || pa.j > pb.j) {
-//                // 行表中的指针变化
-//                p = pb;
-//                if (pre === null) this.rhead[p.i] = p;
-//                else pre.right = p;
-//
-//                p.right = pa;
-//                pre = p;
-//
-//                // 列表中的指针变化
-//                if (this.chead[p.j] == null || this.chead[p.j].i > p.i) {
-//                    p.down = this.chead[p.j];
-//                    this.chead[p.j].down = p;
-//                } else {
-//                    p.down = hl[p.j].down;
-//                    hl[p.j].down = p;
-//                }
-//                hl[p.j] = p;
-//            } else if (pa.j < pb.j) {
-//                // 令pa指向本行下一个非零元结点
-//                pre = pa;
-//                pa = pa.right;
-//            } else if (pa.j === pb.j) {
-//                // 将B中当前结点的值加到A中当前结点上
-//                pa.e += pb.e;
-//                if (pa.e === 0) {
-//                    // 删除A中该结点
-//                    if (pre === null) this.rhead[pa.i] = pa.right;
-//                    else pre.right = pa.right;
-//
-//                    p = pa;
-//                    pa = pa.right;
-//
-//                    // 为了改变列表中的指针，需要先找到用一列的前驱结点，
-//                    // 且让hl[pa.j]指向该结点，然后修改相应指针
-//                    if (this.chead[p.j] == p) this.chead[p.j] = hl[p.j] = p.down;
-//                    else hl[p.j].down = p.down;
-//                }
-//            }
-//        }
-//
-//        // 若本行不是最后一行，则令pa和pb指向下一行的第一个非零元结点
-//        i++;
-//        pa = this.rhead[i];
-//        pb = crossList.rhead[i];
-//    }
 };
 
 var lists = [
