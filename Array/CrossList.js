@@ -84,7 +84,7 @@ CrossList.prototype.addMatrix = function (crossList) {
         //处理B的一行，直至本行中无非0元素的结点
         while (pb) {
             var p, q;
-            // 新插入一个结点
+            // 新插入一个结点到pa的左侧
             if (!pa || pa.j > pb.j) {
                 p = new OLNode(pb.i, pb.j, pb.e);
 
@@ -104,7 +104,7 @@ CrossList.prototype.addMatrix = function (crossList) {
                     }
                 }
 
-                //在列表中插入新结点
+                //在列表中插入新结点，根据行数判断插入前面还是后面
                 if (!this.chead[p.j] || this.chead[p.j].i > p.i) {
                     p.down = this.chead[p.j];
                     this.chead[p.j] = p;
@@ -119,11 +119,13 @@ CrossList.prototype.addMatrix = function (crossList) {
                 pre = pa;
                 pa = pa.right;
             } else {
-                //当pa->j==pb->j时，将B中当前结点的值加到A中当前结点上
+                //当pa.j === pb.j时，将B中当前结点的值加到A中当前结点上
                 pa.e += pb.e;
 
-                //当pa->e==0时，删除该结点
+                //当pa.e === 0时，删除该结点
                 if (pa.e === 0) {
+                    // 若无前驱结点，将第一个非0元结点置为当前结点的后继结点，
+                    // 否则前驱结点的后继结点为当前结点的后继结点
                     if (!pre) this.rhead[pa.i] = pa.right;
                     else pre.right = pa.right;
 
