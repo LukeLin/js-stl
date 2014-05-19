@@ -98,10 +98,8 @@ CrossList.prototype.addMatrix = function (crossList) {
                 //列表的指针变化
                 if (hl[p.j]) {
                     // 从hl[p->j]开始找到新结点在同一列中的前驱结点，并让hl[p->j]指向它
-                    for (q = hl[p.j]; q && q.i < p.i;) {
+                    for (q = hl[p.j]; q && q.i < p.i;q = q.down)
                         hl[p.j] = q;
-                        q = q.down;
-                    }
                 }
 
                 //在列表中插入新结点，根据行数判断插入前面还是后面
@@ -135,10 +133,8 @@ CrossList.prototype.addMatrix = function (crossList) {
                     //列表的指针变化
                     if (hl[p.j]) {
                         //从hl[p->j]开始找到新结点在同一列中的前驱结点，并让hl[p->j]指向它
-                        for (q = hl[p.j]; q && q.i < p.i;) {
+                        for (q = hl[p.j]; q && q.i < p.i; q = q.down)
                             hl[p.j] = q;
-                            q = q.down;
-                        }
                     }
 
                     if (this.chead[p.j] == p)
