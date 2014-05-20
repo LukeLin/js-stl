@@ -20,3 +20,20 @@
  * 任何一个非空列表其表头可能是原子，也可能是列表，而其表尾必定为列表。
  *
  */
+
+var ATOM = 0;
+var LIST = 1;
+
+// 广义表的头尾链表存储表示
+function GList(){
+    // 公共部分，用于区分原子结点和表结点
+    this.tag = undefined;
+    // atom是原子结点的值域
+    this.atom = null;
+    // ptr是表结点的指针域
+    this.ptr = {
+        // ptr.hp和ptr.tp分别指向表头和表尾
+        hp: null,
+        tp: null
+    };
+}
