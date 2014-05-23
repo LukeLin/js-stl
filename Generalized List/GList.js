@@ -40,7 +40,7 @@ function GLNode(){
 }
 
 // 广义表的扩展线性链表存储表示
-function GLNode(){
+function GLNode2(){
     // 公共部分，用于区分原子结点和表结点
     this.tag = undefined;
 
@@ -52,6 +52,55 @@ function GLNode(){
     // 相当于线性链表的next，指向下一个元素结点
     this.tp = null;
 }
+
+
+/*
+广义表的递归算法
+
+递归定义的归纳项描述了如何实现从当前状态到终结状态的转化。
+
+由于递归函数的设计用的是归纳思维的方法，则在设计递归函数时，应注意：
+（1）首先应书写函数的首部和规格说明，严格定义函数的功能和接口（递归调用的界面），对求精函数中所得的和原问题性质相同的字问题，只要接口一致，便可进行递归调用。
+（2）对函数中的每一个递归调用都看成只是一个简单的操作，只要接口一致，必能实现规格说明中定义的功能，切忌想得太深太远。
+ */
+
+/*
+求广义表的深度
+
+广义表的深度定义为广义表中括弧的重数，是广义表的一种量度。
+设非空广义表为:
+        LS = (a1, a2, ..., an)
+
+其中ai(i = 1, 2, ..., n)或为原子或为LS的子表，则求LS的深度可分解为n个子问题，每个子问题为求ai的深度，若ai是原子，则由定义其深度为零，若ai是广义表，则递归处理，而LS的深度为各ai(i = 1, 2, ..., n)的深度最大值加1.空表也是广义表，且深度为1.
+
+广义表的深度DEPTH(LS)的递归定义为：
+    基本项：    DEPTH(LS) = 1   当LS为空表时
+                DEPTH(LS) = 0   当LS为原子时
+    归纳项：    DEPTH(LS) = 1 + MAX{DEPTH(ai)}  1 <= i <= n
+ */
+
+// 采用头尾链表存储结构，求广义表的深度
+GLNode.prototype.depth = function(){
+    if(this.tag === ATOM) return 0;
+
+    for(var max = 0, pp = this; pp; pp = pp.ptr.tp){
+        // 求以pp.ptr.hp为头指针的子表深度
+        var dep = this.depth(pp.ptr.hp);
+        if(dep > max) max = dep;
+    }
+    // 非空表的深度是各元素的深度的最大值加1
+    return max + 1;
+};
+
+// 复制广义表
+GLNode.prototype.copyList = function(gList){
+    gList.tag = this.tag;
+
+    if(this.tag === ATOM) gList.atom = this.atom;
+    else this.copyList(gList.ptr.hp);
+
+    this.copyList(gList.ptr.tp);
+};
 
 /*
 m元多项式表示
@@ -92,13 +141,3 @@ function MPNode(){
     // 相当于线性表的next，指向下一个元素结点
     this.tp = null;
 }
-
-/*
-广义表的递归算法
-
-递归定义的归纳项描述了如何实现从当前状态到终结状态的转化。
-
-由于递归函数的设计用的是归纳思维的方法，则在设计递归函数时，应注意：
-（1）首先应书写函数的首部和规格说明，严格定义函数的功能和接口（递归调用的界面），对求精函数中所得的和原问题性质相同的字问题，只要接口一致，便可进行递归调用。
-（2）对函数中的每一个递归调用都看成只是一个简单的操作，只要接口一致，必能实现规格说明中定义的功能，切忌想得太深太远。
- */
