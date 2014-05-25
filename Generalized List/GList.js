@@ -102,6 +102,67 @@ GLNode.prototype.copyList = function(gList){
     this.copyList(gList.ptr.tp);
 };
 
+// 采用头尾链表存储结构，由广义表的书写形式串创建广义表
+GLNode.prototype.createGList = function(string){
+    string = string.trim();
+
+    if(string === '()') {
+        this.tag = LIST;
+        return;
+    }
+
+    // 创建单原子广义表
+    var q;
+    if(string.length === 1){
+        this.tag = ATOM;
+        this.atom = string;
+    } else {
+        this.tag = LIST;
+        var p = this;
+
+        // 脱外层括号
+        var sub = string.substr(1,  string.length - 2);
+
+        do {
+            var hsub;
+            var n = sub.length;
+            var i = 0;
+            var k = 0;
+            var ch;
+
+            // TODO 
+            do {
+                ch = sub[i++];
+                if(ch == '(') ++k;
+                else if(ch == ')') --k;
+            } while(i < n && (ch != ',' || k != 0));
+
+            if(i - 1 < n){
+                hsub = sub.substr(0, i - 1);
+                sub = sub.substr(i, n - i);
+            } else {
+                hsub = sub;
+                sub = '';
+            }
+
+            GLNode.prototype.createGList.call((p.ptr.hp = new GLNode()), hsub);
+            q = p;
+
+            if(!sub){
+                p = new GLNode();
+                p.tag = LIST;
+                q.ptr.tp = p;
+            }
+        } while(sub);
+
+        q.ptr.tp = null;
+    }
+};
+
+var node = new GLNode();
+node.createGList('((), (e), (a, (b, c, d)))');
+console.log(node.depth());
+
 /*
 m元多项式表示
 
