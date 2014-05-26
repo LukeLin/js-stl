@@ -81,16 +81,18 @@ function GLNode2(){
 
 // 采用头尾链表存储结构，求广义表的深度
 GLNode.prototype.depth = function(){
-    if(this.tag === ATOM) return 0;
-
-    for(var max = 0, pp = this; pp; pp = pp.ptr.tp){
-        // 求以pp.ptr.hp为头指针的子表深度
-        var dep = this.depth(pp.ptr.hp);
-        if(dep > max) max = dep;
-    }
-    // 非空表的深度是各元素的深度的最大值加1
-    return max + 1;
+    return getDepth(this);
 };
+
+function getDepth(gList){
+    if(!gList) return 1;
+    else if(gList.tag === ATOM) return 0;
+
+    var m = getDepth(gList.ptr.hp) + 1;
+    var n = getDepth(gList.ptr.tp);
+
+    return m > n ? m : n;
+}
 
 // 复制广义表
 GLNode.prototype.copyList = function(gList){
@@ -130,14 +132,13 @@ GLNode.prototype.createGList = function(string){
             var k = 0;
             var ch;
 
-            // TODO 
             do {
                 ch = sub[i++];
                 if(ch == '(') ++k;
                 else if(ch == ')') --k;
             } while(i < n && (ch != ',' || k != 0));
 
-            if(i - 1 < n){
+            if(i < n){
                 hsub = sub.substr(0, i - 1);
                 sub = sub.substr(i, n - i);
             } else {
@@ -148,7 +149,7 @@ GLNode.prototype.createGList = function(string){
             GLNode.prototype.createGList.call((p.ptr.hp = new GLNode()), hsub);
             q = p;
 
-            if(!sub){
+            if(sub){
                 p = new GLNode();
                 p.tag = LIST;
                 q.ptr.tp = p;
