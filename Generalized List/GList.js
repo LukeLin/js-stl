@@ -112,6 +112,10 @@ GLNode.prototype.copyList = function (gList) {
     }
 };
 
+function isWord(str){
+    return /^[\w-]+$/.test(str);
+}
+
 // 采用头尾链表存储结构，由广义表的书写形式串创建广义表
 GLNode.prototype.createGList = function (string) {
     string = string.trim();
@@ -123,7 +127,7 @@ GLNode.prototype.createGList = function (string) {
 
     // 创建单原子广义表
     var q;
-    if (string.length === 1) {
+    if (isWord(string)) {
         this.tag = ATOM;
         this.atom = string;
     } else {
@@ -146,22 +150,26 @@ GLNode.prototype.createGList = function (string) {
                 else if (ch == ')') --k;
             } while (i < n && (ch != ',' || k != 0));
 
+            // i为第一个逗号分隔索引
             if (i < n) {
                 hsub = sub.substr(0, i - 1);
                 sub = sub.substr(i, n - i);
+
+                // 最后一组
             } else {
                 hsub = sub;
                 sub = '';
             }
 
-            if(hsub === '()'){
+            if(hsub === '()')
                 p.ptr.hp = null;
-            } else {
+            else
+                // 创建表头结点
                 this.createGList.call((p.ptr.hp = new GLNode()), hsub);
-            }
 
             q = p;
 
+            // 创建表尾结点
             if (sub) {
                 p = new GLNode();
                 p.tag = LIST;
@@ -174,7 +182,7 @@ GLNode.prototype.createGList = function (string) {
 };
 
 var node = new GLNode();
-node.createGList('((), (e), (a, (b, c, d)))');
+node.createGList('((), (ea), (sa, (bd, ce, dh)))');
 console.log(node.depth());
 
 GLNode.equal = function equal(gList1, gList2) {
@@ -203,9 +211,8 @@ GLNode.prototype.reverse = function reverse() {
         }
 
         // 重新按逆序排列各子表的顺序
-        for (p = this; p; p = p.ptr.tp) {
+        for (p = this; p; p = p.ptr.tp)
             p.ptr.hp = ptr[--i];
-        }
     }
 };
 
