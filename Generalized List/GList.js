@@ -25,7 +25,7 @@ var ATOM = 0;
 var LIST = 1;
 
 // 广义表的头尾链表存储表示
-function GLNode(){
+function GLNode() {
     // 公共部分，用于区分原子结点和表结点
     this.tag = undefined;
 
@@ -40,7 +40,7 @@ function GLNode(){
 }
 
 // 广义表的扩展线性链表存储表示
-function GLNode2(){
+function GLNode2() {
     // 公共部分，用于区分原子结点和表结点
     this.tag = undefined;
 
@@ -80,13 +80,13 @@ function GLNode2(){
  */
 
 // 采用头尾链表存储结构，求广义表的深度
-GLNode.prototype.depth = function(){
+GLNode.prototype.depth = function () {
     return getDepth(this);
 };
 
-function getDepth(gList){
-    if(!gList) return 1;
-    else if(gList.tag === ATOM) return 0;
+function getDepth(gList) {
+    if (!gList) return 1;
+    else if (gList.tag === ATOM) return 0;
 
     var m = getDepth(gList.ptr.hp) + 1;
     var n = getDepth(gList.ptr.tp);
@@ -95,27 +95,35 @@ function getDepth(gList){
 }
 
 // 复制广义表
-GLNode.prototype.copyList = function(gList){
+GLNode.prototype.copyList = function (gList) {
     gList.tag = this.tag;
 
-    if(this.tag === ATOM) gList.atom = this.atom;
-    else this.copyList(gList.ptr.hp);
-
-    this.copyList(gList.ptr.tp);
+    if (!this.tag) {
+        gList.atom = this.atom;
+    } else {
+        if (this.ptr.hp) {
+            gList.ptr.hp = new GLNode();
+            this.copyList.call(this.ptr.hp, gList.ptr.hp);
+        }
+        if (this.ptr.tp) {
+            gList.ptr.tp = new GLNode();
+            this.copyList.call(this.ptr.tp, gList.ptr.tp);
+        }
+    }
 };
 
 // 采用头尾链表存储结构，由广义表的书写形式串创建广义表
-GLNode.prototype.createGList = function(string){
+GLNode.prototype.createGList = function (string) {
     string = string.trim();
 
-    if(string === '()') {
-        this.tag = LIST;
-        return;
-    }
+//    if (string === '()') {
+//        this.tag = LIST;
+//        return;
+//    }
 
     // 创建单原子广义表
     var q;
-    if(string.length === 1){
+    if (string.length === 1) {
         this.tag = ATOM;
         this.atom = string;
     } else {
@@ -123,7 +131,7 @@ GLNode.prototype.createGList = function(string){
         var p = this;
 
         // 脱外层括号
-        var sub = string.substr(1,  string.length - 2);
+        var sub = string.substr(1, string.length - 2);
 
         do {
             var hsub;
@@ -134,11 +142,11 @@ GLNode.prototype.createGList = function(string){
 
             do {
                 ch = sub[i++];
-                if(ch == '(') ++k;
-                else if(ch == ')') --k;
-            } while(i < n && (ch != ',' || k != 0));
+                if (ch == '(') ++k;
+                else if (ch == ')') --k;
+            } while (i < n && (ch != ',' || k != 0));
 
-            if(i < n){
+            if (i < n) {
                 hsub = sub.substr(0, i - 1);
                 sub = sub.substr(i, n - i);
             } else {
@@ -146,15 +154,20 @@ GLNode.prototype.createGList = function(string){
                 sub = '';
             }
 
-            GLNode.prototype.createGList.call((p.ptr.hp = new GLNode()), hsub);
+            if(hsub === '()'){
+                p.ptr.hp = null;
+            } else {
+                this.createGList.call((p.ptr.hp = new GLNode()), hsub);
+            }
+
             q = p;
 
-            if(sub){
+            if (sub) {
                 p = new GLNode();
                 p.tag = LIST;
                 q.ptr.tp = p;
             }
-        } while(sub);
+        } while (sub);
 
         q.ptr.tp = null;
     }
@@ -163,6 +176,64 @@ GLNode.prototype.createGList = function(string){
 var node = new GLNode();
 node.createGList('((), (e), (a, (b, c, d)))');
 console.log(node.depth());
+
+GLNode.equal = function equal(gList1, gList2) {
+    // 空表时相等的
+    if (!gList1 && !gList2) return 1;
+    if (!gList1.tag && !gList2.tag && gList1.atom === gList2.atom) return 1;
+
+    if (gList1.tag && gList2.tag) {
+        // 表头表尾都相等
+        if (equal(gList1.ptr.hp, gList2.ptr.hp) && equal(gList1.ptr.tp, gList2.ptr.tp)) return 1;
+    }
+
+    return 0;
+};
+
+// 递归逆转广义表
+GLNode.prototype.reverse = function reverse() {
+    var ptr = [];
+    // 当A不为原子且表尾非空时才需逆转
+    if (this.tag && this.ptr.tp) {
+        for (var i = 0, p = this; p; p = p.ptr.tp, i++) {
+            // 逆转各子表
+            if (p.ptr.hp) reverse.call(p.ptr.hp);
+
+            ptr[i] = p.ptr.hp;
+        }
+
+        // 重新按逆序排列各子表的顺序
+        for (p = this; p; p = p.ptr.tp) {
+            p.ptr.hp = ptr[--i];
+        }
+    }
+};
+
+var global = Function('return this')();
+GLNode.prototype.toString = function () {
+    var str = '';
+    if (this == global) str = '()';
+    else if (!this.tag) str = this.atom;  // 原子
+    else {
+        str += '(';
+
+        for (var p = this; p; p = p.ptr.tp) {
+            str += this.toString.call(p.ptr.hp);
+            if (p.ptr.tp) str += ', ';
+        }
+        str += ')';
+    }
+
+    return str;
+};
+
+console.log(node + '');
+node.reverse();
+console.log(node + '');
+
+var node2 = new GLNode();
+node.copyList(node2);
+console.log(GLNode.equal(node, node2));
 
 /*
 m元多项式表示
@@ -189,7 +260,7 @@ m元多项式表示
 
  */
 
-function MPNode(){
+function MPNode() {
     // 区分原子结点和表结点
     this.tag = undefined;
     // 指数域
