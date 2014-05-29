@@ -234,6 +234,20 @@ GLNode.prototype.toString = function () {
     return str;
 };
 
+// 删除广义表中所有值为data的原子 TODO
+GLNode.prototype.del = function delElem(data){
+    if(this.ptr.hp){
+        if(this.ptr.hp.tag === LIST) delElem.call(this.ptr.hp, data);
+        else if(this.ptr.hp.tag === ATOM && this.ptr.hp.atom === data) {
+            var q = this;
+            q = q.ptr.tp;
+            q && delElem.call(q, data);
+        }
+
+        if(this.ptr.tp) delElem.call(this.ptr.tp, data);
+    }
+};
+
 console.log(node + '');
 node.reverse();
 console.log(node + '');
@@ -241,6 +255,9 @@ console.log(node + '');
 var node2 = new GLNode();
 node.copyList(node2);
 console.log(GLNode.equal(node, node2));
+
+node.del('sa');
+console.log(node + '');
 
 /*
 m元多项式表示
