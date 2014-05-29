@@ -98,7 +98,7 @@ function getDepth(gList) {
 GLNode.prototype.copyList = function (gList) {
     gList.tag = this.tag;
 
-    if (!this.tag) {
+    if (this.tag === ATOM) {
         gList.atom = this.atom;
     } else {
         if (this.ptr.hp) {
@@ -187,22 +187,22 @@ console.log(node.depth());
 
 GLNode.equal = function equal(gList1, gList2) {
     // 空表时相等的
-    if (!gList1 && !gList2) return 1;
-    if (!gList1.tag && !gList2.tag && gList1.atom === gList2.atom) return 1;
+    if (!gList1 && !gList2) return true;
+    if (gList1.tag === ATOM && gList2.tag === ATOM && gList1.atom === gList2.atom) return true;
 
-    if (gList1.tag && gList2.tag) {
+    if (gList1.tag === LIST && gList2.tag === LIST) {
         // 表头表尾都相等
-        if (equal(gList1.ptr.hp, gList2.ptr.hp) && equal(gList1.ptr.tp, gList2.ptr.tp)) return 1;
+        if (equal(gList1.ptr.hp, gList2.ptr.hp) && equal(gList1.ptr.tp, gList2.ptr.tp)) return true;
     }
 
-    return 0;
+    return false;
 };
 
 // 递归逆转广义表
 GLNode.prototype.reverse = function reverse() {
     var ptr = [];
     // 当A不为原子且表尾非空时才需逆转
-    if (this.tag && this.ptr.tp) {
+    if (this.tag === LIST && this.ptr.tp) {
         for (var i = 0, p = this; p; p = p.ptr.tp, i++) {
             // 逆转各子表
             if (p.ptr.hp) reverse.call(p.ptr.hp);
@@ -220,7 +220,7 @@ var global = Function('return this')();
 GLNode.prototype.toString = function () {
     var str = '';
     if (this == global) str = '()';
-    else if (!this.tag) str = this.atom;  // 原子
+    else if (this.tag === ATOM) str = this.atom;  // 原子
     else {
         str += '(';
 
