@@ -236,17 +236,34 @@ GLNode.prototype.toString = function () {
 
 // 删除广义表中所有值为data的原子 TODO
 GLNode.prototype.del = function delElem(data){
+    var self = this;
+
+    void function del(ptr){
+        if(ptr.hp){
+            if(ptr.hp.tag === LIST) del(ptr.hp.ptr);
+            else if(ptr.hp.tag === ATOM && ptr.hp.atom === data){
+
+            }
+        }
+    }(self.ptr);
     if(this.ptr.hp){
         if(this.ptr.hp.tag === LIST) delElem.call(this.ptr.hp, data);
         else if(this.ptr.hp.tag === ATOM && this.ptr.hp.atom === data) {
-            var q = this;
-            q = q.ptr.tp;
-            q && delElem.call(q, data);
+            shallowCopy(this, this.ptr.tp);
+            delElem.call(this, data);
         }
 
         if(this.ptr.tp) delElem.call(this.ptr.tp, data);
     }
 };
+
+function shallowCopy(destination, obj){
+    for(var prop in obj){
+        if(obj.hasOwnProperty(prop)){
+            destination[prop] = obj[prop];
+        }
+    }
+}
 
 console.log(node + '');
 node.reverse();
