@@ -69,6 +69,7 @@ CrossList.prototype.createSMatrix = function (m, n, t, list) {
     }
 };
 
+// 矩阵相加
 CrossList.prototype.addMatrix = function (crossList) {
     var hl = [];
     //hl初始化
