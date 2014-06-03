@@ -234,36 +234,39 @@ GLNode.prototype.toString = function () {
     return str;
 };
 
-// 删除广义表中所有值为data的原子 TODO
-GLNode.prototype.del = function delElem(data){
-    var self = this;
+// 按层序输出广义表
+// 层序遍历的问题，一般都是借助队列来完成的，每次从队头
+// 取出一个元素的同时把它下一层的孩子插入队尾，这是层序遍历的基本思想
+GLNode.prototype.orderPrint = function(){
+    var queue = [];
+    for(var p = this; p; p = p.ptr.tp) queue.push(p);
 
-    void function del(ptr){
-        if(ptr.hp){
-            if(ptr.hp.tag === LIST) del(ptr.hp.ptr);
-            else if(ptr.hp.tag === ATOM && ptr.hp.atom === data){
-
-            }
+    while(queue.length){
+        var r = queue.shift();
+        if(r.tag === ATOM) console.log(r.atom);
+        else {
+            for(r = r.ptr.hp; r; r = r.ptr.tp)
+                queue.push(r);
         }
-    }(self.ptr);
-    if(this.ptr.hp){
-        if(this.ptr.hp.tag === LIST) delElem.call(this.ptr.hp, data);
-        else if(this.ptr.hp.tag === ATOM && this.ptr.hp.atom === data) {
-            shallowCopy(this, this.ptr.tp);
-            delElem.call(this, data);
-        }
-
-        if(this.ptr.tp) delElem.call(this.ptr.tp, data);
     }
 };
 
-function shallowCopy(destination, obj){
-    for(var prop in obj){
-        if(obj.hasOwnProperty(prop)){
-            destination[prop] = obj[prop];
+// 使用链队列
+var Queue = require('../Queue/Queue.js').Queue;
+GLNode.prototype.orderPrint2 = function(){
+    var queue = new Queue();
+
+    for(var p = this; p; p = p.ptr.tp) queue.enQueue(p);
+
+    while(queue.size){
+        var r = queue.deQueue();
+        if(r.tag === ATOM) console.log(r.atom);
+        else {
+            for(r = r.ptr.hp; r; r = r.ptr.tp)
+                queue.enQueue(r);
         }
     }
-}
+};
 
 console.log(node + '');
 node.reverse();
@@ -273,8 +276,15 @@ var node2 = new GLNode();
 node.copyList(node2);
 console.log(GLNode.equal(node, node2));
 
-node.del('sa');
 console.log(node + '');
+console.time('A');
+node.orderPrint();
+console.timeEnd('A');
+
+console.log('------------------------------------');
+console.time('B');
+node.orderPrint2();
+console.timeEnd('B');
 
 /*
 m元多项式表示
