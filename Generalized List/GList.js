@@ -285,7 +285,7 @@ console.log('------------------------------------');
 console.time('B');
 node.orderPrint2();
 console.timeEnd('B');
-
+var test = '100 400 325 981 2101 022';
 /*
 m元多项式表示
 
