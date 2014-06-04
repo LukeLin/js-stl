@@ -120,11 +120,6 @@ function isWord(str){
 GLNode.prototype.createGList = function (string) {
     string = string.trim();
 
-//    if (string === '()') {
-//        this.tag = LIST;
-//        return;
-//    }
-
     // 创建单原子广义表
     var q;
     if (isWord(string)) {
