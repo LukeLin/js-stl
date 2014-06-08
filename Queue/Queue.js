@@ -62,7 +62,7 @@ Queue.prototype = {
 
         return null;
     },
-    displayAll: function () {
+    toString: function () {
         if (this.front === null) {
             return null;
         }
@@ -88,7 +88,7 @@ console.log(queue.peekAt(0));
 console.log(queue.peekAt(1));
 console.log(queue.peekAt(2));
 console.log(queue.peekAt(3));
-console.log(queue.displayAll().join());
+console.log(queue.toString().join());
 
 
 // 循环队列
@@ -134,7 +134,7 @@ CycleQueue.prototype = {
             if (iterator(this.base[i], i)) break;
         }
     },
-    displayAll: function () {
+    toString: function () {
         var base = [].slice.call(this.base);
 
         return base.slice(this.front, this.rear - this.front);
