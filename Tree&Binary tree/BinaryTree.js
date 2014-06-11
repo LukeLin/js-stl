@@ -44,12 +44,41 @@
 2.链式存储结构
 二叉树的结点由一个数据元素和分别指向其左右子树的两个分支构成，则表示二叉树的链表中的结点至少包含三个域：数据域和左右指针域。有时，为了便于找到结点的双亲，则还可在结点结构中增加一个指向其双亲结点的指针域。利用这两种结构所得的二叉树的存储结构分别称之为二叉链表和三叉链表。
 在含有n个结点的二叉链表中有n+1个空链域，我们可以利用这些空链域存储其他有用信息，从而得到另一种链式存储结构---线索链表。
+
+先（根）序遍历：根左右
+中（根）序遍历：左根右
+后（根）序遍历：左右根
+
  */
+
 
 // 顺序存储结构
 (function(){
     // 顺序存储结构的遍历
     var tree = [1, 2, 3, 4, 5, , 6, , , 7];
 
+    void function preOrderTraverse(x, visit){
+        visit(tree[x]);
 
+        if(tree[2 * x + 1]) preOrderTraverse(2 * x + 1, visit);
+        if(tree[2 * x + 2]) preOrderTraverse(2 * x + 2, visit);
+    }(0, function(value){
+        console.log(value);
+    });
 }());
+
+// 链式存储结构
+function BinaryTree(data, leftChild, rightChild){
+    this.data = data || null;
+    // 左右孩子结点
+    this.leftChild = leftChild || null;
+    this.rightChild = rightChild || null;
+}
+BinaryTree.prototype = {
+    constructor: BinaryTree,
+    createBinaryTree: function(){},
+    preOrderTraverse: function(){},
+    inPrderTraverse: function(){},
+    postOrderTraverse: function(){},
+    levelOrderTraverse: function(){}
+};
