@@ -65,7 +65,15 @@
     }(0, function(value){
         console.log(value);
     });
+
+    void function inOrderTraverse(x, visit){
+
+    }(1, function(value){
+        console.log(value);
+    });
 }());
+
+var Stack = require('../Stack/stack');
 
 // 链式存储结构
 function BinaryTree(data, leftChild, rightChild){
@@ -76,7 +84,34 @@ function BinaryTree(data, leftChild, rightChild){
 }
 BinaryTree.prototype = {
     constructor: BinaryTree,
+    // 判断两棵树是否相似
+    isSimilar: function isSimilar(tree){
+        return tree &&
+            this.leftChild && isSimilar.call(this.leftChild, tree.leftChild) &&
+            this.rightChild && isSimilar.call(this.rightChild, tree.rightChild);
+    },
     createBinaryTree: function(){},
+
+    // 线序遍历二叉树的非递归算法
+    preOrderNonRecursive: function(visit){
+        var stack = new Stack();
+        stack.push(this);
+
+        while(stack.top){
+            var p;
+            // 向左走到尽头
+            while((p = stack.top)){
+                visit(p.data);
+                p.leftChild && stack.push(p.leftChild);
+            }
+
+            if(stack.top){
+                stack.pop();
+                stack.push(p.rightChild);
+            }
+        }
+    },
+
     preOrderTraverse: function(){},
     inPrderTraverse: function(){},
     postOrderTraverse: function(){},
