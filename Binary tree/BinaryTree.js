@@ -114,7 +114,7 @@ BinaryTree.prototype = {
     },
 
     // 线序遍历二叉树的非递归算法
-    preOrderNonRecursive: function(visit){
+    preOrder_stack: function(visit){
         var stack = new Stack();
         stack.push(this);
 
@@ -155,7 +155,6 @@ BinaryTree.prototype = {
         }
     },
     postOrder_stack: function(visit){
-
     },
 
     preOrderTraverse: function preOrderTraverse(visit){
@@ -180,9 +179,6 @@ BinaryTree.prototype = {
 var tree = [1, 2, 3, 4, 5, , 6, , , 7];
 var test = new BinaryTree;
 test.createBinaryTree(tree);
-test.preOrderNonRecursive(function(data){
-    console.log('preOrderNonRecusive: ' + data);
-});
 test.preOrderTraverse(function(value){
     console.log('preOrder: ' + value);
 });
@@ -192,6 +188,12 @@ test.inPrderTraverse(function(value){
 test.postOrderTraverse(function(value){
     console.log('postOrder: ' + value);
 });
+test.preOrder_stack(function(data){
+    console.log('preOrderNonRecusive: ' + data);
+});
 test.inOrder_stack1(function(value){
     console.log('inOrder_stack1: ' + value);
+});
+test.postOrder_stack(function(value){
+    console.log('postOrder_stack: ' + value);
 });
