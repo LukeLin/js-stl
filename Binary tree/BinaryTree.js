@@ -57,18 +57,30 @@
     // 顺序存储结构的遍历
     var tree = [1, 2, 3, 4, 5, , 6, , , 7];
 
+    console.log('preOrder:');
     void function preOrderTraverse(x, visit){
         visit(tree[x]);
-
         if(tree[2 * x + 1]) preOrderTraverse(2 * x + 1, visit);
         if(tree[2 * x + 2]) preOrderTraverse(2 * x + 2, visit);
     }(0, function(value){
         console.log(value);
     });
 
+    console.log('inOrder:');
     void function inOrderTraverse(x, visit){
+        if(tree[2 * x + 1]) inOrderTraverse(2 * x + 1, visit);
+        visit(tree[x]);
+        if(tree[2 * x + 2]) inOrderTraverse(2 * x + 2, visit);
+    }(0, function(value){
+        console.log(value);
+    });
 
-    }(1, function(value){
+    console.log('postOrder:');
+    void function postOrderTraverse(x, visit){
+        if(tree[2 * x + 1]) postOrderTraverse(2 * x + 1, visit);
+        if(tree[2 * x + 2]) postOrderTraverse(2 * x + 2, visit);
+        visit(tree[x]);
+    }(0, function(value){
         console.log(value);
     });
 }());
@@ -90,7 +102,16 @@ BinaryTree.prototype = {
             this.leftChild && isSimilar.call(this.leftChild, tree.leftChild) &&
             this.rightChild && isSimilar.call(this.rightChild, tree.rightChild);
     },
-    createBinaryTree: function(){},
+    createBinaryTree: function (tree){
+        void function preOrderTraverse(node, x, visit){
+            visit(node, tree[x]);
+
+            if(tree[2 * x + 1]) preOrderTraverse(node.leftChild = new BinaryTree(), 2 * x + 1, visit);
+            if(tree[2 * x + 2]) preOrderTraverse(node.rightChild = new BinaryTree(), 2 * x + 2, visit);
+        }(this, 0, function(node, value){
+            node.data = value;
+        });
+    },
 
     // 线序遍历二叉树的非递归算法
     preOrderNonRecursive: function(visit){
@@ -100,20 +121,51 @@ BinaryTree.prototype = {
         while(stack.top){
             var p;
             // 向左走到尽头
-            while((p = stack.top)){
-                visit(p.data);
-                p.leftChild && stack.push(p.leftChild);
+            while((p = stack.peek())){
+                p.data && visit(p.data);
+                stack.push(p.leftChild);
             }
 
-            if(stack.top){
-                stack.pop();
+            stack.pop();
+
+            if(stack.peek()){
+                p = stack.pop();
                 stack.push(p.rightChild);
             }
         }
     },
 
-    preOrderTraverse: function(){},
-    inPrderTraverse: function(){},
-    postOrderTraverse: function(){},
+    preOrderTraverse: function preOrderTraverse(visit){
+        visit(this.data);
+        if(this.leftChild) preOrderTraverse.call(this.leftChild, visit);
+        if(this.rightChild) preOrderTraverse.call(this.rightChild, visit);
+    },
+    inPrderTraverse: function inPrderTraverse(visit){
+        if(this.leftChild) inPrderTraverse.call(this.leftChild, visit);
+        visit(this.data);
+        if(this.rightChild) inPrderTraverse.call(this.rightChild, visit);
+    },
+    postOrderTraverse: function postOrderTraverse(visit){
+        if(this.leftChild) postOrderTraverse.call(this.leftChild, visit);
+        if(this.rightChild) postOrderTraverse.call(this.rightChild, visit);
+        visit(this.data);
+    },
+
     levelOrderTraverse: function(){}
 };
+
+var tree = [1, 2, 3, 4, 5, , 6, , , 7];
+var test = new BinaryTree;
+test.createBinaryTree(tree);
+test.preOrderNonRecursive(function(data){
+    console.log('preOrderNonRecusive: ' + data);
+});
+test.preOrderTraverse(function(value){
+    console.log('preOrder: ' + value);
+});
+test.inPrderTraverse(function(value){
+    console.log('inOrder: ' + value);
+});
+test.postOrderTraverse(function(value){
+    console.log('postOrder: ' + value);
+});
