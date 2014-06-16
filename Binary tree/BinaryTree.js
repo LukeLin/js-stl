@@ -128,11 +128,34 @@ BinaryTree.prototype = {
 
             stack.pop();
 
-            if(stack.peek()){
+            if(stack.top){
                 p = stack.pop();
                 stack.push(p.rightChild);
             }
         }
+    },
+    inOrder_stack1: function(visit){
+        var stack = new Stack();
+        stack.push(this);
+
+        while(stack.top){
+            var p;
+            // 向左走到尽头
+            while((p = stack.peek())){
+                stack.push(p.leftChild);
+            }
+
+            stack.pop();
+
+            if(stack.top){
+                p = stack.pop();
+                p.data && visit(p.data);
+                stack.push(p.rightChild);
+            }
+        }
+    },
+    postOrder_stack: function(visit){
+
     },
 
     preOrderTraverse: function preOrderTraverse(visit){
@@ -168,4 +191,7 @@ test.inPrderTraverse(function(value){
 });
 test.postOrderTraverse(function(value){
     console.log('postOrder: ' + value);
+});
+test.inOrder_stack1(function(value){
+    console.log('inOrder_stack1: ' + value);
 });
