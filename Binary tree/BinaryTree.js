@@ -35,52 +35,52 @@
  */
 
 /*
-二叉树的存储结构
+ 二叉树的存储结构
 
-1.顺序存储结构
-用一组连续的存储单元依次自上而下，自左至右存储完全二叉树上的结点元素，即将二叉树上编号为i的结点元素存储在加上定义的一维数组中下标为i-1的分量中。“0”表示不存在此结点。这种顺序存储结构仅适用于完全二叉树。
-因为，在最坏情况下，一个深度为k且只有k个结点的单支树（树中不存在度为2的结点）却需要长度为2的n次方-1的一维数组。
+ 1.顺序存储结构
+ 用一组连续的存储单元依次自上而下，自左至右存储完全二叉树上的结点元素，即将二叉树上编号为i的结点元素存储在加上定义的一维数组中下标为i-1的分量中。“0”表示不存在此结点。这种顺序存储结构仅适用于完全二叉树。
+ 因为，在最坏情况下，一个深度为k且只有k个结点的单支树（树中不存在度为2的结点）却需要长度为2的n次方-1的一维数组。
 
-2.链式存储结构
-二叉树的结点由一个数据元素和分别指向其左右子树的两个分支构成，则表示二叉树的链表中的结点至少包含三个域：数据域和左右指针域。有时，为了便于找到结点的双亲，则还可在结点结构中增加一个指向其双亲结点的指针域。利用这两种结构所得的二叉树的存储结构分别称之为二叉链表和三叉链表。
-在含有n个结点的二叉链表中有n+1个空链域，我们可以利用这些空链域存储其他有用信息，从而得到另一种链式存储结构---线索链表。
+ 2.链式存储结构
+ 二叉树的结点由一个数据元素和分别指向其左右子树的两个分支构成，则表示二叉树的链表中的结点至少包含三个域：数据域和左右指针域。有时，为了便于找到结点的双亲，则还可在结点结构中增加一个指向其双亲结点的指针域。利用这两种结构所得的二叉树的存储结构分别称之为二叉链表和三叉链表。
+ 在含有n个结点的二叉链表中有n+1个空链域，我们可以利用这些空链域存储其他有用信息，从而得到另一种链式存储结构---线索链表。
 
-先（根）序遍历：根左右
-中（根）序遍历：左根右
-后（根）序遍历：左右根
+ 先（根）序遍历：根左右
+ 中（根）序遍历：左根右
+ 后（根）序遍历：左右根
 
  */
 
 
 // 顺序存储结构
-(function(){
+(function () {
     // 顺序存储结构的遍历
     var tree = [1, 2, 3, 4, 5, , 6, , , 7];
 
     console.log('preOrder:');
-    void function preOrderTraverse(x, visit){
+    void function preOrderTraverse(x, visit) {
         visit(tree[x]);
-        if(tree[2 * x + 1]) preOrderTraverse(2 * x + 1, visit);
-        if(tree[2 * x + 2]) preOrderTraverse(2 * x + 2, visit);
-    }(0, function(value){
+        if (tree[2 * x + 1]) preOrderTraverse(2 * x + 1, visit);
+        if (tree[2 * x + 2]) preOrderTraverse(2 * x + 2, visit);
+    }(0, function (value) {
         console.log(value);
     });
 
     console.log('inOrder:');
-    void function inOrderTraverse(x, visit){
-        if(tree[2 * x + 1]) inOrderTraverse(2 * x + 1, visit);
+    void function inOrderTraverse(x, visit) {
+        if (tree[2 * x + 1]) inOrderTraverse(2 * x + 1, visit);
         visit(tree[x]);
-        if(tree[2 * x + 2]) inOrderTraverse(2 * x + 2, visit);
-    }(0, function(value){
+        if (tree[2 * x + 2]) inOrderTraverse(2 * x + 2, visit);
+    }(0, function (value) {
         console.log(value);
     });
 
     console.log('postOrder:');
-    void function postOrderTraverse(x, visit){
-        if(tree[2 * x + 1]) postOrderTraverse(2 * x + 1, visit);
-        if(tree[2 * x + 2]) postOrderTraverse(2 * x + 2, visit);
+    void function postOrderTraverse(x, visit) {
+        if (tree[2 * x + 1]) postOrderTraverse(2 * x + 1, visit);
+        if (tree[2 * x + 2]) postOrderTraverse(2 * x + 2, visit);
         visit(tree[x]);
-    }(0, function(value){
+    }(0, function (value) {
         console.log(value);
     });
 }());
@@ -88,7 +88,7 @@
 var Stack = require('../Stack/stack');
 
 // 链式存储结构
-function BinaryTree(data, leftChild, rightChild){
+function BinaryTree(data, leftChild, rightChild) {
     this.data = data || null;
     // 左右孩子结点
     this.leftChild = leftChild || null;
@@ -97,49 +97,49 @@ function BinaryTree(data, leftChild, rightChild){
 BinaryTree.prototype = {
     constructor: BinaryTree,
     // 判断两棵树是否相似
-    isSimilar: function isSimilar(tree){
+    isSimilar: function isSimilar(tree) {
         return tree &&
             this.leftChild && isSimilar.call(this.leftChild, tree.leftChild) &&
             this.rightChild && isSimilar.call(this.rightChild, tree.rightChild);
     },
-    createBinaryTree: function (tree){
-        void function preOrderTraverse(node, x, visit){
+    createBinaryTree: function (tree) {
+        void function preOrderTraverse(node, x, visit) {
             visit(node, tree[x]);
 
-            if(tree[2 * x + 1]) preOrderTraverse(node.leftChild = new BinaryTree(), 2 * x + 1, visit);
-            if(tree[2 * x + 2]) preOrderTraverse(node.rightChild = new BinaryTree(), 2 * x + 2, visit);
-        }(this, 0, function(node, value){
+            if (tree[2 * x + 1]) preOrderTraverse(node.leftChild = new BinaryTree(), 2 * x + 1, visit);
+            if (tree[2 * x + 2]) preOrderTraverse(node.rightChild = new BinaryTree(), 2 * x + 2, visit);
+        }(this, 0, function (node, value) {
             node.data = value;
         });
     },
 
     // 线序遍历二叉树的非递归算法
-    preOrder_stack: function(visit){
+    preOrder_stack: function (visit) {
         var stack = new Stack();
         stack.push(this);
 
-        while(stack.top){
+        while (stack.top) {
             var p;
             // 向左走到尽头
-            while((p = stack.peek())){
+            while ((p = stack.peek())) {
                 p.data && visit(p.data);
                 stack.push(p.leftChild);
             }
 
             stack.pop();
 
-            if(stack.top){
+            if (stack.top) {
                 p = stack.pop();
                 stack.push(p.rightChild);
             }
         }
     },
-    preOrder_stack2: function(visit){
+    preOrder_stack2: function (visit) {
         var stack = new Stack();
         var p = this;
 
-        while(p || stack.top){
-            if(p){
+        while (p || stack.top) {
+            if (p) {
                 stack.push(p);
                 p.data && visit(p.data);
                 p = p.leftChild;
@@ -149,32 +149,32 @@ BinaryTree.prototype = {
             }
         }
     },
-    inOrder_stack1: function(visit){
+    inOrder_stack1: function (visit) {
         var stack = new Stack();
         stack.push(this);
 
-        while(stack.top){
+        while (stack.top) {
             var p;
             // 向左走到尽头
-            while((p = stack.peek())){
+            while ((p = stack.peek())) {
                 stack.push(p.leftChild);
             }
 
             stack.pop();
 
-            if(stack.top){
+            if (stack.top) {
                 p = stack.pop();
                 p.data && visit(p.data);
                 stack.push(p.rightChild);
             }
         }
     },
-    inOrder_stack2: function(visit){
+    inOrder_stack2: function (visit) {
         var stack = new Stack();
         var p = this;
 
-        while(p || stack.top){
-            if(p){
+        while (p || stack.top) {
+            if (p) {
                 stack.push(p);
                 p = p.leftChild;
             } else {
@@ -187,74 +187,162 @@ BinaryTree.prototype = {
     // 为了区分两次过栈的不同处理方式，在堆栈中增加一个mark域，
     // mark=0表示刚刚访问此结点，mark=1表示左子树处理结束返回，
     // mark=2表示右子树处理结束返回。每次根据栈顶的mark域决定做何动作
-    postOrder_stack: function(visit){
+    postOrder_stack: function (visit) {
         var stack = new Stack();
         stack.push([this, 0]);
 
-        while(stack.top){
+        while (stack.top) {
             var a = stack.pop();
             var node = a[0];
 
-            switch(a[1]){
+            switch (a[1]) {
                 case 0:
                     stack.push([node, 1]);  // 修改mark域
-                    if(node.leftChild) stack.push([node.leftChild, 0]);  // 访问左子树
+                    if (node.leftChild) stack.push([node.leftChild, 0]);  // 访问左子树
                     break;
                 case 1:
                     stack.push([node, 2]);
-                    if(node.rightChild) stack.push([node.rightChild, 0]);
+                    if (node.rightChild) stack.push([node.rightChild, 0]);
                     break;
                 case 2:
                     node.data && visit(node.data);
                     break;
-                default: break;
+                default:
+                    break;
             }
         }
     },
 
-    preOrderTraverse: function preOrderTraverse(visit){
+    preOrderTraverse: function preOrderTraverse(visit) {
         visit(this.data);
-        if(this.leftChild) preOrderTraverse.call(this.leftChild, visit);
-        if(this.rightChild) preOrderTraverse.call(this.rightChild, visit);
+        if (this.leftChild) preOrderTraverse.call(this.leftChild, visit);
+        if (this.rightChild) preOrderTraverse.call(this.rightChild, visit);
     },
-    inPrderTraverse: function inPrderTraverse(visit){
-        if(this.leftChild) inPrderTraverse.call(this.leftChild, visit);
+    inPrderTraverse: function inPrderTraverse(visit) {
+        if (this.leftChild) inPrderTraverse.call(this.leftChild, visit);
         visit(this.data);
-        if(this.rightChild) inPrderTraverse.call(this.rightChild, visit);
+        if (this.rightChild) inPrderTraverse.call(this.rightChild, visit);
     },
-    postOrderTraverse: function postOrderTraverse(visit){
-        if(this.leftChild) postOrderTraverse.call(this.leftChild, visit);
-        if(this.rightChild) postOrderTraverse.call(this.rightChild, visit);
+    postOrderTraverse: function postOrderTraverse(visit) {
+        if (this.leftChild) postOrderTraverse.call(this.leftChild, visit);
+        if (this.rightChild) postOrderTraverse.call(this.rightChild, visit);
         visit(this.data);
     },
 
-    levelOrderTraverse: function(){}
+    levelOrderTraverse: function () {
+    },
+    // 求先序序列为k的结点的值
+    getPreSequence: function(k){
+        var count = 0;
+
+        void function recurse(node){
+            if(node){
+                if(++count === k){
+                    console.log('Value is: ' + node.data);
+                } else {
+                    recurse(node.leftChild);
+                    recurse(node.rightChild);
+                }
+            }
+        }(this);
+    },
+    // 求二叉树中叶子结点的数目
+    countLeaves: function(){
+        if(this.leftChild === null && this.rightChild === null)
+            return 1;
+        else return
+    }
 };
 
 var tree = [1, 2, 3, 4, 5, , 6, , , 7];
 var test = new BinaryTree;
 test.createBinaryTree(tree);
-test.preOrderTraverse(function(value){
+test.preOrderTraverse(function (value) {
     console.log('preOrder: ' + value);
 });
-test.inPrderTraverse(function(value){
+test.inPrderTraverse(function (value) {
     console.log('inOrder: ' + value);
 });
-test.postOrderTraverse(function(value){
+test.postOrderTraverse(function (value) {
     console.log('postOrder: ' + value);
 });
-test.preOrder_stack(function(data){
+test.preOrder_stack(function (data) {
     console.log('preOrderNonRecusive: ' + data);
 });
-test.preOrder_stack2(function(data){
+test.preOrder_stack2(function (data) {
     console.log('preOrder_stack2: ' + data);
 });
-test.inOrder_stack1(function(value){
+test.inOrder_stack1(function (value) {
     console.log('inOrder_stack1: ' + value);
 });
-test.inOrder_stack2(function(value){
+test.inOrder_stack2(function (value) {
     console.log('inOrder_stack2: ' + value);
 });
-test.postOrder_stack(function(value){
+test.postOrder_stack(function (value) {
     console.log('postOrder_stack: ' + value);
 });
+test.getPreSequence(5);
+
+// 有mark域和双亲指针域的二叉树结点类型
+function EBTNode() {
+    this.data = null;
+    this.leftChild = null;
+    this.rightChild = null;
+    this.parent = null;
+    this.mark = 0;
+}
+EBTNode.prototype = {
+    constructor: EBTNode,
+    postOrder_nonrecursive_nonstack: function (visit) {
+        var p = this;
+        while (p) {
+            switch (p.mark) {
+                case 0:
+                    p.mark = 1;
+                    if (p.leftChild) p = p.leftChild;
+                    break;
+                case 1:
+                    p.mark = 2;
+                    if (p.rightChild) p = p.rightChild;
+                    break;
+                case 2:
+                    p.data && visit(p.data);
+                    p.mark = 0; // 恢复mark域
+                    p = p.parent;   // 返回双亲结点
+            }
+        }
+    }
+};
+
+// 有双亲指针域的二叉树结点类型
+function PBTNode() {
+    this.data = null;
+    this.leftChild = null;
+    this.rightChild = null;
+    this.parent = null;
+}
+PBTNode.prototype = {
+    constructor: PBTNode,
+    inOrder_nonrecursive_nonstack: function (visit) {
+        var p = this;
+        while (p.leftChild) p = p.leftChild;
+
+        while (p) {
+            p.data && visit(p.data);
+
+            if (p.rightChild) {
+                p = p.rightChild;
+                while (p.leftChild) p = p.leftChild;
+            } else if (p.parent.leftChild == p) {
+                p = p.parent;
+            } else {
+                p = p.parent;
+
+                while (p.parent && p.parent.rightChild == p)
+                    p = p.parent;
+
+                p = p.parent;
+            }
+        }
+    }
+};
