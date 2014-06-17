@@ -134,6 +134,21 @@ BinaryTree.prototype = {
             }
         }
     },
+    preOrder_stack2: function(visit){
+        var stack = new Stack();
+        var p = this;
+
+        while(p || stack.top){
+            if(p){
+                stack.push(p);
+                p.data && visit(p.data);
+                p = p.leftChild;
+            } else {
+                p = stack.pop();
+                p = p.rightChild;
+            }
+        }
+    },
     inOrder_stack1: function(visit){
         var stack = new Stack();
         stack.push(this);
@@ -154,7 +169,47 @@ BinaryTree.prototype = {
             }
         }
     },
+    inOrder_stack2: function(visit){
+        var stack = new Stack();
+        var p = this;
+
+        while(p || stack.top){
+            if(p){
+                stack.push(p);
+                p = p.leftChild;
+            } else {
+                p = stack.pop();
+                p.data && visit(p.data);
+                p = p.rightChild;
+            }
+        }
+    },
+    // 为了区分两次过栈的不同处理方式，在堆栈中增加一个mark域，
+    // mark=0表示刚刚访问此结点，mark=1表示左子树处理结束返回，
+    // mark=2表示右子树处理结束返回。每次根据栈顶的mark域决定做何动作
     postOrder_stack: function(visit){
+        var stack = new Stack();
+        stack.push([this, 0]);
+
+        while(stack.top){
+            var a = stack.pop();
+            var node = a[0];
+
+            switch(a[1]){
+                case 0:
+                    stack.push([node, 1]);  // 修改mark域
+                    if(node.leftChild) stack.push([node.leftChild, 0]);  // 访问左子树
+                    break;
+                case 1:
+                    stack.push([node, 2]);
+                    if(node.rightChild) stack.push([node.rightChild, 0]);
+                    break;
+                case 2:
+                    node.data && visit(node.data);
+                    break;
+                default: break;
+            }
+        }
     },
 
     preOrderTraverse: function preOrderTraverse(visit){
@@ -191,8 +246,14 @@ test.postOrderTraverse(function(value){
 test.preOrder_stack(function(data){
     console.log('preOrderNonRecusive: ' + data);
 });
+test.preOrder_stack2(function(data){
+    console.log('preOrder_stack2: ' + data);
+});
 test.inOrder_stack1(function(value){
     console.log('inOrder_stack1: ' + value);
+});
+test.inOrder_stack2(function(value){
+    console.log('inOrder_stack2: ' + value);
 });
 test.postOrder_stack(function(value){
     console.log('postOrder_stack: ' + value);
