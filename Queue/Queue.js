@@ -12,6 +12,9 @@ function Queue() {
 }
 exports.Queue = Queue;
 Queue.prototype = {
+    isEmpty: function(){
+        return this.rear === null;
+    },
     clear: function () {
         this.rear = this.front = null;
         this.size = 0;

@@ -86,6 +86,7 @@
 }());
 
 var Stack = require('../Stack/stack');
+var Queue = require('../Queue/Queue').Queue;
 
 // 链式存储结构
 function BinaryTree(data, leftChild, rightChild) {
@@ -229,15 +230,24 @@ BinaryTree.prototype = {
         visit(this.data);
     },
 
-    levelOrderTraverse: function () {
+    levelOrderTraverse: function (visit) {
+        var queue = new Queue();
+        queue.enQueue(this);
+
+        while (queue.rear) {
+            var p = queue.deQueue();
+            p.data && visit(p.data);
+            p.leftChild && queue.enQueue(p.leftChild);
+            p.rightChild && queue.enQueue(p.rightChild);
+        }
     },
     // 求先序序列为k的结点的值
-    getPreSequence: function(k){
+    getPreSequence: function (k) {
         var count = 0;
 
-        void function recurse(node){
-            if(node){
-                if(++count === k){
+        void function recurse(node) {
+            if (node) {
+                if (++count === k) {
                     console.log('Value is: ' + node.data);
                 } else {
                     recurse(node.leftChild);
@@ -247,12 +257,64 @@ BinaryTree.prototype = {
         }(this);
     },
     // 求二叉树中叶子结点的数目
-    countLeaves: function(){
-        if(this.leftChild === null && this.rightChild === null)
-            return 1;
-        else return
-    }
+    countLeaves: function () {
+        return function recurse(node) {
+            if (!node) return 0;
+            else if (!node.leftChild && !node.rightChild) return 1;
+            else return recurse(node.leftChild) + recurse(node.rightChild);
+        }(this);
+    },
+    // 交换所有结点的左右子树
+    revoluteBinaryTree: function revoluteBinaryTree() {
+        var temp = this.leftChild;
+        this.leftChild = this.rightChild;
+        this.rightChild = temp;
+
+        if (this.leftChild) revoluteBinaryTree.call(this.leftChild);
+        if (this.rightChild) revoluteBinaryTree.call(this.rightChild);
+    },
+    // 求二叉树中以值为x的结点为根的子树深度
+    getSubDepth: function getSubDepth(x) {
+        if (this.data === x) {
+            console.log('subDepth: ' + this.getDepth());
+        } else {
+            if (this.leftChild) getSubDepth.call(this.leftChild, x);
+            if (this.rightChild) getSubDepth.call(this.rightChild, x);
+        }
+    },
+    getDepth: function getDepth() {
+        if (this === global) return 0;
+        else {
+            var m = getDepth.call(this.leftChild);
+            var n = getDepth.call(this.rightChild);
+            return (m > n ? m : n) + 1;
+        }
+    },
+    // 删除所有以元素x为根的子树
+    delSubX: function delSubX(x) {
+        if (this.data === x) {
+            this.leftChild = null;
+            this.rightChild = null;
+        } else {
+            if (this.leftChild) delSubX.call(this.leftChild);
+            if (this.rightChild) delSubX.call(this.rightChild);
+        }
+    },
+    copyBinaryTree_stack: function () {
+        var stack1 = new Stack();
+        var stack2 = new Stack();
+        var newTree = new BinaryTree();
+        newTree.data = this.data;
+        var q = newTree;
+        stack2.push(newTree);
+        // TODO
+        while(){}
+    },
+    findNearAncient: function () {},
+    findPath: function () {},
+    isFullBinaryTree: function () {}
 };
+var global = Function('return this;')();
 
 var tree = [1, 2, 3, 4, 5, , 6, , , 7];
 var test = new BinaryTree;
@@ -282,6 +344,12 @@ test.postOrder_stack(function (value) {
     console.log('postOrder_stack: ' + value);
 });
 test.getPreSequence(5);
+console.log(test.countLeaves());
+test.getSubDepth(6);    // 1
+test.getSubDepth(2);    // 3
+test.levelOrderTraverse(function (value) {
+    console.log('levelOrderTraverse: ' + value);
+});
 
 // 有mark域和双亲指针域的二叉树结点类型
 function EBTNode() {
