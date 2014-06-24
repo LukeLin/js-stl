@@ -300,20 +300,92 @@ BinaryTree.prototype = {
             if (this.rightChild) delSubX.call(this.rightChild);
         }
     },
+    // 非递归复制二叉树
     copyBinaryTree_stack: function () {
+        // 用来存放本体结点的栈
         var stack1 = new Stack();
+        // 用来存放新二叉树结点的栈
         var stack2 = new Stack();
+        stack1.push(this);
         var newTree = new BinaryTree();
-        newTree.data = this.data;
         var q = newTree;
         stack2.push(newTree);
-        // TODO
-        while(){}
+        var p;
+
+        while (stack1.top) {
+            // 向左走到尽头
+            while ((p = stack1.peek())) {
+                if (p.leftChild) q.leftChild = new BinaryTree();
+                q = q.leftChild;
+                stack1.push(p.leftChild);
+                stack2.push(q);
+            }
+
+            p = stack1.pop();
+            q = stack2.pop();
+
+            if (stack1.top) {
+                p = stack1.pop();
+                q = stack2.pop();
+                if (p.rightChild) q.rightChild = new BinaryTree();
+                q.data = p.data;
+                q = q.rightChild;
+                stack1.push(p.rightChild);  // 向右一步
+                stack2.push(q);
+            }
+        }
+
+        return newTree;
     },
-    findNearAncient: function () {},
-    findPath: function () {},
-    isFullBinaryTree: function () {}
+    // 求二叉树中结点p和q的最近祖先
+    findNearAncient: function (pNode, qNode) {
+        var pathP = [];
+        var pathQ = [];
+        findPath(this, pNode, pathP, 0);
+        findPath(this, qNode, pathQ, 0);
+
+        for (var i = 0; pathP[i] == pathQ[i] && pathP[i]; i++);
+        return pathP[--i];
+    }
 };
+
+// 判断二叉树是否完全二叉树
+BinaryTree.isFullBinaryTree = function (tree) {
+    var queue = new Queue();
+    var flag = 0;
+    queue.enQueue(tree);
+
+    while (queue.rear) {
+        var p = queue.deQueue();
+
+        if (!p) flag = 1;
+        else if (flag) return false;
+        else {
+            queue.enQueue(p.leftChild);
+            queue.enQueue(p.rightChild);
+        }
+    }
+
+    return true;
+};
+
+// 求从tree到node结点路径的递归算法
+function findPath(tree, node, path, i) {
+    var found = false;
+
+    void function recurse(tree, i) {
+        if (tree == node) {
+            found = true;
+            return;
+        }
+
+        path[i] = tree;
+        if (tree.leftChild) recurse(tree.leftChild, i + 1);
+        if (tree.rightChild && !found) recurse(tree.rightChild, i + 1);
+        if (!found) path[i] = null;
+    }(tree, i);
+}
+
 var global = Function('return this;')();
 
 var tree = [1, 2, 3, 4, 5, , 6, , , 7];
@@ -350,6 +422,19 @@ test.getSubDepth(2);    // 3
 test.levelOrderTraverse(function (value) {
     console.log('levelOrderTraverse: ' + value);
 });
+
+var newTree = test.copyBinaryTree_stack();
+
+var node1 = test.leftChild.leftChild;   // 4
+var node2 = test.leftChild.rightChild.leftChild;    // 7
+var ancient = test.findNearAncient(node1, node2);
+console.log(ancient);
+
+console.log('expect false: ' + BinaryTree.isFullBinaryTree(test));
+newTree.rightChild.leftChild = new BinaryTree(7);
+newTree.leftChild.rightChild.leftChild = null;
+console.log('expect true: ' + BinaryTree.isFullBinaryTree(newTree));
+
 
 // 有mark域和双亲指针域的二叉树结点类型
 function EBTNode() {
