@@ -95,6 +95,7 @@ function BinaryTree(data, leftChild, rightChild) {
     this.leftChild = leftChild || null;
     this.rightChild = rightChild || null;
 }
+exports.BinaryTree = BinaryTree;
 BinaryTree.prototype = {
     constructor: BinaryTree,
     // 判断两棵树是否相似
@@ -444,6 +445,7 @@ function EBTNode() {
     this.parent = null;
     this.mark = 0;
 }
+exports.EBTNode = EBTNode;
 EBTNode.prototype = {
     constructor: EBTNode,
     postOrder_nonrecursive_nonstack: function (visit) {
@@ -474,6 +476,7 @@ function PBTNode() {
     this.rightChild = null;
     this.parent = null;
 }
+exports.PBTNode = PBTNode;
 PBTNode.prototype = {
     constructor: PBTNode,
     inOrder_nonrecursive_nonstack: function (visit) {
