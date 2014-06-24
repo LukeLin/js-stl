@@ -347,7 +347,8 @@ BinaryTree.prototype = {
 
         for (var i = 0; pathP[i] == pathQ[i] && pathP[i]; i++);
         return pathP[--i];
-    }
+    },
+    toString: function(){}
 };
 
 // 判断二叉树是否完全二叉树
