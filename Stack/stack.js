@@ -19,6 +19,9 @@ function Stack() {
 module.exports = Stack;
 Stack.prototype = {
     constructor: Stack,
+    isEmpty: function(){
+        return this.top === null;
+    },
     push: function (data) {
         var node = {
             data: data,
