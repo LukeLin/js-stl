@@ -1,3 +1,3 @@
 data-structure-with-js
 ======================
-classic data structures simulated in javascript.
+classic data structures implemented in javascript.
