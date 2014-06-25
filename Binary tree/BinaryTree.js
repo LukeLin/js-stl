@@ -348,7 +348,41 @@ BinaryTree.prototype = {
         for (var i = 0; pathP[i] == pathQ[i] && pathP[i]; i++);
         return pathP[--i];
     },
-    toString: function(){}
+    toString: function(){},
+    // 求一棵二叉树的繁茂度
+    lushDegree: function(){
+        var countArr = [];
+        var queue = new Queue();
+        queue.enQueue({
+            node: this,
+            layer: 0
+        });
+        // 利用层序遍历来统计各层的结点数
+        var r;
+        while(queue.rear){
+            r = queue.deQueue();
+            countArr[r.layer] = (countArr[r.layer] || 0) + 1;
+
+            if(r.node.leftChild)
+                queue.enQueue({
+                    node: r.node.leftChild,
+                    layer: r.layer + 1
+                });
+            if(r.node.rightChild)
+                queue.enQueue({
+                    node: r.node.rightChild,
+                    layer: r.layer + 1
+                });
+        }
+
+        // 最后一个队列元素所在层就是树的高度
+        var height = r.layer;
+        for(var max = countArr[0], i = 1; countArr[i]; i++)
+            // 求层最大结点数
+            if(countArr[i] > max) max = countArr[i];
+
+        return height * max;
+    }
 };
 
 // 判断二叉树是否完全二叉树
@@ -436,6 +470,7 @@ console.log('expect false: ' + BinaryTree.isFullBinaryTree(test));
 newTree.rightChild.leftChild = new BinaryTree(7);
 newTree.leftChild.rightChild.leftChild = null;
 console.log('expect true: ' + BinaryTree.isFullBinaryTree(newTree));
+console.log('lush degree: ' + test.lushDegree());
 
 
 // 有mark域和双亲指针域的二叉树结点类型
