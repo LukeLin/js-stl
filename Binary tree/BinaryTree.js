@@ -348,9 +348,10 @@ BinaryTree.prototype = {
         for (var i = 0; pathP[i] == pathQ[i] && pathP[i]; i++);
         return pathP[--i];
     },
-    toString: function(){},
+    toString: function () {
+    },
     // 求一棵二叉树的繁茂度
-    lushDegree: function(){
+    lushDegree: function () {
         var countArr = [];
         var queue = new Queue();
         queue.enQueue({
@@ -359,16 +360,16 @@ BinaryTree.prototype = {
         });
         // 利用层序遍历来统计各层的结点数
         var r;
-        while(queue.rear){
+        while (queue.rear) {
             r = queue.deQueue();
             countArr[r.layer] = (countArr[r.layer] || 0) + 1;
 
-            if(r.node.leftChild)
+            if (r.node.leftChild)
                 queue.enQueue({
                     node: r.node.leftChild,
                     layer: r.layer + 1
                 });
-            if(r.node.rightChild)
+            if (r.node.rightChild)
                 queue.enQueue({
                     node: r.node.rightChild,
                     layer: r.layer + 1
@@ -377,11 +378,34 @@ BinaryTree.prototype = {
 
         // 最后一个队列元素所在层就是树的高度
         var height = r.layer;
-        for(var max = countArr[0], i = 1; countArr[i]; i++)
+        for (var max = countArr[0], i = 1; countArr[i]; i++)
             // 求层最大结点数
-            if(countArr[i] > max) max = countArr[i];
+            if (countArr[i] > max) max = countArr[i];
 
         return height * max;
+    },
+    // 求深度等于书的高度减一的最靠左的结点
+    // todo
+    printPath_maxDepthS1: function(){
+        var maxh = this.getDepth();
+        var path = [];
+
+        if(maxh < 2) return false;
+        find_h(this, 1);
+
+        function find_h(tree, h){
+            path[h] = tree;
+
+            if(h == maxh - 1){
+                for(var i = 1; path[i]; i++) console.log(path[i].data);
+                return;
+            } else {
+                if(tree.leftChild) find_h(tree.leftChild, h + 1);
+                if(tree.rightChild) find_h(tree.rightChild, h + 1);
+            }
+
+            path[h] = null;
+        }
     }
 };
 
@@ -471,6 +495,8 @@ newTree.rightChild.leftChild = new BinaryTree(7);
 newTree.leftChild.rightChild.leftChild = null;
 console.log('expect true: ' + BinaryTree.isFullBinaryTree(newTree));
 console.log('lush degree: ' + test.lushDegree());
+
+test.printPath_maxDepthS1();
 
 
 // 有mark域和双亲指针域的二叉树结点类型
