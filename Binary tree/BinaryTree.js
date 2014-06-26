@@ -461,56 +461,58 @@ function findPath(tree, node, path, i) {
 
 var global = Function('return this;')();
 
-var tree = [1, 2, 3, 4, 5, , 6, , , 7];
-var test = new BinaryTree;
-test.createBinaryTree(tree);
-test.preOrderTraverse(function (value) {
-    console.log('preOrder: ' + value);
-});
-test.inPrderTraverse(function (value) {
-    console.log('inOrder: ' + value);
-});
-test.postOrderTraverse(function (value) {
-    console.log('postOrder: ' + value);
-});
-test.preOrder_stack(function (data) {
-    console.log('preOrderNonRecusive: ' + data);
-});
-test.preOrder_stack2(function (data) {
-    console.log('preOrder_stack2: ' + data);
-});
-test.inOrder_stack1(function (value) {
-    console.log('inOrder_stack1: ' + value);
-});
-test.inOrder_stack2(function (value) {
-    console.log('inOrder_stack2: ' + value);
-});
-test.postOrder_stack(function (value) {
-    console.log('postOrder_stack: ' + value);
-});
-test.getPreSequence(5);
-console.log(test.countLeaves());
-test.getSubDepth(6);    // 1
-test.getSubDepth(2);    // 3
-test.levelOrderTraverse(function (value) {
-    console.log('levelOrderTraverse: ' + value);
-});
+void function test(){
+    var tree = [1, 2, 3, 4, 5, , 6, , , 7];
+    var test = new BinaryTree;
+    test.createBinaryTree(tree);
+    test.preOrderTraverse(function (value) {
+        console.log('preOrder: ' + value);
+    });
+    test.inPrderTraverse(function (value) {
+        console.log('inOrder: ' + value);
+    });
+    test.postOrderTraverse(function (value) {
+        console.log('postOrder: ' + value);
+    });
+    test.preOrder_stack(function (data) {
+        console.log('preOrderNonRecusive: ' + data);
+    });
+    test.preOrder_stack2(function (data) {
+        console.log('preOrder_stack2: ' + data);
+    });
+    test.inOrder_stack1(function (value) {
+        console.log('inOrder_stack1: ' + value);
+    });
+    test.inOrder_stack2(function (value) {
+        console.log('inOrder_stack2: ' + value);
+    });
+    test.postOrder_stack(function (value) {
+        console.log('postOrder_stack: ' + value);
+    });
+    test.getPreSequence(5);
+    console.log(test.countLeaves());
+    test.getSubDepth(6);    // 1
+    test.getSubDepth(2);    // 3
+    test.levelOrderTraverse(function (value) {
+        console.log('levelOrderTraverse: ' + value);
+    });
 
-var newTree = test.copyBinaryTree_stack();
+    var newTree = test.copyBinaryTree_stack();
 
-var node1 = test.leftChild.leftChild;   // 4
-var node2 = test.leftChild.rightChild.leftChild;    // 7
-var ancient = test.findNearAncient(node1, node2);
-console.log(ancient);
+    var node1 = test.leftChild.leftChild;   // 4
+    var node2 = test.leftChild.rightChild.leftChild;    // 7
+    var ancient = test.findNearAncient(node1, node2);
+    console.log(ancient);
 
-console.log('expect false: ' + BinaryTree.isFullBinaryTree(test));
-newTree.rightChild.leftChild = new BinaryTree(7);
-newTree.leftChild.rightChild.leftChild = null;
-console.log('expect true: ' + BinaryTree.isFullBinaryTree(newTree));
-console.log('lush degree: ' + test.lushDegree());
+    console.log('expect false: ' + BinaryTree.isFullBinaryTree(test));
+    newTree.rightChild.leftChild = new BinaryTree(7);
+    newTree.leftChild.rightChild.leftChild = null;
+    console.log('expect true: ' + BinaryTree.isFullBinaryTree(newTree));
+    console.log('lush degree: ' + test.lushDegree());
 
-test.printPath_maxDepthS1();
-console.log(test.descNum());
+    test.printPath_maxDepthS1();
+    console.log(test.descNum());
+}();
 
 
 // 有mark域和双亲指针域的二叉树结点类型
@@ -578,3 +580,35 @@ PBTNode.prototype = {
         }
     }
 };
+
+
+/**
+ * 线索二叉树
+ *
+ * 二叉树的结点中的中序序列a+b*c-d-e/f中'c'的前驱是'*'，后继是'-'.
+ * 利用空链域来存放结点的前驱和后继的信息。
+ * 当以二叉树链表作为存储结构时，只能找到结点的左右孩子信息，而不能直接得到结点在任一序列中的前驱和后继信息，这种信息只有在便利的动态过程中才能得到。
+ * 1.若结点有左子树，则其leftChild域指示其左孩子，否则令leftChild域指示其前驱。
+ * 2.若结点有右子树，则其rightChild域指示其右孩子，否则令其rightChild域指示其后继。
+ * 为了避免混淆，尚需改变结点结构，增加两个标志域（leftTag, rightTag），其中：
+ *           -- 0 leftChild域指示结点的左孩子
+ * leftTag --
+ *           -- 1 rightChild域指示结点的前驱
+ *
+ *            -- 0 rightChild域指示结点的右孩子
+ * rightTag --
+ *            -- 1 rightChild域指示结点的后继
+ *
+ * 以这种结点结构构成的二叉链表作为二叉树的存储结构，叫做线索链表，其中指向结点前驱和后继的指针，叫做线索。
+ * 加上线索的二叉树称之为线索二叉树（Threaded Binary Tree）。
+ * 对二叉树以某种次序遍历使其变为线索二叉树的过程叫做线索化。
+ *
+ * 在中序线索树中，树中所有叶子结点的右链是线索，则右链域直接指示了结点的后继，如结点b的后继为结点*。
+ * 树中所有非终端结点的右链均为指针，则无法由此得到后继的信息。
+ * 根据中序遍历的规律可知，结点的后继应是遍历其右子树时访问的第一个结点，即右子树中最左下的结点。
+ * 例如，在找结点*的后继时，首先沿右指针找到其右子树的根结点-，然后顺其左指针往下直至其左标志为1的结点，即为结点*的后继，即结点c。
+ * 反之，在中序线索树中找结点前驱的规律是：
+ * 若其左标志为1，则左链为线索，指示其前驱，否则遍历左子树时最后访问的一个结点（左子树中最右下的结点）为其前驱。
+ *
+ *
+ */
