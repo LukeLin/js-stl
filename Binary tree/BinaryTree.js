@@ -385,7 +385,6 @@ BinaryTree.prototype = {
         return height * max;
     },
     // 求深度等于书的高度减一的最靠左的结点
-    // todo
     printPath_maxDepthS1: function(){
         var maxh = this.getDepth();
         var path = [];
@@ -397,7 +396,9 @@ BinaryTree.prototype = {
             path[h] = tree;
 
             if(h == maxh - 1){
-                for(var i = 1; path[i]; i++) console.log(path[i].data);
+                var s = ' ';
+                for(var i = 1; path[i]; i++) s += path[i].data + (path[i + 1] ? ' -> ' : '');
+                console.log(s);
                 return;
             } else {
                 if(tree.leftChild) find_h(tree.leftChild, h + 1);
@@ -406,6 +407,18 @@ BinaryTree.prototype = {
 
             path[h] = null;
         }
+    },
+    // 求树结点的子孙总数填入descNum域中，并返回
+    descNum: function(){
+        return  function recurse(node){
+            var d;
+            if(!node) return -1;
+            else d = recurse(node.leftChild) + recurse(node.rightChild) + 2;
+
+            node.descNum = d;
+
+            return d;
+        }(this);
     }
 };
 
@@ -497,6 +510,7 @@ console.log('expect true: ' + BinaryTree.isFullBinaryTree(newTree));
 console.log('lush degree: ' + test.lushDegree());
 
 test.printPath_maxDepthS1();
+console.log(test.descNum());
 
 
 // 有mark域和双亲指针域的二叉树结点类型
