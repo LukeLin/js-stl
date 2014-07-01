@@ -610,5 +610,162 @@ PBTNode.prototype = {
  * 反之，在中序线索树中找结点前驱的规律是：
  * 若其左标志为1，则左链为线索，指示其前驱，否则遍历左子树时最后访问的一个结点（左子树中最右下的结点）为其前驱。
  *
+ * 在后序线索树中找结点后继可分三种情况：
+ * 1）若结点x是二叉树的根，则其后继为空；
+ * 2）若结点x是其双亲的右孩子或是其双亲的左孩子且其双亲没有右子树，则其后继即为双亲结点；
+ * 3）若结点x是其双亲的左孩子，且其双亲有右子树，则其后继为双亲的右子树上按后续为双亲的右子树上按后序遍历列出的第一个结点；
  *
+ * 若在某程序中所用二叉树需经常遍历或查找结点在遍历所得线性序列中的前驱和后继，则应采用线索链表作存储结构。
  */
+var LINK = 0;
+var THREAD = 1;
+
+function BinaryThreadTree_inOrder(data, leftChild, rightChild){
+    this.data = data;
+    this.leftChild = leftChild || null;
+    this.rightChild = rightChild || null;
+    // 左右标记
+    this.leftTag = this.rightTag = undefined;
+}
+BinaryThreadTree_inOrder.prototype = {
+    constructor: BinaryThreadTree_inOrder,
+    inOrderTraverse_thread: function(visit){
+        var p = this.leftChild;
+
+        while(p != this){
+            while(p.leftTag === LINK) p = p.leftChild;
+
+            if(visit(p.data) === false) return;
+
+            while(p.rightTag == THREAD && p.rightChild != this){
+                p = p.rightChild;
+                visit(p.data);
+            }
+            p = p.rightChild;
+        }
+    },
+    inOrderThreading: function(){
+        return inOrderThreading(this);
+    },
+    // 在当前结点插入子树x，p代表当前结点
+    insertSubTree: function(xTree){
+        var s, q;
+        // x作为p的左子树
+        if(this.leftTag === THREAD) {
+            s = this.leftChild; // s为p的前驱
+            this.leftTag = LINK;
+            this.leftChild = xTree;
+            q = xTree;
+
+            while(q.leftChild && q.leftTag === LINK) q = q.leftChild;
+            // 找到子树中的最左结点，并修改其前驱指向s
+            q.leftChild = s;
+            xTree.rightTag = THREAD;
+            // x的后继指向p
+            xTree.rightChild = this;
+        }
+        // x作为p的右子树
+        else if(this.rightTag === THREAD){
+            // s为p的后继
+            s = this.rightChild;
+            this.rightTag = LINK;
+            this.rightChild = xTree;
+            q = xTree;
+
+            while(q.leftChild && q.leftTag === LINK) q = q.leftChild;
+            // 找到子树中的最左结点，并修改其前驱指向p
+            q.leftChild = this;
+            xTree.rightTag = THREAD;
+            // x的后继指向p的后继
+            xTree.rightChild = s;
+        }
+        // x作为p的左子树，p的左子树作为x的右子树
+        else {
+            s = this.leftChild;
+            var t = s;
+
+            while(t.leftChild && t.leftTag === LINK) t = t.leftChild;
+            // 找到p的左子树的最左结点t和前驱u
+            var u = t.leftChild;
+            this.leftChild = xTree;
+            xTree.rightTag = LINK;
+            // x作为p的左子树，p的左子树作为x的右子树
+            xTree.rightChild = s;
+            t.leftChild = xTree;
+            q = xTree;
+
+            while(q.leftChild && q.leftTag === LINK) q = q.leftChild;
+            // 找到子树中的最左结点，并修改其前驱指向u
+            q.leftChild = u;
+        }
+    }
+};
+
+// 二叉树中序线索化
+function inOrderThreading(tree){
+    var threadTree = new BinaryThreadTree();
+    threadTree.leftTag = LINK;
+    threadTree.rightTag = THREAD;
+    // 右指针回指
+    threadTree.rightChild = threadTree;
+
+    var pre;
+    // 若二叉树为空，左指针回指
+    if(!tree) threadTree.leftChild = threadTree;
+    else {
+        threadTree.leftChild = tree;
+        pre = threadTree;
+        inThreading(tree);  // 中序遍历进行中序线索化
+        // 最后一个结点线索化
+        pre.rightChild = threadTree;
+        pre.rightTag = THREAD;
+        threadTree.rightChild = pre;
+    }
+
+    return threadTree;
+
+    function inThreading(p){
+        if(!p) return;
+
+        inThreading(p.leftChild);   // 左子树线索化
+        // 前驱线索
+        if(!p.leftChild) {
+            p.leftTag = THREAD;
+            p.leftChild = pre;
+        }
+        // 后继线索
+        if(!pre.rightChild){
+            pre.rightTag = THREAD;
+            pre.rightChild = p;
+        }
+        pre = p;
+        inThreading(p.rightChild);  // 右子树线索化
+    }
+}
+
+// 在先序后继线索二叉树中查找结点p的先序后继
+function preOrder_next(p){
+    return p.leftChild ? p.leftChild : p.rightChild;
+}
+
+function postOrder_next(node){
+    // p有后继线索
+    if(node.rightTag === THREAD) return node.rightChild;
+    // p是根结点
+    else if(!node.parent) return null;
+    // p是右孩子
+    else if(node == node.parent.rightChild) return node.parent;
+    // p是左孩子且其双亲没有右孩子
+    else if(node == node.parent.leftChild && node.parent.rightTag === THREAD) return node.parent;
+    // p是左孩子且双亲有右孩子
+    else {
+        var q = node.parent.rightChild;
+        // 从p的双亲的右孩子向下走到底
+        while(q.leftChild || q.rightTag === LINK){
+            if(q.leftChild) q = q.leftChild;
+            else q = q.rightChild;
+        }
+
+        return q;
+    }
+}
