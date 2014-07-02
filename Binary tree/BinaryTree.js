@@ -769,3 +769,75 @@ function postOrder_next(node){
         return q;
     }
 }
+
+/**
+ * 树的3种常用链表结构
+ */
+
+// 1.双亲表示法
+// 优点：parent(tree, x)操作可以在常量时间内实现
+// 缺点：求结点的孩子时需要遍历整个结构
+function ParentTree(){
+    this.nodes = [];
+}
+function ParentTreeNode(data, parent){
+    // type: ParentTree
+    this.data = data || null;
+    // 双亲位置域 {Number}
+    this.parent = parent || 0;
+}
+var pt = new ParentTree();
+pt.nodes.push(new ParentTreeNode('R', -1));
+pt.nodes.push(new ParentTreeNode('A', 0));
+pt.nodes.push(new ParentTreeNode('B', 0));
+pt.nodes.push(new ParentTreeNode('C', 0));
+pt.nodes.push(new ParentTreeNode('D', 1));
+pt.nodes.push(new ParentTreeNode('E', 1));
+pt.nodes.push(new ParentTreeNode('F', 3));
+pt.nodes.push(new ParentTreeNode('G', 6));
+pt.nodes.push(new ParentTreeNode('H', 6));
+pt.nodes.push(new ParentTreeNode('I', 6));
+
+
+// 孩子表示法
+
+function ChildTree(){
+    this.data = [];
+}
+/**
+ *
+ * @param {*} data
+ * @param {ChildTreeNode} firstChild 孩子链表头指针
+ * @constructor
+ */
+function ChildTreeBox(data, firstChild){
+    this.data = data;
+    this.firstChild = firstChild;
+}
+/**
+ * 孩子结点
+ *
+ * @param {Number} child
+ * @param {ChildTreeNode} next
+ * @constructor
+ */
+function ChildTreeNode(child, next){
+    this.child = child;
+    this.next = next;
+}
+
+/*
+孩子表示法便于涉及孩子的操作的实现，但不适用于parent操作。
+我们可以把双亲表示法和孩子表示法结合起来。
+ */
+
+
+// 孩子兄弟表示法(二叉树表示法)
+// 可增设一个parent域实现parent操作
+function ChildSiblingTree(data){
+    this.data = data || null;
+    this.firstChild = null;
+    this.nextSibling = null;
+}
+
+
