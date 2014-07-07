@@ -6,9 +6,9 @@
  * （2）当n>1时，其余结点可分为m(m>0)个互不相交的有限集T1,T2,T3,...Tm，其中每一个集合本身又是一棵树，并且称为根的子树（Subtree）。
  *
  * 例如，（a）是只有一个根结点的树；
- * （b）是有13个结点的树，其中A是根，其余结点分成3个互不相交的子集：T1={B,oushiE,F,K,L},t2={D,H,I,J,M};T1,T2和T3都是根A的子树，且本身也是一棵树。
+ * （b）是有13个结点的树，其中A是根，其余结点分成3个互不相交的子集：T1={B,E,F,K,L},t2={D,H,I,J,M};T1,T2和T3都是根A的子树，且本身也是一棵树。
  *
- * 树的结点包含一个数据元素及若干指向其子树的分支。结点拥有的子树数称为结点的度（Degree）。例如，（b）中A的度为3，C的度为1，F的度为0.度为0的结点称为叶子（Leaf）或者终端结点。度不为0的结点称为非终端结点或分支结点。树的度是树内各结点的度的最大值。（b）的树的度为3.__defineGetter__结点的子树的根称为该结点的孩子（Child）。相应的，该结点称为孩子的双亲（Parent）。同一个双亲的孩子之间互称兄弟（Sibling）。结点的祖先是从根到该结点所经分支上的所有结点。反之，以某结点为根的子树中的任一结点都称为该结点的子孙。
+ * 树的结点包含一个数据元素及若干指向其子树的分支。结点拥有的子树数称为结点的度（Degree）。例如，（b）中A的度为3，C的度为1，F的度为0.度为0的结点称为叶子（Leaf）或者终端结点。度不为0的结点称为非终端结点或分支结点。树的度是树内各结点的度的最大值。（b）的树的度为3.结点的子树的根称为该结点的孩子（Child）。相应的，该结点称为孩子的双亲（Parent）。同一个双亲的孩子之间互称兄弟（Sibling）。结点的祖先是从根到该结点所经分支上的所有结点。反之，以某结点为根的子树中的任一结点都称为该结点的子孙。
  * 结点的层次（Level）从根开始定义起，根为第一层，跟的孩子为第二层。若某结点在第l层，则其子树的根就在第l+1层。其双亲在同一层的结点互为堂兄弟。例如，结点G与E，F,H,I,J互为堂兄弟。树中结点的最大层次称为树的深度（Depth）或高度。（b）的树的深度为4。
  *
  * 如果将树中结点的各子树看成从左至右是有次序的（即不能交换），则称该树为有序树，否则称为无序树。在有序树中最左边的子树的根称为第一个孩子，最右边的称为最后一个孩子。
@@ -385,34 +385,34 @@ BinaryTree.prototype = {
         return height * max;
     },
     // 求深度等于书的高度减一的最靠左的结点
-    printPath_maxDepthS1: function(){
+    printPath_maxDepthS1: function () {
         var maxh = this.getDepth();
         var path = [];
 
-        if(maxh < 2) return false;
+        if (maxh < 2) return false;
         find_h(this, 1);
 
-        function find_h(tree, h){
+        function find_h(tree, h) {
             path[h] = tree;
 
-            if(h == maxh - 1){
+            if (h == maxh - 1) {
                 var s = ' ';
-                for(var i = 1; path[i]; i++) s += path[i].data + (path[i + 1] ? ' -> ' : '');
+                for (var i = 1; path[i]; i++) s += path[i].data + (path[i + 1] ? ' -> ' : '');
                 console.log(s);
                 return;
             } else {
-                if(tree.leftChild) find_h(tree.leftChild, h + 1);
-                if(tree.rightChild) find_h(tree.rightChild, h + 1);
+                if (tree.leftChild) find_h(tree.leftChild, h + 1);
+                if (tree.rightChild) find_h(tree.rightChild, h + 1);
             }
 
             path[h] = null;
         }
     },
     // 求树结点的子孙总数填入descNum域中，并返回
-    descNum: function(){
-        return  function recurse(node){
+    descNum: function () {
+        return  function recurse(node) {
             var d;
-            if(!node) return -1;
+            if (!node) return -1;
             else d = recurse(node.leftChild) + recurse(node.rightChild) + 2;
 
             node.descNum = d;
@@ -461,7 +461,7 @@ function findPath(tree, node, path, i) {
 
 var global = Function('return this;')();
 
-void function test(){
+void function test() {
     var tree = [1, 2, 3, 4, 5, , 6, , , 7];
     var test = new BinaryTree;
     test.createBinaryTree(tree);
@@ -620,7 +620,7 @@ PBTNode.prototype = {
 var LINK = 0;
 var THREAD = 1;
 
-function BinaryThreadTree_inOrder(data, leftChild, rightChild){
+function BinaryThreadTree_inOrder(data, leftChild, rightChild) {
     this.data = data;
     this.leftChild = leftChild || null;
     this.rightChild = rightChild || null;
@@ -629,35 +629,35 @@ function BinaryThreadTree_inOrder(data, leftChild, rightChild){
 }
 BinaryThreadTree_inOrder.prototype = {
     constructor: BinaryThreadTree_inOrder,
-    inOrderTraverse_thread: function(visit){
+    inOrderTraverse_thread: function (visit) {
         var p = this.leftChild;
 
-        while(p != this){
-            while(p.leftTag === LINK) p = p.leftChild;
+        while (p != this) {
+            while (p.leftTag === LINK) p = p.leftChild;
 
-            if(visit(p.data) === false) return;
+            if (visit(p.data) === false) return;
 
-            while(p.rightTag == THREAD && p.rightChild != this){
+            while (p.rightTag == THREAD && p.rightChild != this) {
                 p = p.rightChild;
                 visit(p.data);
             }
             p = p.rightChild;
         }
     },
-    inOrderThreading: function(){
+    inOrderThreading: function () {
         return inOrderThreading(this);
     },
     // 在当前结点插入子树x，p代表当前结点
-    insertSubTree: function(xTree){
+    insertSubTree: function (xTree) {
         var s, q;
         // x作为p的左子树
-        if(this.leftTag === THREAD) {
+        if (this.leftTag === THREAD) {
             s = this.leftChild; // s为p的前驱
             this.leftTag = LINK;
             this.leftChild = xTree;
             q = xTree;
 
-            while(q.leftChild && q.leftTag === LINK) q = q.leftChild;
+            while (q.leftChild && q.leftTag === LINK) q = q.leftChild;
             // 找到子树中的最左结点，并修改其前驱指向s
             q.leftChild = s;
             xTree.rightTag = THREAD;
@@ -665,14 +665,14 @@ BinaryThreadTree_inOrder.prototype = {
             xTree.rightChild = this;
         }
         // x作为p的右子树
-        else if(this.rightTag === THREAD){
+        else if (this.rightTag === THREAD) {
             // s为p的后继
             s = this.rightChild;
             this.rightTag = LINK;
             this.rightChild = xTree;
             q = xTree;
 
-            while(q.leftChild && q.leftTag === LINK) q = q.leftChild;
+            while (q.leftChild && q.leftTag === LINK) q = q.leftChild;
             // 找到子树中的最左结点，并修改其前驱指向p
             q.leftChild = this;
             xTree.rightTag = THREAD;
@@ -684,7 +684,7 @@ BinaryThreadTree_inOrder.prototype = {
             s = this.leftChild;
             var t = s;
 
-            while(t.leftChild && t.leftTag === LINK) t = t.leftChild;
+            while (t.leftChild && t.leftTag === LINK) t = t.leftChild;
             // 找到p的左子树的最左结点t和前驱u
             var u = t.leftChild;
             this.leftChild = xTree;
@@ -694,7 +694,7 @@ BinaryThreadTree_inOrder.prototype = {
             t.leftChild = xTree;
             q = xTree;
 
-            while(q.leftChild && q.leftTag === LINK) q = q.leftChild;
+            while (q.leftChild && q.leftTag === LINK) q = q.leftChild;
             // 找到子树中的最左结点，并修改其前驱指向u
             q.leftChild = u;
         }
@@ -702,7 +702,7 @@ BinaryThreadTree_inOrder.prototype = {
 };
 
 // 二叉树中序线索化
-function inOrderThreading(tree){
+function inOrderThreading(tree) {
     var threadTree = new BinaryThreadTree();
     threadTree.leftTag = LINK;
     threadTree.rightTag = THREAD;
@@ -711,7 +711,7 @@ function inOrderThreading(tree){
 
     var pre;
     // 若二叉树为空，左指针回指
-    if(!tree) threadTree.leftChild = threadTree;
+    if (!tree) threadTree.leftChild = threadTree;
     else {
         threadTree.leftChild = tree;
         pre = threadTree;
@@ -724,17 +724,17 @@ function inOrderThreading(tree){
 
     return threadTree;
 
-    function inThreading(p){
-        if(!p) return;
+    function inThreading(p) {
+        if (!p) return;
 
         inThreading(p.leftChild);   // 左子树线索化
         // 前驱线索
-        if(!p.leftChild) {
+        if (!p.leftChild) {
             p.leftTag = THREAD;
             p.leftChild = pre;
         }
         // 后继线索
-        if(!pre.rightChild){
+        if (!pre.rightChild) {
             pre.rightTag = THREAD;
             pre.rightChild = p;
         }
@@ -744,25 +744,25 @@ function inOrderThreading(tree){
 }
 
 // 在先序后继线索二叉树中查找结点p的先序后继
-function preOrder_next(p){
+function preOrder_next(p) {
     return p.leftChild ? p.leftChild : p.rightChild;
 }
 
-function postOrder_next(node){
+function postOrder_next(node) {
     // p有后继线索
-    if(node.rightTag === THREAD) return node.rightChild;
+    if (node.rightTag === THREAD) return node.rightChild;
     // p是根结点
-    else if(!node.parent) return null;
+    else if (!node.parent) return null;
     // p是右孩子
-    else if(node == node.parent.rightChild) return node.parent;
+    else if (node == node.parent.rightChild) return node.parent;
     // p是左孩子且其双亲没有右孩子
-    else if(node == node.parent.leftChild && node.parent.rightTag === THREAD) return node.parent;
+    else if (node == node.parent.leftChild && node.parent.rightTag === THREAD) return node.parent;
     // p是左孩子且双亲有右孩子
     else {
         var q = node.parent.rightChild;
         // 从p的双亲的右孩子向下走到底
-        while(q.leftChild || q.rightTag === LINK){
-            if(q.leftChild) q = q.leftChild;
+        while (q.leftChild || q.rightTag === LINK) {
+            if (q.leftChild) q = q.leftChild;
             else q = q.rightChild;
         }
 
@@ -774,13 +774,13 @@ function postOrder_next(node){
  * 树的3种常用链表结构
  */
 
-// 1.双亲表示法
-// 优点：parent(tree, x)操作可以在常量时间内实现
-// 缺点：求结点的孩子时需要遍历整个结构
-function ParentTree(){
+    // 1.双亲表示法
+    // 优点：parent(tree, x)操作可以在常量时间内实现
+    // 缺点：求结点的孩子时需要遍历整个结构
+function ParentTree() {
     this.nodes = [];
 }
-function ParentTreeNode(data, parent){
+function ParentTreeNode(data, parent) {
     // type: ParentTree
     this.data = data || null;
     // 双亲位置域 {Number}
@@ -801,7 +801,7 @@ pt.nodes.push(new ParentTreeNode('I', 6));
 
 // 孩子表示法
 
-function ChildTree(){
+function ChildTree() {
     this.data = [];
 }
 /**
@@ -810,7 +810,7 @@ function ChildTree(){
  * @param {ChildTreeNode} firstChild 孩子链表头指针
  * @constructor
  */
-function ChildTreeBox(data, firstChild){
+function ChildTreeBox(data, firstChild) {
     this.data = data;
     this.firstChild = firstChild;
 }
@@ -821,7 +821,7 @@ function ChildTreeBox(data, firstChild){
  * @param {ChildTreeNode} next
  * @constructor
  */
-function ChildTreeNode(child, next){
+function ChildTreeNode(child, next) {
     this.child = child;
     this.next = next;
 }
@@ -834,10 +834,55 @@ function ChildTreeNode(child, next){
 
 // 孩子兄弟表示法(二叉树表示法)
 // 可增设一个parent域实现parent操作
-function ChildSiblingTree(data){
+function ChildSiblingTree(data) {
     this.data = data || null;
     this.firstChild = null;
     this.nextSibling = null;
 }
+ChildSiblingTree.prototype = {
+    // 输出孩子兄弟链表表示的树的各边
+    print: function print() {
+        for (var child = this.firstChild; child; child = child.nextSibling) {
+            console.log('%c %c', this.data, child.data);
+            print.call(child);
+        }
+    },
+    // 求孩子兄弟链表表示的树的叶子数目
+    leafCount: function leafCount() {
+        if (!this.firstChild) return 1;
+        else {
+            var count = 0;
+            for (var child = this.firstChild; child; child = child.nextSibling) {
+                count += leafCount.call(child);
+            }
+            return count;
+        }
+    },
+    // 求树的度
+    getDegree: function getDegree() {
+        if (!this.firstChild) return 0;
+        else {
+            var degree = 0;
+            for (var p = this.firstChild; p; p = p.nextSibling) degree++;
 
+            for (p = this.firstChild; p; p = p.nextSibling) {
+                var d = getDegree.call(p);
+                if (d > degree) degree = d;
+            }
+
+            return degree;
+        }
+    },
+    getDepth: function getDepth() {
+        if (this === global) return 0;
+        else {
+            for (var maxd = 0, p = this.firstChild; p; p = p.nextSibling) {
+                var d = getDepth.call(p);
+                if (d > maxd) maxd = d;
+            }
+
+            return maxd + 1;
+        }
+    }
+};
 
