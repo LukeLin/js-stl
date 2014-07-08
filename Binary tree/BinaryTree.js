@@ -780,6 +780,20 @@ function postOrder_next(node) {
 function ParentTree() {
     this.nodes = [];
 }
+ParentTree.prototype = {
+    constructor: ParentTree,
+    getDepth: function(){
+        var maxDepth = 0;
+
+        for(var i = 0; i < this.nodes.length; i++){
+            var dep = 0;
+            for(var j = i; j >= 0; j = this.nodes[i].parent) dep++;
+            if(dep > maxDepth) maxDepth = dep;
+        }
+
+        return maxDepth;
+    }
+};
 function ParentTreeNode(data, parent) {
     // type: ParentTree
     this.data = data || null;
@@ -802,8 +816,24 @@ pt.nodes.push(new ParentTreeNode('I', 6));
 // 孩子表示法
 
 function ChildTree() {
-    this.data = [];
+    this.nodes = [];
 }
+ChildTree.prototype = {
+    constructor: ChildTree,
+    getDepth: function(){
+        var self  = this;
+        return function subDepth(rootIndex){
+            if(!self.nodes[rootIndex]) return 1;
+
+            for(var sd = 1, p = self.nodes[rootIndex]; p; p = p.next){
+                var d = subDepth(p.child);
+                if(d > sd) sd = d;
+            }
+
+            return sd + 1;
+        }(this.data[0]);
+    }
+};
 /**
  *
  * @param {*} data
@@ -885,4 +915,5 @@ ChildSiblingTree.prototype = {
         }
     }
 };
+
 
