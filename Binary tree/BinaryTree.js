@@ -1003,3 +1003,14 @@ http://zh.wikipedia.org/wiki/%E9%9C%8D%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81
 可利用二叉树来设计二进制的前缀编码。假设有一棵二叉树，其4个叶子结点分别表示A,B,C,D这4个字符，且约定左分支表示字符“0”，右分支表示字符“1”，则可以从根结点到叶子结点的路径上分支字符组成的字符串作为该叶子结点字符的编码。所得二进制前缀编码分别为0,10,110,111.
 设计电文总长最短的二进制前缀编码即以n种字符出现的频率作权。
  */
+
+// 赫夫曼树和赫夫曼编码的存储结构
+function HuffmanTree(){
+    this.weight = 0;
+    this.parent = 0;
+    this.leftChild = 0;
+    this.rightChild = 0;
+}
+function huffManCoding(){
+
+}
