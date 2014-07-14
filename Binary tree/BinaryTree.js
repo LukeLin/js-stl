@@ -1005,12 +1005,42 @@ http://zh.wikipedia.org/wiki/%E9%9C%8D%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81
  */
 
 // 赫夫曼树和赫夫曼编码的存储结构
-function HuffmanTree(){
-    this.weight = 0;
-    this.parent = 0;
-    this.leftChild = 0;
-    this.rightChild = 0;
+function HuffmanNode(weight, parent, leftChild, rightChild){
+    this.weight = weight || 0;
+    this.parent = parent || 0;
+    this.leftChild = leftChild || 0;
+    this.rightChild = rightChild || 0;
 }
-function huffManCoding(){
+function huffManCoding(weights, n){
+    if(n < 1) return;
+
+    var m = 2 * n - 1;
+    var huffmanTree = [];
+
+    for(var i = 0; i < n; i++) {
+        huffmanTree[i] = new HuffmanNode(weights[i], 0, 0, 0);
+    }
+    for(; i < m; i++){
+        huffmanTree[i] = new HuffmanNode(0, 0, 0, 0);
+    }
+
+    // build huffmanTree
+    for(i = n; i < m; i++){
+        // 在HT[1..i-1]选择parent为0且weight最小的两个结点，返回其序号为[s1, s2]
+        var ret = select(huffmanTree, i);
+        var s1 = ret[0];
+        var s2 = ret[1];
+        huffmanTree[s1].parent = i;
+        huffmanTree[s2].parent = i;
+        huffmanTree[i].leftChild = s1;
+        huffmanTree[i].rightChild = s2;
+        huffmanTree[i].weight = huffmanTree[s1].weight + huffmanTree[s2].weight;
+    }
+
+    // 从叶子到根逆向求每个字符的赫夫曼编码
+
+}
+
+function select(huffmanTree, index){
 
 }
