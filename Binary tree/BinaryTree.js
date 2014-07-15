@@ -1011,18 +1011,17 @@ function HuffmanNode(weight, parent, leftChild, rightChild){
     this.leftChild = leftChild || 0;
     this.rightChild = rightChild || 0;
 }
-function huffManCoding(weights, n){
+function huffManCoding(weights){
+    var n = weights.length;
     if(n < 1) return;
 
     var m = 2 * n - 1;
     var huffmanTree = [];
 
-    for(var i = 0; i < n; i++) {
+    for(var i = 0; i < n; i++)
         huffmanTree[i] = new HuffmanNode(weights[i], 0, 0, 0);
-    }
-    for(; i < m; i++){
+    for(; i < m; i++)
         huffmanTree[i] = new HuffmanNode(0, 0, 0, 0);
-    }
 
     // build huffmanTree
     for(i = n; i < m; i++){
@@ -1038,9 +1037,53 @@ function huffManCoding(weights, n){
     }
 
     // 从叶子到根逆向求每个字符的赫夫曼编码
+    var hc = [];
+    var cd = [];
+    for(i = 0; i < n; i++){
+        var start = n - 1;
+        for(var c = i, f = huffmanTree[i].parent; f != 0; c = f, f = huffmanTree[f].parent){
+            if(huffmanTree[f].leftChild == c) cd[--start] = '0';
+            else cd[--start] = '1';
+        }
 
+        hc[i] = strCopy(cd, start);
+    }
+
+    return [huffmanTree, hc];
 }
 
-function select(huffmanTree, index){
-
+function strCopy(str, start){
+    var s = '';
+    for(; str[start]; start++){
+        s += str[start];
+    }
+    return s;
 }
+
+function select(huffmanTree, len){
+    var ret = [];
+    for(var i = 0; i < len; i++){
+        var node = huffmanTree[i];
+        if(node.parent !== 0) continue;
+
+        if(ret.length < 2) {
+            ret.push(i);
+        } else {
+            var index = huffmanTree[ret[0]].weight > huffmanTree[ret[1]].weight
+                ? 0 : 1;
+
+            if(node.weight < huffmanTree[ret[index]].weight)
+                ret[index] = i;
+        }
+    }
+
+    if(ret[0] > ret[1]) {
+        var temp = ret[0];
+        ret[0] = ret[1];
+        ret[1] = temp;
+    }
+
+    return ret;
+}
+
+console.log(huffManCoding([5, 29, 7, 8, 14, 23, 3, 11]));
