@@ -1039,7 +1039,7 @@ function calcHuffmanCode(huffmanTree, n) {
     // 从叶子到根逆向求每个字符的赫夫曼编码
     var hc = [];
     var cd = [];
-    for (i = 0; i < n; i++) {
+    for (var i = 0; i < n; i++) {
         var start = n - 1;
         for (var c = i, f = huffmanTree[i].parent; f != 0; c = f, f = huffmanTree[f].parent) {
             if (huffmanTree[f].leftChild == c) cd[--start] = '0';
