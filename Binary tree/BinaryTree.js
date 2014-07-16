@@ -938,9 +938,9 @@ MFSet.prototype = {
      * @param {Number} i
      */
     find: function (i) {
-        if(i < 0 || i > this.nodes.length - 1) return -1;
+        if (i < 0 || i > this.nodes.length - 1) return -1;
         // 找集合S中i所在子集的根
-        for(var j = i; this.nodes[j].parent > 0; j = this.nodes[j].parent);
+        for (var j = i; this.nodes[j].parent > 0; j = this.nodes[j].parent);
 
         return j;
     },
@@ -950,16 +950,16 @@ MFSet.prototype = {
      * @param {Number} j
      */
     merge: function (i, j) {
-        if(i < 0 || i > this.nodes.length - 1 || j < 0 || j < this.nodes.length) return false;
+        if (i < 0 || i > this.nodes.length - 1 || j < 0 || j < this.nodes.length) return false;
         // this.nodes[i]和this.nodes[j]分别为S的互不相交的两个子集Si和Sj的根结点
         this.nodes[i].parent = j;
         return true;
     },
     //并集Si和Sj
     mix: function (i, j) {
-        if(i < 0 || i > this.nodes.length - 1 || j < 0 || j > this.nodes.length - 1) return false;
+        if (i < 0 || i > this.nodes.length - 1 || j < 0 || j > this.nodes.length - 1) return false;
         // Si所含成员数比Sj少
-        if(this.nodes[i].parent > this.nodes[j].parent) {
+        if (this.nodes[i].parent > this.nodes[j].parent) {
             this.nodes[j].parent += this.nodes[i].parent;
             this.nodes[i].parent = j;
         } else {
@@ -970,11 +970,11 @@ MFSet.prototype = {
     // 压缩路径
     // 确定i所在子集，并将从i至根路径上所有结点都变成根的孩子结点
     fix: function (i) {
-        if(i < 0 || i > this.nodes.length - 1) return false;
+        if (i < 0 || i > this.nodes.length - 1) return false;
 
-        for(var j = i; this.nodes[j].parent > 0; j = this.nodes[j].parent);
+        for (var j = i; this.nodes[j].parent > 0; j = this.nodes[j].parent);
 
-        for(var k = i, t = this.nodes[k].parent; k !== j; k = t) this.nodes[k].parent = j;
+        for (var k = i, t = this.nodes[k].parent; k !== j; k = t) this.nodes[k].parent = j;
     }
 };
 
@@ -1005,26 +1005,108 @@ http://zh.wikipedia.org/wiki/%E9%9C%8D%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81
  */
 
 // 赫夫曼树和赫夫曼编码的存储结构
-function HuffmanNode(weight, parent, leftChild, rightChild){
+function HuffmanNode(weight, parent, leftChild, rightChild) {
     this.weight = weight || 0;
     this.parent = parent || 0;
     this.leftChild = leftChild || 0;
     this.rightChild = rightChild || 0;
 }
-function huffManCoding(weights){
+function huffManCoding(weights) {
     var n = weights.length;
-    if(n < 1) return;
+    if (n < 1) return;
 
+    var huffmanTree = buildHuffmanTree(weights, n);
+
+    // 从叶子到根逆向求每个字符的赫夫曼编码
+    var hc = calcHuffmanCode(huffmanTree, n);
+
+    return [huffmanTree, hc];
+}
+
+function huffManCoding2(weights) {
+    var n = weights.length;
+    if (n < 1) return;
+
+    var huffmanTree = buildHuffmanTree(weights, n);
+
+    // 从叶子到根逆向求每个字符的赫夫曼编码
+    var hc = calcHuffmanCode2(huffmanTree, n);
+
+    return [huffmanTree, hc];
+}
+
+function calcHuffmanCode(huffmanTree, n) {
+    // 从叶子到根逆向求每个字符的赫夫曼编码
+    var hc = [];
+    var cd = [];
+    for (i = 0; i < n; i++) {
+        var start = n - 1;
+        for (var c = i, f = huffmanTree[i].parent; f != 0; c = f, f = huffmanTree[f].parent) {
+            if (huffmanTree[f].leftChild == c) cd[--start] = '0';
+            else cd[--start] = '1';
+        }
+
+        hc[i] = strCopy(cd, start);
+    }
+
+    return hc;
+}
+
+// 无栈非递归遍历赫夫曼树
+// todo
+function calcHuffmanCode2(huffmanTree, n) {
+    var p = 2 * n - 2;
+    var hc = [];
+    var cd = [];
+    var cdLen = 0;
+
+    // 遍历赫夫曼树时用作结点状态标识
+    for (var i = 0; i <= p; i++) huffmanTree[i].weight = 0;
+
+    while (p) {
+        // 向左
+        if (huffmanTree[p].weight == 0) {
+            huffmanTree[p].weight = 1;
+            if (huffmanTree[p].leftChild != 0) {
+                p = huffmanTree[p].leftChild;
+                cd[cdLen++] = '0';
+            }
+            // 登记叶子结点的字符的编码
+            else if (huffmanTree[p].rightChild == 0) {
+                hc[p - 1] = cd.join('');
+            }
+        }
+        // 向右
+        else if (huffmanTree[p].weight == 1) {
+            huffmanTree[p].weight = 2;
+            if (huffmanTree[p].rightChild != 0) {
+                p = huffmanTree[p].rightChild;
+                cd[cdLen++] = '1';
+            }
+        }
+        // huffmanTree[p].weight == 2，退回
+        // 退到父节点，编码长度减一
+        else {
+            huffmanTree[p].weight = 0;
+            p = huffmanTree[p].parent;
+            --cdLen;
+        }
+    }
+
+    return hc;
+}
+
+function buildHuffmanTree(weights, n) {
+    n = n || weights.length;
     var m = 2 * n - 1;
     var huffmanTree = [];
 
-    for(var i = 0; i < n; i++)
+    for (var i = 0; i < n; i++)
         huffmanTree[i] = new HuffmanNode(weights[i], 0, 0, 0);
-    for(; i < m; i++)
+    for (; i < m; i++)
         huffmanTree[i] = new HuffmanNode(0, 0, 0, 0);
 
-    // build huffmanTree
-    for(i = n; i < m; i++){
+    for (i = n; i < m; i++) {
         // 在HT[1..i-1]选择parent为0且weight最小的两个结点，返回其序号为[s1, s2]
         var ret = select(huffmanTree, i);
         var s1 = ret[0];
@@ -1036,48 +1118,35 @@ function huffManCoding(weights){
         huffmanTree[i].weight = huffmanTree[s1].weight + huffmanTree[s2].weight;
     }
 
-    // 从叶子到根逆向求每个字符的赫夫曼编码
-    var hc = [];
-    var cd = [];
-    for(i = 0; i < n; i++){
-        var start = n - 1;
-        for(var c = i, f = huffmanTree[i].parent; f != 0; c = f, f = huffmanTree[f].parent){
-            if(huffmanTree[f].leftChild == c) cd[--start] = '0';
-            else cd[--start] = '1';
-        }
-
-        hc[i] = strCopy(cd, start);
-    }
-
-    return [huffmanTree, hc];
+    return huffmanTree;
 }
 
-function strCopy(str, start){
+function strCopy(str, start) {
     var s = '';
-    for(; str[start]; start++){
+    for (; str[start]; start++) {
         s += str[start];
     }
     return s;
 }
 
-function select(huffmanTree, len){
+function select(huffmanTree, len) {
     var ret = [];
-    for(var i = 0; i < len; i++){
+    for (var i = 0; i < len; i++) {
         var node = huffmanTree[i];
-        if(node.parent !== 0) continue;
+        if (node.parent !== 0) continue;
 
-        if(ret.length < 2) {
+        if (ret.length < 2) {
             ret.push(i);
         } else {
             var index = huffmanTree[ret[0]].weight > huffmanTree[ret[1]].weight
                 ? 0 : 1;
 
-            if(node.weight < huffmanTree[ret[index]].weight)
+            if (node.weight < huffmanTree[ret[index]].weight)
                 ret[index] = i;
         }
     }
 
-    if(ret[0] > ret[1]) {
+    if (ret[0] > ret[1]) {
         var temp = ret[0];
         ret[0] = ret[1];
         ret[1] = temp;
@@ -1086,4 +1155,8 @@ function select(huffmanTree, len){
     return ret;
 }
 
+console.log('-------huffman coding 1:------');
 console.log(huffManCoding([5, 29, 7, 8, 14, 23, 3, 11]));
+
+console.log('\n-------huffman coding 2:------');
+console.log(huffManCoding2([5, 29, 7, 8, 14, 23, 3, 11]));
