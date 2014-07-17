@@ -1053,7 +1053,7 @@ function calcHuffmanCode(huffmanTree, n) {
 }
 
 // 无栈非递归遍历赫夫曼树
-// todo
+// todo 该算法有问题
 function calcHuffmanCode2(huffmanTree, n) {
     var p = 2 * n - 2;
     var hc = [];
@@ -1160,3 +1160,43 @@ console.log(huffManCoding([5, 29, 7, 8, 14, 23, 3, 11]));
 
 console.log('\n-------huffman coding 2:------');
 console.log(huffManCoding2([5, 29, 7, 8, 14, 23, 3, 11]));
+
+/*
+回溯法与树的遍历
+
+在程序设计中，有相当一类求一组解，或求全部解或求最优解的问题，例如八皇后问题等，不是根据某种确定的计算法则，而是利用试探和回溯（backtracking）的搜索技术求解。回溯法也是设计递归过程的一种重要方法，它的求解过程实质上是一个选序遍历一棵“状态树”的过程，只是这棵树不是遍历前预先建立的，而是隐含在遍历过程中。
+
+求含n个元素的集合的幂集。
+集合A的幂集是由集合A的所有子集所组成的集合。如：A = {1,2,3}，则A的幂集p(A) = {{1,2,3}, {1,2}, {1,3}, {1}, {2,3}, {2}, {2}, 空集}
+求幂集p(A)的元素的过程可看成是依次对集合A中元素进行“取”或“舍”的过程，并且可用一棵二叉树来表示过程中幂集元素的状态变化状况。
+树中根结点表示幂集元素的初始状态（为空集）；
+叶子结点表示它的终结状态；
+而第i(i=2,3,...,n-1)层的分支结点，则表示已对集合A中前i-1个元素进行了取/舍处理的当前状态（左分支表示“取”，右分支表示“舍”）。
+ */
+
+// 求含集合aList的幂集
+// 进入函数时已对A中前i-1个元素做了取舍处理
+function getPowerSet(i, aList){
+    var bList = [];
+
+    void function recurse(i, aList){
+        if(i > aList.length - 1) console.log('set: ' + bList);
+        else {
+            var x = aList[i];
+            bList.push(x);
+            recurse(i + 1, aList);
+            bList.pop();
+            recurse(i + 1, aList);
+        }
+    }(i, aList);
+
+    return bList;
+}
+
+console.log('getPowerSet:');
+var list = [1, 2, 3];
+console.log('list: ' + getPowerSet(0, list));
+
+
+// 求4皇后问题的所有合法布局
+function trial(){}
