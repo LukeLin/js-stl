@@ -1176,11 +1176,11 @@ console.log(huffManCoding2([5, 29, 7, 8, 14, 23, 3, 11]));
 
 // 求含集合aList的幂集
 // 进入函数时已对A中前i-1个元素做了取舍处理
-function getPowerSet(i, aList){
+function getPowerSet(i, aList) {
     var bList = [];
 
-    void function recurse(i, aList){
-        if(i > aList.length - 1) console.log('set: ' + bList);
+    void function recurse(i, aList) {
+        if (i > aList.length - 1) console.log('set: ' + bList);
         else {
             var x = aList[i];
             bList.push(x);
@@ -1198,5 +1198,37 @@ var list = [1, 2, 3];
 console.log('list: ' + getPowerSet(0, list));
 
 
-// 求4皇后问题的所有合法布局
-function trial(){}
+// 求n皇后问题的所有合法布局
+// todo to be finished
+function Queen(n) {
+    var board = [];
+
+    this.printCurrentLayout = function () {
+
+    };
+
+    this.addPoint = function (i, j) {
+
+    };
+
+    this.isCurrentLayoutLegal = function (i, j) {
+
+    };
+
+    this.removePoint = function (i, j) {};
+
+    this.trial = function trial(i) {
+        if (i > n) this.printCurrentLayout();
+        else {
+            for (var j = 0; j < n; j++) {
+                this.addPoint(i, j);
+                if (this.isCurrentLayoutLegal()) trial(i + 1, n);
+                else this.removePoint(i, j);
+            }
+        }
+    };
+}
+
+/*
+含有n个结点的不相似的二叉树有1/(n+1)*C(n)(2n)棵
+ */
