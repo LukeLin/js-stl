@@ -1199,7 +1199,6 @@ console.log('list: ' + getPowerSet(0, list));
 
 
 // 求n皇后问题的所有合法布局
-// todo to be finished
 function Queen(n) {
     var board = [];
 
@@ -1222,8 +1221,10 @@ function Queen(n) {
         console.log(i);
         if(board[i][j] === 0){
             board[i][j] = 1;
+            return true;
         } else {
             console.log('already occupated!');
+            return false;
         }
     };
 
@@ -1232,16 +1233,6 @@ function Queen(n) {
     };
 
     function checkHorizontal(x, y){
-        for(var i = 0; i < x; i++){
-            if(board[i][y] === 1) return false;
-        }
-        for(i = x + 1; i < n; i++){
-            if(board[i][y] === 1) return false;
-        }
-        return true;
-    }
-
-    function checkVertical(x, y){
         for(var i = 0; i < y; i++){
             if(board[x][i] === 1) return false;
         }
@@ -1251,20 +1242,36 @@ function Queen(n) {
         return true;
     }
 
+    function checkVertical(x, y){
+        for(var i = 0; i < x; i++){
+            if(board[i][y] === 1) return false;
+        }
+        for(i = x + 1; i < n; i++){
+            if(board[i][y] === 1) return false;
+        }
+        return true;
+    }
+
     function checkLeftTop2RightBottom(x, y){
-        var min = x > y ? y : x;
+        var min, max;
+        if(x > y) {
+            max = x;
+            min = y;
+        } else {
+            max = y;
+            min = x;
+        }
         for(var i = 0; i < min; i++){
             if(board[x - i][y - i] === 1) return false;
         }
-        for(i = 1; x + i < n && y + 1 < n; i++){
+        for(i = 1; max + i < n; i++){
             if(board[x + i][y + i] === 1) return false;
         }
         return true;
     }
 
     function checkRightTop2LeftBottom(x, y){
-        var min = x > y ? y : x;
-        for(var i = 0; i < min; i++){
+        for(var i = 0; x - i >= 0 && y + i < n; i++){
             if(board[x - i][y + i] === 1) return false;
         }
         for(i = 1; x + i < n && y - i >= 0; i++){
@@ -1280,14 +1287,16 @@ function Queen(n) {
     };
 
     var me = this;
+    // todo bugs exist
     this.trial = function trial(i) {
         i = i || 0;
-        if (i >= n) me.printCurrentLayout();
+        if (i > n - 1) me.printCurrentLayout();
         else {
             for (var j = 0; j < n; j++) {
-                me.addPoint(i, j);
-                if (me.isCurrentLayoutLegal(i, j)) trial(i + 1, n);
-                else me.removePoint(i, j);
+                if(me.addPoint(i, j)){
+                    if (me.isCurrentLayoutLegal(i, j)) trial(i + 1);
+                    else me.removePoint(i, j);
+                }
             }
         }
     };
