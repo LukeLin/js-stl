@@ -1203,31 +1203,98 @@ console.log('list: ' + getPowerSet(0, list));
 function Queen(n) {
     var board = [];
 
-    this.printCurrentLayout = function () {
+    this.init = function(){
+        for(var i = 0; i < n; i++){
+            board[i] = [];
+            for(var j = 0; j < n; j++){
+                board[i][j] = 0;
+            }
+        }
+    };
 
+    this.init();
+
+    this.printCurrentLayout = function () {
+        console.log(board);
     };
 
     this.addPoint = function (i, j) {
-
+        console.log(i);
+        if(board[i][j] === 0){
+            board[i][j] = 1;
+        } else {
+            console.log('already occupated!');
+        }
     };
 
     this.isCurrentLayoutLegal = function (i, j) {
-
+        return checkHorizontal(i, j) || checkVertical(i, j) || checkLeftTop2RightBottom(i, j) || checkRightTop2LeftBottom(i, j);
     };
 
-    this.removePoint = function (i, j) {};
+    function checkHorizontal(x, y){
+        for(var i = 0; i < x; i++){
+            if(board[i][y] === 1) return false;
+        }
+        for(i = x + 1; i < n; i++){
+            if(board[i][y] === 1) return false;
+        }
+        return true;
+    }
 
+    function checkVertical(x, y){
+        for(var i = 0; i < y; i++){
+            if(board[x][i] === 1) return false;
+        }
+        for(i = y + 1; i < n; i++){
+            if(board[x][i] === 1) return false;
+        }
+        return true;
+    }
+
+    function checkLeftTop2RightBottom(x, y){
+        var min = x > y ? y : x;
+        for(var i = 0; i < min; i++){
+            if(board[x - i][y - i] === 1) return false;
+        }
+        for(i = 1; x + i < n && y + 1 < n; i++){
+            if(board[x + i][y + i] === 1) return false;
+        }
+        return true;
+    }
+
+    function checkRightTop2LeftBottom(x, y){
+        var min = x > y ? y : x;
+        for(var i = 0; i < min; i++){
+            if(board[x - i][y + i] === 1) return false;
+        }
+        for(i = 1; x + i < n && y - i >= 0; i++){
+            if(board[x + i][y - i] === 1) return false;
+        }
+        return true;
+    }
+
+    this.removePoint = function (i, j) {
+        if(board[i][j] === 1){
+            board[i][j] = 0;
+        }
+    };
+
+    var me = this;
     this.trial = function trial(i) {
-        if (i > n) this.printCurrentLayout();
+        i = i || 0;
+        if (i >= n) me.printCurrentLayout();
         else {
             for (var j = 0; j < n; j++) {
-                this.addPoint(i, j);
-                if (this.isCurrentLayoutLegal()) trial(i + 1, n);
-                else this.removePoint(i, j);
+                me.addPoint(i, j);
+                if (me.isCurrentLayoutLegal(i, j)) trial(i + 1, n);
+                else me.removePoint(i, j);
             }
         }
     };
 }
+
+var test = new Queen(4);
+test.trial();
 
 /*
 含有n个结点的不相似的二叉树有1/(n+1)*C(n)(2n)棵
