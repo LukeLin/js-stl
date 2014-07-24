@@ -115,7 +115,7 @@ BinaryTree.prototype = {
         });
     },
 
-    // 线序遍历二叉树的非递归算法
+    // 先序遍历二叉树的非递归算法
     preOrder_stack: function (visit) {
         var stack = new Stack();
         stack.push(this);
