@@ -1201,6 +1201,7 @@ console.log('list: ' + getPowerSet(0, list));
 // 求n皇后问题的所有合法布局
 function Queen(n) {
     var board = [];
+    var count = 0;
 
     this.init = function(){
         for(var i = 0; i < n; i++){
@@ -1213,12 +1214,16 @@ function Queen(n) {
 
     this.init();
 
+    this.getCount = function(){
+        return count;
+    };
+
     this.printCurrentLayout = function () {
+        ++count;
         console.log(board);
     };
 
     this.addPoint = function (i, j) {
-        console.log(i);
         if(board[i][j] === 0){
             board[i][j] = 1;
             return true;
@@ -1294,8 +1299,9 @@ function Queen(n) {
     };
 }
 
-var test = new Queen(4);
+var test = new Queen(8);
 test.trial();
+console.log('GetCount: ' + test.getCount());
 
 /*
 含有n个结点的不相似的二叉树有1/(n+1)*C(n)(2n)棵
