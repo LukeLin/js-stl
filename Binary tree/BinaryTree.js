@@ -1214,7 +1214,7 @@ function Queen(n) {
 
     this.init();
 
-    this.getCount = function(){
+    this.getSolutionsCount = function(){
         return count;
     };
 
@@ -1301,7 +1301,7 @@ function Queen(n) {
 
 var test = new Queen(8);
 test.trial();
-console.log('GetCount: ' + test.getCount());
+console.log('GetCount: ' + test.getSolutionsCount());
 
 /*
 含有n个结点的不相似的二叉树有1/(n+1)*C(n)(2n)棵
