@@ -1229,7 +1229,7 @@ function Queen(n) {
     };
 
     this.isCurrentLayoutLegal = function (i, j) {
-        return checkHorizontal(i, j) || checkVertical(i, j) || checkLeftTop2RightBottom(i, j) || checkRightTop2LeftBottom(i, j);
+        return checkHorizontal(i, j) && checkVertical(i, j) && checkLeftTop2RightBottom(i, j) && checkRightTop2LeftBottom(i, j);
     };
 
     function checkHorizontal(x, y){
@@ -1253,25 +1253,17 @@ function Queen(n) {
     }
 
     function checkLeftTop2RightBottom(x, y){
-        var min, max;
-        if(x > y) {
-            max = x;
-            min = y;
-        } else {
-            max = y;
-            min = x;
-        }
-        for(var i = 0; i < min; i++){
+        for(var i = 1; x - i >= 0 && y - i >= 0; i++){
             if(board[x - i][y - i] === 1) return false;
         }
-        for(i = 1; max + i < n; i++){
+        for(i = 1; x + i < n && y + i < n; i++){
             if(board[x + i][y + i] === 1) return false;
         }
         return true;
     }
 
     function checkRightTop2LeftBottom(x, y){
-        for(var i = 0; x - i >= 0 && y + i < n; i++){
+        for(var i = 1; x - i >= 0 && y + i < n; i++){
             if(board[x - i][y + i] === 1) return false;
         }
         for(i = 1; x + i < n && y - i >= 0; i++){
@@ -1287,15 +1279,15 @@ function Queen(n) {
     };
 
     var me = this;
-    // todo bugs exist
     this.trial = function trial(i) {
         i = i || 0;
-        if (i > n - 1) me.printCurrentLayout();
-        else {
+        if (i > n - 1) {
+            me.printCurrentLayout();
+        } else {
             for (var j = 0; j < n; j++) {
                 if(me.addPoint(i, j)){
                     if (me.isCurrentLayoutLegal(i, j)) trial(i + 1);
-                    else me.removePoint(i, j);
+                    me.removePoint(i, j);
                 }
             }
         }
