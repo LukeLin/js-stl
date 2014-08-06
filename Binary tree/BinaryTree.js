@@ -1096,11 +1096,13 @@ function calcHuffmanCode2(huffmanTree, n) {
     return hc;
 }
 
+// 创建一棵叶子结点数为n的Huffman树
 function buildHuffmanTree(weights, n) {
     n = n || weights.length;
     var m = 2 * n - 1;
     var huffmanTree = [];
 
+    // 初始化
     for (var i = 0; i < n; i++)
         huffmanTree[i] = new HuffmanNode(weights[i], 0, 0, 0);
     for (; i < m; i++)
