@@ -127,4 +127,17 @@
 
     // 时间复杂度： O(a.length)
 
+    // 比较字符表A和B，并用返回值表示结果，值为1，表示A>B，值为-1，表示A<B，值为0，表示A=B
+    function listComp(aList, bList){
+        for(var i = 0; i < aList.length && i < bList.length; i++){
+            if(aList[i] !== bList[i]) return aList[i] > bList[i] ? 1 : -1;
+        }
+
+        if(aList.length == bList.length) return 0;
+
+        return aList.length > bList.length ? 1 : -1;
+    }
+
+
+
 }());

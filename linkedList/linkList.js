@@ -53,6 +53,17 @@ LNode.prototype = {
         var q = p.next;
         p.next = q.next;
         return q.data;
+    },
+
+    listConcat: function(bList){
+        var hc = this;
+        var p = this;
+
+        while(p.next) p = p.next;
+
+        p.next = bList;
+
+        return hc;
     }
 };
 

@@ -201,6 +201,43 @@
                 a.next = temp;
                 return true;
             }
+        },
+
+        // 删除元素递增排列的链表中值大于min，且小于max的所有元素
+        delete_between: function(min, max){
+            var p = this;
+
+            // p是最后一个不大于min的元素
+            while(p.next.data <= min) p = p.next;
+
+            // 如果还有比min更大的元素
+            if(p.next){
+                var q = p.next;
+                // q是第一个不小于max的元素
+                while(q.data < max) q = q.next;
+                p.next = q;
+            }
+        },
+
+        // 删除元素递增排列的链表的重复元素
+        delete_equal: function(){
+            var p = this.next;
+            var q = p.next;
+
+            while(p.next){
+                // 当相邻两元素不相等时，p,q都向后移
+                if(p.data !== q.data){
+                    p = p.next;
+                    q = p.next;
+                } else {
+                    while(q.data === p.data) q = q.next;
+
+                    // 删除
+                    p.next = q;
+                    p = q;
+                    q = p.next;
+                }
+            }
         }
     };
 
