@@ -204,8 +204,9 @@
         },
 
         // 删除元素递增排列的链表中值大于min，且小于max的所有元素
+        // todo bugs exist
         delete_between: function(min, max){
-            var p = this;
+            var p = this.head;
 
             // p是最后一个不大于min的元素
             while(p.next.data <= min) p = p.next;
@@ -214,14 +215,15 @@
             if(p.next){
                 var q = p.next;
                 // q是第一个不小于max的元素
-                while(q.data < max) q = q.next;
+                while(q && q.data < max) q = q.next;
                 p.next = q;
             }
         },
 
         // 删除元素递增排列的链表的重复元素
+        // todo run test
         delete_equal: function(){
-            var p = this.next;
+            var p = this.head;
             var q = p.next;
 
             while(p.next){
@@ -238,6 +240,25 @@
                     q = p.next;
                 }
             }
+        },
+
+        // todo run test
+        reverse: function(){
+            var p = this.head;
+            var q = p.next;
+            var s = q.next;
+            p.next = null;
+
+            while(s.next){
+                q.next = p;
+                p = q;
+                q = s;
+                s = s.next;
+            }
+
+            q.next = p;
+            s.next = q;
+            this.head.next = s;
         }
     };
 
@@ -268,11 +289,17 @@
 
     var list = new List();
 
-    list.orderInsert('e');
-    list.orderInsert('b');
-    list.orderInsert('c');
-    list.orderInsert('a');
-    list.orderInsert('d');
-    list.orderInsert('f');
+    list.orderInsert(5);
+    list.orderInsert(2);
+    list.orderInsert(3);
+    list.orderInsert(1);
+    list.orderInsert(4);
+    list.orderInsert(4);
+    list.orderInsert(6);
+    list.orderInsert(6);
+    list.orderInsert(7);
+
+    list.delete_between(5, 8);
+    console.log(list);
 
 }(this.module || this));
