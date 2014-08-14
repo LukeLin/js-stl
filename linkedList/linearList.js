@@ -138,6 +138,14 @@
         return aList.length > bList.length ? 1 : -1;
     }
 
+    function reverse(list){
+        for(var i = 0, j = list.length - 1; i <= j; i++, j--){
+            var temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
+        }
+    }
+
 
 
 }());

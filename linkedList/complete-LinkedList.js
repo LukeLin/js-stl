@@ -196,32 +196,40 @@
             this.tail = previous.next;
 
             function insertBetween(data, a, b) {
-                var temp = me.makeNode(data);
-                temp.next = b;
-                a.next = temp;
-                return true;
+                if(a == b) {
+                    if(a == me.head)
+                        return me.insertAsFirst(data);
+                } else {
+                    var temp = me.makeNode(data);
+                    temp.next = b;
+                    a.next = temp;
+                    return true;
+                }
             }
         },
 
         // 删除元素递增排列的链表中值大于min，且小于max的所有元素
-        // todo bugs exist
         delete_between: function(min, max){
             var p = this.head;
 
             // p是最后一个不大于min的元素
-            while(p.next.data <= min) p = p.next;
+            while(p.next && p.next.data <= min) p = p.next;
 
             // 如果还有比min更大的元素
+            var q;
             if(p.next){
-                var q = p.next;
+                q = p.next;
                 // q是第一个不小于max的元素
                 while(q && q.data < max) q = q.next;
                 p.next = q;
             }
+
+            var last = q || p;
+            while(last.next) last = last.next;
+            this.tail = last;
         },
 
         // 删除元素递增排列的链表的重复元素
-        // todo run test
         delete_equal: function(){
             var p = this.head;
             var q = p.next;
@@ -242,7 +250,7 @@
             }
         },
 
-        // todo run test
+        // todo bugs exist
         reverse: function(){
             var p = this.head;
             var q = p.next;
@@ -300,6 +308,17 @@
     list.orderInsert(7);
 
     list.delete_between(5, 8);
+    console.log('delete-between:  ');
+    console.log(list);
+
+    list.orderInsert(2);
+    list.orderInsert(3);
+    list.orderInsert(1);
+
+    list.delete_equal();
+    console.log(list);
+
+    list.reverse();
     console.log(list);
 
 }(this.module || this));
