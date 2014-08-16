@@ -250,7 +250,6 @@
             }
         },
 
-        // todo bugs exist
         reverse: function(){
             var p = this.head;
             var q = p.next;
@@ -266,7 +265,26 @@
 
             q.next = p;
             s.next = q;
-            this.head.next = s;
+            this.head = s;
+        },
+
+        // 求元素递增排列的线性表A和B的元素的交集并存入C
+        intersect: function(bList){
+            var cList = new List();
+
+            var p = this.head;
+            var q = bList.head;
+
+            while(p && q){
+                if(p.data < q.data) p = p.next;
+                else if(q.data > q.data) q = q.next;
+                else {
+                    cList.add(q.data);
+                    p = p.next; q = q.next;
+                }
+            }
+
+            return cList;
         }
     };
 

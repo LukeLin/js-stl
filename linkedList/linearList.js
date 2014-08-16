@@ -146,6 +146,23 @@
         }
     }
 
+    // 求元素递增排列的线性表A和B的元素的交集并存入C
+    function intersect(aList, bList){
+        var cList = [];
+        var i = 0, j = 0, k = 0;
 
+        while(aList[i] && bList[j]){
+            if(aList[i] < bList[j]) i++;
+            else if(aList[i] > bList[j]) j++;
+            else {
+                cList[k++] = aList[i];
+                i++; j++;
+            }
+        }
+
+        return cList;
+    }
+
+    console.log(intersect([1,3, 5, 7, 9], [1, 5, 9, 13, 17]) + '');
 
 }());
