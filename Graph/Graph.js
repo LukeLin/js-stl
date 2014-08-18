@@ -15,10 +15,10 @@
  *
  * 一个图(G)定义为一个偶对(V,E) ，记为G=(V,E) 。其中： V是顶点(Vertex)的非空有限集合，记为V(G)；E是无序集V&V的一个子集，记为E(G) ，其元素是图的弧(Arc)。
  * 将顶点集合为空的图称为空图。其形式化定义为：
-     G=(V ，E)
-     V={v|v∈data object}
-     E={<v,w>| v,w∈V∧p(v,w)}
-     P(v,w)表示从顶点v到顶点w有一条直接通路。
+ G=(V ，E)
+ V={v|v∈data object}
+ E={<v,w>| v,w∈V∧p(v,w)}
+ P(v,w)表示从顶点v到顶点w有一条直接通路。
  *
  * 弧(Arc) ：表示两个顶点v和w之间存在一个关系，用顶点偶对<v,w>表示。通常根据图的顶点偶对将图分为有向图和无向图。
  * 有向图(Digraph)： 若图G的关系集合E(G)中，顶点偶对<v,w>的v和w之间是有序的，称图G是有向图。
@@ -27,12 +27,12 @@
  *   在无向图中，若<v,w>∈E(G) ，有<w,v>∈E(G) ，即E(G)是对称，则用无序对(v,w) 表示v和w之间的一条边(Edge)，因此(v,w) 和(w,v)代表的是同一条边。
  *
  * 例1：设有有向图G1和无向图G2，形式化定义分别是：
-         G1=(V1 ，E1)
-         V1={a,b,c,d,e}
-         E1={<a,b>,<a,c>, <a,e>,<c,d>,<c,e> ,<d,a>,<d,b>,<e,d>}
-         G2=(V2 ，E2)
-         V2={a,b,c,d}
-         E2={(a,b), (a,c), (a,d), (b,d), (b,c), (c,d)}
+ G1=(V1 ，E1)
+ V1={a,b,c,d,e}
+ E1={<a,b>,<a,c>, <a,e>,<c,d>,<c,e> ,<d,a>,<d,b>,<e,d>}
+ G2=(V2 ，E2)
+ V2={a,b,c,d}
+ E2={(a,b), (a,c), (a,d), (b,d), (b,c), (c,d)}
  *
  * 完全无向图：对于无向图，若图中顶点数为n ，用e表示边的数目，则e ∈[0，n(n-1)/2] 。具有n(n-1)/2条边的无向图称为完全无向图。
  完全无向图另外的定义是：
@@ -53,13 +53,13 @@
  显然，在无向图中，所有顶点度的和是图中边的2倍。 即   ∑TD(vi)=2e      i=1, 2, …, n ，e为图的边数。
  对有向图G=(V，E)，若vi ∈V ，图G中以vi作为起点的有向边(弧)的数目称为顶点vi的出度(Outdegree)，记为OD(vi) ；以vi作为终点的有向边(弧)的数目称为顶点vi的入度(Indegree)，记为ID(vi) 。顶点vi的出度与入度之和称为vi的度，记为TD(vi) 。即
  TD(vi)=OD(vi)+ID(vi)
- * 
+ *
  * 路径(Path)、路径长度、回路(Cycle) ：对无向图G=(V，E)，若从顶点vi经过若干条边能到达vj，称顶点vi和vj是连通的，又称顶点vi到vj有路径。
  对有向图G=(V，E)，从顶点vi到vj有有向路径，指的是从顶点vi经过若干条有向边(弧)能到达vj。
  或路径是图G中连接两顶点之间所经过的顶点序列。即
-     Path=vi0vi1…vim ，vij∈V且(vij-1, vij)∈E   j=1,2, …,m
-     或
-     Path=vi0vi1 …vim ，vij∈V且<vij-1, vij>∈E  j=1,2, …,m
+ Path=vi0vi1…vim ，vij∈V且(vij-1, vij)∈E   j=1,2, …,m
+ 或
+ Path=vi0vi1 …vim ，vij∈V且<vij-1, vij>∈E  j=1,2, …,m
  路径上边或有向边(弧)的数目称为该路径的长度。
  在一条路径中，若没有重复相同的顶点，该路径称为简单路径；第一个顶点和最后一个顶点相同的路径称为回路(环)；在一个回路中，若除第一个与最后一个顶点外，其余顶点不重复出现的回路称为简单回路(简单环)。
  *
@@ -83,10 +83,10 @@
 /**
  * 图的存储结构
  *
-    图的存储结构比较复杂，其复杂性主要表现在：
-    ◆ 任意顶点之间可能存在联系，无法以数据元素在存储区中的物理位置来表示元素之间的关系。
-    ◆ 图中顶点的度不一样，有的可能相差很大，若按度数最大的顶点设计结构，则会浪费很多存储单元，反之按每个顶点自己的度设计不同的结构，又会影响操作。
-    图的常用的存储结构有：邻接矩阵、邻接链表、十字链表、邻接多重表和边表。
+ 图的存储结构比较复杂，其复杂性主要表现在：
+ ◆ 任意顶点之间可能存在联系，无法以数据元素在存储区中的物理位置来表示元素之间的关系。
+ ◆ 图中顶点的度不一样，有的可能相差很大，若按度数最大的顶点设计结构，则会浪费很多存储单元，反之按每个顶点自己的度设计不同的结构，又会影响操作。
+ 图的常用的存储结构有：邻接矩阵、邻接链表、十字链表、邻接多重表和边表。
  */
 
 /*
@@ -132,4 +132,82 @@
 ◆ 对于顶点vi，第i行的非0元素的个数是其出度OD(vi)；第i列的非0元素的个数是其入度ID(vi) 。
 ◆ 邻接矩阵中非0元素的个数就是图的弧的数目。
 
+3  图的邻接矩阵的操作
+
+图的邻接矩阵的实现比较容易，定义两个数组分别存储顶点信息(数据元素)和边或弧的信息(数据元素之间的关系) 。
+
  */
+
+// 图的数组（邻接矩阵）存储表示
+var DG = 1;     // 有向图
+var DN = 2;     // 有向网
+var UDG = 3;    // 无向图
+var UDN = 4;    // 无向网
+
+function ArcCell(adj, info) {
+    // 顶点类型。对于无权图，用1或0表示相邻否；对带权图，则为权值类型
+    this.adj = adj || Infinity;
+    // 该弧相关信息
+    this.info = info || null;
+}
+
+function MGraph(vexs, arcs, vexnum, arcnum, kind) {
+    // 顶点向量
+    this.vexs = vexs || [];
+    // 邻接矩阵
+    this.arcs = arcs || [];
+    // 图的当前顶点数
+    this.vexnum = vexnum || 0;
+    // 图的当前弧数
+    this.arcnum = arcnum || 0;
+    // 图的种类标志
+    this.kind = kind || DG;
+}
+
+MGraph.prototype = {
+    createGraph: function(){
+        switch(this.kind){
+            case DG: return createDG(this);     // 构造有向图
+            case DN: return createDN(this);     // 构造有向网
+            case UDG: return createUDG(this);   // 构造无向图
+            case UDN: return createUDN(this);   // 构造无向网
+            default: throw new Error('非有效的图类型');
+        }
+    }
+};
+
+function createUDN(MGraph){
+    MGraph.vexnum = parseInt(prompt('vexnum: '), 10);
+    MGraph.arcnum = parseInt(prompt('arcnum: '), 10);
+    // incInfo为0则各弧不含其他信息
+    var incInfo = parseInt(prompt('incInfo: '), 10);
+
+    // 构造顶点向量
+    var i , j;
+    for(i = 0; i < MGraph.vexnum; i++) MGraph.vexs[i] = prompt('vex: ');
+
+    // 初始化邻接矩阵
+    for(i = 0; i < MGraph.vexnum; i++){
+        for(j = 0; j < MGraph.vexnum; j++) {
+            MGraph.arcs[i] = MGraph.arcs[i] || [];
+            MGraph.arcs[i][j] = new ArcCell(Infinity, null);
+        }
+    }
+
+    // 构造邻接矩阵
+    for(var k = 0; k < MGraph.arcnum; k++){
+        // 输入一条边依附的顶点及权值
+        var v1 = prompt('v1: ');
+        var v2 = prompt('v2: ');
+        var w = prompt('weight: ');
+
+        // 确定v1，v2在G中的位置
+        i = this.locateVex(v1);
+        j = this.locateVex(v2);
+
+        // 弧<v1, v2>的权值
+        MGraph.arcs[i][j].adj = w;
+        if(incInfo) MGraph.arcs[i][j].info = prompt('info: ');
+        MGraph.arcs[j][i] = MGraph.arcs[i][j];
+    }
+}
