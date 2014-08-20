@@ -285,6 +285,31 @@
             }
 
             return cList;
+        },
+
+        // 求元素递增排列的线性表A和B的元素的交集并存入回a
+        intersect_true: function(bList){
+            var p = this.head;
+            var q = bList.head;
+            var pc = this.head;
+
+            while(p && q){
+                if(p.data < q.data) p = p.next;
+                else if(p.data > q.data) q = q.next;
+                else {
+                    pc.data = p.data;
+                    p = p.next;
+                    q = q.next;
+
+                    if(!p || !q){
+                        pc.next = null;
+                        this.tail = pc;
+                    } else pc = pc.next;
+                }
+            }
+
+            pc.next = null;
+            this.tail = pc;
         }
     };
 
@@ -338,5 +363,22 @@
 
     list.reverse();
     console.log(list);
+
+    var a = new List();
+    a.orderInsert(1);
+    a.orderInsert(3);
+    a.orderInsert(5);
+    a.orderInsert(7);
+    a.orderInsert(9);
+
+    var b = new List();
+    b.orderInsert(1);
+    b.orderInsert(5);
+    b.orderInsert(9);
+    b.orderInsert(13);
+    b.orderInsert(17);
+    console.log(a.intersect(b));
+
+    console.log(a.intersect_true(b));
 
 }(this.module || this));

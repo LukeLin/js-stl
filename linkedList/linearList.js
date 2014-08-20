@@ -165,4 +165,24 @@
 
     console.log(intersect([1,3, 5, 7, 9], [1, 5, 9, 13, 17]) + '');
 
+    // 求元素递增排列的线性表A和B的元素的交集并存入回a
+    function intersect_true(a, b){
+        var i = 0, j = 0, k = 0;
+
+        while(a[i] && b[j]){
+            if(a[i] < b[j]) i++;
+            else if(a[i] > b[j]) j++;
+            else {
+                a[k++] = a[i];
+                i++; j++;
+            }
+        }
+
+        while(a[k]) a.splice(k, 1);
+
+        return a;
+    }
+
+    console.log(intersect_true([1,3, 5, 7, 9], [1, 5, 9, 13, 17]) + '');
+
 }());
