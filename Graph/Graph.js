@@ -173,6 +173,39 @@ MGraph.prototype = {
             case UDN: return createUDN(this);   // 构造无向网
             default: throw new Error('非有效的图类型');
         }
+    },
+
+    locateVex: function(vp){
+        for(var i = 0; i < this.vexnum; i++){
+            if(this.vexs[i] === vp) return i;
+        }
+
+        return -1;
+    },
+
+    /**
+     * 向图中增加顶点
+     * @param {} vp
+     */
+    addVertex: function(vp){
+        if(this.locateVex(vp) !== -1) {
+            console.error('Vertex has existed!');
+            return;
+        }
+
+        var k = this.vexnum;
+        this.vexs[this.vexnum++] = vp;
+
+        var j;
+        if(this.kind === DG || this.kind === UDG) {
+            for(j = 0; j < this.vexnum; j++){
+                this.arcs[j][k].adj = this.arcs[k][j].adj = 0;
+            }
+        } else {
+            for(j = 0; j < this.vexnum; j++){
+                this.arcs[j][k].adj = this.arcs[k][j].adj = Infinity;
+            }
+        }
     }
 };
 
@@ -184,7 +217,7 @@ function createUDN(MGraph){
 
     // 构造顶点向量
     var i , j;
-    for(i = 0; i < MGraph.vexnum; i++) MGraph.vexs[i] = prompt('vex: ');
+    for(i = 0; i < MGraph.vexnum; i++) MGraph.vexs[i] = prompt('顶点向量vex: ');
 
     // 初始化邻接矩阵
     for(i = 0; i < MGraph.vexnum; i++){
@@ -202,8 +235,8 @@ function createUDN(MGraph){
         var w = prompt('weight: ');
 
         // 确定v1，v2在G中的位置
-        i = this.locateVex(v1);
-        j = this.locateVex(v2);
+        i = MGraph.locateVex(v1);
+        j = MGraph.locateVex(v2);
 
         // 弧<v1, v2>的权值
         MGraph.arcs[i][j].adj = w;
