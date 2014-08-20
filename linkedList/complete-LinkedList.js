@@ -196,8 +196,8 @@
             this.tail = previous.next;
 
             function insertBetween(data, a, b) {
-                if(a == b) {
-                    if(a == me.head)
+                if (a == b) {
+                    if (a == me.head)
                         return me.insertAsFirst(data);
                 } else {
                     var temp = me.makeNode(data);
@@ -209,38 +209,38 @@
         },
 
         // 删除元素递增排列的链表中值大于min，且小于max的所有元素
-        delete_between: function(min, max){
+        delete_between: function (min, max) {
             var p = this.head;
 
             // p是最后一个不大于min的元素
-            while(p.next && p.next.data <= min) p = p.next;
+            while (p.next && p.next.data <= min) p = p.next;
 
             // 如果还有比min更大的元素
             var q;
-            if(p.next){
+            if (p.next) {
                 q = p.next;
                 // q是第一个不小于max的元素
-                while(q && q.data < max) q = q.next;
+                while (q && q.data < max) q = q.next;
                 p.next = q;
             }
 
             var last = q || p;
-            while(last.next) last = last.next;
+            while (last.next) last = last.next;
             this.tail = last;
         },
 
         // 删除元素递增排列的链表的重复元素
-        delete_equal: function(){
+        delete_equal: function () {
             var p = this.head;
             var q = p.next;
 
-            while(p.next){
+            while (p.next) {
                 // 当相邻两元素不相等时，p,q都向后移
-                if(p.data !== q.data){
+                if (p.data !== q.data) {
                     p = p.next;
                     q = p.next;
                 } else {
-                    while(q.data === p.data) q = q.next;
+                    while (q.data === p.data) q = q.next;
 
                     // 删除
                     p.next = q;
@@ -250,13 +250,13 @@
             }
         },
 
-        reverse: function(){
+        reverse: function () {
             var p = this.head;
             var q = p.next;
             var s = q.next;
             p.next = null;
 
-            while(s.next){
+            while (s.next) {
                 q.next = p;
                 p = q;
                 q = s;
@@ -269,18 +269,19 @@
         },
 
         // 求元素递增排列的线性表A和B的元素的交集并存入C
-        intersect: function(bList){
+        intersect: function (bList) {
             var cList = new List();
 
             var p = this.head;
             var q = bList.head;
 
-            while(p && q){
-                if(p.data < q.data) p = p.next;
-                else if(q.data > q.data) q = q.next;
+            while (p && q) {
+                if (p.data < q.data) p = p.next;
+                else if (q.data > q.data) q = q.next;
                 else {
                     cList.add(q.data);
-                    p = p.next; q = q.next;
+                    p = p.next;
+                    q = q.next;
                 }
             }
 
@@ -288,20 +289,20 @@
         },
 
         // 求元素递增排列的线性表A和B的元素的交集并存入回a
-        intersect_true: function(bList){
+        intersect_true: function (bList) {
             var p = this.head;
             var q = bList.head;
             var pc = this.head;
 
-            while(p && q){
-                if(p.data < q.data) p = p.next;
-                else if(p.data > q.data) q = q.next;
+            while (p && q) {
+                if (p.data < q.data) p = p.next;
+                else if (p.data > q.data) q = q.next;
                 else {
                     pc.data = p.data;
                     p = p.next;
                     q = q.next;
 
-                    if(!p || !q){
+                    if (!p || !q) {
                         pc.next = null;
                         this.tail = pc;
                     } else pc = pc.next;

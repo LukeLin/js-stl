@@ -128,18 +128,18 @@
     // 时间复杂度： O(a.length)
 
     // 比较字符表A和B，并用返回值表示结果，值为1，表示A>B，值为-1，表示A<B，值为0，表示A=B
-    function listComp(aList, bList){
-        for(var i = 0; i < aList.length && i < bList.length; i++){
-            if(aList[i] !== bList[i]) return aList[i] > bList[i] ? 1 : -1;
+    function listComp(aList, bList) {
+        for (var i = 0; i < aList.length && i < bList.length; i++) {
+            if (aList[i] !== bList[i]) return aList[i] > bList[i] ? 1 : -1;
         }
 
-        if(aList.length == bList.length) return 0;
+        if (aList.length == bList.length) return 0;
 
         return aList.length > bList.length ? 1 : -1;
     }
 
-    function reverse(list){
-        for(var i = 0, j = list.length - 1; i <= j; i++, j--){
+    function reverse(list) {
+        for (var i = 0, j = list.length - 1; i <= j; i++, j--) {
             var temp = list[i];
             list[i] = list[j];
             list[j] = temp;
@@ -147,42 +147,44 @@
     }
 
     // 求元素递增排列的线性表A和B的元素的交集并存入C
-    function intersect(aList, bList){
+    function intersect(aList, bList) {
         var cList = [];
         var i = 0, j = 0, k = 0;
 
-        while(aList[i] && bList[j]){
-            if(aList[i] < bList[j]) i++;
-            else if(aList[i] > bList[j]) j++;
+        while (aList[i] && bList[j]) {
+            if (aList[i] < bList[j]) i++;
+            else if (aList[i] > bList[j]) j++;
             else {
                 cList[k++] = aList[i];
-                i++; j++;
+                i++;
+                j++;
             }
         }
 
         return cList;
     }
 
-    console.log(intersect([1,3, 5, 7, 9], [1, 5, 9, 13, 17]) + '');
+    console.log(intersect([1, 3, 5, 7, 9], [1, 5, 9, 13, 17]) + '');
 
     // 求元素递增排列的线性表A和B的元素的交集并存入回a
-    function intersect_true(a, b){
+    function intersect_true(a, b) {
         var i = 0, j = 0, k = 0;
 
-        while(a[i] && b[j]){
-            if(a[i] < b[j]) i++;
-            else if(a[i] > b[j]) j++;
+        while (a[i] && b[j]) {
+            if (a[i] < b[j]) i++;
+            else if (a[i] > b[j]) j++;
             else {
                 a[k++] = a[i];
-                i++; j++;
+                i++;
+                j++;
             }
         }
 
-        while(a[k]) a.splice(k, 1);
+        while (a[k]) a.splice(k, 1);
 
         return a;
     }
 
-    console.log(intersect_true([1,3, 5, 7, 9], [1, 5, 9, 13, 17]) + '');
+    console.log(intersect_true([1, 3, 5, 7, 9], [1, 5, 9, 13, 17]) + '');
 
 }());
