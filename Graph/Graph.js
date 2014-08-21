@@ -276,15 +276,15 @@ function createGraph(kind){
 var vexs = ['a', 'b', 'c', 'd', 'e'];
 var arcs = [
     [
-        {"adj": null, "info": null},
+        {"adj": Infinity, "info": null},
         {"adj": "6", "info": null},
         {"adj": "2", "info": null},
-        {"adj": null, "info": null},
-        {"adj": null, "info": null}
+        {"adj": Infinity, "info": null},
+        {"adj": Infinity, "info": null}
     ],
     [
         {"adj": "6", "info": null},
-        {"adj": null, "info": null},
+        {"adj": Infinity, "info": null},
         {"adj": "3", "info": null},
         {"adj": "4", "info": null},
         {"adj": "3", "info": null}
@@ -292,23 +292,23 @@ var arcs = [
     [
         {"adj": "2", "info": null},
         {"adj": "3", "info": null},
-        {"adj": null, "info": null},
+        {"adj": Infinity, "info": null},
         {"adj": "1", "info": null},
-        {"adj": null, "info": null}
+        {"adj": Infinity, "info": null}
     ],
     [
-        {"adj": null, "info": null},
+        {"adj": Infinity, "info": null},
         {"adj": "4", "info": null},
         {"adj": "1", "info": null},
-        {"adj": null, "info": null},
+        {"adj": Infinity, "info": null},
         {"adj": "5", "info": null}
     ],
     [
-        {"adj": null, "info": null},
+        {"adj": Infinity, "info": null},
         {"adj": "3", "info": null},
-        {"adj": null, "info": null},
+        {"adj": Infinity, "info": null},
         {"adj": "5", "info": null},
-        {"adj": null, "info": null}
+        {"adj": Infinity, "info": null}
     ]
 ];
 var udn = new MGraph(vexs, arcs, 5, 7, 4);
