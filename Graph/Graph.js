@@ -146,7 +146,7 @@ var UDN = 4;    // 无向网
 
 function ArcCell(adj, info) {
     // 顶点类型。对于无权图，用1或0表示相邻否；对带权图，则为权值类型
-    this.adj = adj || Infinity;
+    this.adj = typeof adj === 'number' ? adj : Infinity;
     // 该弧相关信息
     this.info = info || null;
 }
@@ -165,19 +165,24 @@ function MGraph(vexs, arcs, vexnum, arcnum, kind) {
 }
 
 MGraph.prototype = {
-    createGraph: function(){
-        switch(this.kind){
-            case DG: return createDG(this);     // 构造有向图
-            case DN: return createDN(this);     // 构造有向网
-            case UDG: return createUDG(this);   // 构造无向图
-            case UDN: return createUDN(this);   // 构造无向网
-            default: throw new Error('非有效的图类型');
+    createGraph: function () {
+        switch (this.kind) {
+            case DG:
+                return createDG(this);     // 构造有向图
+            case DN:
+                return createDN(this);     // 构造有向网
+            case UDG:
+                return createUDG(this);   // 构造无向图
+            case UDN:
+                return createUDN(this);   // 构造无向网
+            default:
+                throw new Error('非有效的图类型');
         }
     },
 
-    locateVex: function(vp){
-        for(var i = 0; i < this.vexnum; i++){
-            if(this.vexs[i] === vp) return i;
+    locateVex: function (vp) {
+        for (var i = 0; i < this.vexnum; i++) {
+            if (this.vexs[i] === vp) return i;
         }
 
         return -1;
@@ -187,8 +192,8 @@ MGraph.prototype = {
      * 向图中增加顶点
      * @param {} vp
      */
-    addVertex: function(vp){
-        if(this.locateVex(vp) !== -1) {
+    addVertex: function (vp) {
+        if (this.locateVex(vp) !== -1) {
             console.error('Vertex has existed!');
             return;
         }
@@ -197,50 +202,114 @@ MGraph.prototype = {
         this.vexs[this.vexnum++] = vp;
 
         var j;
-        if(this.kind === DG || this.kind === UDG) {
-            for(j = 0; j < this.vexnum; j++){
+        if (this.kind === DG || this.kind === UDG) {
+            for (j = 0; j < this.vexnum; j++) {
                 this.arcs[j][k].adj = this.arcs[k][j].adj = 0;
             }
         } else {
-            for(j = 0; j < this.vexnum; j++){
+            for (j = 0; j < this.vexnum; j++) {
                 this.arcs[j][k].adj = this.arcs[k][j].adj = Infinity;
             }
         }
     }
 };
 
-function createUDN(MGraph){
-    MGraph.vexnum = parseInt(prompt('vexnum: '), 10);
-    MGraph.arcnum = parseInt(prompt('arcnum: '), 10);
-    // incInfo为0则各弧不含其他信息
-    var incInfo = parseInt(prompt('incInfo: '), 10);
+var createDG = createGraph(DG);
+var createDN = createGraph(DN);
+var createUDG = createGraph(UDG);
+var createUDN = createGraph(UDN);
 
-    // 构造顶点向量
-    var i , j;
-    for(i = 0; i < MGraph.vexnum; i++) MGraph.vexs[i] = prompt('顶点向量vex: ');
+function createGraph(kind){
+    var adj;
+    var setMatrixValue;
 
-    // 初始化邻接矩阵
-    for(i = 0; i < MGraph.vexnum; i++){
-        for(j = 0; j < MGraph.vexnum; j++) {
-            MGraph.arcs[i] = MGraph.arcs[i] || [];
-            MGraph.arcs[i][j] = new ArcCell(Infinity, null);
+    if(kind === 2 || kind === 4) {
+        adj = Infinity;
+        setMatrixValue = function(){
+            return prompt('weight: ');
+        };
+    } else {
+        adj = 0;
+        setMatrixValue = function(){
+            return 1;
+        };
+    }
+
+    return function(MGraph){
+        MGraph.vexnum = parseInt(prompt('vexnum: '), 10);
+        MGraph.arcnum = parseInt(prompt('arcnum: '), 10);
+        // incInfo为0则各弧不含其他信息
+        var incInfo = parseInt(prompt('incInfo: '), 10);
+
+        // 构造顶点向量
+        var i , j;
+        for (i = 0; i < MGraph.vexnum; i++) MGraph.vexs[i] = prompt('顶点向量vex: ');
+
+        // 初始化邻接矩阵
+        for (i = 0; i < MGraph.vexnum; i++) {
+            for (j = 0; j < MGraph.vexnum; j++) {
+                MGraph.arcs[i] = MGraph.arcs[i] || [];
+                MGraph.arcs[i][j] = new ArcCell(adj, null);
+            }
         }
-    }
 
-    // 构造邻接矩阵
-    for(var k = 0; k < MGraph.arcnum; k++){
-        // 输入一条边依附的顶点及权值
-        var v1 = prompt('v1: ');
-        var v2 = prompt('v2: ');
-        var w = prompt('weight: ');
+        // 构造邻接矩阵
+        for (var k = 0; k < MGraph.arcnum; k++) {
+            // 输入一条边依附的顶点及权值
+            var v1 = prompt('v1: ');
+            var v2 = prompt('v2: ');
 
-        // 确定v1，v2在G中的位置
-        i = MGraph.locateVex(v1);
-        j = MGraph.locateVex(v2);
+            // 确定v1，v2在G中的位置
+            i = MGraph.locateVex(v1);
+            j = MGraph.locateVex(v2);
 
-        // 弧<v1, v2>的权值
-        MGraph.arcs[i][j].adj = w;
-        if(incInfo) MGraph.arcs[i][j].info = prompt('info: ');
-        MGraph.arcs[j][i] = MGraph.arcs[i][j];
-    }
+            var w = setMatrixValue();
+            // 弧<v1, v2>的权值
+            MGraph.arcs[i][j].adj = w;
+            if (incInfo) MGraph.arcs[i][j].info = prompt('info: ');
+            if(kind === 3 || kind === 4) MGraph.arcs[j][i] = MGraph.arcs[i][j];
+        }
+    };
 }
+
+
+var vexs = ['a', 'b', 'c', 'd', 'e'];
+var arcs = [
+    [
+        {"adj": null, "info": null},
+        {"adj": "6", "info": null},
+        {"adj": "2", "info": null},
+        {"adj": null, "info": null},
+        {"adj": null, "info": null}
+    ],
+    [
+        {"adj": "6", "info": null},
+        {"adj": null, "info": null},
+        {"adj": "3", "info": null},
+        {"adj": "4", "info": null},
+        {"adj": "3", "info": null}
+    ],
+    [
+        {"adj": "2", "info": null},
+        {"adj": "3", "info": null},
+        {"adj": null, "info": null},
+        {"adj": "1", "info": null},
+        {"adj": null, "info": null}
+    ],
+    [
+        {"adj": null, "info": null},
+        {"adj": "4", "info": null},
+        {"adj": "1", "info": null},
+        {"adj": null, "info": null},
+        {"adj": "5", "info": null}
+    ],
+    [
+        {"adj": null, "info": null},
+        {"adj": "3", "info": null},
+        {"adj": null, "info": null},
+        {"adj": "5", "info": null},
+        {"adj": null, "info": null}
+    ]
+];
+var udn = new MGraph(vexs, arcs, 5, 7, 4);
+
