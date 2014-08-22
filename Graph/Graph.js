@@ -211,6 +211,10 @@ MGraph.prototype = {
                 this.arcs[j][k].adj = this.arcs[k][j].adj = Infinity;
             }
         }
+    },
+
+    addArc: function(arcType){
+
     }
 };
 
