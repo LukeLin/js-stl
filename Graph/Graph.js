@@ -172,9 +172,9 @@ MGraph.prototype = {
             case DN:
                 return createDN(this);     // 构造有向网
             case UDG:
-                return createUDG(this);   // 构造无向图
+                return createUDG(this);    // 构造无向图
             case UDN:
-                return createUDN(this);   // 构造无向网
+                return createUDN(this);    // 构造无向网
             default:
                 throw new Error('非有效的图类型');
         }
@@ -193,28 +193,46 @@ MGraph.prototype = {
      * @param {} vp
      */
     addVertex: function (vp) {
-        if (this.locateVex(vp) !== -1) {
-            console.error('Vertex has existed!');
-            return;
-        }
+        if (this.locateVex(vp) !== -1)
+            throw new Error('Vertex has existed!');
 
         var k = this.vexnum;
         this.vexs[this.vexnum++] = vp;
 
-        var j;
-        if (this.kind === DG || this.kind === UDG) {
-            for (j = 0; j < this.vexnum; j++) {
-                this.arcs[j][k].adj = this.arcs[k][j].adj = 0;
-            }
-        } else {
-            for (j = 0; j < this.vexnum; j++) {
-                this.arcs[j][k].adj = this.arcs[k][j].adj = Infinity;
-            }
+        var value = this.kind === DG || this.kind === UDG ?
+            0 : Infinity;
+        for (var j = 0; j < this.vexnum; j++) {
+            this.arcs[j] = this.arcs[j] || [];
+            this.arcs[k] = this.arcs[k] || [];
+            this.arcs[j][k] = this.arcs[j][k] || new ArcCell();
+            this.arcs[k][j] = this.arcs[k][j] || new ArcCell();
+            this.arcs[j][k].adj = this.arcs[k][j].adj = value;
         }
     },
 
-    addArc: function(arcType){
+    /**
+     * 向图中增加一条弧
+     * @param {*} vex1 顶点1向量
+     * @param {*} vex2 顶点2向量
+     * @param {ArcCell} arc
+     * @returns {boolean}
+     */
+    addArc: function(vex1, vex2, arc){
+        var k = this.locateVex(vex1);
+        var j = this.locateVex(vex2);
 
+        if(k === -1 || j === -1)
+            throw new Error('Arc\'s Vertex do not existed!');
+
+        this.arcs[k][j].adj = arc.adj;
+        this.arcs[k][j].info = arc.info;
+        // 无向图或无向网
+        if(this.kind === UDG || this.kind === UDN){
+            this.arcs[j][k].adj = arc.adj;
+            this.arcs[j][k].info = arc.info;
+        }
+
+        return true;
     }
 };
 
@@ -317,3 +335,41 @@ var arcs = [
 ];
 var udn = new MGraph(vexs, arcs, 5, 7, 4);
 
+
+var dn = new MGraph([], [], 0, 7, 2);
+dn.addVertex('a');
+dn.addVertex('b');
+dn.addVertex('c');
+dn.addVertex('d');
+dn.addVertex('e');
+
+dn.addArc('a', 'b', {
+    adj: 6
+});
+dn.addArc('a', 'c', {
+    adj: 2
+});
+dn.addArc('c', 'b', {
+    adj: 3
+});
+dn.addArc('c', 'd', {
+    adj: 1
+});
+dn.addArc('d', 'b', {
+    adj: 4
+});
+dn.addArc('b', 'e', {
+    adj: 3
+});
+dn.addArc('d', 'e', {
+    adj: 5
+});
+
+console.log(dn);
+
+
+/*
+邻接链表法
+
+
+ */
