@@ -187,4 +187,35 @@
 
     console.log(intersect_true([1, 3, 5, 7, 9], [1, 5, 9, 13, 17]) + '');
 
+    // a，b，c的元素均是非递减排列
+    // 求a数组中非b数组和c数组的交集的元素。
+    function intersect_delete(a, b, c) {
+        var i = 0, j = 0, k = 0, m = 0;
+
+        while (i < a.length && j < b.length && k < c.length) {
+            if (b[j] < c[k]) j++;
+            else if (b[j] > c[k]) k++;
+            else {
+                // 找到了相同元素same
+                var same = b[j];
+
+                // j，k后移到新的元素
+                while (b[j] === same) j++;
+                while (c[k] === same) k++;
+                // 需保留的元素移动到新位置
+                while (i < a.length && a[i] < same) a[m++] = a[i++];
+                // 跳过相同的元素
+                while (i < a.length && a[i] === same) i++;
+            }
+        }
+
+        // a的剩余元素重新存储
+        while (i < a.length) a[m++] = a[i++];
+        a.length = m;
+
+        return a;
+    }
+
+    console.log(intersect_delete([1, 2, 3, 4, 5, 6, 9], [1, 3, 5, 7, 9], [1, 5, 9, 13, 17]) + '');
+
 }());

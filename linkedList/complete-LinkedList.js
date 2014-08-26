@@ -311,6 +311,35 @@
 
             pc.next = null;
             this.tail = pc;
+        },
+
+        // a，b，c的元素均是非递减排列
+        // 求a链表中非b链表和c链表的交集的元素。
+        // todo bug exists
+        intersect_delete: function (b, c) {
+            var p = b.head;
+            var q = c.head;
+            var r = this.head;
+
+            while (p && q && r) {
+                if (p.data < q.data) p = p.next;
+                else if (p.data > q.data) q = q.next;
+                else {
+                    var elem = p.data;
+
+                    while (r.next && r.next.data < elem) r = r.next;
+
+                    if (r.next.data === elem) {
+                        var s = r.next;
+
+                        while (s && s.data === elem) s = s.next;
+                        r.next = s;
+                    }
+
+                    while (p && p.data === elem) p = p.next;
+                    while (q && q.data === elem) q = q.next;
+                }
+            }
         }
     };
 
@@ -381,5 +410,24 @@
     console.log(a.intersect(b));
 
     console.log(a.intersect_true(b));
+
+    a = new List();
+    a.orderInsert(1);
+    a.orderInsert(3);
+    a.orderInsert(5);
+    a.orderInsert(7);
+    a.orderInsert(9);
+
+    var test = new List();
+    test.orderInsert(1);
+    test.orderInsert(2);
+    test.orderInsert(3);
+    test.orderInsert(4);
+    test.orderInsert(5);
+    test.orderInsert(6);
+    test.orderInsert(9);
+
+    test.intersect_delete(a, b);
+    console.log(test);
 
 }(this.module || this));
