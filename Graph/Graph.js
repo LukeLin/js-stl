@@ -144,6 +144,12 @@ var DN = 2;     // 有向网
 var UDG = 3;    // 无向图
 var UDN = 4;    // 无向网
 
+/**
+ *
+ * @param {Number} adj
+ * @param {*} info
+ * @constructor
+ */
 function ArcCell(adj, info) {
     // 顶点类型。对于无权图，用1或0表示相邻否；对带权图，则为权值类型
     this.adj = typeof adj === 'number' ? adj : Infinity;
@@ -151,6 +157,15 @@ function ArcCell(adj, info) {
     this.info = info || null;
 }
 
+/**
+ *
+ * @param {Array} vexs 顶点向量
+ * @param {Array} arcs 邻接矩阵
+ * @param {Number} vexnum
+ * @param {Number} arcnum
+ * @param {Number} kind
+ * @constructor
+ */
 function MGraph(vexs, arcs, vexnum, arcnum, kind) {
     // 顶点向量
     this.vexs = vexs || [];
@@ -180,6 +195,11 @@ MGraph.prototype = {
         }
     },
 
+    /**
+     * 查找顶点
+     * @param {*} vp 顶点向量
+     * @returns {number}
+     */
     locateVex: function (vp) {
         for (var i = 0; i < this.vexnum; i++) {
             if (this.vexs[i] === vp) return i;
@@ -190,7 +210,7 @@ MGraph.prototype = {
 
     /**
      * 向图中增加顶点
-     * @param {} vp
+     * @param {*} vp 顶点向量
      */
     addVertex: function (vp) {
         if (this.locateVex(vp) !== -1)
@@ -294,7 +314,7 @@ function createGraph(kind){
     };
 }
 
-
+// 第一种创建图方法
 var vexs = ['a', 'b', 'c', 'd', 'e'];
 var arcs = [
     [
@@ -335,7 +355,7 @@ var arcs = [
 ];
 var udn = new MGraph(vexs, arcs, 5, 7, 4);
 
-
+// 第二种创建图方法
 var dn = new MGraph([], [], 0, 7, 2);
 dn.addVertex('a');
 dn.addVertex('b');
@@ -367,9 +387,88 @@ dn.addArc('d', 'e', {
 
 console.log(dn);
 
+/*
+
+// 第三种创建图方法
+var g = new MGraph();
+g.kind = DN;
+g.createGraph();
+console.log(g);
+
+ */
+
 
 /*
 邻接链表法
 
+基本思想：对图的每个顶点建立一个单链表，存储该顶点所有邻接顶点及其相关信息。每一个单链表设一个表头结点。
+
+第i个单链表表示依附于顶点Vi的边(对有向图是以顶点Vi为头或尾的弧)。
+
+1  结点结构与邻接链表示例
+
+链表中的结点称为表结点，每个结点由三个域组成。其中邻接点域(adjvex)指示与顶点Vi邻接的顶点在图中的位置(顶点编号)，链域(nextarc)指向下一个与顶点Vi邻接的表结点，数据域(info)存储和边或弧相关的信息，如权值等。对于无权图，如果没有与边相关的其他信息，可省略此域。
+
+每个链表设一个表头结点(称为顶点结点)，由两个域组成。链域(firstarc)指向链表中的第一个结点，数据域(data) 存储顶点名或其他信息。
+
+在图的邻接链表表示中，所有顶点结点用一个向量 以顺序结构形式存储，可以随机访问任意顶点的链表，该向量称为表头向量，向量的下标指示顶点的序号。
+
+用邻接链表存储图时，对无向图，其邻接链表是唯一的；对有向图，其邻接链表有两种形式。
+
+
+2  邻接表法的特点
+
+◆ 表头向量中每个分量就是一个单链表的头结点，分量个数就是图中的顶点数目；
+◆ 在边或弧稀疏的条件下，用邻接表表示比用邻接矩阵表示节省存储空间；
+◆ 在无向图，顶点Vi的度是第i个链表的结点数；
+◆ 对有向图可以建立正邻接表或逆邻接表。正邻接表是以顶点Vi为出度(即为弧的起点)而建立的邻接表；逆邻接表是以顶点Vi为入度(即为弧的终点)而建立的邻接表；
+◆ 在有向图中，第i个链表中的结点数是顶点Vi的出 (或入)度；求入 (或出)度，须遍历整个邻接表；
+◆ 在邻接表上容易找出任一顶点的第一个邻接点和下一个邻接点；
 
  */
+
+/**
+ *
+ * @param {Number} adjVex
+ * @param {ArcNode} nextArc
+ * @param {*} info
+ * @constructor
+ */
+function ArcNode(adjVex, nextArc, info){
+    // 该弧所指向的顶点的位置
+    this.adjVex = adjVex || 0;
+    // 指向下一条弧的指针
+    this.nextArc = nextArc || null;
+    // 该弧相关信息的指针
+    this.info = info || null;
+}
+
+/**
+ *
+ * @param {*} data
+ * @param {ArcNode} firstArc
+ * @constructor
+ */
+function VNode(data, firstArc){
+    // 顶点信息
+    this.data = data;
+    // 指向第一条依附该顶点的弧的指针
+    this.firstArc = firstArc || null;
+}
+
+/**
+ *
+ * @param {VNode} vertices
+ * @param {Number} vexnum
+ * @param {Number} arcnum
+ * @param {Number} kind
+ * @constructor
+ */
+function AdjacencyListGraph(vertices, vexnum, arcnum, kind){
+    this.vertices = vertices;
+    // 图的当前顶点数和弧数
+    this.vexnum = vexnum || 0;
+    this.arcnum = arcnum || 0;
+    // 图的种类标志
+    this.kind = kind || DG;
+}
