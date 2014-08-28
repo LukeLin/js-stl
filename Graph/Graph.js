@@ -166,7 +166,7 @@ function ArcCell(adj, info) {
  * @param {Number} kind
  * @constructor
  */
-function MGraph(vexs, arcs, vexnum, arcnum, kind) {
+function AdjacencyMatrixGraph(vexs, arcs, vexnum, arcnum, kind) {
     // 顶点向量
     this.vexs = vexs || [];
     // 邻接矩阵
@@ -179,7 +179,7 @@ function MGraph(vexs, arcs, vexnum, arcnum, kind) {
     this.kind = kind || DG;
 }
 
-MGraph.prototype = {
+AdjacencyMatrixGraph.prototype = {
     createGraph: function () {
         switch (this.kind) {
             case DG:
@@ -277,39 +277,39 @@ function createGraph(kind){
         };
     }
 
-    return function(MGraph){
-        MGraph.vexnum = parseInt(prompt('vexnum: '), 10);
-        MGraph.arcnum = parseInt(prompt('arcnum: '), 10);
+    return function(AdjacencyMatrixGraph){
+        AdjacencyMatrixGraph.vexnum = parseInt(prompt('vexnum: '), 10);
+        AdjacencyMatrixGraph.arcnum = parseInt(prompt('arcnum: '), 10);
         // incInfo为0则各弧不含其他信息
         var incInfo = parseInt(prompt('incInfo: '), 10);
 
         // 构造顶点向量
         var i , j;
-        for (i = 0; i < MGraph.vexnum; i++) MGraph.vexs[i] = prompt('顶点向量vex: ');
+        for (i = 0; i < AdjacencyMatrixGraph.vexnum; i++) AdjacencyMatrixGraph.vexs[i] = prompt('顶点向量vex: ');
 
         // 初始化邻接矩阵
-        for (i = 0; i < MGraph.vexnum; i++) {
-            for (j = 0; j < MGraph.vexnum; j++) {
-                MGraph.arcs[i] = MGraph.arcs[i] || [];
-                MGraph.arcs[i][j] = new ArcCell(adj, null);
+        for (i = 0; i < AdjacencyMatrixGraph.vexnum; i++) {
+            for (j = 0; j < AdjacencyMatrixGraph.vexnum; j++) {
+                AdjacencyMatrixGraph.arcs[i] = AdjacencyMatrixGraph.arcs[i] || [];
+                AdjacencyMatrixGraph.arcs[i][j] = new ArcCell(adj, null);
             }
         }
 
         // 构造邻接矩阵
-        for (var k = 0; k < MGraph.arcnum; k++) {
+        for (var k = 0; k < AdjacencyMatrixGraph.arcnum; k++) {
             // 输入一条边依附的顶点及权值
             var v1 = prompt('v1: ');
             var v2 = prompt('v2: ');
 
             // 确定v1，v2在G中的位置
-            i = MGraph.locateVex(v1);
-            j = MGraph.locateVex(v2);
+            i = AdjacencyMatrixGraph.locateVex(v1);
+            j = AdjacencyMatrixGraph.locateVex(v2);
 
             var w = setMatrixValue();
             // 弧<v1, v2>的权值
-            MGraph.arcs[i][j].adj = w;
-            if (incInfo) MGraph.arcs[i][j].info = prompt('info: ');
-            if(kind === 3 || kind === 4) MGraph.arcs[j][i] = MGraph.arcs[i][j];
+            AdjacencyMatrixGraph.arcs[i][j].adj = w;
+            if (incInfo) AdjacencyMatrixGraph.arcs[i][j].info = prompt('info: ');
+            if(kind === 3 || kind === 4) AdjacencyMatrixGraph.arcs[j][i] = AdjacencyMatrixGraph.arcs[i][j];
         }
     };
 }
@@ -353,10 +353,10 @@ var arcs = [
         {"adj": Infinity, "info": null}
     ]
 ];
-var udn = new MGraph(vexs, arcs, 5, 7, 4);
+var udn = new AdjacencyMatrixGraph(vexs, arcs, 5, 7, 4);
 
 // 第二种创建图方法
-var dn = new MGraph([], [], 0, 7, 2);
+var dn = new AdjacencyMatrixGraph([], [], 0, 7, 2);
 dn.addVertex('a');
 dn.addVertex('b');
 dn.addVertex('c');
@@ -390,7 +390,7 @@ console.log(dn);
 /*
 
 // 第三种创建图方法
-var g = new MGraph();
+var g = new AdjacencyMatrixGraph();
 g.kind = DN;
 g.createGraph();
 console.log(g);
@@ -447,18 +447,21 @@ function ArcNode(adjVex, nextArc, info){
  *
  * @param {*} data
  * @param {ArcNode} firstArc
+ * @param {Number} indegree
  * @constructor
  */
-function VNode(data, firstArc){
+function VexNode(data, firstArc, indegree){
     // 顶点信息
     this.data = data;
     // 指向第一条依附该顶点的弧的指针
     this.firstArc = firstArc || null;
+    //  顶点的度, 有向图是入度或出度或没有
+    this.indegree = indegree || 0;
 }
 
 /**
  *
- * @param {VNode} vertices
+ * @param {VexNode} vertices
  * @param {Number} vexnum
  * @param {Number} arcnum
  * @param {Number} kind
@@ -472,3 +475,39 @@ function AdjacencyListGraph(vertices, vexnum, arcnum, kind){
     // 图的种类标志
     this.kind = kind || DG;
 }
+
+AdjacencyListGraph.prototype = {
+    constructor: AdjacencyListGraph,
+    createGraph: function(){
+        this.vexnum = +prompt('vexnum: ');
+        this.arcnum = +prompt('arcnum: ');
+        // incInfo为0则各弧不含其他信息
+        var incInfo = +prompt('incInfo: ');
+
+        for(var m = 0; m < this.vexnum; m++){
+            this.vertices[m] = new VexNode();
+            this.vertices[m].data = prompt('vetex: ');
+        }
+
+        for(m = 0; m < this.arcnum; m++){
+            var h = prompt('弧头: ');
+            var t = prompt('弧尾: ');
+            var i = this.locateVex(t);
+            var j = this.locateVex(h);
+
+            if(i < 0 || j < 0) {
+                alert('顶点为找到，请重新输入！');
+                m--;
+                continue;
+            }
+
+            var p = new ArcNode(j, null, incInfo && prompt('info: '));
+
+            if(!this.vertices[m].firstArc) this.vertices[m].firstArc = p;
+            else {
+                for(var q = this.vertices[m].firstArc; q.nextArc; q = q.nextArc);
+                q.nextArc = p;
+            }
+        }
+    }
+};
