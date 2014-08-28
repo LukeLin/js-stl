@@ -315,7 +315,6 @@
 
         // a，b，c的元素均是非递减排列
         // 求a链表中非b链表和c链表的交集的元素。
-        // todo bug exists
         intersect_delete: function (b, c) {
             var p = b.head;
             var q = c.head;
@@ -325,21 +324,31 @@
                 if (p.data < q.data) p = p.next;
                 else if (p.data > q.data) q = q.next;
                 else {
+                    // 确定待删除元素
                     var elem = p.data;
 
-                    while (r.next && r.next.data < elem) r = r.next;
+                    if(r.data === elem && r === this.head) {
+                        this.head = this.head.next;
+                    } else {
+                        // 确定最后一个小于elem的元素指针
+                        while (r.next && r.next.data < elem) r = r.next;
 
-                    if (r.next.data === elem) {
-                        var s = r.next;
+                        if (r.next.data === elem) {
+                            var s = r.next;
 
-                        while (s && s.data === elem) s = s.next;
-                        r.next = s;
+                            // 确定第一个大于elem的元素指针
+                            while (s && s.data === elem) s = s.next;
+                            // 删除r和s之间的元素
+                            r.next = s;
+                        }
                     }
 
                     while (p && p.data === elem) p = p.next;
                     while (q && q.data === elem) q = q.next;
                 }
             }
+
+            this.tail = r;
         }
     };
 
