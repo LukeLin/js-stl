@@ -461,14 +461,14 @@ function VexNode(data, firstArc, indegree){
 
 /**
  *
- * @param {VexNode} vertices
+ * @param {Array | VexNode} vertices
  * @param {Number} vexnum
  * @param {Number} arcnum
  * @param {Number} kind
  * @constructor
  */
 function AdjacencyListGraph(vertices, vexnum, arcnum, kind){
-    this.vertices = vertices;
+    this.vertices = vertices || [];
     // 图的当前顶点数和弧数
     this.vexnum = vexnum || 0;
     this.arcnum = arcnum || 0;
@@ -478,6 +478,15 @@ function AdjacencyListGraph(vertices, vexnum, arcnum, kind){
 
 AdjacencyListGraph.prototype = {
     constructor: AdjacencyListGraph,
+
+    locateVex: function(vp){
+        for(var i = 0; i < this.vexnum; i++){
+            if(this.vertices[i].data === vp) return i;
+        }
+
+        return -1;
+    },
+
     createGraph: function(){
         this.vexnum = +prompt('vexnum: ');
         this.arcnum = +prompt('arcnum: ');
@@ -503,9 +512,9 @@ AdjacencyListGraph.prototype = {
 
             var p = new ArcNode(j, null, incInfo && prompt('info: '));
 
-            if(!this.vertices[m].firstArc) this.vertices[m].firstArc = p;
+            if(!this.vertices[i].firstArc) this.vertices[i].firstArc = p;
             else {
-                for(var q = this.vertices[m].firstArc; q.nextArc; q = q.nextArc);
+                for(var q = this.vertices[i].firstArc; q.nextArc; q = q.nextArc);
                 q.nextArc = p;
             }
         }
