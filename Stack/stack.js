@@ -75,6 +75,35 @@ stack.pop();
 stack.push({a: 1});
 console.log(stack);
 
+/**
+ * 这里用字符串train表示火车，H表示硬席，S表示软席
+ * @param {String} train
+ */
+function trainArrange(train){
+    var stack = new Stack();
+    var q = [];
+    var i = 0;
+    var j = 0;
+
+    while(train[i]){
+        if(train[i] === 'H') stack.push(train[i]);
+        else q[j++] = train[i];
+        i++;
+    }
+
+    while(stack.top){
+        var c = stack.pop();
+        q[j++] = c;
+    }
+
+    return q + '';
+}
+
+console.log('trainArrange: ' + trainArrange('HSSHSSSHHHHHS'));  // trainArrange: S,S,S,S,S,S,H,H,H,H,H,H,H
+
+
+
+
 
 // 数值进制转换
 // 公式： N = (N / d) * d + N % d
@@ -150,7 +179,7 @@ m.match('[{123}123');
 
 function LineEditor(str) {
     this.stack = new Stack();
-    this.str = str || ''
+    this.str = str || '';
 }
 LineEditor.prototype = {
     getResult: function () {
