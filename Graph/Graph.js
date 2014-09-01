@@ -478,6 +478,17 @@ function AdjacencyListGraph(vertices, vexnum, arcnum, kind){
 
 AdjacencyListGraph.prototype = {
     constructor: AdjacencyListGraph,
+
+    // 图的顶点定位
+    locateVex: function(vp){
+        for(var i = 0; i < this.vexnum; i++){
+            if(this.vertices[i].data === vp) return i;
+        }
+        return -1;
+    },
+
+    addVertex: function(){},
+
     createGraph: function(){
         this.vexnum = +prompt('vexnum: ');
         this.arcnum = +prompt('arcnum: ');
@@ -486,7 +497,7 @@ AdjacencyListGraph.prototype = {
 
         for(var m = 0; m < this.vexnum; m++){
             this.vertices[m] = new VexNode();
-            this.vertices[m].data = prompt('vetex: ');
+            this.vertices[m].data = prompt('vertex: ');
         }
 
         for(m = 0; m < this.arcnum; m++){
