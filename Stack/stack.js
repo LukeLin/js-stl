@@ -75,6 +75,59 @@ stack.pop();
 stack.push({a: 1});
 console.log(stack);
 
+/**
+ * 这里用字符串train表示火车，H表示硬席，S表示软席
+ * @param {String} train
+ */
+function trainArrange(train){
+    var stack = new Stack();
+    var q = [];
+    var i = 0;
+    var j = 0;
+
+    while(train[i]){
+        if(train[i] === 'H') stack.push(train[i]);
+        else q[j++] = train[i];
+        i++;
+    }
+
+    while(stack.top){
+        var c = stack.pop();
+        q[j++] = c;
+    }
+
+    return q + '';
+}
+
+console.log('trainArrange: ' + trainArrange('HSSHSSSHHHHHS'));  // trainArrange: S,S,S,S,S,S,H,H,H,H,H,H,H
+
+
+// 判断字符串中“&”前和“&”后部分是否为逆串，"@"表示结束符，是则返回true，否则返回false
+function isReverse(str){
+    var stack = new Stack();
+    var i = 0;
+
+    while(str[i] !== '&'){
+        if(str[i] === '@') return false;
+        stack.push(str[i]);
+        i++;
+    }
+
+    i++;
+
+    while(str[i] !== '@') {
+        if(!stack.top) return false;
+
+        var s = stack.pop();
+        if(s !== str[i]) return false;
+        i++;
+    }
+
+    return !stack.top;
+}
+
+console.log('isReverse: ' + isReverse('abcd&dcba@a'));  // true
+
 
 // 数值进制转换
 // 公式： N = (N / d) * d + N % d
@@ -150,7 +203,7 @@ m.match('[{123}123');
 
 function LineEditor(str) {
     this.stack = new Stack();
-    this.str = str || ''
+    this.str = str || '';
 }
 LineEditor.prototype = {
     getResult: function () {
