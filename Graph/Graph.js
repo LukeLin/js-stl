@@ -478,6 +478,60 @@ function AdjacencyListGraph(vertices, vexnum, arcnum, kind){
 
 AdjacencyListGraph.prototype = {
     constructor: AdjacencyListGraph,
+
+    // 查找顶点位置
+    locateVex: function(vp){
+        for(var i = 0; i < this.vexnum; i++){
+            if(this.vertices[i].data === vp) return i;
+        }
+
+        return -1;
+    },
+
+    // 添加顶点
+    addVertex: function(vp){
+        if(this.locateVex(vp) !== -1) throw new Error('Vertex has existed!');
+
+        this.vertices[this.vexnum++] = new VexNode(vp, null, 0);
+        return this.vexnum;
+    },
+
+    /**
+     * 添加弧
+     * 如果是无向图或者无向网,arc1和arc2无顺序要求
+     * 如果是有向图或者有向网，只会添加arc1，因此正邻接表和逆邻接表的顺序需要注意
+     * @param {ArcNode} arc1
+     * @param {ArcNode} arc2
+     * @returns {boolean}
+     */
+    addArc: function(arc1, arc2){
+        var k = this.locateVex(arc1.adjVex);
+        var j = this.locateVex(arc2.adjVex);
+
+        if(k === -1 || j === -1) throw new Error('Arc\'s Vertex do not existed!');
+
+        // 边的起始表结点赋值
+        var p = new ArcNode(arc1.adjVex, arc1.nextArc || null, arc1.info);
+        // 边的末尾表结点赋值
+        var q = new ArcNode(arc2.adjVex, arc2.nextArc || null, arc2.info);
+
+        // 是无向图，用头插入法插入到两个单链表
+        if(this.kind === UDG || this.kind === UDN){
+            q.nextArc = this.vertices[k].firstArc;
+            this.vertices[k].firstArc = q;
+            p.nextArc = this.vertices[j].firstArc;
+            this.vertices[j].firstArc = p;
+        }
+        // 建立有向图的邻接链表，用头插入法
+        else {
+            p.nextArc = this.vertices[j].firstArc;
+            this.vertices[j].firstArc = p;
+        }
+
+        return true;
+    },
+
+    // TODO 其他图类型的创建暂时没弄
     createGraph: function(){
         this.vexnum = +prompt('vexnum: ');
         this.arcnum = +prompt('arcnum: ');
@@ -511,4 +565,58 @@ AdjacencyListGraph.prototype = {
         }
     }
 };
+
+// 无向图的邻接表
+var g = new AdjacencyListGraph([], 0, 7, UDG);
+g.addVertex('v1');
+g.addVertex('v2');
+g.addVertex('v3');
+g.addVertex('v4');
+g.addVertex('v5');
+
+g.addArc(new ArcNode('v1'), new ArcNode('v2'));
+g.addArc(new ArcNode('v1'), new ArcNode('v3'));
+g.addArc(new ArcNode('v1'), new ArcNode('v4'));
+g.addArc(new ArcNode('v2'), new ArcNode('v3'));
+g.addArc(new ArcNode('v3'), new ArcNode('v4'));
+g.addArc(new ArcNode('v3'), new ArcNode('v5'));
+g.addArc(new ArcNode('v4'), new ArcNode('v5'));
+
+console.log(g);
+
+// 有向图的逆邻接表
+var g = new AdjacencyListGraph([], 0, 7, DG);
+g.addVertex('v1');
+g.addVertex('v2');
+g.addVertex('v3');
+g.addVertex('v4');
+g.addVertex('v5');
+
+g.addArc(new ArcNode('v1'), new ArcNode('v2'));
+g.addArc(new ArcNode('v1'), new ArcNode('v4'));
+g.addArc(new ArcNode('v3'), new ArcNode('v2'));
+g.addArc(new ArcNode('v3'), new ArcNode('v1'));
+g.addArc(new ArcNode('v4'), new ArcNode('v3'));
+g.addArc(new ArcNode('v3'), new ArcNode('v5'));
+g.addArc(new ArcNode('v5'), new ArcNode('v4'));
+
+console.log(g);
+
+// 有向图的正邻接表
+var g = new AdjacencyListGraph([], 0, 7, DG);
+g.addVertex('v1');
+g.addVertex('v2');
+g.addVertex('v3');
+g.addVertex('v4');
+g.addVertex('v5');
+
+g.addArc(new ArcNode('v2'), new ArcNode('v1'));
+g.addArc(new ArcNode('v4'), new ArcNode('v1'));
+g.addArc(new ArcNode('v2'), new ArcNode('v3'));
+g.addArc(new ArcNode('v1'), new ArcNode('v3'));
+g.addArc(new ArcNode('v3'), new ArcNode('v4'));
+g.addArc(new ArcNode('v5'), new ArcNode('v3'));
+g.addArc(new ArcNode('v4'), new ArcNode('v5'));
+
+console.log(g);
 
