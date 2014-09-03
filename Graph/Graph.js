@@ -620,3 +620,73 @@ g.addArc(new ArcNode('v4'), new ArcNode('v5'));
 
 console.log(g);
 
+
+/*
+十字链表法
+
+十字链表(Orthogonal List)是有向图的另一种链式存储结构，是将有向图的正邻接表和逆邻接表结合起来得到的一种链表。
+
+在这种结构中，每条弧的弧头结点和弧尾结点都存放在链表中，并将弧结点分别组织到以弧尾结点为头(顶点)结点和以弧头结点为头(顶点)结点的链表中。
+
+◆  data域：存储和顶点相关的信息；
+◆ 指针域firstin：指向以该顶点为弧头的第一条弧所对应的弧结点；
+◆ 指针域firstout：指向以该顶点为弧尾的第一条弧所对应的弧结点；
+◆ 尾域tailvex：指示弧尾顶点在图中的位置；
+◆ 头域headvex：指示弧头顶点在图中的位置；
+◆ 指针域hlink：指向弧头相同的下一条弧；
+◆ 指针域tlink：指向弧尾相同的下一条弧；
+◆ Info域：指向该弧的相关信息；
+
+从这种存储结构图可以看出，从一个顶点结点的firstout出发，沿表结点的tlink指针构成了正邻接表的链表结构，而从一个顶点结点的firstin出发，沿表结点的hlink指针构成了逆邻接表的链表结构。
+
+ */
+
+/**
+ *
+ * @param {Number} headVex 弧的头顶点的位置
+ * @param {Number} tailVex 弧的尾顶点位置
+ * @param {ArcBox} hLink 弧头相同的弧的链域
+ * @param {ArcBox} tLink 弧尾相同的弧的链域
+ * @param {*} info
+ * @constructor
+ */
+function ArcBox(headVex, tailVex, hLink, tLink, info){
+    this.headVex = headVex || 0;
+    this.tailVex = tailVex || 0;
+    this.hLink = hLink || null;
+    this.tLink = tLink || null;
+    this.info = info || null;
+}
+
+/**
+ *
+ * @param {*} data
+ * @param {ArcBox} firstIn 该顶点第一条入弧
+ * @param {ArcBox} firstOut 该顶点第一条出弧
+ * @constructor
+ */
+function OLVexNode(data, firstIn, firstOut){
+    this.data = data || null;
+    this.firstIn = firstIn || null;
+    this.firstOut = firstOut || null;
+}
+
+/**
+ *
+ * @param {Array | OLVexNode} xList 表头向量
+ * @param {Number} vexnum 有向图的当前顶点数
+ * @param {Number} arcnum 有向图的当前弧数
+ * @constructor
+ */
+function OLGraph(xList, vexnum, arcnum){
+    this.xList = xList || [];
+    this.vexnum = vexnum || 0;
+    this.arcnum = arcnum || 0;
+}
+OLGraph.prototype = {
+    constructor: OLGraph,
+    createDG: function(){
+
+    }
+};
+
