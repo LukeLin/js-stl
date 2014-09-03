@@ -152,3 +152,45 @@ queue.enQueue(3);
 console.log(queue.peekAt(0));
 console.log(queue.peekAt(1));
 console.log(queue.peekAt(2));
+
+
+// 类似广度优先遍历
+function repaintColor(matrix, i, j, color){
+    var old = matrix[i][j];
+    var queue = new Queue();
+    var m = matrix.length - 1;
+    var n = matrix[0].length - 1;
+
+    queue.enQueue({x: i, y: j});
+
+    while(queue.rear){
+        var a = queue.deQueue();
+        var x = a.x;
+        var y = a.y;
+
+        if(x >= 1) setColor(x - 1, y);
+        if(y >= 1) setColor(x, y - 1);
+        if(x < m) setColor(x + 1, y);
+        if(y < n) setColor(x, y + 1);
+    }
+
+    function setColor(x, y){
+        if(matrix[x][y] === old) {
+            matrix[x][y] = color;
+            queue.enQueue({x: x, y: y});
+        }
+    }
+}
+
+var matrix = [];
+
+for(var i = 0; i < 8; i++){
+    matrix[i] = [];
+    for(var j = 0; j < 8; j++){
+        matrix[i][j] = 0;
+    }
+}
+
+repaintColor(matrix, 4, 5, 1);
+console.log(matrix);
+
