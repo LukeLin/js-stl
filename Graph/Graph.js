@@ -685,8 +685,47 @@ function OLGraph(xList, vexnum, arcnum){
 }
 OLGraph.prototype = {
     constructor: OLGraph,
-    createDG: function(){
 
+    locateVex: function(vp){
+        for(var i = 0; i < this.vexnum; i++){
+            if(this.xList[i].data === vp) return i;
+        }
+
+        return -1;
+    },
+
+    createDG: function(){
+        this.vexnum = prompt('Vexnum: ');
+        this.arcnum = prompt('Arcnum: ');
+        // IncInfo为0则各弧不含其他信息
+        var incInfo = +prompt('IncInfo: ');
+
+        // 输入顶点值
+        for(var i = 0; i < this.vexnum; i++){
+            this.xList[i] = new OLVexNode(prompt('data: '), null, null);
+        }
+
+        for(var k = 0; k < this.arcnum; k++){
+            var v1 = prompt('v1: ');
+            var v2 = prompt('v2: ');
+
+            i = this.locateVex(v1);
+            var j = this.locateVex(v2);
+
+            if(i === -1 || j === -1) {
+                alert('无此顶点，请重新输入!');
+                k--;
+                continue;
+            }
+
+            var p = new ArcBox(j, i, this.xList[j].firstIn, this.xList[i].firstOut, incInfo && prompt('info: '));
+            this.xList[j].firstIn = this.xList[i].firstOut = p;
+        }
     }
 };
+
+// todo 貌似有问题..
+var g = new OLGraph();
+g.createDG();
+console.log(g);
 
