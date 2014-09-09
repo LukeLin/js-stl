@@ -650,7 +650,7 @@ console.log(g);
  * @param {*} info
  * @constructor
  */
-function ArcBox(headVex, tailVex, hLink, tLink, info){
+function ArcBox(tailVex, headVex, hLink, tLink, info){
     this.headVex = headVex || 0;
     this.tailVex = tailVex || 0;
     this.hLink = hLink || null;
@@ -718,13 +718,12 @@ OLGraph.prototype = {
                 continue;
             }
 
-            var p = new ArcBox(j, i, this.xList[j].firstIn, this.xList[i].firstOut, incInfo && prompt('info: '));
+            var p = new ArcBox(i, j, this.xList[j].firstIn, this.xList[i].firstOut, incInfo && prompt('info: '));
             this.xList[j].firstIn = this.xList[i].firstOut = p;
         }
     }
 };
 
-// todo 貌似有问题..
 var g = new OLGraph();
 g.createDG();
 console.log(g);
