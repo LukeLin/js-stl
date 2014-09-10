@@ -93,3 +93,25 @@
     }
 
 })(this.exports || this);
+
+
+// 求包含在串s中而t没有的字符构成的新串
+function string_Subtract(s, t){
+    var r = '';
+
+    for(var i = 0; i < s.length; i++){
+        var c = s[i];
+        // 判断s的当前字符c是否第一次出现
+        for(var j = 0; j < i && c !== s[j]; j++);
+        if(i === j){
+            // 判断当前字符是否包含在t中
+            for(var k = 0; k < t.length && c !== t[k]; k++);
+            if(k >= t.length) r += c;
+        }
+    }
+
+    return r;
+}
+
+string_Subtract('abcde', 'cefgh');  // abd
+
