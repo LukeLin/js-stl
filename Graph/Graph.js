@@ -740,6 +740,62 @@ OLGraph.prototype = {
         return -1;
     },
 
+    // 删除顶点
+    deleteVertex: function(v){
+        var m = this.locateVex(v);
+
+        if(m < 0) throw new Error('vertex not found!');
+
+        var n = this.vexnum;
+        var q, i, p;
+        // 删除所有以v为头的边
+        for(i = 0; i < n; i++){
+            // 如果待删除的边是头链上的第一个结点
+            if(this.xList[i].firstIn.tailVex === m) {
+                q = this.xList[i].firstIn;
+                this.xList[i].firstIn = q.hLink;
+                this.arcnum--;
+            } else {
+                for(p = this.xList[i].firstIn; p && p.hLink.tailVex !== m; p = p.hLink);
+                if(p) {
+                    q = p.hLink;
+                    p.hLink = q.hLink;
+                    this.arcnum--;
+                }
+            }
+        }
+
+        // 删除所有以v为尾的边
+        for(i = 0; i < n; i++){
+            // 如果待删除的边是尾链上的第一个结点
+            if(this.xList[i].firstOut.headVex === m) {
+                q = this.xList[i].firstOut;
+                this.xList[i].firstOut = q.tLink;
+                this.arcnum--;
+            } else {
+                for(p = this.xList[i].firstOut; p && p.tLink.headVex !== m; p = p.tLink);
+                if(p) {
+                    q = p.tLink;
+                    p.tLink = q.tLink;
+                    this.arcnum--;
+                }
+            }
+        }
+
+        // 顺次用结点m之后的顶点取代前一个顶点
+        for(i = m; i < n; i++){
+            // 修改表头向量
+            this.xList[i] = this.xList[i + 1];
+            for(p = this.xList[i].firstIn; p ; p = p.hLink)
+                p.headVex--;
+            for(p = this.xList[i].firstOut; p; p = p.tLink)
+                p.tailVex--;
+        }
+
+        this.vexnum--;
+        return true;
+    },
+
     createDG: function(){
         this.vexnum = prompt('Vexnum: ');
         this.arcnum = prompt('Arcnum: ');
@@ -842,4 +898,8 @@ function AMLGraph(adjMulist, vexnum, edgenum){
     this.vexnum = vexnum || 0;
     this.edgenum = edgenum || 0;
 }
-
+AMLGraph.prototype = {
+    constructor: AMLGraph,
+    deleteArc: function(){},
+    createGraph: function(){}
+};
