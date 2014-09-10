@@ -900,6 +900,37 @@ function AMLGraph(adjMulist, vexnum, edgenum){
 }
 AMLGraph.prototype = {
     constructor: AMLGraph,
-    deleteArc: function(){},
-    createGraph: function(){}
+
+    deleteArc: function(v, w){
+        var i = this.locateVex(v);
+        var j = this.locateVex(w);
+
+        if(i < 0 || j < 0) throw new Error('Vertex not found!');
+
+        var p;
+        // 在i链表中删除该边
+        if(this.adjMulist[i].firstEdge.jvex === j) {
+            this.adjMulist[i].firstEdge = this.adjMulist[i].firstEdge.ilink;
+        } else {
+            for(p = this.adjMulist[i].firstEdge; p && p.ilink.jvex !== j; p = p.ilink);
+            if(!p) throw new Error('edge not found!');
+            p.ilink = p.ilink.ilink;
+        }
+
+        // 在j链表中删除该边
+        if(this.adjMulist[j].firstEdge.ivex === i){
+            this.adjMulist[j].firstEdge = this.adjMulist[j].firstEdge.jlink;
+        } else {
+            for(p = this.adjMulist[j].firstEdge; p && p.jlink.ivex !== i; p = p.jlink);
+            if(!p) throw new Error('edge not found!');
+            p.jlink = p.jlink.jlink;
+        }
+
+        this.edgenum--;
+        return true;
+    },
+
+    createGraph: function(){
+
+    }
 };
