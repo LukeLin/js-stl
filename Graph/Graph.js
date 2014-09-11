@@ -826,9 +826,9 @@ OLGraph.prototype = {
     }
 };
 
-var g = new OLGraph();
-g.createDG();
-console.log(g);
+//var g = new OLGraph();
+//g.createDG();
+//console.log(g);
 
 
 /*
@@ -901,6 +901,13 @@ function AMLGraph(adjMulist, vexnum, edgenum){
 AMLGraph.prototype = {
     constructor: AMLGraph,
 
+    locateVex: function(v){
+        for(var i = 0; i < this.vexnum; i++){
+            if(this.adjMulist[i].data === v) return i;
+        }
+        return -1;
+    },
+
     deleteArc: function(v, w){
         var i = this.locateVex(v);
         var j = this.locateVex(w);
@@ -931,6 +938,62 @@ AMLGraph.prototype = {
     },
 
     createGraph: function(){
+        var vexnum = +prompt('vexnum: ');
+        this.vexnum = vexnum;
+        var edgenum = +prompt('edgenum: ');
+        this.edgenum = edgenum;
 
+        for(var m = 0; m < vexnum; m++){
+            this.adjMulist[m] = new AMLVexBox(prompt('data: '), null);
+        }
+
+        for(m = 0; m < edgenum; m++){
+            var t = prompt('tailVex: ');
+            var h = prompt('headVex: ');
+            var i = this.locateVex(t);
+            var j = this.locateVex(h);
+
+            if(i < 0 || j < 0) {
+                console.error('vertex not found! Try again:');
+                m--;
+                return;
+            }
+
+            var p = new EBox(0, i, j, null, null);
+            var q, r;
+
+            // 插入i链表尾部
+            if(!this.adjMulist[i].firstEdge){
+                this.adjMulist[i].firstEdge = p;
+            } else {
+                q = this.adjMulist[i].firstEdge;
+                while(q){
+                    r = q;
+                    if(q.ivex === i) q = q.ilink;
+                    else q = q.jlink;
+                }
+                if(r.ivex === i) r.ilink = p;
+                else r.jlink = p;
+            }
+
+            // 插入j链表尾部
+            if(!this.adjMulist[j].firstEdge){
+                this.adjMulist[j].firstEdge = p;
+            } else {
+                q = this.adjMulist[j].firstEdge;
+                while(q){
+                    r = q;
+                    if(q.jvex === j) q = q.jlink;
+                    else q = q.ilink;
+                }
+                if(r.jvex === j) r.jlink = p;
+                else r.ilink = p;
+            }
+        }
     }
 };
+
+//var g = new AMLGraph();
+//g.createGraph();
+//console.log(g);
+
