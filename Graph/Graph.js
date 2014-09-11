@@ -237,17 +237,17 @@ AdjacencyMatrixGraph.prototype = {
      * @param {ArcCell} arc
      * @returns {boolean}
      */
-    addArc: function(vex1, vex2, arc){
+    addArc: function (vex1, vex2, arc) {
         var k = this.locateVex(vex1);
         var j = this.locateVex(vex2);
 
-        if(k === -1 || j === -1)
+        if (k === -1 || j === -1)
             throw new Error('Arc\'s Vertex do not existed!');
 
         this.arcs[k][j].adj = arc.adj;
         this.arcs[k][j].info = arc.info;
         // 无向图或无向网
-        if(this.kind === UDG || this.kind === UDN){
+        if (this.kind === UDG || this.kind === UDN) {
             this.arcs[j][k].adj = arc.adj;
             this.arcs[j][k].info = arc.info;
         }
@@ -259,11 +259,11 @@ AdjacencyMatrixGraph.prototype = {
      * 删除顶点
      * @param {String} vex 要删除的顶点
      */
-    deleteVex: function(vex){
+    deleteVex: function (vex) {
         var n = this.vexnum - 1;
         var m = this.locateVex(vex);
 
-        if(m < 0) return false;
+        if (m < 0) return false;
 
         // 将待删除顶点交换到最后一个顶点
         var temp = this.vexs[m];
@@ -271,7 +271,7 @@ AdjacencyMatrixGraph.prototype = {
         this.vexs[n] = temp;
 
         // 将边的关系随之交换
-        for(var i = 0; i <= n; i++){
+        for (var i = 0; i <= n; i++) {
             this.arcs[i][m] = this.arcs[i][n];
             this.arcs[m][i] = this.arcs[n][i];
         }
@@ -287,13 +287,13 @@ AdjacencyMatrixGraph.prototype = {
      * @param {String} w
      * @returns {boolean}
      */
-    deleteArc: function(v, w){
+    deleteArc: function (v, w) {
         var i = this.locateVex(v);
         var j = this.locateVex(w);
 
-        if(i < 0 || j < 0) return false;
+        if (i < 0 || j < 0) return false;
 
-        if(this.arcs[i][j].adj) {
+        if (this.arcs[i][j].adj) {
             this.arcs[i][j].adj = 0;
             this.arcnum--;
         }
@@ -307,23 +307,23 @@ var createDN = createGraph(DN);
 var createUDG = createGraph(UDG);
 var createUDN = createGraph(UDN);
 
-function createGraph(kind){
+function createGraph(kind) {
     var adj;
     var setMatrixValue;
 
-    if(kind === 2 || kind === 4) {
+    if (kind === 2 || kind === 4) {
         adj = Infinity;
-        setMatrixValue = function(){
+        setMatrixValue = function () {
             return prompt('weight: ');
         };
     } else {
         adj = 0;
-        setMatrixValue = function(){
+        setMatrixValue = function () {
             return 1;
         };
     }
 
-    return function(AdjacencyMatrixGraph){
+    return function (AdjacencyMatrixGraph) {
         AdjacencyMatrixGraph.vexnum = parseInt(prompt('vexnum: '), 10);
         AdjacencyMatrixGraph.arcnum = parseInt(prompt('arcnum: '), 10);
         // incInfo为0则各弧不含其他信息
@@ -355,7 +355,7 @@ function createGraph(kind){
             // 弧<v1, v2>的权值
             AdjacencyMatrixGraph.arcs[i][j].adj = w;
             if (incInfo) AdjacencyMatrixGraph.arcs[i][j].info = prompt('info: ');
-            if(kind === 3 || kind === 4) AdjacencyMatrixGraph.arcs[j][i] = AdjacencyMatrixGraph.arcs[i][j];
+            if (kind === 3 || kind === 4) AdjacencyMatrixGraph.arcs[j][i] = AdjacencyMatrixGraph.arcs[i][j];
         }
     };
 }
@@ -480,7 +480,7 @@ console.log(g);
  * @param {*} info
  * @constructor
  */
-function ArcNode(adjVex, nextArc, info){
+function ArcNode(adjVex, nextArc, info) {
     // 该弧所指向的顶点的位置
     this.adjVex = adjVex || 0;
     // 指向下一条弧的指针
@@ -496,7 +496,7 @@ function ArcNode(adjVex, nextArc, info){
  * @param {Number} indegree
  * @constructor
  */
-function VexNode(data, firstArc, indegree){
+function VexNode(data, firstArc, indegree) {
     // 顶点信息
     this.data = data;
     // 指向第一条依附该顶点的弧的指针
@@ -513,7 +513,7 @@ function VexNode(data, firstArc, indegree){
  * @param {Number} kind
  * @constructor
  */
-function AdjacencyListGraph(vertices, vexnum, arcnum, kind){
+function AdjacencyListGraph(vertices, vexnum, arcnum, kind) {
     this.vertices = vertices || [];
     // 图的当前顶点数和弧数
     this.vexnum = vexnum || 0;
@@ -526,17 +526,17 @@ AdjacencyListGraph.prototype = {
     constructor: AdjacencyListGraph,
 
     // 查找顶点位置
-    locateVex: function(vp){
-        for(var i = 0; i < this.vexnum; i++){
-            if(this.vertices[i].data === vp) return i;
+    locateVex: function (vp) {
+        for (var i = 0; i < this.vexnum; i++) {
+            if (this.vertices[i].data === vp) return i;
         }
 
         return -1;
     },
 
     // 添加顶点
-    addVertex: function(vp){
-        if(this.locateVex(vp) !== -1) throw new Error('Vertex has existed!');
+    addVertex: function (vp) {
+        if (this.locateVex(vp) !== -1) throw new Error('Vertex has existed!');
 
         this.vertices[this.vexnum++] = new VexNode(vp, null, 0);
         return this.vexnum;
@@ -550,11 +550,11 @@ AdjacencyListGraph.prototype = {
      * @param {ArcNode} arc2
      * @returns {boolean}
      */
-    addArc: function(arc1, arc2){
+    addArc: function (arc1, arc2) {
         var k = this.locateVex(arc1.adjVex);
         var j = this.locateVex(arc2.adjVex);
 
-        if(k === -1 || j === -1) throw new Error('Arc\'s Vertex do not existed!');
+        if (k === -1 || j === -1) throw new Error('Arc\'s Vertex do not existed!');
 
         // 边的起始表结点赋值
         var p = new ArcNode(arc1.adjVex, arc1.nextArc || null, arc1.info);
@@ -562,7 +562,7 @@ AdjacencyListGraph.prototype = {
         var q = new ArcNode(arc2.adjVex, arc2.nextArc || null, arc2.info);
 
         // 是无向图，用头插入法插入到两个单链表
-        if(this.kind === UDG || this.kind === UDN){
+        if (this.kind === UDG || this.kind === UDN) {
             q.nextArc = this.vertices[k].firstArc;
             this.vertices[k].firstArc = q;
             p.nextArc = this.vertices[j].firstArc;
@@ -578,24 +578,24 @@ AdjacencyListGraph.prototype = {
     },
 
     // TODO 其他图类型的创建暂时没弄
-    createGraph: function(){
+    createGraph: function () {
         this.vexnum = +prompt('vexnum: ');
         this.arcnum = +prompt('arcnum: ');
         // incInfo为0则各弧不含其他信息
         var incInfo = +prompt('incInfo: ');
 
-        for(var m = 0; m < this.vexnum; m++){
+        for (var m = 0; m < this.vexnum; m++) {
             this.vertices[m] = new VexNode();
             this.vertices[m].data = prompt('vertex: ');
         }
 
-        for(m = 0; m < this.arcnum; m++){
+        for (m = 0; m < this.arcnum; m++) {
             var h = prompt('弧头: ');
             var t = prompt('弧尾: ');
             var i = this.locateVex(t);
             var j = this.locateVex(h);
 
-            if(i < 0 || j < 0) {
+            if (i < 0 || j < 0) {
                 alert('顶点为找到，请重新输入！');
                 m--;
                 continue;
@@ -603,9 +603,9 @@ AdjacencyListGraph.prototype = {
 
             var p = new ArcNode(j, null, incInfo && prompt('info: '));
 
-            if(!this.vertices[i].firstArc) this.vertices[i].firstArc = p;
+            if (!this.vertices[i].firstArc) this.vertices[i].firstArc = p;
             else {
-                for(var q = this.vertices[i].firstArc; q.nextArc; q = q.nextArc);
+                for (var q = this.vertices[i].firstArc; q.nextArc; q = q.nextArc);
                 q.nextArc = p;
             }
         }
@@ -696,7 +696,7 @@ console.log(g);
  * @param {*} info
  * @constructor
  */
-function ArcBox(tailVex, headVex, hLink, tLink, info){
+function ArcBox(tailVex, headVex, hLink, tLink, info) {
     this.headVex = headVex || 0;
     this.tailVex = tailVex || 0;
     this.hLink = hLink || null;
@@ -711,7 +711,7 @@ function ArcBox(tailVex, headVex, hLink, tLink, info){
  * @param {ArcBox} firstOut 该顶点第一条出弧
  * @constructor
  */
-function OLVexNode(data, firstIn, firstOut){
+function OLVexNode(data, firstIn, firstOut) {
     this.data = data || null;
     this.firstIn = firstIn || null;
     this.firstOut = firstOut || null;
@@ -724,7 +724,7 @@ function OLVexNode(data, firstIn, firstOut){
  * @param {Number} arcnum 有向图的当前弧数
  * @constructor
  */
-function OLGraph(xList, vexnum, arcnum){
+function OLGraph(xList, vexnum, arcnum) {
     this.xList = xList || [];
     this.vexnum = vexnum || 0;
     this.arcnum = arcnum || 0;
@@ -732,32 +732,32 @@ function OLGraph(xList, vexnum, arcnum){
 OLGraph.prototype = {
     constructor: OLGraph,
 
-    locateVex: function(vp){
-        for(var i = 0; i < this.vexnum; i++){
-            if(this.xList[i].data === vp) return i;
+    locateVex: function (vp) {
+        for (var i = 0; i < this.vexnum; i++) {
+            if (this.xList[i].data === vp) return i;
         }
 
         return -1;
     },
 
     // 删除顶点
-    deleteVertex: function(v){
+    deleteVertex: function (v) {
         var m = this.locateVex(v);
 
-        if(m < 0) throw new Error('vertex not found!');
+        if (m < 0) throw new Error('vertex not found!');
 
         var n = this.vexnum;
         var q, i, p;
         // 删除所有以v为头的边
-        for(i = 0; i < n; i++){
+        for (i = 0; i < n; i++) {
             // 如果待删除的边是头链上的第一个结点
-            if(this.xList[i].firstIn.tailVex === m) {
+            if (this.xList[i].firstIn.tailVex === m) {
                 q = this.xList[i].firstIn;
                 this.xList[i].firstIn = q.hLink;
                 this.arcnum--;
             } else {
-                for(p = this.xList[i].firstIn; p && p.hLink.tailVex !== m; p = p.hLink);
-                if(p) {
+                for (p = this.xList[i].firstIn; p && p.hLink.tailVex !== m; p = p.hLink);
+                if (p) {
                     q = p.hLink;
                     p.hLink = q.hLink;
                     this.arcnum--;
@@ -766,15 +766,15 @@ OLGraph.prototype = {
         }
 
         // 删除所有以v为尾的边
-        for(i = 0; i < n; i++){
+        for (i = 0; i < n; i++) {
             // 如果待删除的边是尾链上的第一个结点
-            if(this.xList[i].firstOut.headVex === m) {
+            if (this.xList[i].firstOut.headVex === m) {
                 q = this.xList[i].firstOut;
                 this.xList[i].firstOut = q.tLink;
                 this.arcnum--;
             } else {
-                for(p = this.xList[i].firstOut; p && p.tLink.headVex !== m; p = p.tLink);
-                if(p) {
+                for (p = this.xList[i].firstOut; p && p.tLink.headVex !== m; p = p.tLink);
+                if (p) {
                     q = p.tLink;
                     p.tLink = q.tLink;
                     this.arcnum--;
@@ -783,12 +783,12 @@ OLGraph.prototype = {
         }
 
         // 顺次用结点m之后的顶点取代前一个顶点
-        for(i = m; i < n; i++){
+        for (i = m; i < n; i++) {
             // 修改表头向量
             this.xList[i] = this.xList[i + 1];
-            for(p = this.xList[i].firstIn; p ; p = p.hLink)
+            for (p = this.xList[i].firstIn; p; p = p.hLink)
                 p.headVex--;
-            for(p = this.xList[i].firstOut; p; p = p.tLink)
+            for (p = this.xList[i].firstOut; p; p = p.tLink)
                 p.tailVex--;
         }
 
@@ -796,25 +796,25 @@ OLGraph.prototype = {
         return true;
     },
 
-    createDG: function(){
+    createDG: function () {
         this.vexnum = prompt('Vexnum: ');
         this.arcnum = prompt('Arcnum: ');
         // IncInfo为0则各弧不含其他信息
         var incInfo = +prompt('IncInfo: ');
 
         // 输入顶点值
-        for(var i = 0; i < this.vexnum; i++){
+        for (var i = 0; i < this.vexnum; i++) {
             this.xList[i] = new OLVexNode(prompt('data: '), null, null);
         }
 
-        for(var k = 0; k < this.arcnum; k++){
+        for (var k = 0; k < this.arcnum; k++) {
             var v1 = prompt('v1: ');
             var v2 = prompt('v2: ');
 
             i = this.locateVex(v1);
             var j = this.locateVex(v2);
 
-            if(i === -1 || j === -1) {
+            if (i === -1 || j === -1) {
                 alert('无此顶点，请重新输入!');
                 k--;
                 continue;
@@ -866,7 +866,7 @@ var VISITED = 1;
  * @param {*} info 该边信息
  * @constructor
  */
-function EBox(mark, ivex, jvex, ilink, jlink, info){
+function EBox(mark, ivex, jvex, ilink, jlink, info) {
     this.mark = mark || UNVISITED;
     this.ivex = ivex || 0;
     this.jvex = jvex || 0;
@@ -881,7 +881,7 @@ function EBox(mark, ivex, jvex, ilink, jlink, info){
  * @param {EBox} firstEdge 指向第一条依附该顶点的边
  * @constructor
  */
-function AMLVexBox(data, firstEdge){
+function AMLVexBox(data, firstEdge) {
     this.data = data || null;
     this.firstEdge = firstEdge || null;
 }
@@ -893,7 +893,7 @@ function AMLVexBox(data, firstEdge){
  * @param {Number} edgenum
  * @constructor
  */
-function AMLGraph(adjMulist, vexnum, edgenum){
+function AMLGraph(adjMulist, vexnum, edgenum) {
     this.adjMulist = adjMulist || [];
     this.vexnum = vexnum || 0;
     this.edgenum = edgenum || 0;
@@ -901,35 +901,35 @@ function AMLGraph(adjMulist, vexnum, edgenum){
 AMLGraph.prototype = {
     constructor: AMLGraph,
 
-    locateVex: function(v){
-        for(var i = 0; i < this.vexnum; i++){
-            if(this.adjMulist[i].data === v) return i;
+    locateVex: function (v) {
+        for (var i = 0; i < this.vexnum; i++) {
+            if (this.adjMulist[i].data === v) return i;
         }
         return -1;
     },
 
-    deleteArc: function(v, w){
+    deleteArc: function (v, w) {
         var i = this.locateVex(v);
         var j = this.locateVex(w);
 
-        if(i < 0 || j < 0) throw new Error('Vertex not found!');
+        if (i < 0 || j < 0) throw new Error('Vertex not found!');
 
         var p;
         // 在i链表中删除该边
-        if(this.adjMulist[i].firstEdge.jvex === j) {
+        if (this.adjMulist[i].firstEdge.jvex === j) {
             this.adjMulist[i].firstEdge = this.adjMulist[i].firstEdge.ilink;
         } else {
-            for(p = this.adjMulist[i].firstEdge; p && p.ilink.jvex !== j; p = p.ilink);
-            if(!p) throw new Error('edge not found!');
+            for (p = this.adjMulist[i].firstEdge; p && p.ilink.jvex !== j; p = p.ilink);
+            if (!p) throw new Error('edge not found!');
             p.ilink = p.ilink.ilink;
         }
 
         // 在j链表中删除该边
-        if(this.adjMulist[j].firstEdge.ivex === i){
+        if (this.adjMulist[j].firstEdge.ivex === i) {
             this.adjMulist[j].firstEdge = this.adjMulist[j].firstEdge.jlink;
         } else {
-            for(p = this.adjMulist[j].firstEdge; p && p.jlink.ivex !== i; p = p.jlink);
-            if(!p) throw new Error('edge not found!');
+            for (p = this.adjMulist[j].firstEdge; p && p.jlink.ivex !== i; p = p.jlink);
+            if (!p) throw new Error('edge not found!');
             p.jlink = p.jlink.jlink;
         }
 
@@ -937,23 +937,23 @@ AMLGraph.prototype = {
         return true;
     },
 
-    createGraph: function(){
+    createGraph: function () {
         var vexnum = +prompt('vexnum: ');
         this.vexnum = vexnum;
         var edgenum = +prompt('edgenum: ');
         this.edgenum = edgenum;
 
-        for(var m = 0; m < vexnum; m++){
+        for (var m = 0; m < vexnum; m++) {
             this.adjMulist[m] = new AMLVexBox(prompt('data: '), null);
         }
 
-        for(m = 0; m < edgenum; m++){
+        for (m = 0; m < edgenum; m++) {
             var t = prompt('tailVex: ');
             var h = prompt('headVex: ');
             var i = this.locateVex(t);
             var j = this.locateVex(h);
 
-            if(i < 0 || j < 0) {
+            if (i < 0 || j < 0) {
                 console.error('vertex not found! Try again:');
                 m--;
                 return;
@@ -963,30 +963,30 @@ AMLGraph.prototype = {
             var q, r;
 
             // 插入i链表尾部
-            if(!this.adjMulist[i].firstEdge){
+            if (!this.adjMulist[i].firstEdge) {
                 this.adjMulist[i].firstEdge = p;
             } else {
                 q = this.adjMulist[i].firstEdge;
-                while(q){
+                while (q) {
                     r = q;
-                    if(q.ivex === i) q = q.ilink;
+                    if (q.ivex === i) q = q.ilink;
                     else q = q.jlink;
                 }
-                if(r.ivex === i) r.ilink = p;
+                if (r.ivex === i) r.ilink = p;
                 else r.jlink = p;
             }
 
             // 插入j链表尾部
-            if(!this.adjMulist[j].firstEdge){
+            if (!this.adjMulist[j].firstEdge) {
                 this.adjMulist[j].firstEdge = p;
             } else {
                 q = this.adjMulist[j].firstEdge;
-                while(q){
+                while (q) {
                     r = q;
-                    if(q.jvex === j) q = q.jlink;
+                    if (q.jvex === j) q = q.jlink;
                     else q = q.ilink;
                 }
-                if(r.jvex === j) r.jlink = p;
+                if (r.jvex === j) r.jlink = p;
                 else r.ilink = p;
             }
         }
