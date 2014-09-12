@@ -299,6 +299,23 @@ AdjacencyMatrixGraph.prototype = {
         }
 
         return true;
+    },
+
+    // 判断一个邻接矩阵存储的有向图是否可传递
+    isPass: function(){
+        if(this.kind !== DG) throw new Error('graph kind should be DG');
+
+        for(var x = 0; x < this.vexnum; x++){
+            for(var y = 0; y < this.vexnum; y++){
+                if(this.arcs[x][y]) {
+                    for(var z = 0; z < this.vexnum; z++){
+                        if(z !== x && this.arcs[y][z] && !this.arcs[x][z]) return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 };
 
@@ -609,6 +626,31 @@ AdjacencyListGraph.prototype = {
                 q.nextArc = p;
             }
         }
+    },
+
+    // 判断一个邻接表存储的有向图是否可传递
+    isPass: function(){
+        if(this.kind !== DG) throw new Error('graph kind should be DG');
+
+        for(var x = 0; x < this.vexnum; x++){
+            for(var p = this.vertices[x].firstArc; p; p = p.nextArc){
+                var y = p.adjVex;
+                for(var q = this.vertices[y].firstArc; q; q = q.nextArc){
+                    var z = q.adjVex;
+                    if(z !== x && this.isAdj(x, z)) return false;
+                }
+            }
+        }
+
+        return true;
+    },
+
+    // 判断有向图是否存在边(m,n)
+    isAdj: function(m, n){
+        for(var p = this.vertices[m].firstArc; p; p = p.nextArc){
+            if(p.adjVex === n) return true;
+        }
+        return false;
     }
 };
 
@@ -956,7 +998,7 @@ AMLGraph.prototype = {
             if (i < 0 || j < 0) {
                 console.error('vertex not found! Try again:');
                 m--;
-                return;
+                continue;
             }
 
             var p = new EBox(0, i, j, null, null);
@@ -997,3 +1039,15 @@ AMLGraph.prototype = {
 //g.createGraph();
 //console.log(g);
 
+
+/*
+图的遍历
+
+图的遍历(Travering Graph)：从图的某一顶点出发，访遍图中的其余顶点，且每个顶点仅被访问一次。图的遍历算法是各种图的操作的基础。
+
+◆ 复杂性：图的任意顶点可能和其余的顶点相邻接，可能在访问了某个顶点后，沿某条路径搜索后又回到原顶点。
+◆ 解决办法：在遍历过程中记下已被访问过的顶点。设置一个辅助向量Visited[1…n](n为顶点数)，其初值为0，一旦访问了顶点vi后，使Visited[i]为1或为访问的次序号。
+图的遍历算法有深度优先搜索算法和广度优先搜索算法。
+
+
+ */
