@@ -115,3 +115,26 @@ function string_Subtract(s, t){
 
 string_Subtract('abcde', 'cefgh');  // abd
 
+
+// 将串s中的字串t替换为v
+function replace(s, t, v){
+    var w = '';
+    var n = 0;
+    var tail = '';
+
+    for(var i = 0; i <= s.length - t.length; i++){
+        if(s.substr(i, t.length) === t){
+            var head = s.substr(n, i - n);
+            tail = s.substr(i + t.length, s.length - i - t.length + 1);
+            w += head + v;
+            i += t.length;
+            n = i;
+        }
+    }
+
+    w += tail;
+
+    return w;
+}
+console.log(replace('place, ace', 'ace', 'face'));  // plface, face
+
