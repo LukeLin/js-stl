@@ -160,7 +160,7 @@ function ArcCell(adj, info) {
 /**
  *
  * @param {Array} vexs 顶点向量
- * @param {Array} arcs 邻接矩阵
+ * @param {Array | ArcCell} arcs 邻接矩阵
  * @param {Number} vexnum
  * @param {Number} arcnum
  * @param {Number} kind
@@ -302,14 +302,14 @@ AdjacencyMatrixGraph.prototype = {
     },
 
     // 判断一个邻接矩阵存储的有向图是否可传递
-    isPass: function(){
-        if(this.kind !== DG) throw new Error('graph kind should be DG');
+    isPass: function () {
+        if (this.kind !== DG) throw new Error('graph kind should be DG');
 
-        for(var x = 0; x < this.vexnum; x++){
-            for(var y = 0; y < this.vexnum; y++){
-                if(this.arcs[x][y]) {
-                    for(var z = 0; z < this.vexnum; z++){
-                        if(z !== x && this.arcs[y][z] && !this.arcs[x][z]) return false;
+        for (var x = 0; x < this.vexnum; x++) {
+            for (var y = 0; y < this.vexnum; y++) {
+                if (this.arcs[x][y]) {
+                    for (var z = 0; z < this.vexnum; z++) {
+                        if (z !== x && this.arcs[y][z] && !this.arcs[x][z]) return false;
                     }
                 }
             }
@@ -629,15 +629,15 @@ AdjacencyListGraph.prototype = {
     },
 
     // 判断一个邻接表存储的有向图是否可传递
-    isPass: function(){
-        if(this.kind !== DG) throw new Error('graph kind should be DG');
+    isPass: function () {
+        if (this.kind !== DG) throw new Error('graph kind should be DG');
 
-        for(var x = 0; x < this.vexnum; x++){
-            for(var p = this.vertices[x].firstArc; p; p = p.nextArc){
+        for (var x = 0; x < this.vexnum; x++) {
+            for (var p = this.vertices[x].firstArc; p; p = p.nextArc) {
                 var y = p.adjVex;
-                for(var q = this.vertices[y].firstArc; q; q = q.nextArc){
+                for (var q = this.vertices[y].firstArc; q; q = q.nextArc) {
                     var z = q.adjVex;
-                    if(z !== x && this.isAdj(x, z)) return false;
+                    if (z !== x && this.isAdj(x, z)) return false;
                 }
             }
         }
@@ -646,9 +646,9 @@ AdjacencyListGraph.prototype = {
     },
 
     // 判断有向图是否存在边(m,n)
-    isAdj: function(m, n){
-        for(var p = this.vertices[m].firstArc; p; p = p.nextArc){
-            if(p.adjVex === n) return true;
+    isAdj: function (m, n) {
+        for (var p = this.vertices[m].firstArc; p; p = p.nextArc) {
+            if (p.adjVex === n) return true;
         }
         return false;
     }
@@ -1069,4 +1069,76 @@ AMLGraph.prototype = {
 
 用广度优先搜索算法遍历图与深度优先搜索算法遍历图的唯一区别是邻接点搜索次序不同.
  */
+
+// 对邻接矩阵图作递归式深度优先遍历
+AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
+    var visited = [];
+    // 访问标志数组初始化
+    for (var i = 0; i < this.vexnum; i++) visited[i] = false;
+    for (i = 0; i < this.vexnum; i++) {
+        if (!visited[i]) dfs(this, i);
+    }
+
+    function dfs(graph, vertex) {
+        visited[vertex] = true;
+        visitFn(vertex);
+
+        for (var j = 0; j < graph.vexnum; j++) {
+            if ((graph.arcs[vertex][j] !== 0 || graph.arcs[vertex][j] !== Infinity)
+                && !visited[j]) dfs(graph, j);
+        }
+    }
+};
+
+console.log('DFSTraverse: udn');
+udn.DFSTraverse(function (v) {
+    console.log(v);
+});
+console.log('DFSTraverse: dn');
+dn.DFSTraverse(function (v) {
+    console.log(v);
+});
+
+var Stack = require('../Stack/stack');
+// 非递归
+AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function(visitFn){
+    var visited = [];
+    var stack = new Stack();
+    // 访问标志数组初始化
+    for (var i = 0; i < this.vexnum; i++) visited[i] = false;
+    for (i = 0; i < this.vexnum; i++) {
+        if (!visited[i]) {
+            stack.push(i);
+            while(stack.top){
+
+            }
+        }
+    }
+};
+
+// 对邻接矩阵图作广度优先遍历
+AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
+
+};
+
+AdjacencyMatrixGraph.prototype.BFSTraverse_NonRecurse = function (visitFn) {
+
+};
+
+
+AdjacencyListGraph.prototype.DFSTraverse = function(visitFn){
+
+};
+
+AdjacencyListGraph.prototype.DFSTraverse_NonRecurse = function(visitFn){
+
+};
+
+AdjacencyListGraph.prototype.BFSTraverse = function(visitFn){
+
+};
+
+AdjacencyListGraph.prototype.BFSTraverse_NonRecurse = function(visitFn){
+
+};
 
