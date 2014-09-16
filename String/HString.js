@@ -138,3 +138,28 @@ function replace(s, t, v){
 }
 console.log(replace('place, ace', 'ace', 'face'));  // plface, face
 
+
+// 后缀转前缀
+function niBoLan2BoLan(str){
+    var stack = [];
+
+    for(var i = 0; i < str.length; i += 1){
+        var r = str[i];
+
+        if(/\w/.test(r)) stack.push(r);
+        else {
+            if(!stack.length) return false;
+            var a = stack.pop();
+            if(!stack.length) return false;
+            var b = stack.pop();
+            var c = r + b + a;
+            stack.push(c);
+        }
+    }
+
+    var ret = stack.pop();
+
+    return stack.length && ret;
+}
+
+console.log(niBoLan2BoLan('abc+*d-'));  // -*a+bcd
