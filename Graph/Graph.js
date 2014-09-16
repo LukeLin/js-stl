@@ -138,6 +138,8 @@
 
  */
 
+var Stack = require('../Stack/stack');
+
 // 图的数组（邻接矩阵）存储表示
 var DG = 1;     // 有向图
 var DN = 2;     // 有向网
@@ -1099,22 +1101,39 @@ dn.DFSTraverse(function (v) {
     console.log(v);
 });
 
-var Stack = require('../Stack/stack');
+
 // 非递归
 AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function(visitFn){
     var visited = [];
     var stack = new Stack();
     // 访问标志数组初始化
     for (var i = 0; i < this.vexnum; i++) visited[i] = false;
-    for (i = 0; i < this.vexnum; i++) {
-        if (!visited[i]) {
-            stack.push(i);
-            while(stack.top){
 
-            }
+    stack.push(0);
+    visited[0] = true;
+    visitFn(0);
+
+    var vertex;
+    while((vertex = stack.peek()) != null){
+        for (var j = 0; j < this.vexnum; j++) {
+            if ((this.arcs[vertex][j] !== 0 || this.arcs[vertex][j] !== Infinity)
+                && !visited[j]) {
+                visitFn(j);
+                visited[j] = true;
+                stack.push(j);
+            } else stack.pop();
         }
     }
 };
+
+console.log('DFSTraverse_NonRecurse: udn');
+udn.DFSTraverse_NonRecurse(function (v) {
+    console.log(v);
+});
+console.log('DFSTraverse_NonRecurse: dn');
+dn.DFSTraverse_NonRecurse(function (v) {
+    console.log(v);
+});
 
 // 对邻接矩阵图作广度优先遍历
 AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
