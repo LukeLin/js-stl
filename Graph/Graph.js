@@ -139,6 +139,7 @@
  */
 
 var Stack = require('../Stack/stack');
+var Queue = require('../Queue/Queue').Queue;
 
 // 图的数组（邻接矩阵）存储表示
 var DG = 1;     // 有向图
@@ -565,20 +566,20 @@ AdjacencyListGraph.prototype = {
      * 添加弧
      * 如果是无向图或者无向网,arc1和arc2无顺序要求
      * 如果是有向图或者有向网，只会添加arc1，因此正邻接表和逆邻接表的顺序需要注意
-     * @param {ArcNode} arc1
-     * @param {ArcNode} arc2
+     * @param {String} arc1
+     * @param {String} arc2
      * @returns {boolean}
      */
     addArc: function (arc1, arc2) {
-        var k = this.locateVex(arc1.adjVex);
-        var j = this.locateVex(arc2.adjVex);
+        var k = this.locateVex(arc1);
+        var j = this.locateVex(arc2);
 
         if (k === -1 || j === -1) throw new Error('Arc\'s Vertex do not existed!');
 
         // 边的起始表结点赋值
-        var p = new ArcNode(arc1.adjVex, arc1.nextArc || null, arc1.info);
+        var p = new ArcNode(k, null, null);
         // 边的末尾表结点赋值
-        var q = new ArcNode(arc2.adjVex, arc2.nextArc || null, arc2.info);
+        var q = new ArcNode(j, null, null);
 
         // 是无向图，用头插入法插入到两个单链表
         if (this.kind === UDG || this.kind === UDN) {
@@ -657,22 +658,22 @@ AdjacencyListGraph.prototype = {
 };
 
 // 无向图的邻接表
-var g = new AdjacencyListGraph([], 0, 7, UDG);
-g.addVertex('v1');
-g.addVertex('v2');
-g.addVertex('v3');
-g.addVertex('v4');
-g.addVertex('v5');
+var adjListGraph = new AdjacencyListGraph([], 0, 7, UDG);
+adjListGraph.addVertex('v1');
+adjListGraph.addVertex('v2');
+adjListGraph.addVertex('v3');
+adjListGraph.addVertex('v4');
+adjListGraph.addVertex('v5');
 
-g.addArc(new ArcNode('v1'), new ArcNode('v2'));
-g.addArc(new ArcNode('v1'), new ArcNode('v3'));
-g.addArc(new ArcNode('v1'), new ArcNode('v4'));
-g.addArc(new ArcNode('v2'), new ArcNode('v3'));
-g.addArc(new ArcNode('v3'), new ArcNode('v4'));
-g.addArc(new ArcNode('v3'), new ArcNode('v5'));
-g.addArc(new ArcNode('v4'), new ArcNode('v5'));
+adjListGraph.addArc('v1', 'v2');
+adjListGraph.addArc('v1', 'v3');
+adjListGraph.addArc('v1', 'v4');
+adjListGraph.addArc('v2', 'v3');
+adjListGraph.addArc('v3', 'v4');
+adjListGraph.addArc('v3', 'v5');
+adjListGraph.addArc('v4', 'v5');
 
-console.log(g);
+console.log(adjListGraph);
 
 // 有向图的逆邻接表
 var g = new AdjacencyListGraph([], 0, 7, DG);
@@ -682,13 +683,13 @@ g.addVertex('v3');
 g.addVertex('v4');
 g.addVertex('v5');
 
-g.addArc(new ArcNode('v1'), new ArcNode('v2'));
-g.addArc(new ArcNode('v1'), new ArcNode('v4'));
-g.addArc(new ArcNode('v3'), new ArcNode('v2'));
-g.addArc(new ArcNode('v3'), new ArcNode('v1'));
-g.addArc(new ArcNode('v4'), new ArcNode('v3'));
-g.addArc(new ArcNode('v3'), new ArcNode('v5'));
-g.addArc(new ArcNode('v5'), new ArcNode('v4'));
+g.addArc('v1', 'v2');
+g.addArc('v1', 'v4');
+g.addArc('v3', 'v2');
+g.addArc('v3', 'v1');
+g.addArc('v4', 'v3');
+g.addArc('v3', 'v5');
+g.addArc('v5', 'v4');
 
 console.log(g);
 
@@ -700,13 +701,13 @@ g.addVertex('v3');
 g.addVertex('v4');
 g.addVertex('v5');
 
-g.addArc(new ArcNode('v2'), new ArcNode('v1'));
-g.addArc(new ArcNode('v4'), new ArcNode('v1'));
-g.addArc(new ArcNode('v2'), new ArcNode('v3'));
-g.addArc(new ArcNode('v1'), new ArcNode('v3'));
-g.addArc(new ArcNode('v3'), new ArcNode('v4'));
-g.addArc(new ArcNode('v5'), new ArcNode('v3'));
-g.addArc(new ArcNode('v4'), new ArcNode('v5'));
+g.addArc('v2', 'v1');
+g.addArc('v4', 'v1');
+g.addArc('v2', 'v3');
+g.addArc('v1', 'v3');
+g.addArc('v3', 'v4');
+g.addArc('v5', 'v3');
+g.addArc('v4', 'v5');
 
 console.log(g);
 
@@ -1099,7 +1100,7 @@ udn.DFSTraverse(function (v) {
 
 
 // 非递归
-AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function(visitFn){
+AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
     var visited = [];
     var stack = new Stack();
     var me = this;
@@ -1111,7 +1112,7 @@ AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function(visitFn){
     visitFn.call(me, 0);
 
     var vertex;
-    while((vertex = stack.peek()) != null){
+    while ((vertex = stack.peek()) != null) {
         for (var j = 0; j < this.vexnum; ++j) {
             if ((this.arcs[vertex][j] !== 0 || this.arcs[vertex][j] !== Infinity)
                 && !visited[j]) {
@@ -1130,27 +1131,70 @@ udn.DFSTraverse_NonRecurse(function (v) {
 
 // 对邻接矩阵图作广度优先遍历
 AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
-    
+    var visited = [];
+    var queue = new Queue();
+
+    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+
+    for (i = 0; i < this.vexnum; ++i) {
+        if (!visited[i]) {
+            visited[i] = true;
+            visitFn.call(this, i);
+            queue.enQueue(i);
+
+            while (queue.rear) {
+                var u = queue.deQueue();
+                for (var j = 0; j < this.vexnum; ++j) {
+                    if ((this.arcs[u][j] !== 0 || this.arcs[u][j] !== Infinity)
+                        && !visited[j]) {
+                        visited[j] = true;
+                        visitFn.call(this, j);
+                        queue.enQueue(j);
+                    }
+                }
+            }
+        }
+    }
 };
 
-AdjacencyMatrixGraph.prototype.BFSTraverse_NonRecurse = function (visitFn) {
+
+console.log('BFSTraverse: ');
+udn.BFSTraverse(function (v) {
+    console.log(this.vexs[v]);
+});
+
+
+AdjacencyListGraph.prototype.DFSTraverse = function (visitFn) {
+    var visited = [];
+    for(var i = 0; i < this.vexnum; ++i) visited[i] = false;
+
+    for(i = 0; i < this.vexnum; ++i){
+        if(!visited[i]) dfs(this, i);
+    }
+
+    function dfs(graph, v){
+        visited[v] = true;
+        visitFn.call(graph, v);
+
+        var p = graph.vertices[v].firstArc;
+        while(p){
+            if(!visited[p.adjVex]) dfs(graph, p.adjVex);
+            p = p.nextArc;
+        }
+    }
+};
+
+console.log('adjListGraph DFSTraverse: ');
+adjListGraph.DFSTraverse(function (v) {
+    console.log(this.vertices[v].data);
+});
+
+
+AdjacencyListGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
 
 };
 
-
-AdjacencyListGraph.prototype.DFSTraverse = function(visitFn){
-
-};
-
-AdjacencyListGraph.prototype.DFSTraverse_NonRecurse = function(visitFn){
-
-};
-
-AdjacencyListGraph.prototype.BFSTraverse = function(visitFn){
-
-};
-
-AdjacencyListGraph.prototype.BFSTraverse_NonRecurse = function(visitFn){
+AdjacencyListGraph.prototype.BFSTraverse = function (visitFn) {
 
 };
 
