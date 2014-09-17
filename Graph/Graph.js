@@ -203,7 +203,7 @@ AdjacencyMatrixGraph.prototype = {
      * @returns {number}
      */
     locateVex: function (vp) {
-        for (var i = 0; i < this.vexnum; i++) {
+        for (var i = 0; i < this.vexnum; ++i) {
             if (this.vexs[i] === vp) return i;
         }
 
@@ -223,7 +223,7 @@ AdjacencyMatrixGraph.prototype = {
 
         var value = this.kind === DG || this.kind === UDG ?
             0 : Infinity;
-        for (var j = 0; j < this.vexnum; j++) {
+        for (var j = 0; j < this.vexnum; ++j) {
             this.arcs[j] = this.arcs[j] || [];
             this.arcs[k] = this.arcs[k] || [];
             this.arcs[j][k] = this.arcs[j][k] || new ArcCell();
@@ -273,7 +273,7 @@ AdjacencyMatrixGraph.prototype = {
         this.vexs[n] = temp;
 
         // 将边的关系随之交换
-        for (var i = 0; i <= n; i++) {
+        for (var i = 0; i <= n; ++i) {
             this.arcs[i][m] = this.arcs[i][n];
             this.arcs[m][i] = this.arcs[n][i];
         }
@@ -307,10 +307,10 @@ AdjacencyMatrixGraph.prototype = {
     isPass: function () {
         if (this.kind !== DG) throw new Error('graph kind should be DG');
 
-        for (var x = 0; x < this.vexnum; x++) {
-            for (var y = 0; y < this.vexnum; y++) {
+        for (var x = 0; x < this.vexnum; ++x) {
+            for (var y = 0; y < this.vexnum; ++y) {
                 if (this.arcs[x][y]) {
-                    for (var z = 0; z < this.vexnum; z++) {
+                    for (var z = 0; z < this.vexnum; ++z) {
                         if (z !== x && this.arcs[y][z] && !this.arcs[x][z]) return false;
                     }
                 }
@@ -350,18 +350,18 @@ function createGraph(kind) {
 
         // 构造顶点向量
         var i , j;
-        for (i = 0; i < AdjacencyMatrixGraph.vexnum; i++) AdjacencyMatrixGraph.vexs[i] = prompt('顶点向量vex: ');
+        for (i = 0; i < AdjacencyMatrixGraph.vexnum; ++i) AdjacencyMatrixGraph.vexs[i] = prompt('顶点向量vex: ');
 
         // 初始化邻接矩阵
-        for (i = 0; i < AdjacencyMatrixGraph.vexnum; i++) {
-            for (j = 0; j < AdjacencyMatrixGraph.vexnum; j++) {
+        for (i = 0; i < AdjacencyMatrixGraph.vexnum; ++i) {
+            for (j = 0; j < AdjacencyMatrixGraph.vexnum; ++j) {
                 AdjacencyMatrixGraph.arcs[i] = AdjacencyMatrixGraph.arcs[i] || [];
                 AdjacencyMatrixGraph.arcs[i][j] = new ArcCell(adj, null);
             }
         }
 
         // 构造邻接矩阵
-        for (var k = 0; k < AdjacencyMatrixGraph.arcnum; k++) {
+        for (var k = 0; k < AdjacencyMatrixGraph.arcnum; ++k) {
             // 输入一条边依附的顶点及权值
             var v1 = prompt('v1: ');
             var v2 = prompt('v2: ');
@@ -546,7 +546,7 @@ AdjacencyListGraph.prototype = {
 
     // 查找顶点位置
     locateVex: function (vp) {
-        for (var i = 0; i < this.vexnum; i++) {
+        for (var i = 0; i < this.vexnum; ++i) {
             if (this.vertices[i].data === vp) return i;
         }
 
@@ -603,12 +603,12 @@ AdjacencyListGraph.prototype = {
         // incInfo为0则各弧不含其他信息
         var incInfo = +prompt('incInfo: ');
 
-        for (var m = 0; m < this.vexnum; m++) {
+        for (var m = 0; m < this.vexnum; ++m) {
             this.vertices[m] = new VexNode();
             this.vertices[m].data = prompt('vertex: ');
         }
 
-        for (m = 0; m < this.arcnum; m++) {
+        for (m = 0; m < this.arcnum; ++m) {
             var h = prompt('弧头: ');
             var t = prompt('弧尾: ');
             var i = this.locateVex(t);
@@ -634,7 +634,7 @@ AdjacencyListGraph.prototype = {
     isPass: function () {
         if (this.kind !== DG) throw new Error('graph kind should be DG');
 
-        for (var x = 0; x < this.vexnum; x++) {
+        for (var x = 0; x < this.vexnum; ++x) {
             for (var p = this.vertices[x].firstArc; p; p = p.nextArc) {
                 var y = p.adjVex;
                 for (var q = this.vertices[y].firstArc; q; q = q.nextArc) {
@@ -777,7 +777,7 @@ OLGraph.prototype = {
     constructor: OLGraph,
 
     locateVex: function (vp) {
-        for (var i = 0; i < this.vexnum; i++) {
+        for (var i = 0; i < this.vexnum; ++i) {
             if (this.xList[i].data === vp) return i;
         }
 
@@ -793,7 +793,7 @@ OLGraph.prototype = {
         var n = this.vexnum;
         var q, i, p;
         // 删除所有以v为头的边
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < n; ++i) {
             // 如果待删除的边是头链上的第一个结点
             if (this.xList[i].firstIn.tailVex === m) {
                 q = this.xList[i].firstIn;
@@ -810,7 +810,7 @@ OLGraph.prototype = {
         }
 
         // 删除所有以v为尾的边
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < n; ++i) {
             // 如果待删除的边是尾链上的第一个结点
             if (this.xList[i].firstOut.headVex === m) {
                 q = this.xList[i].firstOut;
@@ -827,7 +827,7 @@ OLGraph.prototype = {
         }
 
         // 顺次用结点m之后的顶点取代前一个顶点
-        for (i = m; i < n; i++) {
+        for (i = m; i < n; ++i) {
             // 修改表头向量
             this.xList[i] = this.xList[i + 1];
             for (p = this.xList[i].firstIn; p; p = p.hLink)
@@ -847,11 +847,11 @@ OLGraph.prototype = {
         var incInfo = +prompt('IncInfo: ');
 
         // 输入顶点值
-        for (var i = 0; i < this.vexnum; i++) {
+        for (var i = 0; i < this.vexnum; ++i) {
             this.xList[i] = new OLVexNode(prompt('data: '), null, null);
         }
 
-        for (var k = 0; k < this.arcnum; k++) {
+        for (var k = 0; k < this.arcnum; ++k) {
             var v1 = prompt('v1: ');
             var v2 = prompt('v2: ');
 
@@ -946,7 +946,7 @@ AMLGraph.prototype = {
     constructor: AMLGraph,
 
     locateVex: function (v) {
-        for (var i = 0; i < this.vexnum; i++) {
+        for (var i = 0; i < this.vexnum; ++i) {
             if (this.adjMulist[i].data === v) return i;
         }
         return -1;
@@ -987,11 +987,11 @@ AMLGraph.prototype = {
         var edgenum = +prompt('edgenum: ');
         this.edgenum = edgenum;
 
-        for (var m = 0; m < vexnum; m++) {
+        for (var m = 0; m < vexnum; ++m) {
             this.adjMulist[m] = new AMLVexBox(prompt('data: '), null);
         }
 
-        for (m = 0; m < edgenum; m++) {
+        for (m = 0; m < edgenum; ++m) {
             var t = prompt('tailVex: ');
             var h = prompt('headVex: ');
             var i = this.locateVex(t);
@@ -1076,16 +1076,16 @@ AMLGraph.prototype = {
 AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
     var visited = [];
     // 访问标志数组初始化
-    for (var i = 0; i < this.vexnum; i++) visited[i] = false;
-    for (i = 0; i < this.vexnum; i++) {
+    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+    for (i = 0; i < this.vexnum; ++i) {
         if (!visited[i]) dfs(this, i);
     }
 
     function dfs(graph, vertex) {
         visited[vertex] = true;
-        visitFn(vertex);
+        visitFn.call(graph, vertex);
 
-        for (var j = 0; j < graph.vexnum; j++) {
+        for (var j = 0; j < graph.vexnum; ++j) {
             if ((graph.arcs[vertex][j] !== 0 || graph.arcs[vertex][j] !== Infinity)
                 && !visited[j]) dfs(graph, j);
         }
@@ -1094,11 +1094,7 @@ AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
 
 console.log('DFSTraverse: udn');
 udn.DFSTraverse(function (v) {
-    console.log(v);
-});
-console.log('DFSTraverse: dn');
-dn.DFSTraverse(function (v) {
-    console.log(v);
+    console.log(this.vexs[v]);
 });
 
 
@@ -1106,19 +1102,20 @@ dn.DFSTraverse(function (v) {
 AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function(visitFn){
     var visited = [];
     var stack = new Stack();
+    var me = this;
     // 访问标志数组初始化
-    for (var i = 0; i < this.vexnum; i++) visited[i] = false;
+    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
 
     stack.push(0);
     visited[0] = true;
-    visitFn(0);
+    visitFn.call(me, 0);
 
     var vertex;
     while((vertex = stack.peek()) != null){
-        for (var j = 0; j < this.vexnum; j++) {
+        for (var j = 0; j < this.vexnum; ++j) {
             if ((this.arcs[vertex][j] !== 0 || this.arcs[vertex][j] !== Infinity)
                 && !visited[j]) {
-                visitFn(j);
+                visitFn.call(me, j);
                 visited[j] = true;
                 stack.push(j);
             } else stack.pop();
@@ -1128,16 +1125,12 @@ AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function(visitFn){
 
 console.log('DFSTraverse_NonRecurse: udn');
 udn.DFSTraverse_NonRecurse(function (v) {
-    console.log(v);
-});
-console.log('DFSTraverse_NonRecurse: dn');
-dn.DFSTraverse_NonRecurse(function (v) {
-    console.log(v);
+    console.log(this.vexs[v]);
 });
 
 // 对邻接矩阵图作广度优先遍历
 AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
-
+    
 };
 
 AdjacencyMatrixGraph.prototype.BFSTraverse_NonRecurse = function (visitFn) {
