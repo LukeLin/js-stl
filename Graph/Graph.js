@@ -1089,7 +1089,7 @@ AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
         visitFn.call(graph, vertex);
 
         for (var j = 0; j < graph.vexnum; ++j) {
-            if ((graph.arcs[vertex][j] !== 0 || graph.arcs[vertex][j] !== Infinity)
+            if (graph.arcs[vertex][j] !== 0 && graph.arcs[vertex][j] !== Infinity
                 && !visited[j]) dfs(graph, j);
         }
     }
@@ -1134,7 +1134,7 @@ AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
     var vertex;
     while ((vertex = stack.peek()) != null) {
         for (var j = 0; j < this.vexnum; ++j) {
-            if ((this.arcs[vertex][j] !== 0 || this.arcs[vertex][j] !== Infinity)
+            if (this.arcs[vertex][j] !== 0 && this.arcs[vertex][j] !== Infinity
                 && !visited[j]) {
                 visitFn.call(me, j);
                 visited[j] = true;
@@ -1166,7 +1166,7 @@ AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
             while (queue.rear) {
                 var u = queue.deQueue();
                 for (var j = 0; j < this.vexnum; ++j) {
-                    if ((this.arcs[u][j] !== 0 || this.arcs[u][j] !== Infinity)
+                    if (this.arcs[u][j] !== 0 && this.arcs[u][j] !== Infinity
                         && !visited[j]) {
                         visited[j] = true;
                         visitFn.call(this, j);
@@ -1222,12 +1222,41 @@ adjListGraph.DFSTraverse(function (v) {
     console.log(this.vertices[v].data);
 });
 
-
+// 邻接表的非递归深度优先搜索
 AdjacencyListGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
+    var visited = [];
+    var stack = new Stack();
+    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
 
+    for(i = 0; i < this.vexnum; ++i){
+        if(!visited[i]){
+            stack.push(i);
+            visited[i] = true;
+            visitFn.call(this, i);
+
+            var v;
+            while ((v = stack.peek()) != null) {
+                var p = this.vertices[v].firstArc;
+                while (p) {
+                    if (!visited[p.adjVex]) {
+                        visited[p.adjVex] = true;
+                        visitFn.call(this, p.adjVex);
+                        stack.push(p.adjVex);
+                    } else stack.pop();
+                    p = p.nextArc;
+                }
+            }
+        }
+
+    }
 };
 
-// todo
+console.log('adjListGraph DFSTraverse_NonRecurse: ');
+adjListGraph.DFSTraverse_NonRecurse(function (v) {
+    console.log(this.vertices[v].data);
+});
+
+// 邻接表的广度优先搜索
 AdjacencyListGraph.prototype.BFSTraverse = function (visitFn) {
     var queue = new Queue();
     var visited = [];
@@ -1256,6 +1285,21 @@ AdjacencyListGraph.prototype.BFSTraverse = function (visitFn) {
 };
 
 console.log('adjListGraph BFSTraverse: ');
-adjListGraph.BFSTraverse(function (v) {
+var g2 = new AdjacencyListGraph([], 0, 7, DG);
+g2.addVertex('v1');
+g2.addVertex('v2');
+g2.addVertex('v3');
+g2.addVertex('v4');
+g2.addVertex('v5');
+
+g2.addArc('v4', 'v1');
+g2.addArc('v2', 'v1');
+g2.addArc('v5', 'v3');
+g2.addArc('v2', 'v3');
+g2.addArc('v1', 'v3');
+g2.addArc('v3', 'v4');
+g2.addArc('v4', 'v5');
+
+g2.BFSTraverse(function (v) {
     console.log(this.vertices[v].data);
 });
