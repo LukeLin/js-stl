@@ -241,6 +241,7 @@ AdjacencyMatrixGraph.prototype = {
      * @returns {boolean}
      */
     addArc: function (vex1, vex2, arc) {
+        arc = arc || new ArcCell(this.kind === DG || this.kind === UDG ? 1 : 'weight');
         var k = this.locateVex(vex1);
         var j = this.locateVex(vex2);
 
@@ -1074,6 +1075,7 @@ AMLGraph.prototype = {
  */
 
 // 对邻接矩阵图作递归式深度优先遍历
+// todo
 AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
     var visited = [];
     // 访问标志数组初始化
@@ -1094,12 +1096,30 @@ AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
 };
 
 console.log('DFSTraverse: udn');
-udn.DFSTraverse(function (v) {
+//udn.DFSTraverse(function (v) {
+//    console.log(this.vexs[v]);
+//});
+
+var g1 = new AdjacencyMatrixGraph([], [], 0, 4, UDG);
+g1.addVertex('v1');
+g1.addVertex('v2');
+g1.addVertex('v3');
+g1.addVertex('v4');
+g1.addVertex('v5');
+
+g1.addArc('v5', 'v4');
+g1.addArc('v2', 'v1');
+g1.addArc('v3', 'v1');
+g1.addArc('v3', 'v2');
+
+
+g1.DFSTraverse(function (v) {
     console.log(this.vexs[v]);
 });
 
 
 // 非递归
+// todo
 AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
     var visited = [];
     var stack = new Stack();
@@ -1125,11 +1145,12 @@ AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
 };
 
 console.log('DFSTraverse_NonRecurse: udn');
-udn.DFSTraverse_NonRecurse(function (v) {
+g1.DFSTraverse_NonRecurse(function (v) {
     console.log(this.vexs[v]);
 });
 
 // 对邻接矩阵图作广度优先遍历
+// todo
 AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
     var visited = [];
     var queue = new Queue();
@@ -1159,32 +1180,44 @@ AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
 
 
 console.log('BFSTraverse: ');
-udn.BFSTraverse(function (v) {
+g1.BFSTraverse(function (v) {
     console.log(this.vexs[v]);
 });
 
 
 AdjacencyListGraph.prototype.DFSTraverse = function (visitFn) {
     var visited = [];
-    for(var i = 0; i < this.vexnum; ++i) visited[i] = false;
+    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-    for(i = 0; i < this.vexnum; ++i){
-        if(!visited[i]) dfs(this, i);
+    for (i = 0; i < this.vexnum; ++i) {
+        if (!visited[i]) dfs(this, i);
     }
 
-    function dfs(graph, v){
+    function dfs(graph, v) {
         visited[v] = true;
         visitFn.call(graph, v);
 
         var p = graph.vertices[v].firstArc;
-        while(p){
-            if(!visited[p.adjVex]) dfs(graph, p.adjVex);
+        while (p) {
+            if (!visited[p.adjVex]) dfs(graph, p.adjVex);
             p = p.nextArc;
         }
     }
 };
 
 console.log('adjListGraph DFSTraverse: ');
+var adjListGraph = new AdjacencyListGraph([], 0, 4, UDG);
+adjListGraph.addVertex('v1');
+adjListGraph.addVertex('v2');
+adjListGraph.addVertex('v3');
+adjListGraph.addVertex('v4');
+adjListGraph.addVertex('v5');
+
+adjListGraph.addArc('v5', 'v4');
+adjListGraph.addArc('v2', 'v1');
+adjListGraph.addArc('v3', 'v1');
+adjListGraph.addArc('v3', 'v2');
+
 adjListGraph.DFSTraverse(function (v) {
     console.log(this.vertices[v].data);
 });
@@ -1194,7 +1227,35 @@ AdjacencyListGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
 
 };
 
+// todo
 AdjacencyListGraph.prototype.BFSTraverse = function (visitFn) {
+    var queue = new Queue();
+    var visited = [];
+    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
 
+    for (i = 0; i < this.vexnum; ++i) {
+        if (!visited[i]) {
+            queue.enQueue(i);
+            visited[i] = true;
+            visitFn.call(this, i);
+
+            while (queue.rear) {
+                var w = queue.deQueue();
+                var p = this.vertices[w].firstArc;
+                while (p) {
+                    if (!visited[p.adjVex]) {
+                        visited[p.adjVex] = true;
+                        visitFn.call(this, p.adjVex);
+                        queue.enQueue(p.adjVex);
+                    }
+                    p = p.nextArc;
+                }
+            }
+        }
+    }
 };
 
+console.log('adjListGraph BFSTraverse: ');
+adjListGraph.BFSTraverse(function (v) {
+    console.log(this.vertices[v].data);
+});
