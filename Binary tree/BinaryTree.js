@@ -780,6 +780,7 @@ function postOrder_next(node) {
 function ParentTree() {
     this.nodes = [];
 }
+exports.ParentTree = ParentTree;
 ParentTree.prototype = {
     constructor: ParentTree,
     getDepth: function () {
@@ -818,6 +819,7 @@ pt.nodes.push(new ParentTreeNode('I', 6));
 function ChildTree() {
     this.nodes = [];
 }
+exports.ChildTree = ChildTree;
 ChildTree.prototype = {
     constructor: ChildTree,
     getDepth: function () {
@@ -869,6 +871,7 @@ function ChildSiblingTree(data) {
     this.firstChild = null;
     this.nextSibling = null;
 }
+exports.ChildSiblingTree = ChildSiblingTree;
 ChildSiblingTree.prototype = {
     // 输出孩子兄弟链表表示的树的各边
     print: function print() {
@@ -1022,6 +1025,7 @@ function huffManCoding(weights) {
 
     return [huffmanTree, hc];
 }
+exports.huffManCoding = huffManCoding;
 
 function huffManCoding2(weights) {
     var n = weights.length;
@@ -1312,6 +1316,8 @@ function Queen(n) {
         }
     };
 }
+
+exports.Queen = Queen;
 
 var test = new Queen(8);
 test.trial();

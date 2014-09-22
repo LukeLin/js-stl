@@ -1303,3 +1303,93 @@ g2.addArc('v4', 'v5');
 g2.BFSTraverse(function (v) {
     console.log(this.vertices[v].data);
 });
+
+
+/*
+图的连通性问题
+
+无向图的连通分量与生成树
+
+1 无向图的连通分量和生成树
+对于无向图，对其进行遍历时：
+◆ 若是连通图：仅需从图中任一顶点出发，就能访问图中的所有顶点；
+◆ 若是非连通图：需从图中多个顶点出发。每次从一个新顶点出发所访问的顶点集序列恰好是各个连通分量的顶点集；
+
+⑴ 若G=(V,E)是无向连通图， 顶点集和边集分别是V(G) ，E(G) 。若从G中任意点出发遍历时， E(G)被分成两个互不相交的集合：
+T(G) ：遍历过程中所经过的边的集合；
+B(G) ：遍历过程中未经过的边的集合；
+显然： E(G)=T(G)∪B(G) ，T(G)∩B(G)=Ø
+显然，图G’=(V, T(G))是G的极小连通子图，且G’是一棵树。G’称为图G的一棵生成树。
+从任意点出发按DFS算法得到生成树G’称为深度优先生成树；按BFS算法得到的G’称为广度优先生成树。
+
+⑵  若G=(V,E)是无向非连通图，对图进行遍历时得到若干个连通分量的顶点集：V1(G) ,V2(G) ,…,Vn(G)和相应所经过的边集：T1(G) ,T2(G) , …,Tn(G) 。
+则对应的顶点集和边集的二元组：Gi=(Vi(G),Ti(G))
+(1≦i≦n)是对应分量的生成树，所有这些生成树构成了原来非连通图的生成森林。
+
+说明：当给定无向图要求画出其对应的生成树或生成森林时，必须先给出相应的邻接表，然后才能根据邻接表画出其对应的生成树或生成森林。
+
+
+2  图的生成树和生成森林算法
+
+对图的深度优先搜索遍历DFS(或BFS)算法稍作修改，就可得到构造图的DFS生成树算法。
+在算法中，树的存储结构采用孩子—兄弟表示法。首先建立从某个顶点V出发，建立一个树结点，然后再分别以V的邻接点为起始点，建立相应的子生成树，并将其作为V 结点的子树链接到V结点上。显然，算法是一个递归算法。
+
+ */
+var ChildSiblingTree = require('../Binary tree/BinaryTree').ChildSiblingTree;
+
+// 建立无向图的深度优先生成森林的孩子兄弟链表树
+AdjacencyListGraph.prototype.createDFSForest = function(){
+    var tree = null;
+    var visited = [];
+    for(var i = 0; i < this.vexnum; ++i) visited[i] = false;
+
+    var q;
+    for(i = 0; i < this.vexnum; ++i){
+        if(!visited[i]) {
+            // 新的生成树的根结点
+            var p = new ChildSiblingTree(this.vertices[i].data);
+
+            // 第一棵生成树的根
+            if(!tree) tree = p;
+            // 其它生成树的根
+            else q.nextSibling = p;
+
+            // q为当前生成树的根
+            q = p;
+            // 建立以p为根的生成树
+            DFSTree(this, i, p);
+        }
+    }
+
+    return tree;
+
+    // 以第v个顶点触发深度优先遍历图，建立以tree为根的生成树
+    function DFSTree(graph, v, tree){
+        visited[v] = true;
+        var first = true;
+        var w = graph.vertices[v].firstArc;
+        var q;
+
+        while(w){
+            if(!visited[v]) {
+                var p = new ChildSiblingTree(graph.vertices[v].data);
+
+                // w是v的第一个未被访问的邻接结点
+                if(first) {
+                    tree.firstChild = p;
+                    first = false;
+                }
+                // w是v的其它未被访问的邻接顶点
+                else q.nextSibling = p;
+
+                q = p;
+
+                DFSTree(graph, w.adjVex, q);
+            }
+
+            w = w.nextArc;
+        }
+    }
+};
+
+console.log(adjListGraph.createDFSForest());
