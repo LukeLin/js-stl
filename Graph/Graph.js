@@ -140,6 +140,7 @@
 
 var Stack = require('../Stack/stack');
 var Queue = require('../Queue/Queue').Queue;
+var ChildSiblingTree = require('../Binary tree/BinaryTree').ChildSiblingTree;
 
 // 图的数组（邻接矩阵）存储表示
 var DG = 1;     // 有向图
@@ -1228,8 +1229,8 @@ AdjacencyListGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
     var stack = new Stack();
     for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-    for(i = 0; i < this.vexnum; ++i){
-        if(!visited[i]){
+    for (i = 0; i < this.vexnum; ++i) {
+        if (!visited[i]) {
             stack.push(i);
             visited[i] = true;
             visitFn.call(this, i);
@@ -1335,22 +1336,22 @@ B(G) ：遍历过程中未经过的边的集合；
 在算法中，树的存储结构采用孩子—兄弟表示法。首先建立从某个顶点V出发，建立一个树结点，然后再分别以V的邻接点为起始点，建立相应的子生成树，并将其作为V 结点的子树链接到V结点上。显然，算法是一个递归算法。
 
  */
-var ChildSiblingTree = require('../Binary tree/BinaryTree').ChildSiblingTree;
+
 
 // 建立无向图的深度优先生成森林的孩子兄弟链表树
-AdjacencyListGraph.prototype.createDFSForest = function(){
+AdjacencyListGraph.prototype.createDFSForest = function () {
     var tree = null;
     var visited = [];
-    for(var i = 0; i < this.vexnum; ++i) visited[i] = false;
+    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
 
     var q;
-    for(i = 0; i < this.vexnum; ++i){
-        if(!visited[i]) {
+    for (i = 0; i < this.vexnum; ++i) {
+        if (!visited[i]) {
             // 新的生成树的根结点
             var p = new ChildSiblingTree(this.vertices[i].data);
 
             // 第一棵生成树的根
-            if(!tree) tree = p;
+            if (!tree) tree = p;
             // 其它生成树的根
             else q.nextSibling = p;
 
@@ -1364,18 +1365,19 @@ AdjacencyListGraph.prototype.createDFSForest = function(){
     return tree;
 
     // 以第v个顶点触发深度优先遍历图，建立以tree为根的生成树
-    function DFSTree(graph, v, tree){
+    function DFSTree(graph, v, tree) {
         visited[v] = true;
         var first = true;
         var w = graph.vertices[v].firstArc;
         var q;
 
-        while(w){
-            if(!visited[v]) {
-                var p = new ChildSiblingTree(graph.vertices[v].data);
+        while (w) {
+            if (!visited[w.adjVex]) {
+                visited[w.adjVex] = true;
+                var p = new ChildSiblingTree(graph.vertices[w.adjVex].data);
 
                 // w是v的第一个未被访问的邻接结点
-                if(first) {
+                if (first) {
                     tree.firstChild = p;
                     first = false;
                 }
@@ -1393,3 +1395,53 @@ AdjacencyListGraph.prototype.createDFSForest = function(){
 };
 
 console.log(adjListGraph.createDFSForest());
+
+
+AdjacencyListGraph.prototype.createBFSForest = function () {
+    var tree = null;
+    var visited = [];
+    var queue = new Queue();
+    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+
+    var q;
+    for (i = 0; i < this.vexnum; ++i) {
+        if (!visited[i]) {
+            visited[i] = true;
+            queue.enQueue(i);
+
+            var node = new ChildSiblingTree(this.vertices[i].data);
+            if(!tree) tree = node;
+            else q.nextSibling = node;
+
+            q = node;
+
+            while (queue.rear) {
+                var w = queue.deQueue();
+                var p = this.vertices[w].firstArc;
+                var first = true;
+
+                while (p) {
+                    if (!visited[p.adjVex]) {
+                        visited[p.adjVex] = true;
+                        queue.enQueue(p.adjVex);
+
+                        var node2 = new ChildSiblingTree(this.vertices[p.adjVex].data);
+                        var pre;
+                        if(first) {
+                            node.firstChild = node2;
+                            first = false;
+                        }
+                        else pre.nextSibling = node2;
+
+                        pre = node2;
+                    }
+                    p = p.nextArc;
+                }
+            }
+        }
+    }
+
+    return tree;
+};
+
+console.log(adjListGraph.createBFSForest());
