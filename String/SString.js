@@ -69,27 +69,34 @@
         },
 
         /**
-         * todo
-         * @param t
-         * @param v
-         * @returns {number}
+         * 将串s中的子串t替换为v，返回替换次数
+         * todo to be tested
+         * @param {SString} t
+         * @param {SString} v
+         * @returns {number} 替换次数
          */
         replace: function(t, v){
             for(var n = 0, i = 1; i <= this[0] - t[0] + 1; i++){
                 for(var j = i, k = 1; t[k] && this[j] === t[k]; ++j, ++k);
 
+                // 找到了与t匹配的字串：分三种情况处理
                 if(k > t[0]) {
                     var l;
+                    // 新字串的长度与原子串相同时，直接替换
                     if(t[0] === v[0]){
                         for(l = 1; l <= t[0]; ++l) this[i + l - 1] = v[l];
-                    } else if(t[0] < v[0]){
+                    }
+                    // 新子串长度大于原子串时，先将后部右移
+                    else if(t[0] < v[0]){
                         for(l = this[0]; l >= i + t[0]; --l)
                             this[l + v[0] - t[0]] = this[l];
 
                         for(l = 1; l <= v[0]; ++l)
                             this[i + l - 1] = v[l];
 
-                    } else {
+                    }
+                    // 新子串长度小于原子串时，先将后部左移
+                    else {
                         for(l = i + v[0]; l <= this[0] + v[0] - t[0]; ++l)
                             this[l] = this[l - v[0] + t[0]];
 
