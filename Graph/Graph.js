@@ -1234,9 +1234,9 @@ adjListGraph.addVertex('v4');
 adjListGraph.addVertex('v5');
 
 adjListGraph.addArc('v5', 'v4');
-adjListGraph.addArc('v2', 'v1');
-adjListGraph.addArc('v3', 'v1');
 adjListGraph.addArc('v3', 'v2');
+adjListGraph.addArc('v3', 'v1');
+adjListGraph.addArc('v2', 'v1');
 
 adjListGraph.DFSTraverse(function (v) {
     console.log(this.vertices[v].data);
@@ -1474,5 +1474,26 @@ console.log(adjListGraph.createBFSForest());
 
 
 /*
+有向图的强连通分量
+
+对于有向图，在其每一个强连通分量中，任何两个顶点都是可达的。 V∈G，与V可相互到达的所有顶点就是包含V的强连通分量的所有顶点。
+
+设从V可到达 (以V为起点的所有有向路径的终点)的顶点集合为T1(G)，而到达V (以V为终点的所有有向路径的起点)的顶点集合为T2(G)，则包含V的强连通分量的顶点集合是： T1(G)∩T2(G) 。
+
+求有向图G的强连通分量的基本步骤是：
+⑴ 对G进行深度优先遍历，生成G的深度优先生成森林T。
+⑵  对森林T的顶点按中序遍历顺序进行编号。
+⑶  改变G中每一条弧的方向，构成一个新的有向图G’。
+⑷  按⑵中标出的顶点编号，从编号最大的顶点开始对G’进行深度优先搜索，得到一棵深度优先生成树。若一次完整的搜索过程没有遍历G’的所有顶点，则从未访问的顶点中选择一个编号最大的顶点，由它开始再进行深度优先搜索，并得到另一棵深度优先生成树。在该步骤中，每一次深度优先搜索所得到的生成树中的顶点就是G的一个强连通分量的所有顶点。
+⑸  重复步骤⑷ ，直到G’中的所有顶点都被访问。
+
+在算法实现时，建立一个数组in_order[n]存放深度优先生成森林的中序遍历序列。对每个顶点v，在调用DFS函数结束时，将顶点依次存放在数组in_order[n]中。图采用十字链表作为存储结构最合适。
 
  */
+
+OLGraph.prototype.connected_DG = (function(){
+    return function(){
+
+    };
+})();
+
