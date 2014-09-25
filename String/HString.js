@@ -116,7 +116,7 @@ function string_Subtract(s, t){
 string_Subtract('abcde', 'cefgh');  // abd
 
 
-// 将串s中的字串t替换为v
+// 将串s中的子串t替换为v
 function replace(s, t, v){
     var w = '';
     var n = 0;
