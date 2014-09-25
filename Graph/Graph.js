@@ -321,6 +321,22 @@ AdjacencyMatrixGraph.prototype = {
         }
 
         return true;
+    },
+
+    firstAdjVex: function(v){
+        for(var i = 0; i < this.vexnum; ++i){
+            if(this.arcs[v][i].adj !== 0 && this.arcs[v][i].adj !== Infinity) return i;
+        }
+
+        return -1;
+    },
+
+    nextAdjVex: function(v, w){
+        for(var i = w + 1; i < this.vexnum; ++i){
+            if(this.arcs[v][i].adj !== 0 && this.arcs[v][i].adj !== Infinity) return i;
+        }
+
+        return -1;
     }
 };
 
@@ -1076,7 +1092,6 @@ AMLGraph.prototype = {
  */
 
 // 对邻接矩阵图作递归式深度优先遍历
-// todo
 AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
     var visited = [];
     // 访问标志数组初始化
@@ -1090,7 +1105,7 @@ AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
         visitFn.call(graph, vertex);
 
         for (var j = 0; j < graph.vexnum; ++j) {
-            if (graph.arcs[vertex][j] !== 0 && graph.arcs[vertex][j] !== Infinity
+            if (graph.arcs[vertex][j].adj !== 0 && graph.arcs[vertex][j].adj !== Infinity
                 && !visited[j]) dfs(graph, j);
         }
     }
@@ -1120,7 +1135,6 @@ g1.DFSTraverse(function (v) {
 
 
 // 非递归
-// todo
 AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
     var visited = [];
     var stack = new Stack();
@@ -1128,19 +1142,23 @@ AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
     // 访问标志数组初始化
     for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-    stack.push(0);
-    visited[0] = true;
-    visitFn.call(me, 0);
+    for (i = 0; i < this.vexnum; ++i) {
+        if (!visited[i]) {
+            stack.push(i);
+            visited[i] = true;
+            visitFn.call(me, i);
 
-    var vertex;
-    while ((vertex = stack.peek()) != null) {
-        for (var j = 0; j < this.vexnum; ++j) {
-            if (this.arcs[vertex][j] !== 0 && this.arcs[vertex][j] !== Infinity
-                && !visited[j]) {
-                visitFn.call(me, j);
-                visited[j] = true;
-                stack.push(j);
-            } else stack.pop();
+            var vertex;
+            while ((vertex = stack.peek()) != null) {
+                for (var j = 0; j < this.vexnum; ++j) {
+                    if (this.arcs[vertex][j].adj !== 0 && this.arcs[vertex][j].adj !== Infinity
+                        && !visited[j]) {
+                        visitFn.call(me, j);
+                        visited[j] = true;
+                        stack.push(j);
+                    } else stack.pop();
+                }
+            }
         }
     }
 };
@@ -1151,7 +1169,6 @@ g1.DFSTraverse_NonRecurse(function (v) {
 });
 
 // 对邻接矩阵图作广度优先遍历
-// todo
 AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
     var visited = [];
     var queue = new Queue();
@@ -1166,8 +1183,9 @@ AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
 
             while (queue.rear) {
                 var u = queue.deQueue();
+
                 for (var j = 0; j < this.vexnum; ++j) {
-                    if (this.arcs[u][j] !== 0 && this.arcs[u][j] !== Infinity
+                    if (this.arcs[u][j].adj !== 0 && this.arcs[u][j].adj !== Infinity
                         && !visited[j]) {
                         visited[j] = true;
                         visitFn.call(this, j);
@@ -1201,6 +1219,7 @@ AdjacencyListGraph.prototype.DFSTraverse = function (visitFn) {
         var p = graph.vertices[v].firstArc;
         while (p) {
             if (!visited[p.adjVex]) dfs(graph, p.adjVex);
+
             p = p.nextArc;
         }
     }
@@ -1244,6 +1263,7 @@ AdjacencyListGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
                         visitFn.call(this, p.adjVex);
                         stack.push(p.adjVex);
                     } else stack.pop();
+
                     p = p.nextArc;
                 }
             }
@@ -1278,6 +1298,7 @@ AdjacencyListGraph.prototype.BFSTraverse = function (visitFn) {
                         visitFn.call(this, p.adjVex);
                         queue.enQueue(p.adjVex);
                     }
+
                     p = p.nextArc;
                 }
             }
@@ -1286,6 +1307,11 @@ AdjacencyListGraph.prototype.BFSTraverse = function (visitFn) {
 };
 
 console.log('adjListGraph BFSTraverse: ');
+adjListGraph.BFSTraverse(function (v) {
+    console.log(this.vertices[v].data);
+});
+
+console.log('adjListGraph BFSTraverse2: ');
 var g2 = new AdjacencyListGraph([], 0, 7, DG);
 g2.addVertex('v1');
 g2.addVertex('v2');
@@ -1445,3 +1471,8 @@ AdjacencyListGraph.prototype.createBFSForest = function () {
 };
 
 console.log(adjListGraph.createBFSForest());
+
+
+/*
+
+ */
