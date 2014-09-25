@@ -672,6 +672,33 @@ AdjacencyListGraph.prototype = {
             if (p.adjVex === n) return true;
         }
         return false;
+    },
+
+    /**
+     * 深度优先判断<b>有向图<b>的顶点i到顶点j是否有路径，实则返回true，否则返回false
+     * @param {String} i
+     * @param {String} j
+     */
+    exist_path_DFS: function (i, j) {
+        var visited = [];
+        i = this.locateVex(i);
+        j = this.locateVex(j);
+
+        if (i < 0 || j < 0) throw new Error('vertex not found!');
+
+        return exist_path(this, i, j);
+
+        function exist_path(graph, i, j) {
+            if (i === j) return true;
+
+            visited[i] = true;
+            for (var p = graph.vertices[i].firstArc; p; p = p.nextArc) {
+                var k = p.adjVex;
+                if (!visited[k] && exist_path(graph, k, j)) return true;
+            }
+
+            return false;
+        }
     }
 };
 
@@ -1330,6 +1357,9 @@ g2.addArc('v4', 'v5');
 g2.BFSTraverse(function (v) {
     console.log(this.vertices[v].data);
 });
+
+console.log('expect false: ' + adjListGraph.exist_path_DFS('v1', 'v4'));
+console.log('expect true: ' + adjListGraph.exist_path_DFS('v1', 'v2'));
 
 
 /*
