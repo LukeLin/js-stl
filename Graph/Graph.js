@@ -1555,7 +1555,7 @@ OLGraph.prototype.connected_DG = function () {
             }
         }
 
-        in_order[++count] = v;
+        in_order[count++] = v;
     }
 
     function rev_dfs(graph, v) {
