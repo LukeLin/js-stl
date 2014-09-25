@@ -323,17 +323,17 @@ AdjacencyMatrixGraph.prototype = {
         return true;
     },
 
-    firstAdjVex: function(v){
-        for(var i = 0; i < this.vexnum; ++i){
-            if(this.arcs[v][i].adj !== 0 && this.arcs[v][i].adj !== Infinity) return i;
+    firstAdjVex: function (v) {
+        for (var i = 0; i < this.vexnum; ++i) {
+            if (this.arcs[v][i].adj !== 0 && this.arcs[v][i].adj !== Infinity) return i;
         }
 
         return -1;
     },
 
-    nextAdjVex: function(v, w){
-        for(var i = w + 1; i < this.vexnum; ++i){
-            if(this.arcs[v][i].adj !== 0 && this.arcs[v][i].adj !== Infinity) return i;
+    nextAdjVex: function (v, w) {
+        for (var i = w + 1; i < this.vexnum; ++i) {
+            if (this.arcs[v][i].adj !== 0 && this.arcs[v][i].adj !== Infinity) return i;
         }
 
         return -1;
@@ -1436,7 +1436,7 @@ AdjacencyListGraph.prototype.createBFSForest = function () {
             queue.enQueue(i);
 
             var node = new ChildSiblingTree(this.vertices[i].data);
-            if(!tree) tree = node;
+            if (!tree) tree = node;
             else q.nextSibling = node;
 
             q = node;
@@ -1453,7 +1453,7 @@ AdjacencyListGraph.prototype.createBFSForest = function () {
 
                         var node2 = new ChildSiblingTree(this.vertices[p.adjVex].data);
                         var pre;
-                        if(first) {
+                        if (first) {
                             node.firstChild = node2;
                             first = false;
                         }
@@ -1491,9 +1491,53 @@ console.log(adjListGraph.createBFSForest());
 
  */
 
-OLGraph.prototype.connected_DG = (function(){
-    return function(){
+// todo to be tested
+OLGraph.prototype.connected_DG = function () {
+    var visited = [];
+    var in_order = [];
+    var count = 0;
 
-    };
-})();
+    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+    // 对图正向遍历
+    for (i = 0; i < this.vexnum; ++i) {
+        if (!visited[i]) {
+            dfs(this, i, in_order);
+        }
+    }
+
+    for (i = 0; i < this.vexnum; ++i) visited[i] = false;
+    // 对图逆向遍历
+    var k = 1;
+    for (var j = this.vexnum - 1; j >= 0; --j) {
+        var v = in_order[j];
+        if (!visited[v]) {
+            console.log('第' + k++ + '个连通分量顶点');
+            rev_dfs(this, v);
+        }
+    }
+
+    function dfs(graph, v) {
+        visited[v] = true;
+
+        for (var p = graph.xList[v].firstOut; p; p = p.tLink) {
+            if (!visited[p.headVex]) {
+                dfs(graph, p.headVex);
+            }
+        }
+
+        in_order[++count] = v;
+    }
+
+    function rev_dfs(graph, v) {
+        visited[v] = true;
+        console.log('顶点：' + v);
+
+        for (var p = graph.xList[v].firstIn; p; p = p.hLink) {
+            if (!visited[p.tailVex]) {
+                rev_dfs(graph, p.tailVex);
+            }
+        }
+    }
+};
+
 
