@@ -1571,3 +1571,90 @@ OLGraph.prototype.connected_DG = function () {
 };
 
 
+/*
+最小生成树
+
+如果连通图是一个带权图，则其生成树中的边也带权，生成树中所有边的权值之和称为生成树的代价。
+
+最小生成树(Minimum Spanning Tree) ：带权连通图中代价最小的生成树称为最小生成树。
+
+最小生成树在实际中具有重要用途，如设计通信网。设图的顶点表示城市，边表示两个城市之间的通信线路，边的权值表示建造通信线路的费用。n个城市之间最多可以建n(n-1)/2条线路，如何选择其中的n-1条，使总的建造费用最低?
+
+构造最小生成树的算法有许多，基本原则是：
+◆ 尽可能选取权值最小的边，但不能构成回路；
+◆ 选择n-1条边构成最小生成树。
+以上的基本原则是基于MST的如下性质：
+设G=(V，E)是一个带权连通图，U是顶点集V的一个非空子集。若u∈U ，v∈V-U，且(u, v)是U中顶点到V-U中顶点之间权值最小的边，则必存在一棵包含边(u, v)的最小生成树。
+
+证明： 用反证法证明。
+设图G的任何一棵最小生成树都不包含边(u,v)。设T是G的一棵生成树，则T是连通的，从u到v必有一条路径(u,…,v)，当将边(u,v)加入到T中时就构成了回路。则路径(u, …,v)中必有一条边(u’,v’) ，满足u’∈U ，v’∈V-U 。删去边(u’,v’) 便可消除回路，同时得到另一棵生成树T’。
+由于(u,v)是U中顶点到V-U中顶点之间权值最小的边，故(u,v)的权值不会高于(u’,v’)的权值，T’的代价也不会高于T， T’是包含(u,v) 的一棵最小生成树，与假设矛盾。
+
+ */
+
+/*
+普里姆(Prim)算法
+
+从连通网N=(U，E)中找最小生成树T=(U，TE) 。
+
+1 算法思想
+⑴  若从顶点v0出发构造，U={v0}，TE={}；
+⑵ 先找权值最小的边(u，v)，其中u∈U且v∈V-U，并且子图不构成环，则U= U∪{v}，TE=TE∪{(u，v)} ；
+⑶ 重复⑵ ，直到U=V为止。则TE中必有n-1条边， T=(U，TE)就是最小生成树。
+
+2.算法实现说明
+为便于算法实现，设置一个一维数组closedge[n]，用来保存V- U中各顶点到U中顶点具有权值最小的边。
+closedge[j].adjvex=k，表明边(vj, vk)是V-U中顶点vj到U中权值最小的边，而顶点vk是该边所依附的U中的顶点。 closedge[j].lowcost存放该边的权值。
+假设从顶点vs开始构造最小生成树。初始时令：
+  Closedge[s].lowcost=0 ：表明顶点vs首先加入到U中；
+  Closedge[k].adjvex=s ，Closedge[k].lowcost=cost(k, s)
+表示V-U中的各顶点到U中权值最小的边(k≠s) ，cost(k, s)表示边(vk, vs) 权值。
+
+3.算法步骤
+⑴  从closedge中选择一条权值(不为0)最小的边(vk, vj) ，然后做：
+    ① 置closedge[k].lowcost为0 ，表示vk已加入到U中。
+    ②  根据新加入vk的更新closedge中每个元素：
+        vi∈V-U ，若cost(i, k)≦colsedge[i].lowcost，表明在U中新加入顶点vk后， (vi, vk)成为vi到U中权值最小的边，置：
+        Closedge[i].lowcost=cost(i, k)
+        Closedge[i].adjvex=k
+⑵  重复⑴n-1次就得到最小生成树。
+
+ */
+
+AdjacencyMatrixGraph.prototype.miniSpanTree_PRIM = function(u){
+    var closedge = [];
+
+    for(var j = 0; j < this.vexnum; ++j){
+        closedge[j] = {adjvex: u, lowcost: this.arcs[j][u].adj};
+    }
+    closedge[u].lowcost = 0;
+
+    var te = [];
+    for(j = 0; j < this.vexnum - 1; ++j){
+        var min = Infinity;
+        var k;
+        for(var v = 0; v < this.vexnum; ++v){
+            if(closedge[v].lowcost !== 0 && closedge[v].lowcost < min){
+                min = closedge[v].lowcost;
+                k = v;
+            }
+        }
+
+        te[j] = {
+            vex1: closedge[k].adjvex,
+            vex2: k,
+            weight: closedge[k].lowcost
+        };
+        closedge[k].lowcost = 0;
+        for(v = 0; v < this.vexnum; ++v){
+            if(this.arcs[v][k].adj < closedge[v].lowcost){
+                closedge[v].lowcost = this.adj[v][k];
+                closedge[v].adjvex = k;
+            }
+        }
+    }
+
+    return te;
+};
+
+console.log(dn.miniSpanTree_PRIM(0));
