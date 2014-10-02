@@ -1626,20 +1626,20 @@ closedge[j].adjvex=k，表明边(vj, vk)是V-U中顶点vj到U中权值最小的�
 
  */
 
-AdjacencyMatrixGraph.prototype.miniSpanTree_PRIM = function(u){
+AdjacencyMatrixGraph.prototype.miniSpanTree_PRIM = function (u) {
     var closedge = [];
 
-    for(var j = 0; j < this.vexnum; ++j){
+    for (var j = 0; j < this.vexnum; ++j) {
         closedge[j] = {adjvex: u, lowcost: +this.arcs[j][u].adj};
     }
     closedge[u].lowcost = 0;
 
     var te = [];
-    for(j = 0; j < this.vexnum - 1; ++j){
+    for (j = 0; j < this.vexnum - 1; ++j) {
         var min = Infinity;
         var k;
-        for(var v = 0; v < this.vexnum; ++v){
-            if(closedge[v].lowcost !== 0 && closedge[v].lowcost < min){
+        for (var v = 0; v < this.vexnum; ++v) {
+            if (closedge[v].lowcost !== 0 && closedge[v].lowcost < min) {
                 min = closedge[v].lowcost;
                 k = v;
             }
@@ -1651,8 +1651,8 @@ AdjacencyMatrixGraph.prototype.miniSpanTree_PRIM = function(u){
             weight: closedge[k].lowcost
         };
         closedge[k].lowcost = 0;
-        for(v = 0; v < this.vexnum; ++v){
-            if(this.arcs[v][k].adj < closedge[v].lowcost){
+        for (v = 0; v < this.vexnum; ++v) {
+            if (this.arcs[v][k].adj < closedge[v].lowcost) {
                 closedge[v].lowcost = this.arcs[v][k].adj;
                 closedge[v].adjvex = k;
             }
