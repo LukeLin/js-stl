@@ -1595,6 +1595,8 @@ OLGraph.prototype.connected_DG = function () {
 /*
 普里姆(Prim)算法
 
+适合边稠密的网
+
 从连通网N=(U，E)中找最小生成树T=(U，TE) 。
 
 1 算法思想
@@ -1619,13 +1621,16 @@ closedge[j].adjvex=k，表明边(vj, vk)是V-U中顶点vj到U中权值最小的�
         Closedge[i].adjvex=k
 ⑵  重复⑴n-1次就得到最小生成树。
 
+算法分析：
+设带权连通图有n个顶点，则算法的主要执行是二重循环： 求closedge中权值最小的边，频度为n-1； 修改closedge数组，频度为n 。因此，整个算法的时间复杂度是O(n2)，与边的数目无关。
+
  */
 
 AdjacencyMatrixGraph.prototype.miniSpanTree_PRIM = function(u){
     var closedge = [];
 
     for(var j = 0; j < this.vexnum; ++j){
-        closedge[j] = {adjvex: u, lowcost: this.arcs[j][u].adj};
+        closedge[j] = {adjvex: u, lowcost: +this.arcs[j][u].adj};
     }
     closedge[u].lowcost = 0;
 
@@ -1648,7 +1653,7 @@ AdjacencyMatrixGraph.prototype.miniSpanTree_PRIM = function(u){
         closedge[k].lowcost = 0;
         for(v = 0; v < this.vexnum; ++v){
             if(this.arcs[v][k].adj < closedge[v].lowcost){
-                closedge[v].lowcost = this.adj[v][k];
+                closedge[v].lowcost = this.arcs[v][k].adj;
                 closedge[v].adjvex = k;
             }
         }
@@ -1657,4 +1662,33 @@ AdjacencyMatrixGraph.prototype.miniSpanTree_PRIM = function(u){
     return te;
 };
 
-console.log(dn.miniSpanTree_PRIM(0));
+udn = new AdjacencyMatrixGraph([], [], 0, 7, 4);
+udn.addVertex('v1');
+udn.addVertex('v2');
+udn.addVertex('v3');
+udn.addVertex('v4');
+udn.addVertex('v5');
+udn.addVertex('v6');
+
+udn.addArc('v1', 'v2', {adj: 6});
+udn.addArc('v1', 'v3', {adj: 1});
+udn.addArc('v1', 'v4', {adj: 5});
+udn.addArc('v2', 'v3', {adj: 5});
+udn.addArc('v2', 'v5', {adj: 3});
+udn.addArc('v3', 'v4', {adj: 5});
+udn.addArc('v3', 'v5', {adj: 6});
+udn.addArc('v3', 'v6', {adj: 4});
+udn.addArc('v4', 'v6', {adj: 2});
+udn.addArc('v5', 'v6', {adj: 6});
+
+console.log('miniSpanTree_PRIM: ');
+console.log(udn.miniSpanTree_PRIM(0));
+
+
+/*
+克鲁斯卡尔(Kruskal)算法
+
+适合边稀疏的网
+
+
+ */
