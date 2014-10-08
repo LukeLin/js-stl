@@ -1726,7 +1726,7 @@ closedge[j].adjvex=k，表明边(vj, vk)是V-U中顶点vj到U中权值最小的�
 
  */
 
-AdjacencyMatrixGraph.prototype.miniSpanTree_PRIM = function (u) {
+AdjacencyMatrixGraph.prototype.minSpanTree_PRIM = function (u) {
     var closedge = [];
 
     for (var j = 0; j < this.vexnum; ++j) {
@@ -1782,7 +1782,7 @@ udn.addArc('v4', 'v6', {adj: 2});
 udn.addArc('v5', 'v6', {adj: 6});
 
 console.log('miniSpanTree_PRIM: ');
-console.log(udn.miniSpanTree_PRIM(0));
+console.log(udn.minSpanTree_PRIM(0));
 
 
 /*
@@ -1807,4 +1807,9 @@ console.log(udn.miniSpanTree_PRIM(0));
  ◆ 加入一条新边后，将两个不同的连通分量合并：将一个连通分量的编号换成另一个连通分量的编号。
 
  */
+
+// todo
+AdjacencyMatrixGraph.prototype.minSpanTree_Kruskal = function(){
+
+};
 
