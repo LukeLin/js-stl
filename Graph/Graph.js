@@ -699,6 +699,103 @@ AdjacencyListGraph.prototype = {
 
             return false;
         }
+    },
+
+    /**
+     * 广度优先判断<b>有向图<b>的顶点i到顶点j是否有路径，实则返回true，否则返回false
+     * @param {String} i
+     * @param {String} j
+     */
+    exist_path_BFS: function (i, j) {
+        i = this.locateVex(i);
+        j = this.locateVex(j);
+        var visited = [];
+        var queue = new Queue();
+        queue.enQueue(i);
+
+        while (queue.rear) {
+            var u = queue.deQueue();
+            visited[u] = 1;
+
+            for (var p = this.vertices[i].firstArc; p; p = p.nextArc) {
+                var k = p.adjVex;
+                if (k === j) return true;
+                if (!visited[k]) queue.enQueue(k);
+            }
+        }
+
+        return false;
+    },
+
+    /**
+     * 判断邻接表方式存储的有向图的顶点i到j是否存在长度为k的简单路径
+     * @param {String} i
+     * @param {String} j
+     * @param {Number} k
+     */
+    exist_path_len: function (i, j, k) {
+        i = this.locateVex(i);
+        j = this.locateVex(j);
+        var visited = [];
+
+        return (function recurse(graph, i, j, k) {
+            // 找到了一条路径，且长度符合
+            if (i === j && k === 0) return true;
+            else if (k > 0) {
+                visited[i] = 1;
+                for (var p = graph.vertices[i].firstArc; p; p = p.nextArc) {
+                    var l = p.adjVex;
+                    if (!visited[l]) {
+                        // 剩余路径长度减一
+                        if (recurse(graph, l, j, k - 1)) return true;
+                    }
+                }
+                // 允许曾经被访问过的结点出现在另一条路径上
+                visited[i] = 0;
+            }
+
+            return false;
+        })(this, i, j, k);
+    },
+
+    /**
+     * 求有向图中顶点u到v之间的所有简单路径，k为当前路径长度
+     * @param {String} u
+     * @param {String} v
+     * @param {Number} k
+     *
+     * @example
+     *  graph.find_all_path('v1', 'v2', 0);
+     */
+    find_all_path: function (u, v, k) {
+        u = this.locateVex(u);
+        v = this.locateVex(v);
+        var path = [];
+        var visited = [];
+
+        findPath(this, u, v, k);
+
+        function findPath(graph, u, v, k) {
+            // 加入当前路径中
+            path[k] = u;
+            visited[u] = 1;
+
+            // 找到一条简单路径
+            if (u === v) {
+                console.log('Found one path!');
+                for (var i = 0; path[i]; ++i) console.log(path[i]);
+            } else {
+                for (var p = graph.vertices[u].firstArc; p; p = p.nextArc) {
+                    var l = p.adjVex;
+                    // 继续寻找
+                    if (!visited[l]) findPath(graph, l, v, k + 1);
+                }
+            }
+
+            visited[u] = 0;
+            // 回溯
+            path[k] = 0;
+        }
     }
 };
 
@@ -1358,8 +1455,11 @@ g2.BFSTraverse(function (v) {
     console.log(this.vertices[v].data);
 });
 
-console.log('expect false: ' + adjListGraph.exist_path_DFS('v1', 'v4'));
-console.log('expect true: ' + adjListGraph.exist_path_DFS('v1', 'v2'));
+console.log('DFS: expect false: ' + adjListGraph.exist_path_DFS('v1', 'v4'));
+console.log('DFS: expect true: ' + adjListGraph.exist_path_DFS('v1', 'v2'));
+
+console.log('BFS : expect false: ' + adjListGraph.exist_path_BFS('v1', 'v4'));
+console.log('BFS :expect true: ' + adjListGraph.exist_path_BFS('v1', 'v2'));
 
 
 /*
