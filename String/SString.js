@@ -16,8 +16,14 @@
  */
 
 (function (exports) {
-    function SString() {
+    function SString(str) {
         this.MAXSTRLEN = 10;
+        if(str){
+            this[0] = str.length;
+            for(var i = 1; i <= str.length; ++i){
+                this[i] = str[i];
+            }
+        }
     }
 
     exports.SString = SString;
@@ -153,6 +159,25 @@
             }
 
             return j > sstring[0] ? i - sstring[0] : -1;
+        },
+
+        // 求包含在字符串中而str没有的字符串
+        subtract: function(str){
+            var r = new SString();
+            r[0] = 0;
+
+            for(var i = 1; i <= this[0]; ++i){
+                var c = this[i];
+                // 判断当前字符c是否第一次出现
+                for(var j = 1; j < i && this[j] !== c; ++j);
+                if(i === j){
+                    // 判断当前字符是否包含在str中
+                    for(var k = 1; k <= str[0] && str[k] !== c; ++k);
+                    if(k > str[0]) r[++r[0]] = c;
+                }
+            }
+
+            return r;
         }
     };
 
@@ -203,6 +228,10 @@
 
     console.log(d.index(c));
     console.log(d.kmpIndex(c));
+
+    var a = new SString('abcdefg');
+    var b = new SString('asdfg');
+    console.log(a.subtract(b) + '');
 
     /*
     在顺序存储结构中，实现串操作的原操作为“字符串序列的复制”，操作时间复杂度基于复制的字符串序列的长度。
