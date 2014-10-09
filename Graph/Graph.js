@@ -804,17 +804,17 @@ AdjacencyListGraph.prototype = {
      * @param {String} j
      * @param {Number} len
      */
-    getPathNum_len: function(i, j, len){
+    getPathNum_len: function (i, j, len) {
         var visited = [];
 
-        return (function recurse(graph, i, j, len){
-            if(i ===j && len === 0) return 1;
-            else if(len > 0) {
+        return (function recurse(graph, i, j, len) {
+            if (i === j && len === 0) return 1;
+            else if (len > 0) {
                 var sum = 0;
                 visited[i] = 1;
-                for(var p = graph.vertices[i].firstArc; p; p = p.nextArc){
+                for (var p = graph.vertices[i].firstArc; p; p = p.nextArc) {
                     var l = p.adjVex;
-                    if(!visited[l]) sum += recurse(l, j, len - 1);
+                    if (!visited[l]) sum += recurse(l, j, len - 1);
                 }
                 visited[i] = 0;
                 return sum;
@@ -1833,8 +1833,84 @@ console.log(udn.minSpanTree_PRIM(0));
  */
 
 // todo
-AdjacencyMatrixGraph.prototype.minSpanTree_Kruskal = function(){
+AdjacencyMatrixGraph.prototype.minSpanTree_Kruskal = function () {
 };
 
 console.log('minSpanTree_Kruskal: ');
 console.log(udn.minSpanTree_Kruskal());
+
+/*
+在某图中，若删除顶点V以及V相关的边后，图的一个连通分量分割为两个或两个以上的连通分量，则称顶点V为该图的一个关节点。一个没有关节点的连通图称为重连通图。
+在重连通图中，任意一对顶点之间至少存在两条路径，则再删去某个顶点即相关各边后也不破坏图的连通性。若在图的连通图上删去k个节点才能破坏图的连通性，则称K为此图的连通度。
+他们常常在通信网络的图或航空网中应用，K越大，系统越稳定，反之，战争中若要摧毁敌方的运输线，只须破坏其运输网中的关节点即可。
+ */
+
+// todo bug exists
+AdjacencyListGraph.prototype.findArticul = function () {
+    var visited = [];
+    var count = 1;
+    var low = [];
+    low[0] = count;
+    visited[0] = 1;
+    for (var i = 1; i < this.vexnum; ++i) visited[i] = 0;
+    var p = this.vertices[0].firstArc;
+    var v = p.adjVex;
+
+    DFSArticul(this, v);
+    if (count < this.vexnum) {
+        console.log(0 + '  ' + this.vertices[0].data);
+        while (p.nextArc) {
+            p = p.nextArc;
+            v = p.adjVex;
+            if (visited[v] === 0) DFSArticul(this, v);
+        }
+    }
+
+    function DFSArticul(graph, v0) {
+        var min = visited[v0] = ++count;
+        for (var p = graph.vertices[v0].firstArc; p; p = p.nextArc) {
+            var w = p.adjVex;
+            if (visited[w] === 0) {
+                DFSArticul(graph, w);
+                if (low[w] < min) min = low[w];
+                if (low[w] >= visited[v0]) console.log(v0 + '  ' + graph.vertices[v0].data);
+            } else if (visited[w] < min) min = visited[w];
+        }
+        low[v0] = min;
+    }
+};
+
+var articulTest = new AdjacencyListGraph([], 0, 17, UDG);
+articulTest.addVertex('A');
+articulTest.addVertex('B');
+articulTest.addVertex('C');
+articulTest.addVertex('D');
+articulTest.addVertex('E');
+articulTest.addVertex('F');
+articulTest.addVertex('G');
+articulTest.addVertex('H');
+articulTest.addVertex('I');
+articulTest.addVertex('J');
+articulTest.addVertex('K');
+articulTest.addVertex('L');
+articulTest.addVertex('M');
+
+articulTest.addArc('A', 'B');
+articulTest.addArc('A', 'C');
+articulTest.addArc('A', 'F');
+articulTest.addArc('A', 'L');
+articulTest.addArc('C', 'B');
+articulTest.addArc('D', 'B');
+articulTest.addArc('G', 'B');
+articulTest.addArc('H', 'B');
+articulTest.addArc('M', 'B');
+articulTest.addArc('D', 'E');
+articulTest.addArc('G', 'H');
+articulTest.addArc('G', 'I');
+articulTest.addArc('G', 'K');
+articulTest.addArc('H', 'K');
+articulTest.addArc('J', 'L');
+articulTest.addArc('J', 'M');
+articulTest.addArc('L', 'M');
+
+articulTest.findArticul();
