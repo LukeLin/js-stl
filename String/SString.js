@@ -178,6 +178,20 @@
             }
 
             return r;
+        },
+
+        // todo bug exists
+        delete_substring: function(str){
+            for(var n = 0, i = 1; i <= this[0] - str[0] + 1; ++i){
+                for(var j = 1; j <= str[0] && this[i + j - 1] === str[j]; ++j);
+                if(j > str[0] - 1){
+                    for(var k = i; k <= this[0] - str[0]; ++k) this[k] = this[k + str[0]];
+                    this[0] -= str[0];
+                    ++n;
+                }
+            }
+
+            return n;
         }
     };
 
@@ -232,6 +246,11 @@
     var a = new SString('abcdefg');
     var b = new SString('asdfg');
     console.log(a.subtract(b) + '');
+
+    a = new SString('abcdefgh');
+    b = new SString('cdef');
+    console.log(a.delete_substring(b) + '');
+    console.log(a + '');
 
     /*
     在顺序存储结构中，实现串操作的原操作为“字符串序列的复制”，操作时间复杂度基于复制的字符串序列的长度。
