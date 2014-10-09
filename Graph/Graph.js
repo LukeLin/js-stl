@@ -796,6 +796,30 @@ AdjacencyListGraph.prototype = {
             // 回溯
             path[k] = 0;
         }
+    },
+
+    /**
+     * 求有向图的顶点之间长度为len的简单路径条数
+     * @param {String} i
+     * @param {String} j
+     * @param {Number} len
+     */
+    getPathNum_len: function(i, j, len){
+        var visited = [];
+
+        return (function recurse(graph, i, j, len){
+            if(i ===j && len === 0) return 1;
+            else if(len > 0) {
+                var sum = 0;
+                visited[i] = 1;
+                for(var p = graph.vertices[i].firstArc; p; p = p.nextArc){
+                    var l = p.adjVex;
+                    if(!visited[l]) sum += recurse(l, j, len - 1);
+                }
+                visited[i] = 0;
+                return sum;
+            }
+        })(this, i, j, len);
     }
 };
 
@@ -1781,7 +1805,7 @@ udn.addArc('v3', 'v6', {adj: 4});
 udn.addArc('v4', 'v6', {adj: 2});
 udn.addArc('v5', 'v6', {adj: 6});
 
-console.log('miniSpanTree_PRIM: ');
+console.log('minSpanTree_PRIM: ');
 console.log(udn.minSpanTree_PRIM(0));
 
 
@@ -1810,6 +1834,7 @@ console.log(udn.minSpanTree_PRIM(0));
 
 // todo
 AdjacencyMatrixGraph.prototype.minSpanTree_Kruskal = function(){
-
 };
 
+console.log('minSpanTree_Kruskal: ');
+console.log(udn.minSpanTree_Kruskal());
