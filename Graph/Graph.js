@@ -1958,6 +1958,59 @@ articulTest.findArticul();
 ◆ 设立堆栈，用来暂存入度为0的顶点；
 ◆ 删除顶点以它为尾的弧：弧头顶点的入度减1。
 
+整个算法的时间复杂度是O(n+e) 。
 
  */
 
+// 统计各顶点入度的函数
+AdjacencyListGraph.prototype.countIndegree = function(){
+    for(var k = 0; k < this.vexnum; ++k) this.vertices[k].indegree = 0;
+
+    for(k = 0; k < this.vexnum; ++k){
+        for(var p = this.vertices[k].firstArc; p; p = p.nextArc)
+            ++this.vertices[p.adjVex].indegree;
+    }
+};
+
+// 拓扑排序算法
+AdjacencyListGraph.prototype.topologicSort = function(){
+    var stack = new Stack();
+    this.countIndegree();
+
+    for(var i = 0; i < this.vexnum; ++i){
+        if(this.vertices[i].indegree === 0) stack.push(i);
+    }
+
+    var count = 0;
+    while(stack.top){
+        i = stack.pop();
+        console.log(this.vertices[i].data);
+        ++count;
+        for(var p = this.vertices[i].firstArc; p; p = p.nextArc){
+            var k = p.adjVex;
+            if(--this.vertices[k].indegree === 0) stack.push(k);
+        }
+    }
+
+    return (count >= this.vexnum);
+};
+
+var topologicTest = new AdjacencyListGraph([], 0, 8, DG);
+topologicTest.addVertex('v1');
+topologicTest.addVertex('v2');
+topologicTest.addVertex('v3');
+topologicTest.addVertex('v4');
+topologicTest.addVertex('v5');
+topologicTest.addVertex('v6');
+
+topologicTest.addArc('v2', 'v1');
+topologicTest.addArc('v4', 'v1');
+topologicTest.addArc('v3', 'v1');
+topologicTest.addArc('v2', 'v3');
+topologicTest.addArc('v5', 'v3');
+topologicTest.addArc('v4', 'v6');
+topologicTest.addArc('v5', 'v4');
+topologicTest.addArc('v5', 'v6');
+
+console.log('topologicSort: ');
+console.log(topologicTest.topologicSort());
