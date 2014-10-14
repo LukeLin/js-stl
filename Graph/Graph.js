@@ -586,18 +586,19 @@ AdjacencyListGraph.prototype = {
      * 如果是有向图或者有向网，只会添加arc1，因此正邻接表和逆邻接表的顺序需要注意
      * @param {String} arc1
      * @param {String} arc2
+     * @param {*} info
      * @returns {boolean}
      */
-    addArc: function (arc1, arc2) {
+    addArc: function (arc1, arc2, info) {
         var k = this.locateVex(arc1);
         var j = this.locateVex(arc2);
 
         if (k === -1 || j === -1) throw new Error('Arc\'s Vertex do not existed!');
 
         // 边的起始表结点赋值
-        var p = new ArcNode(k, null, null);
+        var p = new ArcNode(k, null, info);
         // 边的末尾表结点赋值
-        var q = new ArcNode(j, null, null);
+        var q = new ArcNode(j, null, info);
 
         // 是无向图，用头插入法插入到两个单链表
         if (this.kind === UDG || this.kind === UDN) {
@@ -2054,3 +2055,64 @@ console.log(topologicTest.topologicSort());
 
  */
 
+// 输出有向图的各项关键活动
+// todo bug exists in indegree
+AdjacencyListGraph.prototype.criticalPath = function(){
+    if(!this.topologicSort()) throw new Error('AOE网中存在回路！');
+
+    var ve = [];
+    // 事件最早发生时间初始化
+    for(var j = 0; j < this.vexnum; ++j) ve[j] = 0;
+    // 计算每个事件的最早发生时间ve值
+    for(var m = 0; m < this.vexnum; ++m){
+        j = this.vertices[m].indegree;
+        for(var p = this.vertices[j].firstArc; p; p = p.nextArc){
+            var k = p.adjVex;
+            if(ve[j] + p.info > ve[k]) ve[k] = ve[j] + p.info;
+        }
+    }
+    var vl = [];
+    // 事件最晚发生时间初始化
+    for(j = this.vexnum - 1; j >= 0; --j) vl[j] = ve[j];
+    // 计算每个事件的最晚发生时间vl的值
+    for(m = this.vexnum - 1; m >= 0; --m){
+        j = this.vertices[m].indegree;
+        for(p = this.vertices[j].firstArc; p; p = p.nextArc){
+            k = p.adjVex;
+            if(vl[k] - p.info < vl[j]) vl[j] = vl[k] - p.info;
+        }
+    }
+    // 输出所有关键活动
+    for(m = 0; m < this.vexnum; ++m){
+        for(p = this.vertices[m].firstArc; p; p = p.nextArc){
+            k = p.adjVex;
+            if(ve[m] + p.info === vl[k]) console.log('<%d, %d>', m, j);
+        }
+    }
+};
+
+var criticalPathTest = new AdjacencyListGraph([], 0, 12, DG);
+criticalPathTest.addVertex('v0');
+criticalPathTest.addVertex('v1');
+criticalPathTest.addVertex('v2');
+criticalPathTest.addVertex('v3');
+criticalPathTest.addVertex('v4');
+criticalPathTest.addVertex('v5');
+criticalPathTest.addVertex('v6');
+criticalPathTest.addVertex('v7');
+criticalPathTest.addVertex('v8');
+
+criticalPathTest.addArc('v1', 'v0', 3);
+criticalPathTest.addArc('v2', 'v0', 10);
+criticalPathTest.addArc('v4', 'v1', 13);
+criticalPathTest.addArc('v4', 'v2', 12);
+criticalPathTest.addArc('v3', 'v1', 9);
+criticalPathTest.addArc('v5', 'v2', 7);
+criticalPathTest.addArc('v7', 'v4', 6);
+criticalPathTest.addArc('v7', 'v3', 4);
+criticalPathTest.addArc('v7', 'v5', 11);
+criticalPathTest.addArc('v6', 'v3', 8);
+criticalPathTest.addArc('v8', 'v7', 5);
+criticalPathTest.addArc('v8', 'v6', 2);
+
+criticalPathTest.criticalPath();
