@@ -1964,32 +1964,32 @@ articulTest.findArticul();
  */
 
 // 统计各顶点入度的函数
-AdjacencyListGraph.prototype.countIndegree = function(){
-    for(var k = 0; k < this.vexnum; ++k) this.vertices[k].indegree = 0;
+AdjacencyListGraph.prototype.countIndegree = function () {
+    for (var k = 0; k < this.vexnum; ++k) this.vertices[k].indegree = 0;
 
-    for(k = 0; k < this.vexnum; ++k){
-        for(var p = this.vertices[k].firstArc; p; p = p.nextArc)
+    for (k = 0; k < this.vexnum; ++k) {
+        for (var p = this.vertices[k].firstArc; p; p = p.nextArc)
             ++this.vertices[p.adjVex].indegree;
     }
 };
 
 // 拓扑排序算法
-AdjacencyListGraph.prototype.topologicSort = function(){
+AdjacencyListGraph.prototype.topologicSort = function () {
     var stack = new Stack();
     this.countIndegree();
 
-    for(var i = 0; i < this.vexnum; ++i){
-        if(this.vertices[i].indegree === 0) stack.push(i);
+    for (var i = 0; i < this.vexnum; ++i) {
+        if (this.vertices[i].indegree === 0) stack.push(i);
     }
 
     var count = 0;
-    while(stack.top){
+    while (stack.top) {
         i = stack.pop();
         console.log(this.vertices[i].data);
         ++count;
-        for(var p = this.vertices[i].firstArc; p; p = p.nextArc){
+        for (var p = this.vertices[i].firstArc; p; p = p.nextArc) {
             var k = p.adjVex;
-            if(--this.vertices[k].indegree === 0) stack.push(k);
+            if (--this.vertices[k].indegree === 0) stack.push(k);
         }
     }
 
@@ -2057,36 +2057,36 @@ console.log(topologicTest.topologicSort());
 
 // 输出有向图的各项关键活动
 // todo bug exists in indegree
-AdjacencyListGraph.prototype.criticalPath = function(){
-    if(!this.topologicSort()) throw new Error('AOE网中存在回路！');
+AdjacencyListGraph.prototype.criticalPath = function () {
+    if (!this.topologicSort()) throw new Error('AOE网中存在回路！');
 
     var ve = [];
     // 事件最早发生时间初始化
-    for(var j = 0; j < this.vexnum; ++j) ve[j] = 0;
+    for (var j = 0; j < this.vexnum; ++j) ve[j] = 0;
     // 计算每个事件的最早发生时间ve值
-    for(var m = 0; m < this.vexnum; ++m){
+    for (var m = 0; m < this.vexnum; ++m) {
         j = this.vertices[m].indegree;
-        for(var p = this.vertices[j].firstArc; p; p = p.nextArc){
+        for (var p = this.vertices[j].firstArc; p; p = p.nextArc) {
             var k = p.adjVex;
-            if(ve[j] + p.info > ve[k]) ve[k] = ve[j] + p.info;
+            if (ve[j] + p.info > ve[k]) ve[k] = ve[j] + p.info;
         }
     }
     var vl = [];
     // 事件最晚发生时间初始化
-    for(j = this.vexnum - 1; j >= 0; --j) vl[j] = ve[j];
+    for (j = this.vexnum - 1; j >= 0; --j) vl[j] = ve[j];
     // 计算每个事件的最晚发生时间vl的值
-    for(m = this.vexnum - 1; m >= 0; --m){
+    for (m = this.vexnum - 1; m >= 0; --m) {
         j = this.vertices[m].indegree;
-        for(p = this.vertices[j].firstArc; p; p = p.nextArc){
+        for (p = this.vertices[j].firstArc; p; p = p.nextArc) {
             k = p.adjVex;
-            if(vl[k] - p.info < vl[j]) vl[j] = vl[k] - p.info;
+            if (vl[k] - p.info < vl[j]) vl[j] = vl[k] - p.info;
         }
     }
     // 输出所有关键活动
-    for(m = 0; m < this.vexnum; ++m){
-        for(p = this.vertices[m].firstArc; p; p = p.nextArc){
+    for (m = 0; m < this.vexnum; ++m) {
+        for (p = this.vertices[m].firstArc; p; p = p.nextArc) {
             k = p.adjVex;
-            if(ve[m] + p.info === vl[k]) console.log('<%d, %d>', m, j);
+            if (ve[m] + p.info === vl[k]) console.log('<%d, %d>', m, j);
         }
     }
 };
