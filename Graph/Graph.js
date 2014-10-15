@@ -1976,6 +1976,7 @@ AdjacencyListGraph.prototype.countIndegree = function () {
 // 拓扑排序算法
 AdjacencyListGraph.prototype.topologicSort = function () {
     var stack = new Stack();
+    this.topologicalOrder = [];
     this.countIndegree();
 
     for (var i = 0; i < this.vexnum; ++i) {
@@ -1985,6 +1986,7 @@ AdjacencyListGraph.prototype.topologicSort = function () {
     var count = 0;
     while (stack.top) {
         i = stack.pop();
+        this.topologicalOrder.push(i);
         console.log(this.vertices[i].data);
         ++count;
         for (var p = this.vertices[i].firstArc; p; p = p.nextArc) {
@@ -2053,10 +2055,15 @@ console.log(topologicTest.topologicSort());
 ②  从拓扑排序的序列的第一个顶点(源点)开始，按拓扑顺序依次计算每个事件的最早发生时间ve(i) ；
 ③  从拓扑排序的序列的最后一个顶点(汇点)开始，按逆拓扑顺序依次计算每个事件的最晚发生时间vl(i) ；
 
+设AOE网有n个事件，e个活动，则算法的主要执行是：
+◆ 进行拓扑排序：时间复杂度是O(n+e) ；
+◆ 求每个事件的ve值和vl值：时间复杂度是O(n+e) ；
+◆ 根据ve值和vl值找关键活动：时间复杂度是O(n+e) ；
+因此，整个算法的时间复杂度是O(n+e) 。
+
  */
 
 // 输出有向图的各项关键活动
-// todo bug exists in indegree
 AdjacencyListGraph.prototype.criticalPath = function () {
     if (!this.topologicSort()) throw new Error('AOE网中存在回路！');
 
@@ -2065,7 +2072,7 @@ AdjacencyListGraph.prototype.criticalPath = function () {
     for (var j = 0; j < this.vexnum; ++j) ve[j] = 0;
     // 计算每个事件的最早发生时间ve值
     for (var m = 0; m < this.vexnum; ++m) {
-        j = this.vertices[m].indegree;
+        j = this.topologicalOrder[m];
         for (var p = this.vertices[j].firstArc; p; p = p.nextArc) {
             var k = p.adjVex;
             if (ve[j] + p.info > ve[k]) ve[k] = ve[j] + p.info;
@@ -2073,10 +2080,10 @@ AdjacencyListGraph.prototype.criticalPath = function () {
     }
     var vl = [];
     // 事件最晚发生时间初始化
-    for (j = this.vexnum - 1; j >= 0; --j) vl[j] = ve[j];
+    for (j = 0; j < this.vexnum; ++j) vl[j] = ve[this.vexnum - 1];
     // 计算每个事件的最晚发生时间vl的值
     for (m = this.vexnum - 1; m >= 0; --m) {
-        j = this.vertices[m].indegree;
+        j = this.topologicalOrder[m];
         for (p = this.vertices[j].firstArc; p; p = p.nextArc) {
             k = p.adjVex;
             if (vl[k] - p.info < vl[j]) vl[j] = vl[k] - p.info;
@@ -2086,7 +2093,7 @@ AdjacencyListGraph.prototype.criticalPath = function () {
     for (m = 0; m < this.vexnum; ++m) {
         for (p = this.vertices[m].firstArc; p; p = p.nextArc) {
             k = p.adjVex;
-            if (ve[m] + p.info === vl[k]) console.log('<%d, %d>', m, j);
+            if (ve[m] + p.info === vl[k]) console.log('<%d, %d>', m, k);
         }
     }
 };
@@ -2116,3 +2123,4 @@ criticalPathTest.addArc('v8', 'v7', 5);
 criticalPathTest.addArc('v8', 'v6', 2);
 
 criticalPathTest.criticalPath();
+
