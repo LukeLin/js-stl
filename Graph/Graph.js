@@ -2178,3 +2178,74 @@ Dijkstra算法的主要执行是：
 因此，整个算法的时间复杂度是O(n2) 。
 
  */
+
+AdjacencyMatrixGraph.prototype.shortestPath_Dijkstra = function(v){
+    var final = [];
+    var pre = [];
+    var dist = [];
+
+    // 初始化
+    for(var j = 0; j < this.vexnum; ++j){
+        pre[j] = v;
+        final[j] = false;
+        dist[j] = this.arcs[v][j].adj;
+    }
+
+    // 设置S = {V}
+    dist[v] = 0;
+    final[v] = true;
+
+    // 其余n - 1个顶点
+    for(j = 0; j < this.vexnum - 1; ++j){
+        var m = 0;
+        // 找不在S中的顶点Vk
+        while(final[m]) ++m;
+
+        var min = Infinity;
+        for(var k = 0; k < this.vexnum; ++k){
+            // 求出当前最小的dist[k]值
+            if(!final[k] && dist[m] < min){
+                min = dist[k];
+                m = k;
+            }
+        }
+
+        // 将第k个顶点并入S中
+        final[m] = true;
+
+        // 修改dist和pre数组的值
+        // 找到最短路径
+        for(k = 0; k < this.vexnum; ++k){
+            if(!final[k] && dist[m] + this.arcs[m][k].adj < dist[k]){
+                dist[k] = dist[m] + this.arcs[m][k].adj;
+                pre[k] = m;
+            }
+        }
+    }
+
+    console.log('dist: ' + dist);
+    console.log('pre: ' + pre);
+    console.log('final: ' + final);
+};
+
+var dijTest = new AdjacencyMatrixGraph([], [], 0, 10, DN);
+
+dijTest.addVertex('0');
+dijTest.addVertex('1');
+dijTest.addVertex('2');
+dijTest.addVertex('3');
+dijTest.addVertex('4');
+dijTest.addVertex('5');
+
+dijTest.addArc('0', '1', {adj: 20});
+dijTest.addArc('0', '4', {adj: 10});
+dijTest.addArc('0', '2', {adj: 60});
+dijTest.addArc('0', '5', {adj: 65});
+dijTest.addArc('1', '2', {adj: 30});
+dijTest.addArc('2', '3', {adj: 40});
+dijTest.addArc('5', '2', {adj: 15});
+dijTest.addArc('4', '5', {adj: 20});
+dijTest.addArc('3', '4', {adj: 35});
+dijTest.addArc('1', '3', {adj: 70});
+
+dijTest.shortestPath_Dijkstra(0);
