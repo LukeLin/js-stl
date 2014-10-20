@@ -2179,53 +2179,63 @@ Dijkstra算法的主要执行是：
 
  */
 
-AdjacencyMatrixGraph.prototype.shortestPath_Dijkstra = function(v){
-    var final = [];
+/**
+ * 用Dijkstra算法求有向网的v0顶点到其余顶点v的最短路径pre[v]及其带权长度dist[v]。
+ * 若pre[v][w]为true，则w是从v0到v当前求得最短路径上的顶点。
+ * final[v]为true当且仅当v∈S，即已经求得v0到v的最短路径
+ * @param v0
+ */
+AdjacencyMatrixGraph.prototype.shortestPath_Dijkstra = function(v0){
     var pre = [];
     var dist = [];
+    var final = [];
 
-    // 初始化
-    for(var j = 0; j < this.vexnum; ++j){
-        pre[j] = v;
-        final[j] = false;
-        dist[j] = this.arcs[v][j].adj;
+    for(var v = 0; v < this.vexnum; ++v){
+        final[v] = false;
+        dist[v] = this.arcs[v0][v].adj;
+        pre[v] = pre[v] || [];
+        // 设空路径
+        for(var w = 0; w < this.vexnum; ++w) pre[v][w] = false;
+        if(dist[v] < Infinity) {
+            pre[v][v0] = true;
+            pre[v][v] = true;
+        }
     }
 
-    // 设置S = {V}
-    dist[v] = 0;
-    final[v] = true;
+    // 初始化，v0顶点属于S集
+    dist[v0] = 0;
+    final[v0] = true;
 
-    // 其余n - 1个顶点
-    for(j = 0; j < this.vexnum - 1; ++j){
-        var m = 0;
-        // 找不在S中的顶点Vk
-        while(final[m]) ++m;
+    // 开始主循环，每次求得v0到某个v顶点的最短路径，并加v到S集
 
+    // 其余的顶点
+    for(var i = 1; i < this.vexnum; ++i){
         var min = Infinity;
-        for(var k = 0; k < this.vexnum; ++k){
-            // 求出当前最小的dist[k]值
-            if(!final[k] && dist[m] < min){
-                min = dist[k];
-                m = k;
+        // 当前所指离v0顶点的最近距离
+        for(w = 0; w < this.vexnum; ++w){
+            // w顶点在V - S中
+            // 且w顶点离v0顶点更近
+            if(!final[w] && dist[w] < min){
+                v = w;
+                min = dist[w];
             }
         }
 
-        // 将第k个顶点并入S中
-        final[m] = true;
-
-        // 修改dist和pre数组的值
-        // 找到最短路径
-        for(k = 0; k < this.vexnum; ++k){
-            if(!final[k] && dist[m] + this.arcs[m][k].adj < dist[k]){
-                dist[k] = dist[m] + this.arcs[m][k].adj;
-                pre[k] = m;
+        // 离v0顶点最近的v加入S集
+        final[v] = true;
+        // 更新当前最短路径及距离
+        for(w = 0; w < this.vexnum; ++w){
+            if(!final[w] && min + this.arcs[v][w].adj < dist[w]){
+                dist[w] = min + this.arcs[v][w].adj;
+                pre[w] = pre[v];
+                pre[w][w] = true;
             }
         }
     }
 
-    console.log('dist: ' + dist);
-    console.log('pre: ' + pre);
-    console.log('final: ' + final);
+    console.log(final);
+    console.log(pre);
+    console.log(dist);
 };
 
 var dijTest = new AdjacencyMatrixGraph([], [], 0, 10, DN);
@@ -2247,5 +2257,72 @@ dijTest.addArc('5', '2', {adj: 15});
 dijTest.addArc('4', '5', {adj: 20});
 dijTest.addArc('3', '4', {adj: 35});
 dijTest.addArc('1', '3', {adj: 70});
+
+dijTest.shortestPath_Dijkstra(0);
+
+// todo...
+AdjacencyListGraph.prototype.shortestPath_Dijkstra = function(v0){
+    var dist = [];
+    var pre = [];
+    var final = [];
+
+    for(var p = this.vertices[v0].firstArc; p; p = p.nextArc)
+        dist[p.adjVex] = p.info;
+
+    for(var v = 0; v < this.vexnum; ++v){
+        final[v] = 0;
+        pre[v] = pre[v] || [];
+        for(var w = 0; w < this.vexnum; ++w) pre[v][w] = 0;
+
+        if(dist[v] < Infinity){
+            p[v][v0] = true;
+            p[v][v] = true;
+        }
+    }
+
+    dist[v0] = 0;
+    final[v0] = true;
+
+    for(var i = 1; i < this.vexnum; ++i){
+        var min = Infinity;
+        for(w = 0; w < this.vexnum; ++w){
+            if(!final[w] && dist[w] < min) {
+                v = w;
+                min = dist[w];
+            }
+        }
+
+        final[v] = true;
+
+        for(p = this.vertices[v].firstArc; p; p = p.nextArc){
+            w = p.adjVex;
+            if(!final[w] && min + p.info < dist[w]){
+                dist[w] = min + p.info;
+                pre[w] = pre[v];
+                pre[w][w] = true;
+            }
+        }
+    }
+};
+
+var dijTest = new AdjacencyListGraph([], [], 0, 10, DN);
+
+dijTest.addVertex('0');
+dijTest.addVertex('1');
+dijTest.addVertex('2');
+dijTest.addVertex('3');
+dijTest.addVertex('4');
+dijTest.addVertex('5');
+
+dijTest.addArc('0', '1', 20);
+dijTest.addArc('0', '4', 10);
+dijTest.addArc('0', '2', 60);
+dijTest.addArc('0', '5', 65);
+dijTest.addArc('1', '2', 30);
+dijTest.addArc('2', '3', 40);
+dijTest.addArc('5', '2', 15);
+dijTest.addArc('4', '5', 20);
+dijTest.addArc('3', '4', 35);
+dijTest.addArc('1', '3', 70);
 
 dijTest.shortestPath_Dijkstra(0);
