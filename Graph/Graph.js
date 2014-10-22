@@ -2260,23 +2260,25 @@ dijTest.addArc('1', '3', {adj: 70});
 
 dijTest.shortestPath_Dijkstra(0);
 
-// todo...
+
 AdjacencyListGraph.prototype.shortestPath_Dijkstra = function(v0){
     var dist = [];
     var pre = [];
     var final = [];
 
+    for(var v = 0; v < this.vexnum; ++v)
+        dist[v] = Infinity;
     for(var p = this.vertices[v0].firstArc; p; p = p.nextArc)
         dist[p.adjVex] = p.info;
 
-    for(var v = 0; v < this.vexnum; ++v){
-        final[v] = 0;
+    for(v = 0; v < this.vexnum; ++v){
+        final[v] = false;
         pre[v] = pre[v] || [];
-        for(var w = 0; w < this.vexnum; ++w) pre[v][w] = 0;
+        for(var w = 0; w < this.vexnum; ++w) pre[v][w] = false;
 
         if(dist[v] < Infinity){
-            p[v][v0] = true;
-            p[v][v] = true;
+            pre[v][v0] = true;
+            pre[v][v] = true;
         }
     }
 
@@ -2303,6 +2305,10 @@ AdjacencyListGraph.prototype.shortestPath_Dijkstra = function(v0){
             }
         }
     }
+
+    console.log(final);
+    console.log(pre);
+    console.log(dist);
 };
 
 var dijTest = new AdjacencyListGraph([], [], 0, 10, DN);
@@ -2314,15 +2320,15 @@ dijTest.addVertex('3');
 dijTest.addVertex('4');
 dijTest.addVertex('5');
 
-dijTest.addArc('0', '1', 20);
-dijTest.addArc('0', '4', 10);
-dijTest.addArc('0', '2', 60);
-dijTest.addArc('0', '5', 65);
-dijTest.addArc('1', '2', 30);
-dijTest.addArc('2', '3', 40);
-dijTest.addArc('5', '2', 15);
-dijTest.addArc('4', '5', 20);
-dijTest.addArc('3', '4', 35);
-dijTest.addArc('1', '3', 70);
+dijTest.addArc('1', '0', 20);
+dijTest.addArc('4', '0', 10);
+dijTest.addArc('2', '0', 60);
+dijTest.addArc('5', '0', 65);
+dijTest.addArc('2', '1', 30);
+dijTest.addArc('3', '2', 40);
+dijTest.addArc('2', '5', 15);
+dijTest.addArc('5', '4', 20);
+dijTest.addArc('4', '3', 35);
+dijTest.addArc('3', '1', 70);
 
 dijTest.shortestPath_Dijkstra(0);
