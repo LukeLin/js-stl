@@ -2332,3 +2332,87 @@ dijTest.addArc('4', '3', 35);
 dijTest.addArc('3', '1', 70);
 
 dijTest.shortestPath_Dijkstra(0);
+
+
+/*
+每一对顶点间的最短路径
+
+用Dijkstra算法也可以求得有向图G=(V，E)中每一对顶点间的最短路径。方法是：每次以一个不同的顶点为源点重复Dijkstra算法便可求得每一对顶点间的最短路径，时间复杂度是O(n3) 。
+
+弗罗伊德(Floyd)提出了另一个算法，其时间复杂度仍是O(n3) ， 但算法形式更为简明。
+
+1 算法思想
+
+设顶点集S(初值为空)，用数组A的每个元素A[i][j]保存从Vi只经过S中的顶点到达Vj的最短路径长度，其思想是：
+① 初始时令S={ } ， A[i][j]的赋初值方式是：
+                0    i =j时
+    A[i][j]=    Wij     i≠j且<vi,vj>∈E， wij为弧上的权值
+                ∞   i≠j且<vi,vj>不属于E
+② 将图中一个顶点Vk 加入到S中，修改A[i][j]的值，修改方法是：
+    A[i][j]=Min{A[i][j] , (A[i][k]+A[k][j]) }
+原因： 从Vj只经过S中的顶点(Vk)到达Vj的路径长度可能比原来不经过Vk的路径更短。
+③ 重复②，直到G的所有顶点都加入到S中为止。
+
+2 算法实现
+
+◆  定义二维数组Path[n][n](n为图的顶点数) ，元素Path[i][j]保存从Vi到Vj的最短路径所经过的顶点。
+◆ 若Path[i][j]=k：从Vi到Vj 经过Vk ，最短路径序列是(Vi , …, Vk , …, Vj) ，则路径子序列：(Vi , …, Vk)和(Vk , …, Vj)一定是从Vi到Vk和从Vk到Vj 的最短路径。从而可以根据Path[i][k]和Path[k][j]的值再找到该路径上所经过的其它顶点，…依此类推。
+◆ 初始化为Path[i][j]=-1，表示从Vi到Vj 不经过任何(S中的中间)顶点。当某个顶点Vk加入到S中后使A[i][j]变小时，令Path[i][j]=k。
+
+
+ */
+
+AdjacencyMatrixGraph.prototype.shortestPath_FLOYD = function(){
+    var a = [];
+    var path = [];
+
+    for(var j = 0; j < this.vexnum; ++j){
+        a[j] = a[j] || [];
+        path[j] = path[j] || [];
+        for(var k = 0; k < this.vexnum; ++k){
+            a[j][k] = this.arcs[j][k].adj;
+            path[j][k] = -1;
+        }
+    }
+
+    for(var m = 0; m < this.vexnum; ++m){
+        for(j = 0; j < this.vexnum; ++j){
+            for(k = 0; k < this.vexnum; ++k){
+                if(a[j][m] + a[m][k] < a[j][k]){
+                    a[j][k] = a[j][m] + a[m][k];
+                    path[j][k] = k;
+                }
+            }
+        }
+    }
+
+    for(j = 0; j < this.vexnum; ++j){
+        for(k = 0; k < this.vexnum; ++k){
+            if(j !== k){
+                console.log('%d到%d的最短路径为：', j, k);
+//                console.log('%d ', j); prn_pass(j, k);
+//                console.log('%d ', k);
+                console.log('最短路径长度为： %d', a[j][k]);
+            }
+        }
+    }
+
+    function prn_pass(j, k){
+        if(j !== undefined && k !== undefined && path[j][k] !== -1) {
+            prn_pass(j, path[j[k]]);
+            console.log(', %d', path[j][k]);
+            prn_pass(path[j][k], k);
+        }
+    }
+};
+
+var floyd = new AdjacencyMatrixGraph([], [], 0, 4, DN);
+floyd.addVertex('v0');
+floyd.addVertex('v1');
+floyd.addVertex('v2');
+floyd.addArc('v0', 'v2', {adj: 8});
+floyd.addArc('v0', 'v1', {adj: 2});
+floyd.addArc('v1', 'v2', {adj: 4});
+floyd.addArc('v2', 'v0', {adj: 5});
+
+floyd.shortestPath_FLOYD();
