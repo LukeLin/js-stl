@@ -21,7 +21,7 @@
         if(str){
             this[0] = str.length;
             for(var i = 1; i <= str.length; ++i){
-                this[i] = str[i];
+                this[i] = str[i - 1];
             }
         }
     }
@@ -129,7 +129,7 @@
         },
         // 返回子串sstring在主串中的第position个字符之后的位置
         index: function (sstring, position) {
-            var i = position || 0;
+            var i = position || 1;
             var j = 1;
 
             while (i <= this[0] && j <= sstring[0]) {
@@ -226,22 +226,11 @@
     var t = a.concat(b);
     console.log(t + '');       // 01230123
 
-    var d = new SString();
-    var str = 'acabaabaabcacaabc';
-    for(i = 0; i < str.length; i++){
-        d[i + 1] = str[i];
-    }
-    d[0] = str.length;
+    var d = new SString( 'acabaabaabcacaabc');
+    var c = new SString('abaabc');
 
-    var c = new SString();
-    str = 'abaabc';
-    for(i = 0; i < str.length; i++){
-        c[i + 1] = str[i];
-    }
-    c[0] = str.length;
-
-    console.log(d.index(c));
-    console.log(d.kmpIndex(c));
+    console.log('index: ' + d.index(c));
+    console.log('kmpIndex: ' + d.kmpIndex(c));
 
     var a = new SString('abcdefg');
     var b = new SString('asdfg');
