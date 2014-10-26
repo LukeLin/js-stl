@@ -586,18 +586,19 @@ AdjacencyListGraph.prototype = {
      * 如果是有向图或者有向网，只会添加arc1，因此正邻接表和逆邻接表的顺序需要注意
      * @param {String} arc1
      * @param {String} arc2
+     * @param {*} info
      * @returns {boolean}
      */
-    addArc: function (arc1, arc2) {
+    addArc: function (arc1, arc2, info) {
         var k = this.locateVex(arc1);
         var j = this.locateVex(arc2);
 
         if (k === -1 || j === -1) throw new Error('Arc\'s Vertex do not existed!');
 
         // 边的起始表结点赋值
-        var p = new ArcNode(k, null, null);
+        var p = new ArcNode(k, null, info);
         // 边的末尾表结点赋值
-        var q = new ArcNode(j, null, null);
+        var q = new ArcNode(j, null, info);
 
         // 是无向图，用头插入法插入到两个单链表
         if (this.kind === UDG || this.kind === UDN) {
@@ -1963,32 +1964,34 @@ articulTest.findArticul();
  */
 
 // 统计各顶点入度的函数
-AdjacencyListGraph.prototype.countIndegree = function(){
-    for(var k = 0; k < this.vexnum; ++k) this.vertices[k].indegree = 0;
+AdjacencyListGraph.prototype.countIndegree = function () {
+    for (var k = 0; k < this.vexnum; ++k) this.vertices[k].indegree = 0;
 
-    for(k = 0; k < this.vexnum; ++k){
-        for(var p = this.vertices[k].firstArc; p; p = p.nextArc)
+    for (k = 0; k < this.vexnum; ++k) {
+        for (var p = this.vertices[k].firstArc; p; p = p.nextArc)
             ++this.vertices[p.adjVex].indegree;
     }
 };
 
 // 拓扑排序算法
-AdjacencyListGraph.prototype.topologicSort = function(){
+AdjacencyListGraph.prototype.topologicSort = function () {
     var stack = new Stack();
+    this.topologicalOrder = [];
     this.countIndegree();
 
-    for(var i = 0; i < this.vexnum; ++i){
-        if(this.vertices[i].indegree === 0) stack.push(i);
+    for (var i = 0; i < this.vexnum; ++i) {
+        if (this.vertices[i].indegree === 0) stack.push(i);
     }
 
     var count = 0;
-    while(stack.top){
+    while (stack.top) {
         i = stack.pop();
+        this.topologicalOrder.push(i);
         console.log(this.vertices[i].data);
         ++count;
-        for(var p = this.vertices[i].firstArc; p; p = p.nextArc){
+        for (var p = this.vertices[i].firstArc; p; p = p.nextArc) {
             var k = p.adjVex;
-            if(--this.vertices[k].indegree === 0) stack.push(k);
+            if (--this.vertices[k].indegree === 0) stack.push(k);
         }
     }
 
@@ -2014,3 +2017,402 @@ topologicTest.addArc('v5', 'v6');
 
 console.log('topologicSort: ');
 console.log(topologicTest.topologicSort());
+
+
+/*
+关键路径(Critical Path)
+
+与AOV网相对应的是AOE(Activity On Edge) ，是边表示活动的有向无环图，如图7-24所示。图中顶点表示事件(Event)，每个事件表示在其前的所有活动已经完成，其后的活动可以开始；弧表示活动，弧上的权值表示相应活动所需的时间或费用。
+
+1 与AOE有关的研究问题
+    ◆ 完成整个工程至少需要多少时间?
+    ◆ 哪些活动是影响工程进度(费用)的关键?
+工程完成最短时间：从起点到终点的最长路径长度(路径上各活动持续时间之和) 。长度最长的路径称为关键路径，关键路径上的活动称为关键活动。关键活动是影响整个工程的关键。
+设v0是起点，从v0到vi的最长路径长度称为事件vi的最早发生时间，即是以vi为尾的所有活动的最早发生时间。
+若活动ai是弧<j, k>，持续时间是dut(<j, k>)，设：
+    ◆ e(i)：表示活动ai的最早开始时间；
+    ◆ l(i)：在不影响进度的前提下，表示活动ai的最晚开始时间； 则l(i)-e(i)表示活动ai的时间余量，若l(i)-e(i)=0，表示活动ai是关键活动。
+    ◆ ve(i)：表示事件vi的最早发生时间，即从起点到顶点vi的最长路径长度；
+    ◆ vl(i)：表示事件vi的最晚发生时间。则有以下关系：
+        e(i)=ve(j)
+        l(i)= vl(k)-dut(<j, k>)
+                0    j=0，表示vj是起点
+        ve(j)=
+                Max{ve(i)+dut(<i, j>)|<vi, vj>是网中的弧}
+
+含义是：源点事件的最早发生时间设为0；除源点外，只有进入顶点vj的所有弧所代表的活动全部结束后，事件vj才能发生。即只有vj的所有前驱事件vi的最早发生时间ve(i)计算出来后，才能计算ve(j) 。
+方法是：对所有事件进行拓扑排序，然后依次按拓扑顺序计算每个事件的最早发生时间。
+            ve(n-1)    j=n-1，表示vj是终点
+    vl(j)=
+            Min{vl(k)-dut(<j, k>)|<vj, vk>是网中的弧}
+含义是：只有vj的所有后继事件vk的最晚发生时间vl(k)计算出来后，才能计算vl(j) 。
+方法是：按拓扑排序的逆顺序，依次计算每个事件的最晚发生时间。
+
+
+2 求AOE中关键路径和关键活动
+⑴ 算法思想
+① 利用拓扑排序求出AOE网的一个拓扑序列；
+②  从拓扑排序的序列的第一个顶点(源点)开始，按拓扑顺序依次计算每个事件的最早发生时间ve(i) ；
+③  从拓扑排序的序列的最后一个顶点(汇点)开始，按逆拓扑顺序依次计算每个事件的最晚发生时间vl(i) ；
+
+设AOE网有n个事件，e个活动，则算法的主要执行是：
+◆ 进行拓扑排序：时间复杂度是O(n+e) ；
+◆ 求每个事件的ve值和vl值：时间复杂度是O(n+e) ；
+◆ 根据ve值和vl值找关键活动：时间复杂度是O(n+e) ；
+因此，整个算法的时间复杂度是O(n+e) 。
+
+ */
+
+// 输出有向图的各项关键活动
+AdjacencyListGraph.prototype.criticalPath = function () {
+    if (!this.topologicSort()) throw new Error('AOE网中存在回路！');
+
+    var ve = [];
+    // 事件最早发生时间初始化
+    for (var j = 0; j < this.vexnum; ++j) ve[j] = 0;
+    // 计算每个事件的最早发生时间ve值
+    for (var m = 0; m < this.vexnum; ++m) {
+        j = this.topologicalOrder[m];
+        for (var p = this.vertices[j].firstArc; p; p = p.nextArc) {
+            var k = p.adjVex;
+            if (ve[j] + p.info > ve[k]) ve[k] = ve[j] + p.info;
+        }
+    }
+    var vl = [];
+    // 事件最晚发生时间初始化
+    for (j = 0; j < this.vexnum; ++j) vl[j] = ve[this.vexnum - 1];
+    // 计算每个事件的最晚发生时间vl的值
+    for (m = this.vexnum - 1; m >= 0; --m) {
+        j = this.topologicalOrder[m];
+        for (p = this.vertices[j].firstArc; p; p = p.nextArc) {
+            k = p.adjVex;
+            if (vl[k] - p.info < vl[j]) vl[j] = vl[k] - p.info;
+        }
+    }
+    // 输出所有关键活动
+    for (m = 0; m < this.vexnum; ++m) {
+        for (p = this.vertices[m].firstArc; p; p = p.nextArc) {
+            k = p.adjVex;
+            if (ve[m] + p.info === vl[k]) console.log('<%d, %d>', m, k);
+        }
+    }
+};
+
+var criticalPathTest = new AdjacencyListGraph([], 0, 12, DG);
+criticalPathTest.addVertex('v0');
+criticalPathTest.addVertex('v1');
+criticalPathTest.addVertex('v2');
+criticalPathTest.addVertex('v3');
+criticalPathTest.addVertex('v4');
+criticalPathTest.addVertex('v5');
+criticalPathTest.addVertex('v6');
+criticalPathTest.addVertex('v7');
+criticalPathTest.addVertex('v8');
+
+criticalPathTest.addArc('v1', 'v0', 3);
+criticalPathTest.addArc('v2', 'v0', 10);
+criticalPathTest.addArc('v4', 'v1', 13);
+criticalPathTest.addArc('v4', 'v2', 12);
+criticalPathTest.addArc('v3', 'v1', 9);
+criticalPathTest.addArc('v5', 'v2', 7);
+criticalPathTest.addArc('v7', 'v4', 6);
+criticalPathTest.addArc('v7', 'v3', 4);
+criticalPathTest.addArc('v7', 'v5', 11);
+criticalPathTest.addArc('v6', 'v3', 8);
+criticalPathTest.addArc('v8', 'v7', 5);
+criticalPathTest.addArc('v8', 'v6', 2);
+
+criticalPathTest.criticalPath();
+
+
+/*
+最短路径
+
+若用带权图表示交通网，图中顶点表示地点，边代表两地之间有直接道路，边上的权值表示路程(或所花费用或时间) 。从一个地方到另一个地方的路径长度表示该路径上各边的权值之和。问题：
+    ◆ 两地之间是否有通路?
+    ◆ 在有多条通路的情况下，哪条最短?
+考虑到交通网的有向性，直接讨论的是带权有向图的最短路径问题，但解决问题的算法也适用于无向图。
+将一个路径的起始顶点称为源点，最后一个顶点称为终点。
+
+
+单源点最短路径
+
+对于给定的有向图G=(V，E)及单个源点Vs，求Vs到G的其余各顶点的最短路径。
+针对单源点的最短路径问题，Dijkstra提出了一种按路径长度递增次序产生最短路径的算法，即迪杰斯特拉(Dijkstra)算法。
+
+1 基本思想
+从图的给定源点到其它各个顶点之间客观上应存在一条最短路径，在这组最短路径中，按其长度的递增次序，依次求出到不同顶点的最短路径和路径长度。
+即按长度递增的次序生成各顶点的最短路径，即先求出长度最小的一条最短路径，然后求出长度第二小的最短路径，依此类推，直到求出长度最长的最短路径。
+
+2 算法思想说明
+设给定源点为Vs，S为已求得最短路径的终点集，开始时令S={Vs} 。当求得第一条最短路径(Vs ，Vi)后，S为{Vs，Vi} 。根据以下结论可求下一条最短路径。
+设下一条最短路径终点为Vj ，则Vj只有：
+    ◆  源点到终点有直接的弧<Vs，Vj>；
+    ◆ 从Vs 出发到Vj 的这条最短路径所经过的所有中间顶点必定在S中。即只有这条最短路径的最后一条弧才是从S内某个顶点连接到S外的顶点Vj 。
+若定义一个数组dist[n]，其每个dist[i]分量保存从Vs 出发中间只经过集合S中的顶点而到达Vi的所有路径中长度最小的路径长度值，则下一条最短路径的终点Vj必定是不在S中且值最小的顶点，即：
+    dist[i]=Min{ dist[k]| Vk∈V-S }
+利用上述公式就可以依次找出下一条最短路径。
+
+3  算法步骤
+① 令S={Vs} ，用带权的邻接矩阵表示有向图，对图中每个顶点Vi按以下原则置初值：
+                0    i =s
+    dist[i] =   Wsi     i≠s且<vs,vi>∈E， wsi为弧上的权值
+                ∞   i≠s且<vs,vi>不属于E
+② 选择一个顶点Vj ，使得：
+    dist[j]=Min{ dist[k]| Vk∈V-S }
+Vj就是求得的下一条最短路径终点，将Vj 并入到S中，即S=S∪{Vj} 。
+③ 对V-S中的每个顶点Vk ，修改dist[k]，方法是：
+若dist[j]+Wjk<dist[k]，则修改为：
+    dist[k]=dist[j]+Wjk (Vk∈V-S )
+④ 重复②，③，直到S=V为止。
+
+4 算法实现
+用带权的邻接矩阵表示有向图， 对Prim算法略加改动就成了Dijkstra算法，将Prim算法中求每个顶点Vk的lowcost值用dist[k]代替即可。
+    ◆  设数组pre[n]保存从Vs到其它顶点的最短路径。若pre[i]=k，表示从Vs 到Vi的最短路径中，Vi的前一个顶点是Vk，即最短路径序列是(Vs , …, Vk  , Vi) 。
+    ◆ 设数组final[n]，标识一个顶点是否已加入S中。
+
+5  算法分析
+Dijkstra算法的主要执行是：
+◆ 数组变量的初始化：时间复杂度是O(n) ；
+◆ 求最短路径的二重循环：时间复杂度是O(n2) ；
+因此，整个算法的时间复杂度是O(n2) 。
+
+ */
+
+/**
+ * 用Dijkstra算法求有向网的v0顶点到其余顶点v的最短路径pre[v]及其带权长度dist[v]。
+ * 若pre[v][w]为true，则w是从v0到v当前求得最短路径上的顶点。
+ * final[v]为true当且仅当v∈S，即已经求得v0到v的最短路径
+ * @param v0
+ */
+AdjacencyMatrixGraph.prototype.shortestPath_Dijkstra = function(v0){
+    var pre = [];
+    var dist = [];
+    var final = [];
+
+    for(var v = 0; v < this.vexnum; ++v){
+        final[v] = false;
+        dist[v] = this.arcs[v0][v].adj;
+        pre[v] = pre[v] || [];
+        // 设空路径
+        for(var w = 0; w < this.vexnum; ++w) pre[v][w] = false;
+        if(dist[v] < Infinity) {
+            pre[v][v0] = true;
+            pre[v][v] = true;
+        }
+    }
+
+    // 初始化，v0顶点属于S集
+    dist[v0] = 0;
+    final[v0] = true;
+
+    // 开始主循环，每次求得v0到某个v顶点的最短路径，并加v到S集
+
+    // 其余的顶点
+    for(var i = 1; i < this.vexnum; ++i){
+        var min = Infinity;
+        // 当前所指离v0顶点的最近距离
+        for(w = 0; w < this.vexnum; ++w){
+            // w顶点在V - S中
+            // 且w顶点离v0顶点更近
+            if(!final[w] && dist[w] < min){
+                v = w;
+                min = dist[w];
+            }
+        }
+
+        // 离v0顶点最近的v加入S集
+        final[v] = true;
+        // 更新当前最短路径及距离
+        for(w = 0; w < this.vexnum; ++w){
+            if(!final[w] && min + this.arcs[v][w].adj < dist[w]){
+                dist[w] = min + this.arcs[v][w].adj;
+                pre[w] = pre[v];
+                pre[w][w] = true;
+            }
+        }
+    }
+
+    console.log(final);
+    console.log(pre);
+    console.log(dist);
+};
+
+var dijTest = new AdjacencyMatrixGraph([], [], 0, 10, DN);
+
+dijTest.addVertex('0');
+dijTest.addVertex('1');
+dijTest.addVertex('2');
+dijTest.addVertex('3');
+dijTest.addVertex('4');
+dijTest.addVertex('5');
+
+dijTest.addArc('0', '1', {adj: 20});
+dijTest.addArc('0', '4', {adj: 10});
+dijTest.addArc('0', '2', {adj: 60});
+dijTest.addArc('0', '5', {adj: 65});
+dijTest.addArc('1', '2', {adj: 30});
+dijTest.addArc('2', '3', {adj: 40});
+dijTest.addArc('5', '2', {adj: 15});
+dijTest.addArc('4', '5', {adj: 20});
+dijTest.addArc('3', '4', {adj: 35});
+dijTest.addArc('1', '3', {adj: 70});
+
+dijTest.shortestPath_Dijkstra(0);
+
+
+AdjacencyListGraph.prototype.shortestPath_Dijkstra = function(v0){
+    var dist = [];
+    var pre = [];
+    var final = [];
+
+    for(var v = 0; v < this.vexnum; ++v)
+        dist[v] = Infinity;
+    for(var p = this.vertices[v0].firstArc; p; p = p.nextArc)
+        dist[p.adjVex] = p.info;
+
+    for(v = 0; v < this.vexnum; ++v){
+        final[v] = false;
+        pre[v] = pre[v] || [];
+        for(var w = 0; w < this.vexnum; ++w) pre[v][w] = false;
+
+        if(dist[v] < Infinity){
+            pre[v][v0] = true;
+            pre[v][v] = true;
+        }
+    }
+
+    dist[v0] = 0;
+    final[v0] = true;
+
+    for(var i = 1; i < this.vexnum; ++i){
+        var min = Infinity;
+        for(w = 0; w < this.vexnum; ++w){
+            if(!final[w] && dist[w] < min) {
+                v = w;
+                min = dist[w];
+            }
+        }
+
+        final[v] = true;
+
+        for(p = this.vertices[v].firstArc; p; p = p.nextArc){
+            w = p.adjVex;
+            if(!final[w] && min + p.info < dist[w]){
+                dist[w] = min + p.info;
+                pre[w] = pre[v];
+                pre[w][w] = true;
+            }
+        }
+    }
+
+    console.log(final);
+    console.log(pre);
+    console.log(dist);
+};
+
+var dijTest = new AdjacencyListGraph([], [], 0, 10, DN);
+
+dijTest.addVertex('0');
+dijTest.addVertex('1');
+dijTest.addVertex('2');
+dijTest.addVertex('3');
+dijTest.addVertex('4');
+dijTest.addVertex('5');
+
+dijTest.addArc('1', '0', 20);
+dijTest.addArc('4', '0', 10);
+dijTest.addArc('2', '0', 60);
+dijTest.addArc('5', '0', 65);
+dijTest.addArc('2', '1', 30);
+dijTest.addArc('3', '2', 40);
+dijTest.addArc('2', '5', 15);
+dijTest.addArc('5', '4', 20);
+dijTest.addArc('4', '3', 35);
+dijTest.addArc('3', '1', 70);
+
+dijTest.shortestPath_Dijkstra(0);
+
+
+/*
+每一对顶点间的最短路径
+
+用Dijkstra算法也可以求得有向图G=(V，E)中每一对顶点间的最短路径。方法是：每次以一个不同的顶点为源点重复Dijkstra算法便可求得每一对顶点间的最短路径，时间复杂度是O(n3) 。
+
+弗罗伊德(Floyd)提出了另一个算法，其时间复杂度仍是O(n3) ， 但算法形式更为简明。
+
+1 算法思想
+
+设顶点集S(初值为空)，用数组A的每个元素A[i][j]保存从Vi只经过S中的顶点到达Vj的最短路径长度，其思想是：
+① 初始时令S={ } ， A[i][j]的赋初值方式是：
+                0    i =j时
+    A[i][j]=    Wij     i≠j且<vi,vj>∈E， wij为弧上的权值
+                ∞   i≠j且<vi,vj>不属于E
+② 将图中一个顶点Vk 加入到S中，修改A[i][j]的值，修改方法是：
+    A[i][j]=Min{A[i][j] , (A[i][k]+A[k][j]) }
+原因： 从Vj只经过S中的顶点(Vk)到达Vj的路径长度可能比原来不经过Vk的路径更短。
+③ 重复②，直到G的所有顶点都加入到S中为止。
+
+2 算法实现
+
+◆  定义二维数组Path[n][n](n为图的顶点数) ，元素Path[i][j]保存从Vi到Vj的最短路径所经过的顶点。
+◆ 若Path[i][j]=k：从Vi到Vj 经过Vk ，最短路径序列是(Vi , …, Vk , …, Vj) ，则路径子序列：(Vi , …, Vk)和(Vk , …, Vj)一定是从Vi到Vk和从Vk到Vj 的最短路径。从而可以根据Path[i][k]和Path[k][j]的值再找到该路径上所经过的其它顶点，…依此类推。
+◆ 初始化为Path[i][j]=-1，表示从Vi到Vj 不经过任何(S中的中间)顶点。当某个顶点Vk加入到S中后使A[i][j]变小时，令Path[i][j]=k。
+
+
+ */
+
+AdjacencyMatrixGraph.prototype.shortestPath_FLOYD = function(){
+    var a = [];
+    var path = [];
+
+    for(var j = 0; j < this.vexnum; ++j){
+        a[j] = a[j] || [];
+        path[j] = path[j] || [];
+        for(var k = 0; k < this.vexnum; ++k){
+            a[j][k] = this.arcs[j][k].adj;
+            path[j][k] = -1;
+        }
+    }
+
+    for(var m = 0; m < this.vexnum; ++m){
+        for(j = 0; j < this.vexnum; ++j){
+            for(k = 0; k < this.vexnum; ++k){
+                if(a[j][m] + a[m][k] < a[j][k]){
+                    a[j][k] = a[j][m] + a[m][k];
+                    path[j][k] = k;
+                }
+            }
+        }
+    }
+
+    for(j = 0; j < this.vexnum; ++j){
+        for(k = 0; k < this.vexnum; ++k){
+            if(j !== k){
+                console.log('%d到%d的最短路径为：', j, k);
+//                console.log('%d ', j); prn_pass(j, k);
+//                console.log('%d ', k);
+                console.log('最短路径长度为： %d', a[j][k]);
+            }
+        }
+    }
+
+    function prn_pass(j, k){
+        if(j !== undefined && k !== undefined && path[j][k] !== -1) {
+            prn_pass(j, path[j[k]]);
+            console.log(', %d', path[j][k]);
+            prn_pass(path[j][k], k);
+        }
+    }
+};
+
+var floyd = new AdjacencyMatrixGraph([], [], 0, 4, DN);
+floyd.addVertex('v0');
+floyd.addVertex('v1');
+floyd.addVertex('v2');
+floyd.addArc('v0', 'v2', {adj: 8});
+floyd.addArc('v0', 'v1', {adj: 2});
+floyd.addArc('v1', 'v2', {adj: 4});
+floyd.addArc('v2', 'v0', {adj: 5});
+
+floyd.shortestPath_FLOYD();
