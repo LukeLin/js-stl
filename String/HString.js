@@ -190,3 +190,5 @@ function getLongestRepeatingSubstring(str){
 getLongestRepeatingSubstring('abcdefghi');
 
 getLongestRepeatingSubstring('abbccddddc');
+
+getLongestRepeatingSubstring('abcdbcdbcb ');
