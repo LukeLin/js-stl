@@ -163,3 +163,30 @@ function niBoLan2BoLan(str){
 }
 
 console.log(niBoLan2BoLan('abc+*d-'));  // -*a+bcd
+
+function getLongestRepeatingSubstring(str){
+    var lrs1, lrs2;
+    for(var maxLen = 0, i = 0; i < str.length; ++i){
+        for(var k = 0, j = 0; j < str.length; ++j){
+            if(str[j] == str[j + i + 1]) ++k;
+            else k = 0;
+
+            if(k > maxLen) {
+                lrs1 = j - k + 1;
+                maxLen = k + 1;
+                lrs2 = lrs1 + maxLen;
+            }
+        }
+    }
+
+    if(maxLen){
+        console.log('Longest Repeating Substring length: ' + maxLen);
+        console.log('Position 1: %d  Position 2: %d Substring: %s', lrs1, lrs2, str.substring(lrs1, lrs2));
+    } else {
+        console.log('No Repeating Substring found!');
+    }
+}
+
+getLongestRepeatingSubstring('abcdefghi');
+
+getLongestRepeatingSubstring('abbccddddc');
