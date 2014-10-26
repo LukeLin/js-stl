@@ -192,3 +192,62 @@ getLongestRepeatingSubstring('abcdefghi');
 getLongestRepeatingSubstring('abbccddddc');
 
 getLongestRepeatingSubstring('abcdbcdbcb ');
+
+
+function getLongestPublicSubstring(s, t){
+    // a为较长的字符串，b为较短的
+    var a, b;
+    if(s.length >= t.length) {
+        a = s;
+        b = t;
+    } else {
+        a = t;
+        b = s;
+    }
+
+    var jmin, jmax, lps1, lps2;
+    for(var maxLen = 0, i = -b.length; i < a.length; ++i){
+        if(i < 0) {
+            jmin = 0;
+            jmax = i + b.length;
+        } else if(i > a.length - b.length - 1){
+            jmin = i;
+            jmax = a.length - 1;
+        } else {
+            jmin = i;
+            jmax = i + b.length;
+        }
+
+        for(var k = 0, j = jmin; j <= jmax; ++j){
+            if(a[j] === b[j - i]) ++k;
+            else k = 0;
+
+            if(k > maxLen){
+                lps1 = j - k + 1;
+                lps2 = lps1 - i;
+                maxLen = k;
+            }
+        }
+    }
+
+    if(maxLen) {
+        var lpsS, lpsT;
+        if(s.length >= t.length){
+            lpsS = lps1;
+            lpsT = lps2;
+        } else {
+            lpsS = lps2;
+            lpsT = lps1;
+        }
+
+        console.log('Longest Public Substring length: %d', maxLen);
+        console.log('Position in S: %d  Position in T: %d', lpsS, lpsT);
+        console.log('Longest Public Substring is: %s', s.substr(lpsS, maxLen));
+    } else {
+        console.log('No Public Substring found!');
+    }
+}
+
+getLongestPublicSubstring('qwabcdaabcde', 'abcabcdeos');
+
+getLongestPublicSubstring('abbrabcd', 'cdababd');
