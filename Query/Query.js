@@ -53,7 +53,8 @@ function sequentialSearch(sTable, key){
     return i;
 }
 
-console.log(sequentialSearch([1, 2, 3, 4, 5], 6));
+console.log('sequentialSearch: ');
+console.log(sequentialSearch([1, 2, 3, 4, 5], 6));  // -1
 
 
 /*
@@ -101,4 +102,53 @@ function binarySearch(sTable, key){
     return -1;
 }
 
-console.log(binarySearch([1, 2, 3, 4, 5], 1));
+console.log('binarySearch: ');
+console.log(binarySearch([1, 2, 3, 4, 5], 1));  // 0
+
+function binarySearchRecursive(sTable, key, low, high){
+    low = low || 0;
+    high = high || sTable.length - 1;
+
+    if(low > high) return -1;
+
+    var mid = Math.floor((low + high) / 2);
+
+    if(sTable[mid] === key) return mid;
+    else if(sTable[mid] > key) return binarySearchRecursive(sTable, key, low, mid - 1);
+    else return binarySearchRecursive(sTable, mid + 1, high);
+}
+
+console.log('binarySearchRecursive: ');
+console.log(binarySearchRecursive([1, 2, 3, 4, 5], 1)); // 0
+console.log(binarySearchRecursive([1, 2, 3, 4, 5], 6)); // -1
+
+
+/*
+分块查找
+
+分块查找(Blocking Search)又称索引顺序查找，是前面两种查找方法的综合。
+1  查找表的组织
+①  将查找表分成几块。块间有序，即第i+1块的所有记录关键字均大于(或小于)第i块记录关键字；块内无序。
+② 在查找表的基础上附加一个索引表，索引表是按关键字有序的，索引表中记录的构成是：
+最大关键字和起始指针
+2  查找思想
+先确定待查记录所在块，再在块内查找(顺序查找)。
+
+ */
+
+function Index(maxKey, startPos){
+    this.maxkey = maxKey || 0;
+    this.startPos = startPos || 0;
+}
+
+function blockSearch(sTable, index, key, n, b){
+    var i = 0;
+    while(i < b && index[i].maxKey < key) ++i;
+    if(i > b) {
+        console.log('not found!');
+        return -1;
+    }
+
+    var j = index[i].startPos;
+    while(j < n && sTable[j] <= ){}
+}
