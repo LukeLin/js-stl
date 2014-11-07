@@ -142,13 +142,5 @@ function Index(maxKey, startPos){
 }
 
 function blockSearch(sTable, index, key, n, b){
-    var i = 0;
-    while(i < b && index[i].maxKey < key) ++i;
-    if(i > b) {
-        console.log('not found!');
-        return -1;
-    }
 
-    var j = index[i].startPos;
-    while(j < n && sTable[j] <= ){}
 }
