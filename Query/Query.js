@@ -46,10 +46,10 @@
 ◆  包含查找不成功时：查找失败的比较次数为n+1，若成功与不成功的概率相等，对每个记录的查找概率为Pi=1/(2n)，则平均查找长度ASL：3(n+1)/4
  */
 
-function sequentialSearch(sTable, key){
+function sequentialSearch(sTable, key) {
     // 设置监视哨兵,失败返回-1
     sTable[-1] = key;
-    for(var i = sTable.length - 1; sTable[i] !== key; --i);
+    for (var i = sTable.length - 1; sTable[i] !== key; --i);
     return i;
 }
 
@@ -86,16 +86,16 @@ console.log(sequentialSearch([1, 2, 3, 4, 5], 6));  // -1
 
  */
 
-function binarySearch(sTable, key){
+function binarySearch(sTable, key) {
     var low = 0;
     var high = sTable.length - 1;
 
-    while(low <= high){
+    while (low <= high) {
         var mid = Math.floor((low + high) / 2);
         var elem = sTable[mid];
 
-        if(key === elem) return mid;
-        else if(key < elem) high = mid - 1;
+        if (key === elem) return mid;
+        else if (key < elem) high = mid - 1;
         else low = mid + 1;
     }
 
@@ -105,16 +105,16 @@ function binarySearch(sTable, key){
 console.log('binarySearch: ');
 console.log(binarySearch([1, 2, 3, 4, 5], 1));  // 0
 
-function binarySearchRecursive(sTable, key, low, high){
+function binarySearchRecursive(sTable, key, low, high) {
     low = low || 0;
     high = high || sTable.length - 1;
 
-    if(low > high) return -1;
+    if (low > high) return -1;
 
     var mid = Math.floor((low + high) / 2);
 
-    if(sTable[mid] === key) return mid;
-    else if(sTable[mid] > key) return binarySearchRecursive(sTable, key, low, mid - 1);
+    if (sTable[mid] === key) return mid;
+    else if (sTable[mid] > key) return binarySearchRecursive(sTable, key, low, mid - 1);
     else return binarySearchRecursive(sTable, mid + 1, high);
 }
 
@@ -124,23 +124,72 @@ console.log(binarySearchRecursive([1, 2, 3, 4, 5], 6)); // -1
 
 
 /*
-分块查找
+Fibonacci查找
 
-分块查找(Blocking Search)又称索引顺序查找，是前面两种查找方法的综合。
-1  查找表的组织
-①  将查找表分成几块。块间有序，即第i+1块的所有记录关键字均大于(或小于)第i块记录关键字；块内无序。
-② 在查找表的基础上附加一个索引表，索引表是按关键字有序的，索引表中记录的构成是：
-最大关键字和起始指针
-2  查找思想
-先确定待查记录所在块，再在块内查找(顺序查找)。
+Fibonacci查找方法是根据Fibonacci数列的特点对查找表进行分割。Fibonacci数列的定义是：
+        F(0)=0，F(1)=1，F(j)=F(j-1)+F(j-2) 。
+
+1  查找思想
+设查找表中的记录数比某个Fibonacci数小1，即设n=F(j)-1。用Low、High和Mid表示待查找区间的下界、上界和分割位置，初值为Low=0，High=n - 1。
+    ⑴   取分割位置Mid：Mid=F(j-1) ；
+    ⑵   比较分割位置记录的关键字与给定的K值：
+        ① 相等： 查找成功；
+        ②  大于：待查记录在区间的前半段(区间长度为F(j-1)-1)，修改上界指针： High=Mid-1，转⑴ ；
+        ③  小于：待查记录在区间的后半段(区间长度为F(j-2)-1)，修改下界指针：Low=Mid+1，转⑴ ；直到越界(Low>High)，查找失败。
+
+2  算法实现
+在算法实现时，为了避免频繁计算Fibonacci数，可用两个变量f1和f2保存当前相邻的两个Fibonacci数，这样在以后的计算中可以依次递推计算出。
+
+由算法知，Fibonacci查找在最坏情况下性能比折半查找差，但折半查找要求记录按关键字有序；Fibonacci查找的优点是分割时只需进行加、减运算。
 
  */
 
-function Index(maxKey, startPos){
-    this.maxkey = maxKey || 0;
-    this.startPos = startPos || 0;
+function fib(n) {
+    if (n === 0) return 0;
+    if (n === 1) return 1;
+    var f;
+    var f0 = 0;
+    var f1 = 1;
+    for (var i = 2; i <= n; ++i) {
+        f = f0 + f1;
+        f0 = f1;
+        f1 = f;
+    }
+    return f;
 }
 
-function blockSearch(sTable, index, key, n, b){
+/**
+ * 在有序表ST中用Fibonacci方法查找关键字为key的记录
+ * @param sTable
+ * @param key
+ * @param n
+ */
+function fibonacciSearch(sTable, key, n) {
+    n = n || sTable.length;
+    var low = 0;
+    var high = n - 1;
+    var f1 = fib(n);
+    var f2 = fib(n - 1);
 
+    while (low <= high) {
+        var mid = low + f1 - 1;
+        if (sTable[mid] === key) return mid;
+        else if (key < sTable[mid]) {
+            high = mid - 1;
+            f2 = f1 - f2;
+            f1 = f1 - f2;
+        } else {
+            low = mid + 1;
+            f1 = f1 - f2;
+            f2 = f2 - f1;
+        }
+    }
+
+    return -1;
 }
+
+console.log('fibonacciSearch: ');
+console.log(fibonacciSearch([1, 2, 3, 4, 5], 5)); // 4
+console.log(fibonacciSearch([1, 2, 3, 4, 5], 6)); // -1
+
+
