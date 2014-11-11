@@ -1850,6 +1850,57 @@ console.log('minSpanTree_PRIM: ');
 console.log(udn.minSpanTree_PRIM(0));
 
 
+AdjacencyListGraph.prototype.forestPrim = function(k){
+    var tree = new ChildSiblingTree();
+    var closedge = [];
+
+    return function forestPrim(graph, k){
+        var p;
+        for(var i = 0; i < graph.vexnum; ++i){
+            if(i !== k){
+                closedge[i] = {
+                    adjvex: k,
+                    lowcost: Infinity
+                };
+
+                for(p = graph.vertices[i].firstArc; p; p = p.nextArc){
+                    if(p.adjVex === k) closedge[i].lowcost = p.info;
+                }
+            }
+        }
+
+        closedge[k].lowcost = 0;
+
+        for(i = 1; i < graph.vexnum; ++i){
+            var min = Infinity;
+            for (var v = 0; v < graph.vexnum; ++v) {
+                if (closedge[v].lowcost !== 0 && closedge[v].lowcost < min) {
+                    min = closedge[v].lowcost;
+                    k = v;
+                }
+            }
+
+            if(closedge[k].lowcost < Infinity){
+                addToForest(tree, closedge[k].adjvex, k);
+                closedge[k].lowcost = 0;
+                for(p = graph.vertices[k].firstArc; p; p = p.nextArc){
+                    if(p.info < closedge[p.adjVex].lowcost)
+                        closedge[p.adjVex] = {
+                            adjvex: k,
+                            lowcost: p.info
+                        };
+                }
+            } else forestPrim(graph, k);
+        }
+    }(this, k);
+
+    // todo
+    function addToForest(tree, i, j){
+
+    }
+};
+
+
 /*
  克鲁斯卡尔(Kruskal)算法
 
