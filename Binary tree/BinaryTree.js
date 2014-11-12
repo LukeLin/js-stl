@@ -1326,3 +1326,21 @@ console.log('getSolutionsCount: ' + test.getSolutionsCount());
 /*
 含有n个结点的不相似的二叉树有1/(n+1)*C(n)(2n)棵
  */
+
+// n个阶梯，每次只能走一步或两步，求共有多少种走法走完
+function getStepPowerSet(n){
+    var count = 0;
+
+    void function recurse(i){
+        if(i >= n) {
+            ++count;
+        } else {
+            recurse(i + 1);
+            if(i + 2 <= n) recurse(i + 2);
+        }
+    }(0);
+
+    return count;
+}
+
+console.log(getStepPowerSet(4));    // 5
