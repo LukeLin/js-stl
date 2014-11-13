@@ -1850,19 +1850,52 @@ console.log('minSpanTree_PRIM: ');
 console.log(udn.minSpanTree_PRIM(0));
 
 
+function locate(tree, i){
+    if(tree.data === i) return tree;
+
+    for(var r = tree.firstChild; r; r = r.nextSibling){
+        var t = locate(r, i);
+        if(t) return t;
+    }
+}
+
+// 把边(i, j)添加到孩子兄弟链表表示的树中
+function addToForest(tree, i, j){
+    var p = locate(tree, i);
+    var q = new ChildSiblingTree();
+    q.data = j;
+
+    var r;
+    if(!p) {
+        p = new ChildSiblingTree();
+        p.data = i;
+        for(r = tree; r.nextSibling; r = r.nextSibling);
+        r.nextSibling = p;
+        p.firstChild = q;
+    }
+    else if(!p.firstChild){
+        p.firstChild = q;
+    }
+    else {
+        for(r = p.firstChild; r.nextSibling; r = r.nextSibling);
+        r.nextSibling = q;
+    }
+}
+
+// bug exists
 AdjacencyListGraph.prototype.forestPrim = function(k){
     var tree = new ChildSiblingTree();
+    tree.data = 1;
     var closedge = [];
 
-    return function forestPrim(graph, k){
+    void function forestPrim(graph, k){
         var p;
         for(var i = 0; i < graph.vexnum; ++i){
+            closedge[i] = {
+                adjvex: k,
+                lowcost: Infinity
+            };
             if(i !== k){
-                closedge[i] = {
-                    adjvex: k,
-                    lowcost: Infinity
-                };
-
                 for(p = graph.vertices[i].firstArc; p; p = p.nextArc){
                     if(p.adjVex === k) closedge[i].lowcost = p.info;
                 }
@@ -1894,11 +1927,30 @@ AdjacencyListGraph.prototype.forestPrim = function(k){
         }
     }(this, k);
 
-    // todo
-    function addToForest(tree, i, j){
-
-    }
+    return tree;
 };
+
+udn = new AdjacencyListGraph([], [], 0, 7, 4);
+udn.addVertex('v1');
+udn.addVertex('v2');
+udn.addVertex('v3');
+udn.addVertex('v4');
+udn.addVertex('v5');
+udn.addVertex('v6');
+
+udn.addArc('v2', 'v1', 6);
+udn.addArc('v3', 'v1', 1);
+udn.addArc('v4', 'v1', 5);
+udn.addArc('v3', 'v2', 5);
+udn.addArc('v5', 'v2', 3);
+udn.addArc('v4', 'v3', 5);
+udn.addArc('v5', 'v3', 6);
+udn.addArc('v6', 'v3', 4);
+udn.addArc('v6', 'v4', 2);
+udn.addArc('v6', 'v5', 6);
+
+console.log('minSpanTree_PRIM: ');
+console.log(udn.forestPrim(0));
 
 
 /*
