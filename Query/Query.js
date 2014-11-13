@@ -193,3 +193,50 @@ console.log(fibonacciSearch([1, 2, 3, 4, 5], 5)); // 4
 console.log(fibonacciSearch([1, 2, 3, 4, 5], 6)); // -1
 
 
+/*
+静态次优查找树
+
+适合各记录的查找概率不等的情况
+ */
+var BinaryTree = require('../Binary tree/BinaryTree').BinaryTree;
+
+/**
+ * 由有序表sTable[low..high]及其累计权值表weights递归构造次优查找树
+ * @param {BinaryTree} tree
+ * @param {Array} sTable
+ * @param {Array} weights
+ * @param {Number} low
+ * @param {Number} high
+ */
+function secondOptimal(tree, sTable, weights, low, high) {
+    var i = low;
+    var min = Math.abs(weights[high] - weights[low]);
+    var dw = weights[high] + (weights[low - 1] || 0);
+
+    // 选择最小的△Pi值
+    for (var j = low + 1; j <= high; ++j) {
+        var t = Math.abs(dw - weights[j] - weights[j - 1]);
+        if (t < min) {
+            i = j;
+            min = t;
+        }
+    }
+
+    tree.data = sTable[i];
+    //左子树
+    if (i === low) tree.leftChild = null;
+    else {
+        tree.leftChild = new BinaryTree();
+        secondOptimal(tree.leftChild, sTable, weights, low, i - 1);
+    }
+    // 右子树
+    if (i === high) tree.rightChild = null;
+    else {
+        tree.rightChild = new BinaryTree();
+        secondOptimal(tree.rightChild, sTable, weights, i + 1, high);
+    }
+}
+
+var tree = new BinaryTree();
+secondOptimal(tree, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'], [1, 2, 4, 9, 12, 16, 20, 23, 28], 0, 8);
+console.log(tree);
