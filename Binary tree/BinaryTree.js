@@ -220,10 +220,10 @@ BinaryTree.prototype = {
         if (this.leftChild) preOrderTraverse.call(this.leftChild, visit);
         if (this.rightChild) preOrderTraverse.call(this.rightChild, visit);
     },
-    inPrderTraverse: function inPrderTraverse(visit) {
-        if (this.leftChild) inPrderTraverse.call(this.leftChild, visit);
+    inOrderTraverse: function inOrderTraverse(visit) {
+        if (this.leftChild) inOrderTraverse.call(this.leftChild, visit);
         visit(this.data);
-        if (this.rightChild) inPrderTraverse.call(this.rightChild, visit);
+        if (this.rightChild) inOrderTraverse.call(this.rightChild, visit);
     },
     postOrderTraverse: function postOrderTraverse(visit) {
         if (this.leftChild) postOrderTraverse.call(this.leftChild, visit);
@@ -468,7 +468,7 @@ void function test() {
     test.preOrderTraverse(function (value) {
         console.log('preOrder: ' + value);
     });
-    test.inPrderTraverse(function (value) {
+    test.inOrderTraverse(function (value) {
         console.log('inOrder: ' + value);
     });
     test.postOrderTraverse(function (value) {
