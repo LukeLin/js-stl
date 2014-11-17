@@ -821,6 +821,79 @@ AdjacencyListGraph.prototype = {
                 return sum;
             }
         })(this, i, j, len);
+    },
+
+    /**
+     * 求有向无环图的根
+     */
+    getRoot: function(){
+        var visited = [];
+
+        for(var i = 0; i < this.vexnum; ++i) {
+            // 每次都要将访问数组清零
+            for (var w = 0; w < this.vexnum; ++w) visited[w] = false;
+            // 从顶点i出发进行深度优先遍历
+            dfs(this, i);
+
+            var flag = true;
+            for(w = 0; w < this.vexnum; ++w){
+                // 如果i是根，则深度优先遍历可以访问到所有结点
+                if(!visited[w]) flag = false;
+            }
+
+            if(flag) console.log('Found a root vertex: %d', i);
+        }
+
+        function dfs(graph, v){
+            visited[v] = true;
+
+            for(var p = graph.vertices[v].firstArc; p; p = p.nextArc){
+                var w = p.adjVex;
+                if(!visited[w]) dfs(graph, w);
+            }
+        }
+    },
+
+    /**
+     * 求一个有向无环图中最长的路径
+     */
+    getLongestPath: function(){
+        var mlp = [];
+        var path = [];
+        var visited = [];
+        var maxLen = 0;
+
+        this.countIndegree();
+
+        for(var i = 0; i < this.vexnum; ++i) {
+            for (var j = 0; j < this.vexnum; ++j) visited[j] = false;
+            // 从每一个零入度结点开始深度优先遍历
+            if (this.vertices[i].indegree === 0) dfs(this, i, 0);
+        }
+
+        console.log('Longest Path:');
+        // 输出最长路径
+        for(i = 0; mlp[i]; ++i) console.log(mlp.join(','));
+
+        function dfs(graph, i, len){
+            visited[i] = true;
+            path[len] = i;
+
+            // 新的最长路径
+            if(len > maxLen && !graph.vertices[i].firstArc) {
+                // 保存下来
+                for(var j = 0; j <= len; ++j) mlp[j] = path[j];
+                maxLen = len;
+            } else {
+                for(var p = graph.vertices[i].firstArc; p; p = p.nextArc){
+                    var w = p.adjVex;
+                    if(!visited[w]) dfs(graph, w, len + 1);
+                }
+            }
+
+            path[i] = 0;
+            visited[i] = false;
+        }
     }
 };
 
