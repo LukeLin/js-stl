@@ -225,7 +225,7 @@ var BinaryTree = require('../Binary tree/BinaryTree').BinaryTree;
  * @param {Array} sWeights
  * @param {Number} low
  * @param {Number} high
- */
+*/
 function secondOptimal(tree, sTable, sWeights, low, high) {
     var i = low;
     var min = Math.abs(sWeights[high] - sWeights[low]);
@@ -307,3 +307,28 @@ createSOSTree({
 .preOrderTraverse(function (value) {
         console.log('inOrder: ' + value);
     });
+
+
+/*
+动态查找
+
+当查找表以线性表的形式组织时，若对查找表进行插入、删除或排序操作，就必须移动大量的记录，当记录数很多时，这种移动的代价很大。
+利用树的形式组织查找表，可以对查找表进行动态高效的查找。
+
+
+二叉排序树(BST)的定义
+
+二叉排序树(Binary Sort Tree或Binary Search Tree) 的定义为：二叉排序树或者是空树，或者是满足下列性质的二叉树。
+    (1) ：若左子树不为空，则左子树上所有结点的值(关键字)都小于根结点的值；
+    (2) ：若右子树不为空，则右子树上所有结点的值(关键字)都大于根结点的值；
+    (3) ：左、右子树都分别是二叉排序树。
+结论：若按中序遍历一棵二叉排序树，所得到的结点序列是一个递增序列。
+
+
+BST树的查找
+1  查找思想
+首先将给定的K值与二叉排序树的根结点的关键字进行比较：若相等： 则查找成功；
+    ① 给定的K值小于BST的根结点的关键字：继续在该结点的左子树上进行查找；
+    ②   给定的K值大于BST的根结点的关键字：继续在该结点的右子树上进行查找。
+
+ */
