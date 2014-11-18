@@ -300,13 +300,13 @@ function findSW(sTable){
     return sw;
 }
 
-createSOSTree({
+var test = createSOSTree({
     elems: ['A', 'B', 'C', 'D', 'E'],
     weights: [1, 30, 2, 29, 3]
-})
-.preOrderTraverse(function (value) {
-        console.log('inOrder: ' + value);
-    });
+});
+test.preOrderTraverse(function (value) {
+    console.log('inOrder: ' + value);
+});
 
 
 /*
@@ -331,4 +331,56 @@ BST树的查找
     ① 给定的K值小于BST的根结点的关键字：继续在该结点的左子树上进行查找；
     ②   给定的K值大于BST的根结点的关键字：继续在该结点的右子树上进行查找。
 
+在随机情况下，二叉排序树的平均查找长度ASL和㏒(n)(树的深度)是等数量级的。
+
+
+BST树的插入
+
+在BST树中插入一个新结点，要保证插入后仍满足BST的性质。
+
+1 插入思想
+在BST树中插入一个新结点x时，若BST树为空，则令新结点x为插入后BST树的根结点；否则，将结点x的关键字与根结点T的关键字进行比较：
+    ① 若相等： 不需要插入；
+    ②  若x.key<T->key：结点x插入到T的左子树中；
+    ③  若x.key>T->key：结点x插入到T的右子树中。
+
  */
+
+function BSTNode(data, leftChild, rightChild){
+    BinaryTree.apply(this, arguments);
+}
+BSTNode.prototype = {
+    constructor: BSTNode,
+    __proto__: BinaryTree.prototype,
+
+    search: function(key){
+        if(this.data == null) return null;
+        else {
+            if(this.data === key) return this;
+            else if(key < this.data) {
+                if(this.leftChild) return this.search.call(this.leftChild, key);
+            }
+            else {
+                if(this.rightChild) return this.search.call(this.rightChild, key);
+            }
+        }
+    },
+
+    search_nonRecurse: function(key){
+        var p = this;
+        while(p.data !== key){
+            if(key < this.data) {
+                if(this.leftChild) p = p.leftChild;
+            } else {
+                if(this.rightChild) p = p.rightChild;
+            }
+        }
+
+        if(key === p.data) return p;
+        else return null;
+    },
+
+    insert: function(key){},
+
+    insert_nonRecurse: function(key){}
+};
