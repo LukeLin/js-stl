@@ -894,8 +894,67 @@ AdjacencyListGraph.prototype = {
             path[i] = 0;
             visited[i] = false;
         }
+    },
+
+    /**
+     * todo to be tested
+     * 输出有向无环图形式表示的逆波兰式
+     */
+    niBoLan_DAG: function(){
+        this.countIndegree();
+        var r;
+        for(var i = 0; i < this.vexnum; ++i){
+            // 找到有向无环图的根
+            if(this.indegree[i] === 0) {
+                printNiBoLan(this, r);
+                break;
+            }
+        }
+
+        return false;
+    },
+
+    /**
+     * 给有向无环图表示的表达式求值
+     */
+    evaluate_DAG: function(){
+        this.countIndegree();
+        for(var i = 0; i < this.vexnum; ++i){
+            if(!this.indegree[i]) return evaluate_imp(this, i);
+        }
     }
 };
+
+function printNiBoLan(graph, i){
+    var c = graph.vertices[i].data;
+
+    // 原子
+    if(!graph.vertices[i].firstArc) {
+        console.log('%c', c);
+    }
+    // 子表达式
+    else {
+        var p = graph.vertices[i].firstArc;
+        printNiBoLan(graph, p.adjVex);
+        printNiBoLan(graph, p.nextArc.adjVex);
+        console.log('%c', c);
+    }
+}
+
+function evaluate_imp(g, i){
+    if(/^\d+$/.test(g.vertices[i].data)) return g.vertices[i].data;
+    else {
+        var p = g.vertices[i].firstArc;
+        var v1 = evaluate_imp(g, p.adjVex);
+        var v2 = evaluate_imp(g, p.nextArc.adjVex);
+        return calculate(v1, g.vertices[i].data, v2);
+    }
+}
+
+function calculate(a, operation, b){
+    // 偷一下懒..
+    return eval(a + operation + b);
+}
 
 // 无向图的邻接表
 var adjListGraph = new AdjacencyListGraph([], 0, 7, UDG);
