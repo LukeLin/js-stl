@@ -1923,108 +1923,6 @@ console.log('minSpanTree_PRIM: ');
 console.log(udn.minSpanTree_PRIM(0));
 
 
-function locate(tree, i){
-    if(tree.data === i) return tree;
-
-    for(var r = tree.firstChild; r; r = r.nextSibling){
-        var t = locate(r, i);
-        if(t) return t;
-    }
-}
-
-// 把边(i, j)添加到孩子兄弟链表表示的树中
-function addToForest(tree, i, j){
-    var p = locate(tree, i);
-    var q = new ChildSiblingTree();
-    q.data = j;
-
-    var r;
-    if(!p) {
-        p = new ChildSiblingTree();
-        p.data = i;
-        for(r = tree; r.nextSibling; r = r.nextSibling);
-        r.nextSibling = p;
-        p.firstChild = q;
-    }
-    else if(!p.firstChild){
-        p.firstChild = q;
-    }
-    else {
-        for(r = p.firstChild; r.nextSibling; r = r.nextSibling);
-        r.nextSibling = q;
-    }
-}
-
-// bug exists
-AdjacencyListGraph.prototype.forestPrim = function(k){
-    var tree = new ChildSiblingTree();
-    tree.data = 1;
-    var closedge = [];
-
-    void function forestPrim(graph, k){
-        var p;
-        for(var i = 0; i < graph.vexnum; ++i){
-            closedge[i] = {
-                adjvex: k,
-                lowcost: Infinity
-            };
-            if(i !== k){
-                for(p = graph.vertices[i].firstArc; p; p = p.nextArc){
-                    if(p.adjVex === k) closedge[i].lowcost = p.info;
-                }
-            }
-        }
-
-        closedge[k].lowcost = 0;
-
-        for(i = 1; i < graph.vexnum; ++i){
-            var min = Infinity;
-            for (var v = 0; v < graph.vexnum; ++v) {
-                if (closedge[v].lowcost !== 0 && closedge[v].lowcost < min) {
-                    min = closedge[v].lowcost;
-                    k = v;
-                }
-            }
-
-            if(closedge[k].lowcost < Infinity){
-                addToForest(tree, closedge[k].adjvex, k);
-                closedge[k].lowcost = 0;
-                for(p = graph.vertices[k].firstArc; p; p = p.nextArc){
-                    if(p.info < closedge[p.adjVex].lowcost)
-                        closedge[p.adjVex] = {
-                            adjvex: k,
-                            lowcost: p.info
-                        };
-                }
-            } else forestPrim(graph, k);
-        }
-    }(this, k);
-
-    return tree;
-};
-
-udn = new AdjacencyListGraph([], [], 0, 7, 4);
-udn.addVertex('v1');
-udn.addVertex('v2');
-udn.addVertex('v3');
-udn.addVertex('v4');
-udn.addVertex('v5');
-udn.addVertex('v6');
-
-udn.addArc('v2', 'v1', 6);
-udn.addArc('v3', 'v1', 1);
-udn.addArc('v4', 'v1', 5);
-udn.addArc('v3', 'v2', 5);
-udn.addArc('v5', 'v2', 3);
-udn.addArc('v4', 'v3', 5);
-udn.addArc('v5', 'v3', 6);
-udn.addArc('v6', 'v3', 4);
-udn.addArc('v6', 'v4', 2);
-udn.addArc('v6', 'v5', 6);
-
-console.log('minSpanTree_PRIM: ');
-console.log(udn.forestPrim(0));
-
 
 /*
  克鲁斯卡尔(Kruskal)算法
@@ -2054,7 +1952,7 @@ AdjacencyMatrixGraph.prototype.minSpanTree_Kruskal = function () {
 };
 
 console.log('minSpanTree_Kruskal: ');
-console.log(udn.minSpanTree_Kruskal());
+//console.log(udn.minSpanTree_Kruskal());
 
 /*
  在某图中，若删除顶点V以及V相关的边后，图的一个连通分量分割为两个或两个以上的连通分量，则称顶点V为该图的一个关节点。一个没有关节点的连通图称为重连通图。
