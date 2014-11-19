@@ -894,67 +894,9 @@ AdjacencyListGraph.prototype = {
             path[i] = 0;
             visited[i] = false;
         }
-    },
-
-    /**
-     * todo to be tested
-     * 输出有向无环图形式表示的逆波兰式
-     */
-    niBoLan_DAG: function(){
-        this.countIndegree();
-        var r;
-        for(var i = 0; i < this.vexnum; ++i){
-            // 找到有向无环图的根
-            if(this.indegree[i] === 0) {
-                printNiBoLan(this, r);
-                break;
-            }
-        }
-
-        return false;
-    },
-
-    /**
-     * 给有向无环图表示的表达式求值
-     */
-    evaluate_DAG: function(){
-        this.countIndegree();
-        for(var i = 0; i < this.vexnum; ++i){
-            if(!this.indegree[i]) return evaluate_imp(this, i);
-        }
     }
 };
 
-function printNiBoLan(graph, i){
-    var c = graph.vertices[i].data;
-
-    // 原子
-    if(!graph.vertices[i].firstArc) {
-        console.log('%c', c);
-    }
-    // 子表达式
-    else {
-        var p = graph.vertices[i].firstArc;
-        printNiBoLan(graph, p.adjVex);
-        printNiBoLan(graph, p.nextArc.adjVex);
-        console.log('%c', c);
-    }
-}
-
-function evaluate_imp(g, i){
-    if(/^\d+$/.test(g.vertices[i].data)) return g.vertices[i].data;
-    else {
-        var p = g.vertices[i].firstArc;
-        var v1 = evaluate_imp(g, p.adjVex);
-        var v2 = evaluate_imp(g, p.nextArc.adjVex);
-        return calculate(v1, g.vertices[i].data, v2);
-    }
-}
-
-function calculate(a, operation, b){
-    // 偷一下懒..
-    return eval(a + operation + b);
-}
 
 // 无向图的邻接表
 var adjListGraph = new AdjacencyListGraph([], 0, 7, UDG);
@@ -2589,3 +2531,103 @@ floyd.addArc('v1', 'v2', {adj: 4});
 floyd.addArc('v2', 'v0', {adj: 5});
 
 floyd.shortestPath_FLOYD();
+
+
+/**
+ * 输出有向无环图形式表示的逆波兰式
+ */
+function niBoLan_DAG(graph){
+    graph.countIndegree();
+    for(var i = 0; i < graph.vexnum; ++i){
+        // 找到有向无环图的根
+        if(graph.vertices[i].indegree === 0) {
+            printNiBoLan(graph, i);
+            break;
+        }
+    }
+
+    return false;
+}
+
+function printNiBoLan(graph, i){
+    var c = graph.vertices[i].data;
+    var p = graph.vertices[i].firstArc;
+
+    // 子表达式
+    if(p) {
+        printNiBoLan(graph, p.adjVex);
+        printNiBoLan(graph, p.nextArc.adjVex);
+    }
+
+    console.log(c + '');
+}
+
+/**
+ * 给有向无环图表示的表达式求值
+ */
+function evaluate_DAG(graph){
+    graph.countIndegree();
+    for(var i = 0; i < graph.vexnum; ++i){
+        if(!graph.vertices[i].indegree) return evaluate_imp(graph, i);
+    }
+}
+
+function evaluate_imp(g, i){
+    if(/^\d+$/.test(g.vertices[i].data)) return g.vertices[i].data;
+    else {
+        var p = g.vertices[i].firstArc;
+        var v1 = evaluate_imp(g, p.adjVex);
+        var v2 = evaluate_imp(g, p.nextArc.adjVex);
+        return calculate(v1, g.vertices[i].data, v2);
+    }
+}
+
+function calculate(a, operation, b){
+    // 偷一下懒..
+    return eval(a + operation + b);
+}
+
+var dag = new AdjacencyListGraph([], 0, 14, DG);
+
+var a1 = new String('*');
+var a2 = new String('+');
+var a3 = new String('*');
+var a4 = new String('*');
+var a5 = new String('+');
+var a6 = new String('*');
+var a7 = new String('+');
+
+// 12
+dag.addVertex(a1);
+dag.addVertex(a2);
+dag.addVertex(a3);
+dag.addVertex(a4);
+dag.addVertex(a5);
+dag.addVertex(a6);
+dag.addVertex(a7);
+dag.addVertex(1);
+dag.addVertex(2);
+dag.addVertex(3);
+dag.addVertex(4);
+dag.addVertex(5);
+
+// 14
+dag.addArc(a2, a1);
+dag.addArc(a4, a1);
+dag.addArc(a3, a2);
+dag.addArc(a4, a2);
+dag.addArc(a5, a3);
+dag.addArc(a6, a3);
+dag.addArc(a7, a6);
+dag.addArc(a7, a4);
+dag.addArc(5, a4);
+dag.addArc(1, a5);
+dag.addArc(2, a5);
+dag.addArc(2, a6);
+dag.addArc(3, a7);
+dag.addArc(4, a7);
+
+console.log('niBoLan_DAG: ');
+// todo bug exists
+niBoLan_DAG(dag);
+console.log('evaluate_DAG: ' + evaluate_DAG(dag));  // 2695
