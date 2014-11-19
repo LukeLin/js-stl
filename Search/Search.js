@@ -1,49 +1,49 @@
 /*
-查找
+ 查找
 
-数据的组织和查找是大多数应用程序的核心，而查找是所有数据处理中最基本、最常用的操作。特别当查找的对象是一个庞大数量的数据集合中的元素时，查找的方法和效率就显得格外重要。
+ 数据的组织和查找是大多数应用程序的核心，而查找是所有数据处理中最基本、最常用的操作。特别当查找的对象是一个庞大数量的数据集合中的元素时，查找的方法和效率就显得格外重要。
 
-本章主要讨论顺序表、有序表、树表和哈希表查找的各种实现方法，以及相应查找方法在等概率情况下的平均查找长度。
+ 本章主要讨论顺序表、有序表、树表和哈希表查找的各种实现方法，以及相应查找方法在等概率情况下的平均查找长度。
 
-查找的概念
+ 查找的概念
 
-查找表(Search Table)：相同类型的数据元素(对象)组成的集合，每个元素通常由若干数据项构成。
+ 查找表(Search Table)：相同类型的数据元素(对象)组成的集合，每个元素通常由若干数据项构成。
 
-关键字(Key，码)：数据元素中某个(或几个)数据项的值，它可以标识一个数据元素。若关键字能唯一标识一个数据元素，则关键字称为主关键字；将能标识若干个数据元素的关键字称为次关键字。
+ 关键字(Key，码)：数据元素中某个(或几个)数据项的值，它可以标识一个数据元素。若关键字能唯一标识一个数据元素，则关键字称为主关键字；将能标识若干个数据元素的关键字称为次关键字。
 
-查找/检索(Searching)：根据给定的K值，在查找表中确定一个关键字等于给定值的记录或数据元素。
-◆  查找表中存在满足条件的记录：查找成功；结果：所查到的记录信息或记录在查找表中的位置。
-◆ 查找表中不存在满足条件的记录：查找失败。
+ 查找/检索(Searching)：根据给定的K值，在查找表中确定一个关键字等于给定值的记录或数据元素。
+ ◆  查找表中存在满足条件的记录：查找成功；结果：所查到的记录信息或记录在查找表中的位置。
+ ◆ 查找表中不存在满足条件的记录：查找失败。
 
-查找有两种基本形式：静态查找和动态查找。
-静态查找(Static Search)：在查找时只对数据元素进行查询或检索，查找表称为静态查找表。
-动态查找(Dynamic Search)：在实施查找的同时，插入查找表中不存在的记录，或从查找表中删除已存在的某个记录，查找表称为动态查找表。
+ 查找有两种基本形式：静态查找和动态查找。
+ 静态查找(Static Search)：在查找时只对数据元素进行查询或检索，查找表称为静态查找表。
+ 动态查找(Dynamic Search)：在实施查找的同时，插入查找表中不存在的记录，或从查找表中删除已存在的某个记录，查找表称为动态查找表。
 
-查找的对象是查找表，采用何种查找方法，首先取决于查找表的组织。查找表是记录的集合，而集合中的元素之间是一种完全松散的关系，因此，查找表是一种非常灵活的数据结构，可以用多种方式来存储。
+ 查找的对象是查找表，采用何种查找方法，首先取决于查找表的组织。查找表是记录的集合，而集合中的元素之间是一种完全松散的关系，因此，查找表是一种非常灵活的数据结构，可以用多种方式来存储。
 
-根据存储结构的不同，查找方法可分为三大类：
-①  顺序表和链表的查找：将给定的K值与查找表中记录的关键字逐个进行比较， 找到要查找的记录；
-②  散列表的查找：根据给定的K值直接访问查找表， 从而找到要查找的记录；
-③  索引查找表的查找：首先根据索引确定待查找记录所在的块 ，然后再从块中找到要查找的记录。
+ 根据存储结构的不同，查找方法可分为三大类：
+ ①  顺序表和链表的查找：将给定的K值与查找表中记录的关键字逐个进行比较， 找到要查找的记录；
+ ②  散列表的查找：根据给定的K值直接访问查找表， 从而找到要查找的记录；
+ ③  索引查找表的查找：首先根据索引确定待查找记录所在的块 ，然后再从块中找到要查找的记录。
 
-查找方法评价指标
-查找过程中主要操作是关键字的比较，查找过程中关键字的平均比较次数(平均查找长度ASL：Average Search Length)作为衡量一个查找算法效率高低的标准。
+ 查找方法评价指标
+ 查找过程中主要操作是关键字的比较，查找过程中关键字的平均比较次数(平均查找长度ASL：Average Search Length)作为衡量一个查找算法效率高低的标准。
 
  */
 
 /*
-静态查找
+ 静态查找
 
-线性表是查找表最简单的一种组织方式
+ 线性表是查找表最简单的一种组织方式
 
-顺序查找(Sequential Search)
-1  查找思想
-从表的一端开始逐个将记录的关键字和给定K值进行比较，若某个记录的关键字和给定K值相等，查找成功；否则，若扫描完整个表，仍然没有找到相应的记录，则查找失败。
+ 顺序查找(Sequential Search)
+ 1  查找思想
+ 从表的一端开始逐个将记录的关键字和给定K值进行比较，若某个记录的关键字和给定K值相等，查找成功；否则，若扫描完整个表，仍然没有找到相应的记录，则查找失败。
 
-2   算法分析
-不失一般性，设查找每个记录成功的概率相等，即Pi=1/n；查找第i个元素成功的比较次数Ci=n-i+1 ；
-◆ 查找成功时的平均查找长度ASL：(n+1)/2
-◆  包含查找不成功时：查找失败的比较次数为n+1，若成功与不成功的概率相等，对每个记录的查找概率为Pi=1/(2n)，则平均查找长度ASL：3(n+1)/4
+ 2   算法分析
+ 不失一般性，设查找每个记录成功的概率相等，即Pi=1/n；查找第i个元素成功的比较次数Ci=n-i+1 ；
+ ◆ 查找成功时的平均查找长度ASL：(n+1)/2
+ ◆  包含查找不成功时：查找失败的比较次数为n+1，若成功与不成功的概率相等，对每个记录的查找概率为Pi=1/(2n)，则平均查找长度ASL：3(n+1)/4
  */
 
 function sequentialSearch(sTable, key) {
@@ -58,31 +58,31 @@ console.log(sequentialSearch([1, 2, 3, 4, 5], 6));  // -1
 
 
 /*
-折半查找(Binary Search)
+ 折半查找(Binary Search)
 
-折半查找又称为二分查找，是一种效率较高的查找方法。
-前提条件：查找表中的所有记录是按关键字有序(升序或降序) 。
-查找过程中，先确定待查找记录在表中的范围，然后逐步缩小范围(每次将待查记录所在区间缩小一半)，直到找到或找不到记录为止。
+ 折半查找又称为二分查找，是一种效率较高的查找方法。
+ 前提条件：查找表中的所有记录是按关键字有序(升序或降序) 。
+ 查找过程中，先确定待查找记录在表中的范围，然后逐步缩小范围(每次将待查记录所在区间缩小一半)，直到找到或找不到记录为止。
 
-1  查找思想
-用Low、High和Mid表示待查找区间的下界、上界和中间位置指针，初值为Low=1，High=n。
-⑴   取中间位置Mid：Mid=Math.floor((Low+High)/2)；
-⑵   比较中间位置记录的关键字与给定的K值：
-    ①  相等： 查找成功；
-    ②  大于：待查记录在区间的前半段，修改上界指针： High=Mid-1，转⑴ ；
-    ③  小于：待查记录在区间的后半段，修改下界指针：Low=Mid+1，转⑴ ；
-直到越界(Low>High)，查找失败。
+ 1  查找思想
+ 用Low、High和Mid表示待查找区间的下界、上界和中间位置指针，初值为Low=1，High=n。
+ ⑴   取中间位置Mid：Mid=Math.floor((Low+High)/2)；
+ ⑵   比较中间位置记录的关键字与给定的K值：
+ ①  相等： 查找成功；
+ ②  大于：待查记录在区间的前半段，修改上界指针： High=Mid-1，转⑴ ；
+ ③  小于：待查记录在区间的后半段，修改下界指针：Low=Mid+1，转⑴ ；
+ 直到越界(Low>High)，查找失败。
 
-2  算法分析
-①  查找时每经过一次比较，查找范围就缩小一半，该过程可用一棵二叉树表示：
-    ◆  根结点就是第一次进行比较的中间位置的记录；
-    ◆ 排在中间位置前面的作为左子树的结点；
-    ◆ 排在中间位置后面的作为右子树的结点；
-    对各子树来说都是相同的。这样所得到的二叉树称为判定树(Decision Tree)。
-②  将二叉判定树的第Math.floor(㏒2n)+1层上的结点补齐就成为一棵满二叉树，深度不变，h= Math.floor(㏒2(n+1)) 。
-③  由满二叉树性质知，第i 层上的结点数为2i-1(i≤h) ，设表中每个记录的查找概率相等，即Pi=1/n，查找成功时的平均查找长度ASL：
-    (n+1)/n*㏒2(n+1)-1
-    当n很大 (n>50)时， ASL≈ ㏒2(n+1)-1。
+ 2  算法分析
+ ①  查找时每经过一次比较，查找范围就缩小一半，该过程可用一棵二叉树表示：
+ ◆  根结点就是第一次进行比较的中间位置的记录；
+ ◆ 排在中间位置前面的作为左子树的结点；
+ ◆ 排在中间位置后面的作为右子树的结点；
+ 对各子树来说都是相同的。这样所得到的二叉树称为判定树(Decision Tree)。
+ ②  将二叉判定树的第Math.floor(㏒2n)+1层上的结点补齐就成为一棵满二叉树，深度不变，h= Math.floor(㏒2(n+1)) 。
+ ③  由满二叉树性质知，第i 层上的结点数为2i-1(i≤h) ，设表中每个记录的查找概率相等，即Pi=1/n，查找成功时的平均查找长度ASL：
+ (n+1)/n*㏒2(n+1)-1
+ 当n很大 (n>50)时， ASL≈ ㏒2(n+1)-1。
 
  */
 
@@ -124,23 +124,23 @@ console.log(binarySearchRecursive([1, 2, 3, 4, 5], 6)); // -1
 
 
 /*
-Fibonacci查找
+ Fibonacci查找
 
-Fibonacci查找方法是根据Fibonacci数列的特点对查找表进行分割。Fibonacci数列的定义是：
-        F(0)=0，F(1)=1，F(j)=F(j-1)+F(j-2) 。
+ Fibonacci查找方法是根据Fibonacci数列的特点对查找表进行分割。Fibonacci数列的定义是：
+ F(0)=0，F(1)=1，F(j)=F(j-1)+F(j-2) 。
 
-1  查找思想
-设查找表中的记录数比某个Fibonacci数小1，即设n=F(j)-1。用Low、High和Mid表示待查找区间的下界、上界和分割位置，初值为Low=0，High=n - 1。
-    ⑴   取分割位置Mid：Mid=F(j-1) ；
-    ⑵   比较分割位置记录的关键字与给定的K值：
-        ① 相等： 查找成功；
-        ②  大于：待查记录在区间的前半段(区间长度为F(j-1)-1)，修改上界指针： High=Mid-1，转⑴ ；
-        ③  小于：待查记录在区间的后半段(区间长度为F(j-2)-1)，修改下界指针：Low=Mid+1，转⑴ ；直到越界(Low>High)，查找失败。
+ 1  查找思想
+ 设查找表中的记录数比某个Fibonacci数小1，即设n=F(j)-1。用Low、High和Mid表示待查找区间的下界、上界和分割位置，初值为Low=0，High=n - 1。
+ ⑴   取分割位置Mid：Mid=F(j-1) ；
+ ⑵   比较分割位置记录的关键字与给定的K值：
+ ① 相等： 查找成功；
+ ②  大于：待查记录在区间的前半段(区间长度为F(j-1)-1)，修改上界指针： High=Mid-1，转⑴ ；
+ ③  小于：待查记录在区间的后半段(区间长度为F(j-2)-1)，修改下界指针：Low=Mid+1，转⑴ ；直到越界(Low>High)，查找失败。
 
-2  算法实现
-在算法实现时，为了避免频繁计算Fibonacci数，可用两个变量f1和f2保存当前相邻的两个Fibonacci数，这样在以后的计算中可以依次递推计算出。
+ 2  算法实现
+ 在算法实现时，为了避免频繁计算Fibonacci数，可用两个变量f1和f2保存当前相邻的两个Fibonacci数，这样在以后的计算中可以依次递推计算出。
 
-由算法知，Fibonacci查找在最坏情况下性能比折半查找差，但折半查找要求记录按关键字有序；Fibonacci查找的优点是分割时只需进行加、减运算。
+ 由算法知，Fibonacci查找在最坏情况下性能比折半查找差，但折半查找要求记录按关键字有序；Fibonacci查找的优点是分割时只需进行加、减运算。
 
  */
 
@@ -194,27 +194,27 @@ console.log(fibonacciSearch([1, 2, 3, 4, 5], 6)); // -1
 
 
 /*
-静态次优查找树
+ 静态次优查找树
 
-适合各记录的查找概率不等的情况
+ 适合各记录的查找概率不等的情况
 
-查找效率最高即平均查找长度最小，根据前面所学知识，我们可以给出有序表在非等概率情况下应遵循的两个原则：
+ 查找效率最高即平均查找长度最小，根据前面所学知识，我们可以给出有序表在非等概率情况下应遵循的两个原则：
 
-1、最先访问的结点应是访问概率最大的结点；
+ 1、最先访问的结点应是访问概率最大的结点；
 
-2、每次访问应使结点两边尚未访问的结点的被访概率之和尽可能相等。
-
-
-这两个原则可用一句话来表示，即判定树为带权内路径长度之和最小的二叉树，亦即：PH = ∑wihi  最小，其中 n 为有序表长度，hi 为第 i 个结点在判定树上的层次数，wi = cpi，c 为某个常数，pi 为第 i 个结点的查找概率。
+ 2、每次访问应使结点两边尚未访问的结点的被访概率之和尽可能相等。
 
 
-        这样的树称为静态最优查找树（static optimal search tree），构造这样一棵树的时间代价太大，亦即时间复杂度很大，因此我们通常是构造次优查找树（nearly optimal search tree），构造它的时间代价远远低于构造最优查找树，但查找性能只比最优查找树差1%~2%，很少差3%以上。
+ 这两个原则可用一句话来表示，即判定树为带权内路径长度之和最小的二叉树，亦即：PH = ∑wihi  最小，其中 n 为有序表长度，hi 为第 i 个结点在判定树上的层次数，wi = cpi，c 为某个常数，pi 为第 i 个结点的查找概率。
 
-次优查找树的构造：
 
-        设有序表每个记录的权值为 wl,wl+1,…,wh，第一个应访问的结点号为 i ，则有：
-Δpi =   ∑wj - ∑wj   最小，即 Δpi = Min {Δpj }
-再分别对 {rl,rl+1,…,ri-1} 和 {ri+1,ri+2,…,rh} 分别构造次优查找树
+ 这样的树称为静态最优查找树（static optimal search tree），构造这样一棵树的时间代价太大，亦即时间复杂度很大，因此我们通常是构造次优查找树（nearly optimal search tree），构造它的时间代价远远低于构造最优查找树，但查找性能只比最优查找树差1%~2%，很少差3%以上。
+
+ 次优查找树的构造：
+
+ 设有序表每个记录的权值为 wl,wl+1,…,wh，第一个应访问的结点号为 i ，则有：
+ Δpi =   ∑wj - ∑wj   最小，即 Δpi = Min {Δpj }
+ 再分别对 {rl,rl+1,…,ri-1} 和 {ri+1,ri+2,…,rh} 分别构造次优查找树
  */
 var BinaryTree = require('../Binary tree/BinaryTree').BinaryTree;
 
@@ -225,7 +225,7 @@ var BinaryTree = require('../Binary tree/BinaryTree').BinaryTree;
  * @param {Array} sWeights
  * @param {Number} low
  * @param {Number} high
-*/
+ */
 function secondOptimal(tree, sTable, sWeights, low, high) {
     var i = low;
     var min = Math.abs(sWeights[high] - sWeights[low]);
@@ -242,13 +242,13 @@ function secondOptimal(tree, sTable, sWeights, low, high) {
 
     // 调整树根权，选择邻近权值较大的关键字 todo 代码应该更简
     var a = 0, b, c = 0;
-    if(i - 1 >= low)  b = sWeights[i] - sWeights[i - 1];
-    if(i - 2 >= low) a = sWeights[i - 1] - sWeights[i - 2];
-    if(i + 1 < high) c = sWeights[i + 1] - sWeights[i];
-    if(typeof b === 'number') {
-        if(a > c && a > b) {
+    if (i - 1 >= low)  b = sWeights[i] - sWeights[i - 1];
+    if (i - 2 >= low) a = sWeights[i - 1] - sWeights[i - 2];
+    if (i + 1 < high) c = sWeights[i + 1] - sWeights[i];
+    if (typeof b === 'number') {
+        if (a > c && a > b) {
             --i;
-        } else if(a < c && c > b) {
+        } else if (a < c && c > b) {
             ++i;
         }
     }
@@ -277,9 +277,9 @@ console.log(tree);
  * 由有序表构造一棵次优查找树
  * @param {Object} obj 有序表，数据元素含有权域weight
  */
-function createSOSTree(obj){
+function createSOSTree(obj) {
     var tree;
-    if(obj.elems.length === 0) tree = null;
+    if (obj.elems.length === 0) tree = null;
     else {
         // 求累计权值表
         var sw = findSW(obj.weights);
@@ -290,10 +290,10 @@ function createSOSTree(obj){
     return tree;
 }
 
-function findSW(sTable){
+function findSW(sTable) {
     var sw = [sTable[0]];
 
-    for(var i = 1; i < sTable.length; ++i){
+    for (var i = 1; i < sTable.length; ++i) {
         sw[i] = sw[i - 1] + sTable[i];
     }
 
@@ -310,77 +310,122 @@ test.preOrderTraverse(function (value) {
 
 
 /*
-动态查找
+ 动态查找
 
-当查找表以线性表的形式组织时，若对查找表进行插入、删除或排序操作，就必须移动大量的记录，当记录数很多时，这种移动的代价很大。
-利用树的形式组织查找表，可以对查找表进行动态高效的查找。
-
-
-二叉排序树(BST)的定义
-
-二叉排序树(Binary Sort Tree或Binary Search Tree) 的定义为：二叉排序树或者是空树，或者是满足下列性质的二叉树。
-    (1) ：若左子树不为空，则左子树上所有结点的值(关键字)都小于根结点的值；
-    (2) ：若右子树不为空，则右子树上所有结点的值(关键字)都大于根结点的值；
-    (3) ：左、右子树都分别是二叉排序树。
-结论：若按中序遍历一棵二叉排序树，所得到的结点序列是一个递增序列。
+ 当查找表以线性表的形式组织时，若对查找表进行插入、删除或排序操作，就必须移动大量的记录，当记录数很多时，这种移动的代价很大。
+ 利用树的形式组织查找表，可以对查找表进行动态高效的查找。
 
 
-BST树的查找
-1  查找思想
-首先将给定的K值与二叉排序树的根结点的关键字进行比较：若相等： 则查找成功；
-    ① 给定的K值小于BST的根结点的关键字：继续在该结点的左子树上进行查找；
-    ②   给定的K值大于BST的根结点的关键字：继续在该结点的右子树上进行查找。
+ 二叉排序树(BST)的定义
 
-在随机情况下，二叉排序树的平均查找长度ASL和㏒(n)(树的深度)是等数量级的。
+ 二叉排序树(Binary Sort Tree或Binary Search Tree) 的定义为：二叉排序树或者是空树，或者是满足下列性质的二叉树。
+ (1) ：若左子树不为空，则左子树上所有结点的值(关键字)都小于根结点的值；
+ (2) ：若右子树不为空，则右子树上所有结点的值(关键字)都大于根结点的值；
+ (3) ：左、右子树都分别是二叉排序树。
+ 结论：若按中序遍历一棵二叉排序树，所得到的结点序列是一个递增序列。
 
 
-BST树的插入
+ BST树的查找
+ 1  查找思想
+ 首先将给定的K值与二叉排序树的根结点的关键字进行比较：若相等： 则查找成功；
+ ① 给定的K值小于BST的根结点的关键字：继续在该结点的左子树上进行查找；
+ ②   给定的K值大于BST的根结点的关键字：继续在该结点的右子树上进行查找。
 
-在BST树中插入一个新结点，要保证插入后仍满足BST的性质。
+ 在随机情况下，二叉排序树的平均查找长度ASL和㏒(n)(树的深度)是等数量级的。
 
-1 插入思想
-在BST树中插入一个新结点x时，若BST树为空，则令新结点x为插入后BST树的根结点；否则，将结点x的关键字与根结点T的关键字进行比较：
-    ① 若相等： 不需要插入；
-    ②  若x.key<T->key：结点x插入到T的左子树中；
-    ③  若x.key>T->key：结点x插入到T的右子树中。
+
+ BST树的插入
+
+ 在BST树中插入一个新结点，要保证插入后仍满足BST的性质。
+
+ 1 插入思想
+ 在BST树中插入一个新结点x时，若BST树为空，则令新结点x为插入后BST树的根结点；否则，将结点x的关键字与根结点T的关键字进行比较：
+ ① 若相等： 不需要插入；
+ ②  若x.key<T->key：结点x插入到T的左子树中；
+ ③  若x.key>T->key：结点x插入到T的右子树中。
+
+ 由结论知，对于一个无序序列可以通过构造一棵BST树而变成一个有序序列。
+ 由算法知，每次插入的新结点都是BST树的叶子结点，即在插入时不必移动其它结点，仅需修改某个结点的指针。
 
  */
 
-function BSTNode(data, leftChild, rightChild){
+function BSTNode(data, leftChild, rightChild) {
     BinaryTree.apply(this, arguments);
 }
 BSTNode.prototype = {
     constructor: BSTNode,
     __proto__: BinaryTree.prototype,
 
-    search: function(key){
-        if(this.data == null) return null;
+    /**
+     * BST树的查找（递归）
+     * @param {*} key
+     * @returns {*}
+     */
+    search: function (key) {
+        if (this.data === key) return this;
+        else if (key < this.data) {
+            if (this.leftChild) return this.search.call(this.leftChild, key);
+        }
         else {
-            if(this.data === key) return this;
-            else if(key < this.data) {
-                if(this.leftChild) return this.search.call(this.leftChild, key);
-            }
-            else {
-                if(this.rightChild) return this.search.call(this.rightChild, key);
-            }
+            if (this.rightChild) return this.search.call(this.rightChild, key);
         }
     },
 
-    search_nonRecurse: function(key){
+    /**
+     * BST树的查找（非递归）
+     * @param {*} key
+     * @returns {*}
+     */
+    search_nonRecurse: function (key) {
         var p = this;
-        while(p.data !== key){
-            if(key < this.data) {
-                if(this.leftChild) p = p.leftChild;
+        while (p.data !== key) {
+            if (key < this.data) {
+                if (this.leftChild) p = p.leftChild;
             } else {
-                if(this.rightChild) p = p.rightChild;
+                if (this.rightChild) p = p.rightChild;
             }
         }
 
-        if(key === p.data) return p;
+        if (key === p.data) return p;
         else return null;
     },
 
-    insert: function(key){},
+    /**
+     * BST树的插入（递归）
+     * @param {*} key
+     */
+    insert: function (key) {
+        var node = new BSTNode(key, null, null);
 
-    insert_nonRecurse: function(key){}
+        if (key === this.data) return;
+        else if (key < this.data) {
+            if (!this.leftChild) this.leftChild = node;
+            this.insert.call(this.leftChild, key);
+        } else {
+            if (!this.rightChild) this.rightChild = node;
+            this.insert.call(this.rightChild, key);
+        }
+    },
+
+    /**
+     * BST树的插入（非递归）
+     * @param {*} key
+     */
+    insert_nonRecurse: function (key) {
+        var node = new BSTNode(key);
+
+        var p = this;
+        var q;
+        while(p){
+            if(p.data === key) return;
+            // q作为p的父节点
+            q = p;
+            if(key < p.data) p = p.leftChild;
+            else p = p.rightChild;
+        }
+
+        if(key < q.data) q.leftChild = node;
+        else q.rightChild = node;
+    }
 };
+
