@@ -362,16 +362,17 @@ BSTNode.prototype = {
      * @returns {*}
      */
     search: function (key) {
-        if(this.data == null) return null;
-        else if (this.data === key) return this;
-        else if (key < this.data) {
-            if (this.leftChild) return this.search.call(this.leftChild, key);
-            else return null;
+        if(this.data != null) {
+            if (this.data === key) return this;
+            else if (key < this.data) {
+                if (this.leftChild) return this.search.call(this.leftChild, key);
+            }
+            else {
+                if (this.rightChild) return this.search.call(this.rightChild, key);
+            }
         }
-        else {
-            if (this.rightChild) return this.search.call(this.rightChild, key);
-            else return null;
-        }
+
+        return null;
     },
 
     /**
