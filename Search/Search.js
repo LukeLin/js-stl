@@ -362,12 +362,15 @@ BSTNode.prototype = {
      * @returns {*}
      */
     search: function (key) {
-        if (this.data === key) return this;
+        if(this.data == null) return null;
+        else if (this.data === key) return this;
         else if (key < this.data) {
             if (this.leftChild) return this.search.call(this.leftChild, key);
+            else return null;
         }
         else {
             if (this.rightChild) return this.search.call(this.rightChild, key);
+            else return null;
         }
     },
 
@@ -377,17 +380,16 @@ BSTNode.prototype = {
      * @returns {*}
      */
     search_nonRecurse: function (key) {
+        if(this.data == null) return null;
+
         var p = this;
-        while (p.data !== key) {
-            if (key < this.data) {
-                if (this.leftChild) p = p.leftChild;
-            } else {
-                if (this.rightChild) p = p.rightChild;
-            }
+        while (p && p.data !== key) {
+            if (key < p.data) p = p.leftChild;
+            else p = p.rightChild;
         }
 
-        if (key === p.data) return p;
-        else return null;
+        if(!p || key !== p.data) return null;
+        else return p;
     },
 
     /**
@@ -397,13 +399,16 @@ BSTNode.prototype = {
     insert: function (key) {
         var node = new BSTNode(key, null, null);
 
-        if (key === this.data) return;
-        else if (key < this.data) {
-            if (!this.leftChild) this.leftChild = node;
-            this.insert.call(this.leftChild, key);
-        } else {
-            if (!this.rightChild) this.rightChild = node;
-            this.insert.call(this.rightChild, key);
+        if(this.data == null) this.data = key;
+        else {
+            if (key === this.data) return;
+            else if (key < this.data) {
+                if (!this.leftChild) this.leftChild = node;
+                this.insert.call(this.leftChild, key);
+            } else {
+                if (!this.rightChild) this.rightChild = node;
+                this.insert.call(this.rightChild, key);
+            }
         }
     },
 
@@ -414,18 +419,49 @@ BSTNode.prototype = {
     insert_nonRecurse: function (key) {
         var node = new BSTNode(key);
 
-        var p = this;
-        var q;
-        while(p){
-            if(p.data === key) return;
-            // q作为p的父节点
-            q = p;
-            if(key < p.data) p = p.leftChild;
-            else p = p.rightChild;
+        if(this.data == null) this.data = key;
+        else {
+            var p = this;
+            var q;
+            while(p){
+                if(p.data === key) return;
+                // q作为p的父节点
+                q = p;
+                if(key < p.data) p = p.leftChild;
+                else p = p.rightChild;
+            }
+
+            if(key < q.data) q.leftChild = node;
+            else q.rightChild = node;
+        }
+    },
+
+    /**
+     * 利用BST树的插入操作建立一棵BST树
+     * @param {Array} arr
+     * @param {Boolean|undefined} useNonRecurse 是否使用非递归
+     */
+    createBST: function(arr, useNonRecurse){
+        if(useNonRecurse) {
+            for(var i = 0; i < arr.length; ++i){
+                this.insert_nonRecurse(arr[i]);
+            }
+        } else {
+            for(var i = 0; i < arr.length; ++i){
+                this.insert(arr[i]);
+            }
         }
 
-        if(key < q.data) q.leftChild = node;
-        else q.rightChild = node;
+        return this;
     }
 };
 
+var bst = new BSTNode();
+bst.createBST([45, 24, 53, 45, 12, 24, 90]);
+console.log(bst.search(12));
+console.log(bst.search(13));
+
+var bst2 = new BSTNode();
+bst2.createBST([45, 24, 53, 45, 12, 24, 90], true);
+console.log(bst2.search_nonRecurse(12));
+console.log(bst2.search_nonRecurse(13));
