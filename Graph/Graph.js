@@ -2149,6 +2149,7 @@ function calculate(a, operation, b){
     return eval(a + operation + b);
 }
 
+// ((1 + 2) * (2 * (3 + 4)) + (3 + 4) * 5) * ((3 + 4) * 5)
 var dag = new AdjacencyListGraph([], 0, 14, DG);
 
 var a1 = new String('*');
@@ -2190,6 +2191,5 @@ dag.addArc(3, a7);
 dag.addArc(4, a7);
 
 console.log('niBoLan_DAG: ');
-// todo bug exists
 niBoLan_DAG(dag);
 console.log('evaluate_DAG: ' + evaluate_DAG(dag));  // 2695
