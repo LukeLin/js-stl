@@ -443,19 +443,65 @@ BSTNode.prototype = {
      * @param {Boolean|undefined} useNonRecurse 是否使用非递归
      */
     createBST: function(arr, useNonRecurse){
+        var i;
         if(useNonRecurse) {
-            for(var i = 0; i < arr.length; ++i){
+            for(i = 0; i < arr.length; ++i){
                 this.insert_nonRecurse(arr[i]);
             }
         } else {
-            for(var i = 0; i < arr.length; ++i){
+            for(i = 0; i < arr.length; ++i){
                 this.insert(arr[i]);
             }
         }
 
         return this;
+    },
+
+    'delete': function deleteBST(key){
+        if(this.data == null) return false;
+        else {
+            if(this.data === key) return deleteNode(this);
+            else if(key < this.data) {
+                if(this.leftChild) return deleteBST.call(this.leftChild, key);
+            } else {
+                if(this.rightChild) return deleteBST.call(this.rightChild, key);
+            }
+        }
+
+        return false;
     }
 };
+
+function deleteNode(p){
+    var parent = p.parentNode;
+    if(!parent) {
+        p.data = null;
+        return true;
+    }
+
+    var pos = parent.leftChild == p ? 'leftChild' : 'rightChild';
+
+    if(!p.leftChild && !p.rightChild) {
+        parent[pos] = null;
+    } else if(!p.rightChild) {
+        parent[pos] = p.leftChild;
+    } else if(!p.leftChild) {
+        parent[pos] = p.rightChild;
+    } else {
+        var s = p.leftChild;
+        var q = p;
+        while(s.rightChild) {
+            q = s;
+            s = s.rightChild;
+        }
+
+        p.data = s.data;
+        if(q != p) q.rightChild = s.leftChild;
+        else q.leftChild = s.leftChild;
+    }
+
+    return true;
+}
 
 var bst = new BSTNode();
 bst.createBST([45, 24, 53, 45, 12, 24, 90]);
@@ -466,3 +512,10 @@ var bst2 = new BSTNode();
 bst2.createBST([45, 24, 53, 45, 12, 24, 90], true);
 console.log(bst2.search_nonRecurse(12));
 console.log(bst2.search_nonRecurse(13));
+
+// todo bugs exist
+console.log(bst.delete(45));
+console.log(bst2.delete(90));
+console.log(bst.delete(1));
+console.log(bst.delete(53));
+console.log(bst2.delete(45));
