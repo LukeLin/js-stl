@@ -455,36 +455,64 @@ BSTNode.prototype = {
         return this;
     },
 
+    /**
+     * 使用递归的方法删除与关键字符合的结点
+     * @param {*} key 需要查找的关键字
+     * @param {BSTNode} parent 父节点，内部调用需要用到
+     * @returns {Boolean}
+     */
     'delete': function deleteBST(key, parent){
+        // 空结点的情况
         if(this.data == null) return false;
         else {
+            // 找到关键字
             if(this.data === key) return deleteNode(this, parent);
+            // 查找左子树，如果有的话
             else if(key < this.data) {
                 if(this.leftChild) return deleteBST.call(this.leftChild, key, this);
-            } else {
+            }
+            // 查找右子树，如果有的话
+            else {
                 if(this.rightChild) return deleteBST.call(this.rightChild, key, this);
             }
         }
 
+        // 未找到
         return false;
     }
 };
 
+/**
+ * 删除结点
+ * @param {BSTNode} p 要删除的结点
+ * @param {BSTNode} parent 要删除的结点的父节点
+ * @returns {boolean} 返回删除成功
+ */
 function deleteNode(p, parent){
+    // 当前结点是其父结点的左子树还是右子树
     var pos = parent && parent.leftChild == p ? 'leftChild' : 'rightChild';
+    // 叶子结点或只有一个结点
     if(!p.leftChild && !p.rightChild) {
         if(parent) parent[pos] = null;
         // 只有一个结点的情况
         else  p.data = null;
-    } else if(!p.rightChild) {
+    } 
+    // 只有左子树
+    else if(!p.rightChild) {
         p.data = p.leftChild.data;
         p.leftChild = p.leftChild.leftChild;
-    } else if(!p.leftChild) {
+    }
+    // 只有右子树
+    else if(!p.leftChild) {
         p.data = p.rightChild.data;
         p.rightChild = p.rightChild.rightChild;
-    } else {
+    }
+    // 左右子树都有
+    else {
         var s = p.leftChild;
+        // q为父结点
         var q = p;
+        // 找到左子树的最大右子树，即仅小于左子树的值的结点
         while(s.rightChild) {
             q = s;
             s = s.rightChild;
