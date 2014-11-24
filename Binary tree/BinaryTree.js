@@ -89,11 +89,13 @@ var Stack = require('../Stack/stack');
 var Queue = require('../Queue/Queue').Queue;
 
 // 链式存储结构
-function BinaryTree(data, leftChild, rightChild) {
+function BinaryTree(data, leftChild, rightChild, parentNode) {
     this.data = data || null;
     // 左右孩子结点
     this.leftChild = leftChild || null;
     this.rightChild = rightChild || null;
+    // 父结点
+    this.parentNode = parentNode || null;
 }
 exports.BinaryTree = BinaryTree;
 BinaryTree.prototype = {
@@ -108,8 +110,17 @@ BinaryTree.prototype = {
         void function preOrderTraverse(node, x, visit) {
             visit(node, tree[x]);
 
-            if (tree[2 * x + 1]) preOrderTraverse(node.leftChild = new BinaryTree(), 2 * x + 1, visit);
-            if (tree[2 * x + 2]) preOrderTraverse(node.rightChild = new BinaryTree(), 2 * x + 2, visit);
+            var p;
+            if (tree[2 * x + 1]) {
+                p = node.leftChild = new BinaryTree();
+                preOrderTraverse(p, 2 * x + 1, visit);
+            }
+            if (tree[2 * x + 2]) {
+                p = node.rightChild = new BinaryTree();
+                preOrderTraverse(p, 2 * x + 2, visit);
+            }
+
+            if(p) p.parentNode = node;
         }(this, 0, function (node, value) {
             node.data = value;
         });
@@ -340,10 +351,8 @@ BinaryTree.prototype = {
     },
     // 求二叉树中结点p和q的最近祖先
     findNearAncient: function (pNode, qNode) {
-        var pathP = [];
-        var pathQ = [];
-        findPath(this, pNode, pathP, 0);
-        findPath(this, qNode, pathQ, 0);
+        var pathP = findPath(this, pNode, 0);
+        var pathQ = findPath(this, qNode, 0);
 
         for (var i = 0; pathP[i] == pathQ[i] && pathP[i]; i++);
         return pathP[--i];
@@ -443,7 +452,9 @@ BinaryTree.isFullBinaryTree = function (tree) {
 };
 
 // 求从tree到node结点路径的递归算法
-function findPath(tree, node, path, i) {
+function findPath(tree, node, i) {
+    var path = [];
+    i = i || 0;
     var found = false;
 
     void function recurse(tree, i) {
@@ -457,6 +468,8 @@ function findPath(tree, node, path, i) {
         if (tree.rightChild && !found) recurse(tree.rightChild, i + 1);
         if (!found) path[i] = null;
     }(tree, i);
+
+    return path;
 }
 
 var global = Function('return this;')();
