@@ -404,14 +404,10 @@ BSTNode.prototype = {
         else {
             if (key === this.data) return;
             else if (key < this.data) {
-                if (!this.leftChild) {
-                    this.leftChild = node;
-                }
+                if (!this.leftChild) this.leftChild = node;
                 this.insert.call(this.leftChild, key);
             } else {
-                if (!this.rightChild) {
-                    this.rightChild = node;
-                }
+                if (!this.rightChild) this.rightChild = node;
                 this.insert.call(this.rightChild, key);
             }
         }
@@ -449,13 +445,11 @@ BSTNode.prototype = {
     createBST: function(arr, useNonRecurse){
         var i;
         if(useNonRecurse) {
-            for(i = 0; i < arr.length; ++i){
+            for(i = 0; i < arr.length; ++i)
                 this.insert_nonRecurse(arr[i]);
-            }
         } else {
-            for(i = 0; i < arr.length; ++i){
+            for(i = 0; i < arr.length; ++i)
                 this.insert(arr[i]);
-            }
         }
 
         return this;
