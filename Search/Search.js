@@ -362,7 +362,7 @@ BSTNode.prototype = {
      * @returns {*}
      */
     search: function (key) {
-        if(this.data != null) {
+        if (this.data != null) {
             if (this.data === key) return this;
             else if (key < this.data) {
                 if (this.leftChild) return this.search.call(this.leftChild, key);
@@ -381,7 +381,7 @@ BSTNode.prototype = {
      * @returns {*}
      */
     search_nonRecurse: function (key) {
-        if(this.data == null) return null;
+        if (this.data == null) return null;
 
         var p = this;
         while (p && p.data !== key) {
@@ -389,7 +389,7 @@ BSTNode.prototype = {
             else p = p.rightChild;
         }
 
-        if(!p || key !== p.data) return null;
+        if (!p || key !== p.data) return null;
         else return p;
     },
 
@@ -400,7 +400,7 @@ BSTNode.prototype = {
     insert: function (key) {
         var node = new BSTNode(key, null, null);
 
-        if(this.data == null) this.data = key;
+        if (this.data == null) this.data = key;
         else {
             if (key === this.data) return;
             else if (key < this.data) {
@@ -420,19 +420,19 @@ BSTNode.prototype = {
     insert_nonRecurse: function (key) {
         var node = new BSTNode(key);
 
-        if(this.data == null) this.data = key;
+        if (this.data == null) this.data = key;
         else {
             var p = this;
             var q;
-            while(p){
-                if(p.data === key) return;
+            while (p) {
+                if (p.data === key) return;
                 // q作为p的父节点
                 q = p;
-                if(key < p.data) p = p.leftChild;
+                if (key < p.data) p = p.leftChild;
                 else p = p.rightChild;
             }
 
-            if(key < q.data) q.leftChild = node;
+            if (key < q.data) q.leftChild = node;
             else q.rightChild = node;
         }
     },
@@ -442,13 +442,13 @@ BSTNode.prototype = {
      * @param {Array} arr
      * @param {Boolean|undefined} useNonRecurse 是否使用非递归
      */
-    createBST: function(arr, useNonRecurse){
+    createBST: function (arr, useNonRecurse) {
         var i;
-        if(useNonRecurse) {
-            for(i = 0; i < arr.length; ++i)
+        if (useNonRecurse) {
+            for (i = 0; i < arr.length; ++i)
                 this.insert_nonRecurse(arr[i]);
         } else {
-            for(i = 0; i < arr.length; ++i)
+            for (i = 0; i < arr.length; ++i)
                 this.insert(arr[i]);
         }
 
@@ -461,19 +461,19 @@ BSTNode.prototype = {
      * @param {BSTNode} parent 父节点，内部调用需要用到
      * @returns {Boolean}
      */
-    'delete': function deleteBST(key, parent){
+    'delete': function deleteBST(key, parent) {
         // 空结点的情况
-        if(this.data == null) return false;
+        if (this.data == null) return false;
         else {
             // 找到关键字
-            if(this.data === key) return deleteNode(this, parent);
+            if (this.data === key) return deleteNode(this, parent);
             // 查找左子树，如果有的话
-            else if(key < this.data) {
-                if(this.leftChild) return deleteBST.call(this.leftChild, key, this);
+            else if (key < this.data) {
+                if (this.leftChild) return deleteBST.call(this.leftChild, key, this);
             }
             // 查找右子树，如果有的话
             else {
-                if(this.rightChild) return deleteBST.call(this.rightChild, key, this);
+                if (this.rightChild) return deleteBST.call(this.rightChild, key, this);
             }
         }
 
@@ -488,22 +488,22 @@ BSTNode.prototype = {
  * @param {BSTNode} parent 要删除的结点的父节点
  * @returns {boolean} 返回删除成功
  */
-function deleteNode(p, parent){
+function deleteNode(p, parent) {
     // 当前结点是其父结点的左子树还是右子树
     var pos = parent && parent.leftChild == p ? 'leftChild' : 'rightChild';
     // 叶子结点或只有一个结点
-    if(!p.leftChild && !p.rightChild) {
-        if(parent) parent[pos] = null;
+    if (!p.leftChild && !p.rightChild) {
+        if (parent) parent[pos] = null;
         // 只有一个结点的情况
         else  p.data = null;
-    } 
+    }
     // 只有左子树
-    else if(!p.rightChild) {
+    else if (!p.rightChild) {
         p.data = p.leftChild.data;
         p.leftChild = p.leftChild.leftChild;
     }
     // 只有右子树
-    else if(!p.leftChild) {
+    else if (!p.leftChild) {
         p.data = p.rightChild.data;
         p.rightChild = p.rightChild.rightChild;
     }
@@ -513,13 +513,13 @@ function deleteNode(p, parent){
         // q为父结点
         var q = p;
         // 找到左子树的最大右子树，即仅小于左子树的值的结点
-        while(s.rightChild) {
+        while (s.rightChild) {
             q = s;
             s = s.rightChild;
         }
 
         p.data = s.data;
-        if(q != p) q.rightChild = s.leftChild;
+        if (q != p) q.rightChild = s.leftChild;
         else q.leftChild = s.leftChild;
     }
 
