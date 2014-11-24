@@ -89,13 +89,11 @@ var Stack = require('../Stack/stack');
 var Queue = require('../Queue/Queue').Queue;
 
 // 链式存储结构
-function BinaryTree(data, leftChild, rightChild, parentNode) {
+function BinaryTree(data, leftChild, rightChild) {
     this.data = data || null;
     // 左右孩子结点
     this.leftChild = leftChild || null;
     this.rightChild = rightChild || null;
-    // 父结点
-    this.parentNode = parentNode || null;
 }
 exports.BinaryTree = BinaryTree;
 BinaryTree.prototype = {

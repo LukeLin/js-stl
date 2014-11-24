@@ -404,10 +404,14 @@ BSTNode.prototype = {
         else {
             if (key === this.data) return;
             else if (key < this.data) {
-                if (!this.leftChild) this.leftChild = node;
+                if (!this.leftChild) {
+                    this.leftChild = node;
+                }
                 this.insert.call(this.leftChild, key);
             } else {
-                if (!this.rightChild) this.rightChild = node;
+                if (!this.rightChild) {
+                    this.rightChild = node;
+                }
                 this.insert.call(this.rightChild, key);
             }
         }
@@ -457,14 +461,14 @@ BSTNode.prototype = {
         return this;
     },
 
-    'delete': function deleteBST(key){
+    'delete': function deleteBST(key, parent){
         if(this.data == null) return false;
         else {
-            if(this.data === key) return deleteNode(this);
+            if(this.data === key) return deleteNode(this, parent);
             else if(key < this.data) {
-                if(this.leftChild) return deleteBST.call(this.leftChild, key);
+                if(this.leftChild) return deleteBST.call(this.leftChild, key, this);
             } else {
-                if(this.rightChild) return deleteBST.call(this.rightChild, key);
+                if(this.rightChild) return deleteBST.call(this.rightChild, key, this);
             }
         }
 
@@ -472,21 +476,22 @@ BSTNode.prototype = {
     }
 };
 
-function deleteNode(p){
-    var parent = p.parentNode;
-    if(!parent) {
-        p.data = null;
-        return true;
-    }
-
-    var pos = parent.leftChild == p ? 'leftChild' : 'rightChild';
-
+function deleteNode(p, parent){
+    var pos = parent && parent.leftChild == p ? 'leftChild' : 'rightChild';
     if(!p.leftChild && !p.rightChild) {
-        parent[pos] = null;
+        if(parent) parent[pos] = null;
+        // 只有一个结点的情况
+        else {
+            delete p.data;
+            delete p.leftChild;
+            delete p.rightChild;
+        }
     } else if(!p.rightChild) {
-        parent[pos] = p.leftChild;
+        p.data = p.leftChild.data;
+        p.leftChild = p.leftChild.leftChild;
     } else if(!p.leftChild) {
-        parent[pos] = p.rightChild;
+        p.data = p.rightChild.data;
+        p.rightChild = p.rightChild.rightChild;
     } else {
         var s = p.leftChild;
         var q = p;
@@ -513,9 +518,13 @@ bst2.createBST([45, 24, 53, 45, 12, 24, 90], true);
 console.log(bst2.search_nonRecurse(12));
 console.log(bst2.search_nonRecurse(13));
 
-// todo bugs exist
-console.log(bst.delete(45));
-console.log(bst2.delete(90));
-console.log(bst.delete(1));
-console.log(bst.delete(53));
-console.log(bst2.delete(45));
+
+console.log(bst['delete'](45));
+console.log(bst2['delete'](90));
+console.log(bst['delete'](1));
+console.log(bst['delete'](53));
+console.log(bst['delete'](12));
+console.log(bst['delete'](90));
+console.log(bst['delete'](24));
+console.log(bst['delete'](2));
+console.log(bst2['delete'](45));
