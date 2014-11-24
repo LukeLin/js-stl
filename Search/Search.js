@@ -475,11 +475,7 @@ function deleteNode(p, parent){
     if(!p.leftChild && !p.rightChild) {
         if(parent) parent[pos] = null;
         // 只有一个结点的情况
-        else {
-            delete p.data;
-            delete p.leftChild;
-            delete p.rightChild;
-        }
+        else  p.data = null;
     } else if(!p.rightChild) {
         p.data = p.leftChild.data;
         p.leftChild = p.leftChild.leftChild;
