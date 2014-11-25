@@ -347,6 +347,17 @@ test.preOrderTraverse(function (value) {
  由结论知，对于一个无序序列可以通过构造一棵BST树而变成一个有序序列。
  由算法知，每次插入的新结点都是BST树的叶子结点，即在插入时不必移动其它结点，仅需修改某个结点的指针。
 
+
+BST树的删除
+
+1  删除操作过程分析
+从BST树上删除一个结点，仍然要保证删除后满足BST的性质。设被删除结点为p，其父结点为f ，删除情况如下：
+    ①  若p是叶子结点： 直接删除p。
+    ②  若p只有一棵子树(左子树或右子树)：直接用p的左子树(或右子树)取代p的位置而成为f的一棵子树。即原来p是f的左子树，则p的子树成为f的左子树；原来p是f的右子树，则p的子树成为f的右子树。
+    ③ 若p既有左子树又有右子树 ：处理方法有以下两种，可以任选其中一种。
+        ◆  用p的直接前驱结点代替p。即从p的左子树中选择值最大的结点s放在p的位置(用结点s的内容替换结点p内容)，然后删除结点s。s是p的左子树中的最右边的结点且没有右子树，对s的删除同②。
+        ◆ 用p的直接后继结点代替p。即从p的右子树中选择值最小的结点s放在p的位置(用结点s的内容替换结点p内容)，然后删除结点s。s是p的右子树中的最左边的结点且没有左子树，对s的删除同②。
+
  */
 
 function BSTNode(data, leftChild, rightChild) {
@@ -479,6 +490,53 @@ BSTNode.prototype = {
 
         // 未找到
         return false;
+    },
+
+    /**
+     * 非递归删除与关键字符合的结点
+     * @param {*} key 需要查找的关键字
+     * @returns {boolean}
+     */
+    delete_nonRecurse: function (key) {
+        var p = this;
+        var f;
+
+        while (p && p.data !== key) {
+            f = p;
+            if (key < p.data) p = p.leftChild;
+            else p = p.rightChild;
+        }
+
+        // 没有要删除的结点
+        if (!p) return false;
+
+        // 找到了要删除的结点p
+        var s = p;
+        var q;
+        // 如果有左右子树
+        if (p.leftChild && p.rightChild) {
+            f = p;
+            s = p.leftChild;
+
+            // 找到左子树的最大右子树，即仅小于左子树的值的结点
+            while (s.rightChild) {
+                f = s;
+                s = s.rightChild;
+            }
+
+            p.data = s.data;
+        }
+
+        // 若s有左子树，右子树为空
+        if (s.leftChild) q = s.leftChild;
+        else q = s.rightChild;
+
+        // 只有一个根结点的情况
+        if (!f) this.data = null;
+        else if (f.leftChild == s) f.leftChild = q;
+        else f.rightChild = q;
+
+        return true;
     }
 };
 
@@ -538,11 +596,17 @@ console.log(bst2.search_nonRecurse(13));
 
 
 console.log(bst['delete'](45));
-console.log(bst2['delete'](90));
 console.log(bst['delete'](1));
 console.log(bst['delete'](53));
 console.log(bst['delete'](12));
 console.log(bst['delete'](90));
 console.log(bst['delete'](24));
 console.log(bst['delete'](2));
-console.log(bst2['delete'](45));
+
+console.log(bst2.delete_nonRecurse(45));
+console.log(bst2.delete_nonRecurse(1));
+console.log(bst2.delete_nonRecurse(53));
+console.log(bst2.delete_nonRecurse(12));
+console.log(bst2.delete_nonRecurse(90));
+console.log(bst2.delete_nonRecurse(24));
+console.log(bst2.delete_nonRecurse(2));
