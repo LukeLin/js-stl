@@ -969,7 +969,8 @@ console.log(g);
  设初始状态时图中的所有顶点未被访问，则：
  ⑴ ：从图中某个顶点vi出发，访问vi；然后找到vi的一个邻接顶点vi1 ；
  ⑵：从vi1出发，深度优先搜索访问和vi1相邻接且未被访问的所有顶点；
- ⑶：转⑴ ，直到和vi相邻接的所有顶点都被访问为止 ⑷ ：继续选取图中未被访问顶点vj作为起始顶点，转(1)，直到图中所有顶点都被访问为止。
+ ⑶：转⑴ ，直到和vi相邻接的所有顶点都被访问为止
+ ⑷ ：继续选取图中未被访问顶点vj作为起始顶点，转(1)，直到图中所有顶点都被访问为止。
 
 
  广度优先搜索(Breadth First Search--BFS)遍历类似树的按层次遍历的过程。
@@ -1005,20 +1006,17 @@ AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
 };
 
 console.log('DFSTraverse: udn');
-//udn.DFSTraverse(function (v) {
-//    console.log(this.vexs[v]);
-//});
 
 var g1 = new AdjacencyMatrixGraph([], [], 0, 4, UDG);
 g1.addVertex('v1');
-g1.addVertex('v2');
 g1.addVertex('v3');
+g1.addVertex('v2');
 g1.addVertex('v4');
 g1.addVertex('v5');
 
 g1.addArc('v5', 'v4');
-g1.addArc('v2', 'v1');
 g1.addArc('v3', 'v1');
+g1.addArc('v2', 'v1');
 g1.addArc('v3', 'v2');
 
 
@@ -1092,11 +1090,26 @@ AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
 
 
 console.log('BFSTraverse: ');
-g1.BFSTraverse(function (v) {
+var bsfG = new AdjacencyMatrixGraph([], [], 0, 7, DG);
+bsfG.addVertex('v1');
+bsfG.addVertex('v2');
+bsfG.addVertex('v3');
+bsfG.addVertex('v4');
+bsfG.addVertex('v5');
+
+bsfG.addArc('v1', 'v4');
+bsfG.addArc('v1', 'v2');
+bsfG.addArc('v3', 'v5');
+bsfG.addArc('v3', 'v2');
+bsfG.addArc('v3', 'v1');
+bsfG.addArc('v4', 'v3');
+bsfG.addArc('v5', 'v4');
+
+bsfG.BFSTraverse(function (v) {
     console.log(this.vexs[v]);
 });
 
-
+// 邻接表的递归式深度优先遍历
 AdjacencyListGraph.prototype.DFSTraverse = function (visitFn) {
     var visited = [];
     for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
@@ -1128,8 +1141,8 @@ adjListGraph.addVertex('v5');
 
 adjListGraph.addArc('v5', 'v4');
 adjListGraph.addArc('v3', 'v2');
-adjListGraph.addArc('v3', 'v1');
 adjListGraph.addArc('v2', 'v1');
+adjListGraph.addArc('v3', 'v1');
 
 adjListGraph.DFSTraverse(function (v) {
     console.log(this.vertices[v].data);
@@ -1200,11 +1213,6 @@ AdjacencyListGraph.prototype.BFSTraverse = function (visitFn) {
 };
 
 console.log('adjListGraph BFSTraverse: ');
-adjListGraph.BFSTraverse(function (v) {
-    console.log(this.vertices[v].data);
-});
-
-console.log('adjListGraph BFSTraverse2: ');
 var g2 = new AdjacencyListGraph([], 0, 7, DG);
 g2.addVertex('v1');
 g2.addVertex('v2');
