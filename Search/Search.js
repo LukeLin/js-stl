@@ -547,10 +547,10 @@ BSTNode.prototype = {
  * @returns {boolean} 返回删除成功
  */
 function deleteNode(p, parent) {
-    // 当前结点是其父结点的左子树还是右子树
-    var pos = parent && parent.leftChild == p ? 'leftChild' : 'rightChild';
     // 叶子结点或只有一个结点
     if (!p.leftChild && !p.rightChild) {
+        // 当前结点是其父结点的左子树还是右子树
+        var pos = parent && parent.leftChild == p ? 'leftChild' : 'rightChild';
         if (parent) parent[pos] = null;
         // 只有一个结点的情况
         else  p.data = null;
