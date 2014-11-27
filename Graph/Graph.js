@@ -2055,7 +2055,8 @@ AdjacencyMatrixGraph.prototype.shortestPath_FLOYD = function () {
         a[j] = a[j] || [];
         path[j] = path[j] || [];
         for (var k = 0; k < this.vexnum; ++k) {
-            a[j][k] = this.arcs[j][k].adj;
+            if(j === k) a[j][k] = 0;
+            else a[j][k] = this.arcs[j][k].adj;
             path[j][k] = -1;
         }
     }
@@ -2065,7 +2066,7 @@ AdjacencyMatrixGraph.prototype.shortestPath_FLOYD = function () {
             for (k = 0; k < this.vexnum; ++k) {
                 if (a[j][m] + a[m][k] < a[j][k]) {
                     a[j][k] = a[j][m] + a[m][k];
-                    path[j][k] = k;
+                    path[j][k] = m;
                 }
             }
         }
@@ -2075,16 +2076,16 @@ AdjacencyMatrixGraph.prototype.shortestPath_FLOYD = function () {
         for (k = 0; k < this.vexnum; ++k) {
             if (j !== k) {
                 console.log('%d到%d的最短路径为：', j, k);
-//                console.log('%d ', j); prn_pass(j, k);
-//                console.log('%d ', k);
+                console.log('%d ', j); prn_pass(j, k);
+                console.log('%d ', k);
                 console.log('最短路径长度为： %d', a[j][k]);
             }
         }
     }
 
     function prn_pass(j, k) {
-        if (j !== undefined && k !== undefined && path[j][k] !== -1) {
-            prn_pass(j, path[j[k]]);
+        if (path[j][k] !== -1) {
+            prn_pass(j, path[j][k]);
             console.log(', %d', path[j][k]);
             prn_pass(path[j][k], k);
         }
