@@ -257,6 +257,8 @@ AdjacencyMatrixGraph.prototype = {
             this.arcs[j][k].info = arc.info;
         }
 
+        ++this.arcnum;
+
         return true;
     },
 
@@ -440,7 +442,7 @@ var arcs = [
 var udn = new AdjacencyMatrixGraph(vexs, arcs, 5, 7, 4);
 
 // 第二种创建图方法
-var dn = new AdjacencyMatrixGraph([], [], 0, 7, 2);
+var dn = new AdjacencyMatrixGraph([], [], 0, 0, 2);
 dn.addVertex('a');
 dn.addVertex('b');
 dn.addVertex('c');
@@ -612,6 +614,8 @@ AdjacencyListGraph.prototype = {
             p.nextArc = this.vertices[j].firstArc;
             this.vertices[j].firstArc = p;
         }
+
+        ++this.arcnum;
 
         return true;
     },
@@ -899,7 +903,7 @@ AdjacencyListGraph.prototype = {
 
 
 // 无向图的邻接表
-var adjListGraph = new AdjacencyListGraph([], 0, 7, UDG);
+var adjListGraph = new AdjacencyListGraph([], 0, 0, UDG);
 adjListGraph.addVertex('v1');
 adjListGraph.addVertex('v2');
 adjListGraph.addVertex('v3');
@@ -917,7 +921,7 @@ adjListGraph.addArc('v4', 'v5');
 console.log(adjListGraph);
 
 // 有向图的逆邻接表
-var g = new AdjacencyListGraph([], 0, 7, DG);
+var g = new AdjacencyListGraph([], 0, 0, DG);
 g.addVertex('v1');
 g.addVertex('v2');
 g.addVertex('v3');
@@ -935,7 +939,7 @@ g.addArc('v5', 'v4');
 console.log(g);
 
 // 有向图的正邻接表
-var g = new AdjacencyListGraph([], 0, 7, DG);
+var g = new AdjacencyListGraph([], 0, 0, DG);
 g.addVertex('v1');
 g.addVertex('v2');
 g.addVertex('v3');
@@ -1007,7 +1011,7 @@ AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
 
 console.log('DFSTraverse: udn');
 
-var g1 = new AdjacencyMatrixGraph([], [], 0, 4, UDG);
+var g1 = new AdjacencyMatrixGraph([], [], 0, 0, UDG);
 g1.addVertex('v1');
 g1.addVertex('v3');
 g1.addVertex('v2');
@@ -1090,7 +1094,7 @@ AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
 
 
 console.log('BFSTraverse: ');
-var bsfG = new AdjacencyMatrixGraph([], [], 0, 7, DG);
+var bsfG = new AdjacencyMatrixGraph([], [], 0, 0, DG);
 bsfG.addVertex('v1');
 bsfG.addVertex('v2');
 bsfG.addVertex('v3');
@@ -1132,7 +1136,7 @@ AdjacencyListGraph.prototype.DFSTraverse = function (visitFn) {
 };
 
 console.log('adjListGraph DFSTraverse: ');
-var adjListGraph = new AdjacencyListGraph([], 0, 4, UDG);
+var adjListGraph = new AdjacencyListGraph([], 0, 0, UDG);
 adjListGraph.addVertex('v1');
 adjListGraph.addVertex('v2');
 adjListGraph.addVertex('v3');
@@ -1213,7 +1217,7 @@ AdjacencyListGraph.prototype.BFSTraverse = function (visitFn) {
 };
 
 console.log('adjListGraph BFSTraverse: ');
-var g2 = new AdjacencyListGraph([], 0, 7, DG);
+var g2 = new AdjacencyListGraph([], 0, 0, DG);
 g2.addVertex('v1');
 g2.addVertex('v2');
 g2.addVertex('v3');
@@ -1438,12 +1442,14 @@ console.log(adjListGraph.createBFSForest());
 AdjacencyMatrixGraph.prototype.minSpanTree_PRIM = function (u) {
     var closedge = [];
 
+    // 初始化
     for (var j = 0; j < this.vexnum; ++j) {
         closedge[j] = {adjvex: u, lowcost: +this.arcs[j][u].adj};
     }
     closedge[u].lowcost = 0;
 
     var te = [];
+    // 选择其余this.vexnum - 1个顶点
     for (j = 0; j < this.vexnum - 1; ++j) {
         var min = Infinity;
         var k;
@@ -1471,7 +1477,7 @@ AdjacencyMatrixGraph.prototype.minSpanTree_PRIM = function (u) {
     return te;
 };
 
-udn = new AdjacencyMatrixGraph([], [], 0, 7, 4);
+udn = new AdjacencyMatrixGraph([], [], 0, 0, 4);
 udn.addVertex('v1');
 udn.addVertex('v2');
 udn.addVertex('v3');
@@ -1518,12 +1524,49 @@ console.log(udn.minSpanTree_PRIM(0));
 
  */
 
-// todo
 AdjacencyMatrixGraph.prototype.minSpanTree_Kruskal = function () {
+    var set = [];
+    var te = [];
+
+    for(var i = 0; i < this.vexnum; ++i) set[i] = i;
+
+    var k = 0;
+    var min = Infinity;
+    var a = 0;
+    var b = 0;
+    while(k < this.vexnum - 1){
+        for(i = 0; i < this.vexnum; ++i){
+            for(var j = i + 1; j < this.vexnum; ++j){
+                if(this.arcs[i][j].adj < min) {
+                    min = this.arcs[i][j].adj;
+                    a = i;
+                    b = j;
+                }
+            }
+        }
+
+        if(set[a] !== set[b]){
+            te[k++] = {
+                vex1: a,
+                vex2: b,
+                weight: this.arcs[a][b].adj
+            };
+
+            for(i = 0; i < this.vexnum; ++i){
+                if(set[i] === set[b] && i !== b)
+                    set[i] = set[a];
+            }
+            set[b] = set[a];
+        }
+
+        min = this.arcs[a][b].adj = Infinity;
+    }
+
+    return te;
 };
 
 console.log('minSpanTree_Kruskal: ');
-//console.log(udn.minSpanTree_Kruskal());
+console.log(udn.minSpanTree_Kruskal());
 
 /*
  在某图中，若删除顶点V以及V相关的边后，图的一个连通分量分割为两个或两个以上的连通分量，则称顶点V为该图的一个关节点。一个没有关节点的连通图称为重连通图。
@@ -1565,7 +1608,7 @@ AdjacencyListGraph.prototype.findArticul = function () {
     }
 };
 
-var articulTest = new AdjacencyListGraph([], 0, 17, UDG);
+var articulTest = new AdjacencyListGraph([], 0, 0, UDG);
 articulTest.addVertex('A');
 articulTest.addVertex('B');
 articulTest.addVertex('C');
@@ -1683,7 +1726,7 @@ AdjacencyListGraph.prototype.topologicSort = function () {
     return (count >= this.vexnum);
 };
 
-var topologicTest = new AdjacencyListGraph([], 0, 8, DG);
+var topologicTest = new AdjacencyListGraph([], 0, 0, DG);
 topologicTest.addVertex('v1');
 topologicTest.addVertex('v2');
 topologicTest.addVertex('v3');
@@ -1783,7 +1826,7 @@ AdjacencyListGraph.prototype.criticalPath = function () {
     }
 };
 
-var criticalPathTest = new AdjacencyListGraph([], 0, 12, DG);
+var criticalPathTest = new AdjacencyListGraph([], 0, 0, DG);
 criticalPathTest.addVertex('v0');
 criticalPathTest.addVertex('v1');
 criticalPathTest.addVertex('v2');
@@ -1923,7 +1966,7 @@ AdjacencyMatrixGraph.prototype.shortestPath_Dijkstra = function (v0) {
     console.log(dist);
 };
 
-var dijTest = new AdjacencyMatrixGraph([], [], 0, 10, DN);
+var dijTest = new AdjacencyMatrixGraph([], [], 0, 0, DN);
 
 dijTest.addVertex('0');
 dijTest.addVertex('1');
@@ -1996,7 +2039,7 @@ AdjacencyListGraph.prototype.shortestPath_Dijkstra = function (v0) {
     console.log(dist);
 };
 
-var dijTest = new AdjacencyListGraph([], [], 0, 10, DN);
+var dijTest = new AdjacencyListGraph([], [], 0, 0, DN);
 
 dijTest.addVertex('0');
 dijTest.addVertex('1');
@@ -2092,7 +2135,7 @@ AdjacencyMatrixGraph.prototype.shortestPath_FLOYD = function () {
     }
 };
 
-var floyd = new AdjacencyMatrixGraph([], [], 0, 4, DN);
+var floyd = new AdjacencyMatrixGraph([], [], 0, 0, DN);
 floyd.addVertex('v0');
 floyd.addVertex('v1');
 floyd.addVertex('v2');
@@ -2159,7 +2202,7 @@ function calculate(a, operation, b){
 }
 
 // ((1 + 2) * (2 * (3 + 4)) + (3 + 4) * 5) * ((3 + 4) * 5)
-var dag = new AdjacencyListGraph([], 0, 14, DG);
+var dag = new AdjacencyListGraph([], 0, 0, DG);
 
 var a1 = new String('*');
 var a2 = new String('+');
