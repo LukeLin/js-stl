@@ -544,7 +544,7 @@ BSTNode.prototype = {
      * @param {String|Number} x
      * @returns {Array} [min, max]
      */
-    findSiblingElem: function (x) {
+    findNeighborElem: function (x) {
         var last = typeof tree.data === 'number' ? -Infinity : 'a';
         var ret = [];
 
@@ -634,9 +634,9 @@ console.log(bst2.search_nonRecurse(12));
 console.log(bst2.search_nonRecurse(13));
 
 console.log('\nfindSiblingElem: ');
-console.log(bst.findSiblingElem(12) + '');
-console.log(bst.findSiblingElem(90) + '');
-console.log(bst.findSiblingElem(45) + '');
+console.log(bst.findNeighborElem(12) + '');
+console.log(bst.findNeighborElem(90) + '');
+console.log(bst.findNeighborElem(45) + '');
 
 console.log(bst['delete'](45));
 console.log(bst['delete'](1));
