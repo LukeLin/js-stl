@@ -300,11 +300,11 @@ function findSW(sTable) {
     return sw;
 }
 
-var test = createSOSTree({
+var sosTree = createSOSTree({
     elems: ['A', 'B', 'C', 'D', 'E'],
     weights: [1, 30, 2, 29, 3]
 });
-test.preOrderTraverse(function (value) {
+sosTree.preOrderTraverse(function (value) {
     console.log('inOrder: ' + value);
 });
 
@@ -348,15 +348,15 @@ test.preOrderTraverse(function (value) {
  由算法知，每次插入的新结点都是BST树的叶子结点，即在插入时不必移动其它结点，仅需修改某个结点的指针。
 
 
-BST树的删除
+ BST树的删除
 
-1  删除操作过程分析
-从BST树上删除一个结点，仍然要保证删除后满足BST的性质。设被删除结点为p，其父结点为f ，删除情况如下：
-    ①  若p是叶子结点： 直接删除p。
-    ②  若p只有一棵子树(左子树或右子树)：直接用p的左子树(或右子树)取代p的位置而成为f的一棵子树。即原来p是f的左子树，则p的子树成为f的左子树；原来p是f的右子树，则p的子树成为f的右子树。
-    ③ 若p既有左子树又有右子树 ：处理方法有以下两种，可以任选其中一种。
-        ◆  用p的直接前驱结点代替p。即从p的左子树中选择值最大的结点s放在p的位置(用结点s的内容替换结点p内容)，然后删除结点s。s是p的左子树中的最右边的结点且没有右子树，对s的删除同②。
-        ◆ 用p的直接后继结点代替p。即从p的右子树中选择值最小的结点s放在p的位置(用结点s的内容替换结点p内容)，然后删除结点s。s是p的右子树中的最左边的结点且没有左子树，对s的删除同②。
+ 1  删除操作过程分析
+ 从BST树上删除一个结点，仍然要保证删除后满足BST的性质。设被删除结点为p，其父结点为f ，删除情况如下：
+ ①  若p是叶子结点： 直接删除p。
+ ②  若p只有一棵子树(左子树或右子树)：直接用p的左子树(或右子树)取代p的位置而成为f的一棵子树。即原来p是f的左子树，则p的子树成为f的左子树；原来p是f的右子树，则p的子树成为f的右子树。
+ ③ 若p既有左子树又有右子树 ：处理方法有以下两种，可以任选其中一种。
+ ◆  用p的直接前驱结点代替p。即从p的左子树中选择值最大的结点s放在p的位置(用结点s的内容替换结点p内容)，然后删除结点s。s是p的左子树中的最右边的结点且没有右子树，对s的删除同②。
+ ◆ 用p的直接后继结点代替p。即从p的右子树中选择值最小的结点s放在p的位置(用结点s的内容替换结点p内容)，然后删除结点s。s是p的右子树中的最左边的结点且没有左子树，对s的删除同②。
 
  */
 
@@ -537,7 +537,46 @@ BSTNode.prototype = {
         else f.rightChild = q;
 
         return true;
+    },
+
+    /**
+     * 找到小于x的最大元素和大于x的最小元素
+     * @param {String|Number} x
+     * @returns {Array} [min, max]
+     */
+    findSiblingElem: function (x) {
+        var last = typeof tree.data === 'number' ? -Infinity : 'a';
+        var ret = [];
+
+        void function recurse(tree, x) {
+            if (tree.leftChild) recurse(tree.leftChild, x);
+            if (last < x && tree.data >= x) ret[0] = last;
+            if (last <= x && tree.data > x) ret[1] = tree.data;
+            last = tree.data;
+            if (tree.rightChild) recurse(tree.rightChild, x);
+        }(this, x);
+
+        return ret;
     }
+};
+
+/**
+ * 判断tree是否是二叉排序树
+ * @param tree
+ */
+BSTNode.isBSTTree = function (tree) {
+    var last = typeof tree.data === 'number' ? -Infinity : 'a';
+    var flag = true;
+
+    void function isBSTTree(tree) {
+        if (tree.leftChild && flag) isBSTTree(tree.leftChild);
+        if (tree.data < last) flag = false;
+        last = tree.data;
+        if (tree.rightChild && flag) isBSTTree(tree.rightChild);
+
+    }(tree);
+
+    return flag;
 };
 
 /**
@@ -585,15 +624,19 @@ function deleteNode(p, parent) {
 }
 
 var bst = new BSTNode();
-bst.createBST([45, 24, 53, 45, 12, 24, 90]);
+bst.createBST([45, 24, 53, 12, 24, 90]);
 console.log(bst.search(12));
 console.log(bst.search(13));
 
 var bst2 = new BSTNode();
-bst2.createBST([45, 24, 53, 45, 12, 24, 90], true);
+bst2.createBST([45, 24, 53, 12, 24, 90], true);
 console.log(bst2.search_nonRecurse(12));
 console.log(bst2.search_nonRecurse(13));
 
+console.log('\nfindSiblingElem: ');
+console.log(bst.findSiblingElem(12) + '');
+console.log(bst.findSiblingElem(90) + '');
+console.log(bst.findSiblingElem(45) + '');
 
 console.log(bst['delete'](45));
 console.log(bst['delete'](1));
@@ -610,3 +653,8 @@ console.log(bst2.delete_nonRecurse(12));
 console.log(bst2.delete_nonRecurse(90));
 console.log(bst2.delete_nonRecurse(24));
 console.log(bst2.delete_nonRecurse(2));
+
+console.log('\nisBSTTree: ');
+console.log(BSTNode.isBSTTree(bst));
+console.log(BSTNode.isBSTTree(sosTree));
+
