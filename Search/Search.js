@@ -557,6 +557,55 @@ BSTNode.prototype = {
         }(this, x);
 
         return ret;
+    },
+
+    /**
+     * 把二叉排序树bst合并到该树中
+     * @param {BSTNode} bst
+     */
+    merge: function(bst){
+        if(bst.leftChild) this.merge(bst.leftChild);
+        if(bst.rightChild) this.merge(bst.rightChild);
+        this.insert(bst.data);
+    },
+
+    /**
+     * 把结点插入到合适位置
+     * @param {BSTNode} node 待插入的结点
+     */
+    insertNode: function insertNode(node){
+        if(this.data == null) {
+            this.data = node.data;
+        } else {
+            if(node.data > this.data) {
+                if(!this.rightChild) this.rightChild = node;
+                else insertNode.call(this.rightChild, node);
+            } else if(node.data < this.data) {
+                if(!this.leftChild) this.leftChild = node;
+                else insertNode.call(this.leftChild, node);
+            }
+        }
+
+        node.leftChild = node.rightChild = null;
+    },
+
+    /**
+     * 分裂为两棵二叉排序树
+     * @param {*} x
+     * @returns {BSTNode[a, b]} a的元素全部小于等于x，b的元素全部大于x
+     */
+    split: function (x){
+        var a = new BSTNode();
+        var b = new BSTNode();
+
+        void function split(tree, x){
+            if(tree.leftChild) split(tree.leftChild, x);
+            if(tree.rightChild) split(tree.rightChild, x);
+            if(tree.data <= x) a.insertNode(tree);
+            else b.insertNode(tree);
+        }(this, x);
+
+        return [a, b];
     }
 };
 
@@ -646,15 +695,42 @@ console.log(bst['delete'](90));
 console.log(bst['delete'](24));
 console.log(bst['delete'](2));
 
-console.log(bst2.delete_nonRecurse(45));
-console.log(bst2.delete_nonRecurse(1));
-console.log(bst2.delete_nonRecurse(53));
-console.log(bst2.delete_nonRecurse(12));
-console.log(bst2.delete_nonRecurse(90));
-console.log(bst2.delete_nonRecurse(24));
-console.log(bst2.delete_nonRecurse(2));
+//console.log(bst2.delete_nonRecurse(45));
+//console.log(bst2.delete_nonRecurse(1));
+//console.log(bst2.delete_nonRecurse(53));
+//console.log(bst2.delete_nonRecurse(12));
+//console.log(bst2.delete_nonRecurse(90));
+//console.log(bst2.delete_nonRecurse(24));
+//console.log(bst2.delete_nonRecurse(2));
 
 console.log('\nisBSTTree: ');
 console.log(BSTNode.isBSTTree(bst));
 console.log(BSTNode.isBSTTree(sosTree));
 
+
+/**
+ * 从大到小输出二叉排序树中所有不小于x的元素
+ * @param bst
+ * @param x
+ */
+function printNotLessThan(bst, x){
+    if(bst.rightChild) printNotLessThan(bst.rightChild, x);
+    if(bst.data < x) return;
+    console.log(bst.data);
+    if(bst.leftChild) printNotLessThan(bst.leftChild, x);
+}
+
+console.log('\nprintNotLessThan: ');
+printNotLessThan(bst2, 90);
+console.log('\n');
+printNotLessThan(bst2, 12);
+
+
+bst.merge(bst2);
+
+var a1 = new BSTNode(5);
+var a2 = new BSTNode(91);
+bst2.insertNode(a1);
+bst2.insertNode(a2);
+
+bst2.split(45);
