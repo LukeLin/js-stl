@@ -828,7 +828,7 @@ exports.BBSTNode = BBSTNode;
 exports.AVLNode = BBSTNode;
 BBSTNode.prototype = {
     constructor: BBSTNode,
-    __proto__: BinaryTree,
+    __proto__: BinaryTree.prototype,
 
     rotate_LL: function () {
         var b = this.leftChild;
