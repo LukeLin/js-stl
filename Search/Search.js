@@ -563,9 +563,9 @@ BSTNode.prototype = {
      * 把二叉排序树bst合并到该树中
      * @param {BSTNode} bst
      */
-    merge: function(bst){
-        if(bst.leftChild) this.merge(bst.leftChild);
-        if(bst.rightChild) this.merge(bst.rightChild);
+    merge: function (bst) {
+        if (bst.leftChild) this.merge(bst.leftChild);
+        if (bst.rightChild) this.merge(bst.rightChild);
         this.insert(bst.data);
     },
 
@@ -573,15 +573,15 @@ BSTNode.prototype = {
      * 把结点插入到合适位置
      * @param {BSTNode} node 待插入的结点
      */
-    insertNode: function insertNode(node){
-        if(this.data == null) {
+    insertNode: function insertNode(node) {
+        if (this.data == null) {
             this.data = node.data;
         } else {
-            if(node.data > this.data) {
-                if(!this.rightChild) this.rightChild = node;
+            if (node.data > this.data) {
+                if (!this.rightChild) this.rightChild = node;
                 else insertNode.call(this.rightChild, node);
-            } else if(node.data < this.data) {
-                if(!this.leftChild) this.leftChild = node;
+            } else if (node.data < this.data) {
+                if (!this.leftChild) this.leftChild = node;
                 else insertNode.call(this.leftChild, node);
             }
         }
@@ -594,14 +594,14 @@ BSTNode.prototype = {
      * @param {*} x
      * @returns {BSTNode[a, b]} a的元素全部小于等于x，b的元素全部大于x
      */
-    split: function (x){
+    split: function (x) {
         var a = new BSTNode();
         var b = new BSTNode();
 
-        void function split(tree, x){
-            if(tree.leftChild) split(tree.leftChild, x);
-            if(tree.rightChild) split(tree.rightChild, x);
-            if(tree.data <= x) a.insertNode(tree);
+        void function split(tree, x) {
+            if (tree.leftChild) split(tree.leftChild, x);
+            if (tree.rightChild) split(tree.rightChild, x);
+            if (tree.data <= x) a.insertNode(tree);
             else b.insertNode(tree);
         }(this, x);
 
@@ -713,11 +713,11 @@ console.log(BSTNode.isBSTTree(sosTree));
  * @param bst
  * @param x
  */
-function printNotLessThan(bst, x){
-    if(bst.rightChild) printNotLessThan(bst.rightChild, x);
-    if(bst.data < x) return;
+function printNotLessThan(bst, x) {
+    if (bst.rightChild) printNotLessThan(bst.rightChild, x);
+    if (bst.data < x) return;
     console.log(bst.data);
-    if(bst.leftChild) printNotLessThan(bst.leftChild, x);
+    if (bst.leftChild) printNotLessThan(bst.leftChild, x);
 }
 
 console.log('\nprintNotLessThan: ');
@@ -785,25 +785,74 @@ BST是一种查找效率比较高的组织形式，但其平均查找长度受�
     即b也是平衡的，以b为根的子树的深度是HbL+1，与插入前a的子树的深度相同，则该子树的上层各结点的平衡因子没有变化，即整棵树旋转后是平衡的。
 
 
+2   LR型平衡化旋转
+
+⑴ 失衡原因
+在结点a的左孩子的右子树上进行插入，插入使结点a失去平衡。a插入前的平衡因子是1，插入后a的平衡因子是2。设b是a的左孩子，c为b的右孩子， b在插入前的平衡因子只能是0，插入后的平衡因子是-1；c在插入前的平衡因子只能是0，否则，c就是失衡结点。
+
+⑵ 插入后结点c的平衡因子的变化分析
+    ①   插入后c的平衡因子是1：即在c的左子树上插入。设c的左子树的深度为HcL，则右子树的深度为HcL-1；b插入后的平衡因子是-1，则b的左子树的深度为HcL，以b为根的子树的深度是HcL+2。因插入后a的平衡因子是2 ，则a的右子树的深度是HcL。
+    ② 插入后c的平衡因子是0：c本身是插入结点。设c的左子树的深度为HcL，则右子树的深度也是HcL；因b插入后的平衡因子是-1，则b的左子树的深度为HcL，以b为根的子树的深度是HcL+2；插入后a的平衡因子是2 ，则a的右子树的深度是HcL。
+    ③ 插入后c的平衡因子是-1：即在c的右子树上插入。设c的左子树的深度为HcL，则右子树的深度为HcL+1 ，以c为根的子树的深度是HcL+2；因b插入后的平衡因子是-1，则b的左子树的深度为HcL+1，以b为根的子树的深度是HcL+3；则a的右子树的深度是HcL+1。
+
+⑶ 平衡化旋转方法
+先以b进行一次逆时针旋转(将以b为根的子树旋转为以c为根)，再以a进行一次顺时针旋转，如图9-8所示。将整棵子树旋转为以c为根，b是c的左子树，a是c的右子树；c的右子树移到a的左子树位置， c的左子树移到b的右子树位置。
+
+⑷ 旋转后各结点(a,b,c)平衡因子分析
+    ① 旋转前 (插入后)c的平衡因子是1：
+        a的左子树深度为HcL-1 ，其右子树没有变化，深度是HcL，则a的平衡因子是-1；b的左子树没有变化，深度为HcL，右子树是c旋转前的左子树，深度为HcL，则b的平衡因子是0； c的左、右子树分别是以b和a为根的子树，则c的平衡因子是0 。
+    ② 旋转前 (插入后)c的平衡因子是0：
+        旋转后a，b，c的平衡因子都是0 。
+    ③  旋转前 (插入后)c的平衡因子是-1：
+        旋转后a，b，c的平衡因子分别是0，-1，0 。
+综上所述，即整棵树旋转后是平衡的。
+
+
 
 
  */
 
 /**
- *
- * @param data
- * @param leftChild
- * @param rightChild
+ * AVL树，平衡二叉排序树
+ * @param {*} data
+ * @param {BBSTNode} leftChild
+ * @param {BBSTNode} rightChild
  * @param {Number} balanceFactor 平衡因子
  * @constructor
  */
-function BBSTNode(data, leftChild, rightChild, balanceFactor){
+function BBSTNode(data, leftChild, rightChild, balanceFactor) {
     BinaryTree.call(this, data, leftChild, rightChild);
     this.balanceFactor = balanceFactor;
 }
 exports.BBSTNode = BBSTNode;
+exports.AVLNode = BBSTNode;
 BBSTNode.prototype = {
     constructor: BBSTNode,
+    __proto__: BinaryTree,
 
-    llRotate: function(){}
+    rotate_LL: function () {
+        var b = this.leftChild;
+        this.leftChild = b.rightChild;
+        b.rightChild = this;
+        this.balanceFactor = b.balanceFactor = 0;
+    },
+
+    rotate_LR: function () {
+        var b = this.leftChild;
+        var c = b.rightChild;
+        this.leftChild = c.rightChild;
+        b.rightChild = c.leftChild;
+        c.leftChild = b;
+        c.rightChild = this;
+
+        if (c.balanceFactor === 1) {
+            this.balanceFactor = -1;
+            b.balanceFactor = 0;
+        } else if (c.balanceFactor === 0) {
+            this.balanceFactor = b.balanceFactor = 0;
+        } else {
+            this.balanceFactor = 0;
+            b.balanceFactor = 1;
+        }
+    }
 };
