@@ -845,6 +845,22 @@ bst2.split(45);
  对于上述四种平衡化旋转，其正确性容易由“遍历所得中序序列不变”来证明。并且，无论是哪种情况，平衡化旋转处理完成后，形成的新子树仍然是平衡二叉排序树，且其深度和插入前以a为根结点的平衡二叉排序树的深度相同。所以，在平衡二叉排序树上因插入结点而失衡，仅需对失衡子树做平衡化旋转处理。
 
 
+
+ 平衡二叉排序树的插入
+
+ 平衡二叉排序树的插入操作实际上是在二叉排序插入的基础上完成以下工作：
+ ⑴：判别插入结点后的二叉排序树是否产生不平衡?
+ ⑵：找出失去平衡的最小子树；
+ ⑶：判断旋转类型，然后做相应调整。
+ 失衡的最小子树的根结点a在插入前的平衡因子不为0，且是离插入结点最近的平衡因子不为0的结点。
+ 若a失衡，从a到插入点的路径上的所有结点的平衡因子都会发生变化，在该路径上还有一个结点的平衡因子不为0且该结点插入后没有失衡，其平衡因子只能是由1到0或由-1到0，以该结点为根的子树深度不变。该结点的所有祖先结点的平衡因子也不变，更不会失衡。
+
+ 1 算法思想(插入结点的步骤)
+ ①：按照二叉排序树的定义，将结点s插入；
+ ②：在查找结点s的插入位置的过程中，记录离结点s最近且平衡因子不为0的结点a，若该结点不存在，则结点a指向根结点；
+ ③： 修改结点a到结点s路径上所有结点的；
+ ④：判断是否产生不平衡，若不平衡，则确定旋转类型并做相应调整。
+
  */
 
 /**
@@ -870,6 +886,8 @@ BBSTNode.prototype = {
         this.leftChild = b.rightChild;
         b.rightChild = this;
         this.balanceFactor = b.balanceFactor = 0;
+
+        return b;
     },
 
     rotate_LR: function () {
@@ -889,6 +907,8 @@ BBSTNode.prototype = {
             this.balanceFactor = 0;
             b.balanceFactor = 1;
         }
+
+        return c;
     },
 
     rotate_RL: function () {
@@ -908,6 +928,8 @@ BBSTNode.prototype = {
             this.balanceFactor = 1;
             b.balanceFactor = 0;
         }
+
+        return c;
     },
 
     rotate_RR: function () {
@@ -915,5 +937,7 @@ BBSTNode.prototype = {
         this.rightChild = b.leftChild;
         b.leftChild = this;
         this.balanceFactor = b.balanceFactor = 0;
+
+        return b;
     }
 };
