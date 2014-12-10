@@ -87,6 +87,7 @@
 
 var Stack = require('../Stack/stack');
 var Queue = require('../Queue/Queue').Queue;
+var Util = require('util');
 
 // 链式存储结构
 function BinaryTree(data, leftChild, rightChild) {
@@ -310,14 +311,20 @@ BinaryTree.prototype = {
             if (this.rightChild) delSubX.call(this.rightChild);
         }
     },
-    // 非递归复制二叉树
-    copyBinaryTree_stack: function () {
+    /**
+     * 非递归复制二叉树
+     * @param {Function} cb 拷贝过程中会执行的回调，可以用来拷贝其它自定义属性
+     * @returns {Cstr} 返回新的实例
+     */
+    copyBinaryTree_stack: function (cb) {
+        cb = cb || function(){};
         // 用来存放本体结点的栈
         var stack1 = new Stack();
         // 用来存放新二叉树结点的栈
         var stack2 = new Stack();
         stack1.push(this);
-        var newTree = new BinaryTree();
+        var Cstr = this.constructor;
+        var newTree = new Cstr();
         var q = newTree;
         stack2.push(newTree);
         var p;
@@ -325,7 +332,7 @@ BinaryTree.prototype = {
         while (stack1.top) {
             // 向左走到尽头
             while ((p = stack1.peek())) {
-                if (p.leftChild) q.leftChild = new BinaryTree();
+                if (p.leftChild) q.leftChild = new Cstr();
                 q = q.leftChild;
                 stack1.push(p.leftChild);
                 stack2.push(q);
@@ -337,8 +344,9 @@ BinaryTree.prototype = {
             if (stack1.top) {
                 p = stack1.pop();
                 q = stack2.pop();
-                if (p.rightChild) q.rightChild = new BinaryTree();
+                if (p.rightChild) q.rightChild = new Cstr();
                 q.data = p.data;
+                cb(q, p);
                 q = q.rightChild;
                 stack1.push(p.rightChild);  // 向右一步
                 stack2.push(q);
