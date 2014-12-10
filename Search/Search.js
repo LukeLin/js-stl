@@ -863,6 +863,10 @@ bst2.split(45);
 
  */
 
+var LH = 1;     // 左高
+var EH = 0;     // 等高
+var RH = -1;    // 右高
+
 /**
  * AVL树，平衡二叉排序树
  * @param {*} data
@@ -939,5 +943,88 @@ BBSTNode.prototype = {
         this.balanceFactor = b.balanceFactor = 0;
 
         return b;
+    },
+
+    insert: function (elem) {
+        if (this.data == null) {
+            this.data = elem;
+            this.leftChild = this.rightChild = null;
+            this.balanceFactor = 0;
+            return;
+        }
+
+        var s = new BBSTNode(elem, null, null, 0);
+        // a指向离s最近且平衡因子不为0的结点
+        var a = this;
+        var p = this;
+        // f指向a的父结点
+        var f = null;
+        // q指向p的父结点
+        var q = null;
+
+        // 找插入位置q结点
+        while (p) {
+            // 结点已存在
+            if (s.data === p.data) return;
+
+            if (p.balanceFactor !== 0) {
+                a = p;
+                f = q;
+            }
+            q = p;
+
+            if (s.data < p.data) p = p.leftChild;
+            else p = p.rightChild;
+        }
+
+        // s插入到q结点的左或右子树
+        if (s.data < q.data) q.leftChild = s;
+        else q.rightChild = s;
+
+        p = a;
+
+        // 改变最近且平衡因子不为0的结点到插入结点的路径所有结点平衡因子
+        // 插入到左子树，平衡因子加1，右子树平衡因子减1
+        while (p != s) {
+            if (s.data < p.data) {
+                ++p.balanceFactor;
+                p = p.leftChild;
+            } else {
+                --p.balanceFactor;
+                p = p.rightChild;
+            }
+        }
+
+        // 未失平衡，不做调整
+        if (a.balanceFactor > -2 && a.balanceFactor < 2) return;
+
+        // 根据情况做旋转平衡
+        var b;
+        if (a.balanceFactor === 2) {
+            b = a.leftChild;
+            if (b.balanceFactor === 1) p = a.rotate_LL();
+            else p = a.rotate_LR();
+        } else {
+            b = a.rightChild;
+            if (b.balanceFactor === 1) p = a.rotate_RL();
+            else p = a.rotate_RR();
+        }
+
+        // todo 这里存在循环引用，导致bug了。。
+        // p为根结点
+        if (!f) {
+            this.data = p.data;
+            this.leftChild = p.leftChild;
+            this.rightChild = p.rightChild;
+            this.balanceFactor = p.balanceFactor;
+        } else if (f.leftChild == a) f.leftChild = p;
+        else f.rightChild = p;
     }
 };
+
+var test = new BBSTNode();
+test.insert(3);
+test.insert(14);
+test.insert(25);
+test.insert(81);
+test.insert(44);
