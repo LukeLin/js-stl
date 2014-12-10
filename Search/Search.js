@@ -877,7 +877,7 @@ var RH = -1;    // 右高
  */
 function BBSTNode(data, leftChild, rightChild, balanceFactor) {
     BinaryTree.call(this, data, leftChild, rightChild);
-    this.balanceFactor = balanceFactor;
+    this.balanceFactor = balanceFactor || 0;
 }
 exports.BBSTNode = BBSTNode;
 exports.AVLNode = BBSTNode;
@@ -885,6 +885,11 @@ BBSTNode.prototype = {
     constructor: BBSTNode,
     __proto__: BinaryTree.prototype,
 
+    /**
+     *
+     * 在结点a的左孩子的左子树上进行插入
+     * @returns {BSTNode|*}
+     */
     rotate_LL: function () {
         var b = this.leftChild;
         this.leftChild = b.rightChild;
@@ -894,6 +899,10 @@ BBSTNode.prototype = {
         return b;
     },
 
+    /**
+     *  在结点a的左孩子的右子树上进行插入
+     * @returns {BSTNode|*}
+     */
     rotate_LR: function () {
         var b = this.leftChild;
         var c = b.rightChild;
@@ -915,6 +924,10 @@ BBSTNode.prototype = {
         return c;
     },
 
+    /**
+     * 在结点a的右孩子的左子树上进行插入
+     * @returns {BSTNode|*}
+     */
     rotate_RL: function () {
         var b = this.rightChild;
         var c = b.leftChild;
@@ -936,6 +949,10 @@ BBSTNode.prototype = {
         return c;
     },
 
+    /**
+     * 在结点a的左孩子的右子树上进行插入
+     * @returns {BSTNode|*}
+     */
     rotate_RR: function () {
         var b = this.rightChild;
         this.rightChild = b.leftChild;
@@ -1010,8 +1027,11 @@ BBSTNode.prototype = {
             else p = a.rotate_RR();
         }
 
-        // todo 这里存在循环引用，导致bug了。。
         // p为根结点
+        // 深度拷贝，预防循环引用
+        p = p.copyBinaryTree_stack(function (target, source) {
+            target.balanceFactor = source.balanceFactor;
+        });
         if (!f) {
             this.data = p.data;
             this.leftChild = p.leftChild;
@@ -1022,9 +1042,23 @@ BBSTNode.prototype = {
     }
 };
 
+console.log('\nAVL tree insert1: ');
 var test = new BBSTNode();
 test.insert(3);
 test.insert(14);
 test.insert(25);
 test.insert(81);
 test.insert(44);
+test.inOrderTraverse(function(data){
+    console.log(data);
+});
+
+/*
+      14
+    /    \
+  3       44
+         /   \
+       25     81
+ */
+
+
