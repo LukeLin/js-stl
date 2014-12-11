@@ -877,7 +877,7 @@ var RH = -1;    // 右高
  */
 function BBSTNode(data, leftChild, rightChild, balanceFactor) {
     BinaryTree.call(this, data, leftChild, rightChild);
-    this.balanceFactor = balanceFactor || 0;
+    this.balanceFactor = balanceFactor || EH;
 }
 exports.BBSTNode = BBSTNode;
 exports.AVLNode = BBSTNode;
@@ -888,19 +888,36 @@ BBSTNode.prototype = {
     /**
      *
      * 在结点a的左孩子的左子树上进行插入
+     *          a                           b
+     *        /   \                       /   \
+     *       b    aR       --->          bL    a
+     *     /  \                          |    /  \
+     *    bL   bR                        x   bR  aR
+     *    |
+     *    x
      * @returns {BSTNode|*}
      */
-    rotate_LL: function () {
+    rotate_LL: function rRotate() {
         var b = this.leftChild;
         this.leftChild = b.rightChild;
         b.rightChild = this;
-        this.balanceFactor = b.balanceFactor = 0;
+        this.balanceFactor = b.balanceFactor = EH;
 
         return b;
     },
 
     /**
      *  在结点a的左孩子的右子树上进行插入
+     *         a                            c
+     *       /   \                        /   \
+     *      b    aR                      b     a
+     *    /  \                         /  \   /  \
+     *   bL   c           ---->       bL  cL cR  aR
+     *       / \                           |  |
+     *      cL cR                          x  x
+     *      |   |
+     *      x   x
+     *
      * @returns {BSTNode|*}
      */
     rotate_LR: function () {
@@ -911,14 +928,14 @@ BBSTNode.prototype = {
         c.leftChild = b;
         c.rightChild = this;
 
-        if (c.balanceFactor === 1) {
-            this.balanceFactor = -1;
-            b.balanceFactor = 0;
-        } else if (c.balanceFactor === 0) {
-            this.balanceFactor = b.balanceFactor = 0;
+        if (c.balanceFactor === LH) {
+            this.balanceFactor = RH;
+            b.balanceFactor = EH;
+        } else if (c.balanceFactor === EH) {
+            this.balanceFactor = b.balanceFactor = EH;
         } else {
-            this.balanceFactor = 0;
-            b.balanceFactor = 1;
+            this.balanceFactor = EH;
+            b.balanceFactor = LH;
         }
 
         return c;
@@ -926,6 +943,16 @@ BBSTNode.prototype = {
 
     /**
      * 在结点a的右孩子的左子树上进行插入
+     *        a                                     c
+     *      /   \                                 /   \
+     *     aL    b                               a     b
+     *          / \                             / \   / \
+     *         c   bR          ---->           aL cL cR bR
+     *        / \                                 |  |
+     *       cL cR                                x  x
+     *       |  |
+     *       x  x
+     *
      * @returns {BSTNode|*}
      */
     rotate_RL: function () {
@@ -936,14 +963,14 @@ BBSTNode.prototype = {
         c.rightChild = b;
         c.leftChild = this;
 
-        if (c.balanceFactor === 1) {
-            this.balanceFactor = 0;
-            b.balanceFactor = -1;
-        } else if (c.balanceFactor === 0) {
-            this.balanceFactor = b.balanceFactor = 0;
+        if (c.balanceFactor === LH) {
+            this.balanceFactor = EH;
+            b.balanceFactor = RH;
+        } else if (c.balanceFactor === EH) {
+            this.balanceFactor = b.balanceFactor = EH;
         } else {
-            this.balanceFactor = 1;
-            b.balanceFactor = 0;
+            this.balanceFactor = LH;
+            b.balanceFactor = EH;
         }
 
         return c;
@@ -951,13 +978,21 @@ BBSTNode.prototype = {
 
     /**
      * 在结点a的左孩子的右子树上进行插入
+     *        a                                   b
+     *       / \                                 /  \
+     *     aL   b                               a    bR
+     *         /  \           ---->            / \   |
+     *        bL  bR                          aL bL  x
+     *             |
+     *             x
+     *
      * @returns {BSTNode|*}
      */
-    rotate_RR: function () {
+    rotate_RR: function lRotate() {
         var b = this.rightChild;
         this.rightChild = b.leftChild;
         b.leftChild = this;
-        this.balanceFactor = b.balanceFactor = 0;
+        this.balanceFactor = b.balanceFactor = EH;
 
         return b;
     },
@@ -966,11 +1001,11 @@ BBSTNode.prototype = {
         if (this.data == null) {
             this.data = elem;
             this.leftChild = this.rightChild = null;
-            this.balanceFactor = 0;
+            this.balanceFactor = EH;
             return;
         }
 
-        var s = new BBSTNode(elem, null, null, 0);
+        var s = new BBSTNode(elem, null, null, EH);
         // a指向离s最近且平衡因子不为0的结点
         var a = this;
         var p = this;
@@ -984,7 +1019,7 @@ BBSTNode.prototype = {
             // 结点已存在
             if (s.data === p.data) return;
 
-            if (p.balanceFactor !== 0) {
+            if (p.balanceFactor !== EH) {
                 a = p;
                 f = q;
             }
@@ -1019,11 +1054,11 @@ BBSTNode.prototype = {
         var b;
         if (a.balanceFactor === 2) {
             b = a.leftChild;
-            if (b.balanceFactor === 1) p = a.rotate_LL();
+            if (b.balanceFactor === LH) p = a.rotate_LL();
             else p = a.rotate_LR();
         } else {
             b = a.rightChild;
-            if (b.balanceFactor === 1) p = a.rotate_RL();
+            if (b.balanceFactor === LH) p = a.rotate_RL();
             else p = a.rotate_RR();
         }
 
@@ -1039,7 +1074,9 @@ BBSTNode.prototype = {
             this.balanceFactor = p.balanceFactor;
         } else if (f.leftChild == a) f.leftChild = p;
         else f.rightChild = p;
-    }
+    },
+
+    search: function(elem){}
 };
 
 console.log('\nAVL tree insert1: ');
@@ -1062,3 +1099,89 @@ test.inOrderTraverse(function(data){
  */
 
 
+/*
+另一种平衡二叉树的插入方法
+分左平衡旋转和右平衡旋转，左平衡包括LL, LR，右平衡包括RL, RR
+ */
+BBSTNode.prototype.leftBalance = function(){
+    var c = this.leftChild;
+    var p;
+    switch(c.balanceFactor){
+        case LH:
+            this.balanceFactor = c.balanceFactor = EH;
+            p = this.rotate_LL();
+            break;
+        case RH:
+            var b = c.rightChild;
+            switch(b.balanceFactor){
+                case LH:
+                    this.balanceFactor = RH;
+                    c.balanceFactor = EH;
+                    break;
+                case EH:
+                    this.balanceFactor = c.balanceFactor = EH;
+                    break;
+                case RH:
+                    this.balanceFactor = EH;
+                    c.balanceFactor = LH;
+                    break;
+                default:
+                    break;
+            }
+
+            b.balanceFactor = EH;
+            this.leftChild = this.leftChild.rotate_RR();
+            p = this.rotate_LL();
+            break;
+        default: break;
+    }
+
+    return p;
+};
+
+BBSTNode.prototype.rightBalance = function(){
+    var c = this.rightChild;
+    var p;
+    switch(c.balanceFactor){
+        case RH:
+            this.balanceFactor = c.balanceFactor = EH;
+            p = this.rotate_RR();
+            break;
+        case LH:
+            var b = c.leftChild;
+            switch(b.balanceFactor){
+                case LH:
+                    this.balanceFactor = EH;
+                    c.balanceFactor = RH;
+                    break;
+                case EH:
+                    this.balanceFactor = c.balanceFactor = EH;
+                    break;
+                case RH:
+                    this.balanceFactor = LH;
+                    c.balanceFactor = EH;
+                    break;
+                default:
+                    break;
+            }
+
+            b.balanceFactor = EH;
+            this.rightChild = this.rightChild.rotate_LL();
+            p = this.rotate_RR();
+            break;
+        default: break;
+    }
+
+    return p;
+};
+
+// todo
+BBSTNode.prototype.insert2 = function(elem){
+    var taller = true;
+    if(!this.data) {
+        this.data = elem;
+        this.balanceFactor = EH;
+    } else {
+
+    }
+};
