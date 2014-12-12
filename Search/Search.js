@@ -1076,7 +1076,7 @@ BBSTNode.prototype = {
         else f.rightChild = p;
     },
 
-    search: function(elem){}
+    search: function (elem) {}
 };
 
 console.log('\nAVL tree insert1: ');
@@ -1086,7 +1086,7 @@ test.insert(14);
 test.insert(25);
 test.insert(81);
 test.insert(44);
-test.inOrderTraverse(function(data){
+test.inOrderTraverse(function (data) {
     console.log(data);
 });
 
@@ -1103,17 +1103,27 @@ test.inOrderTraverse(function(data){
 另一种平衡二叉树的插入方法
 分左平衡旋转和右平衡旋转，左平衡包括LL, LR，右平衡包括RL, RR
  */
-BBSTNode.prototype.leftBalance = function(){
+
+/**
+ * 左平衡处理
+ * @returns {BBSTNode} 返回新的根结点
+ */
+BBSTNode.prototype.leftBalance = function () {
     var c = this.leftChild;
     var p;
-    switch(c.balanceFactor){
+
+    // 检查左子树的平衡度
+    switch (c.balanceFactor) {
+        // 如果新结点插入到左孩子的左子树上，要做单右旋处理
         case LH:
             this.balanceFactor = c.balanceFactor = EH;
             p = this.rotate_LL();
             break;
+        // 如果新结点插入到左孩子的右子树上，要做双旋处理
         case RH:
             var b = c.rightChild;
-            switch(b.balanceFactor){
+            // 修改当前结点和左孩子的平衡因子
+            switch (b.balanceFactor) {
                 case LH:
                     this.balanceFactor = RH;
                     c.balanceFactor = EH;
@@ -1130,26 +1140,34 @@ BBSTNode.prototype.leftBalance = function(){
             }
 
             b.balanceFactor = EH;
+            // 对当前结点的左子树做左旋平衡处理
             this.leftChild = this.leftChild.rotate_RR();
+            // 对当前结点做右旋平衡处理
             p = this.rotate_LL();
             break;
-        default: break;
+        default:
+            break;
     }
 
     return p;
 };
 
-BBSTNode.prototype.rightBalance = function(){
+/**
+ * 右平衡处理
+ * @returns {BBSTNode} 返回新的根结点
+ */
+BBSTNode.prototype.rightBalance = function () {
     var c = this.rightChild;
     var p;
-    switch(c.balanceFactor){
+
+    switch (c.balanceFactor) {
         case RH:
             this.balanceFactor = c.balanceFactor = EH;
             p = this.rotate_RR();
             break;
         case LH:
             var b = c.leftChild;
-            switch(b.balanceFactor){
+            switch (b.balanceFactor) {
                 case LH:
                     this.balanceFactor = EH;
                     c.balanceFactor = RH;
@@ -1169,19 +1187,131 @@ BBSTNode.prototype.rightBalance = function(){
             this.rightChild = this.rightChild.rotate_LL();
             p = this.rotate_RR();
             break;
-        default: break;
+        default:
+            break;
     }
 
     return p;
 };
 
-// todo
-BBSTNode.prototype.insert2 = function(elem){
+/**
+ * AVL树的递归插入算法
+ * @param {*} elem 待插入的关键字
+ * @returns {{success: boolean, taller: boolean}} success表示是否插入成功，taller表示树是否有长高
+ */
+BBSTNode.prototype.insert_recurse = function (elem) {
     var taller = true;
-    if(!this.data) {
+    var success = false;
+
+    // 插入的新结点， 树长高
+    if (!this.data) {
         this.data = elem;
         this.balanceFactor = EH;
+        success = true;
     } else {
+        var ret, p;
+        // 树中已存在相同关键字的结点，退出
+        if (elem === this.data) {
+            taller = false;
+            success = false;
+        }
+        // 左子树中进行搜索
+        else if (elem < this.data) {
+            this.leftChild = this.leftChild || new BBSTNode();
+            ret = this.leftChild.insert_recurse(elem);
+            taller = ret.taller;
+            success = ret.success;
 
+            // 已插入到左子树中且左子树长高了
+            if (success && taller) {
+                // 检查当前结点的平衡度
+                switch (this.balanceFactor) {
+                    // 如果左子树比右子树高，需要做左平衡处理
+                    case LH:
+                        p = this.leftBalance();
+                        taller = false;
+                        break;
+                    // 如果等高， 左子树的增高使得树也增高了
+                    case EH:
+                        this.balanceFactor = LH;
+                        taller = true;
+                        break;
+                    // 如果右子树比左子树高，现在就等高了
+                    case RH:
+                        this.balanceFactor = EH;
+                        taller = false;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        // 右子树中进行搜索
+        else {
+            this.rightChild = this.rightChild || new BBSTNode();
+            ret = this.rightChild.insert_recurse(elem);
+            taller = ret.taller;
+            success = ret.success;
+
+            // 已插入到右子树中且右子树长高了
+            if (success && taller) {
+                // 检查当前结点的平衡度
+                switch (this.balanceFactor) {
+                    // 如果原本左子树比右子树高，现在就等高了
+                    case LH:
+                        this.balanceFactor = EH;
+                        taller = false;
+                        break;
+                    // 如果原本等高，现在就是右子树高了
+                    case EH:
+                        this.balanceFactor = RH;
+                        taller = true;
+                        break;
+                    // 如果右子树高，现因右子树又高了，做右平衡处理
+                    case RH:
+                        p = this.rightBalance();
+                        taller = false;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        // 如果做了平衡处理，则深度拷贝
+        if (p) {
+            p = p.copyBinaryTree_stack(function (target, source) {
+                target.balanceFactor = source.balanceFactor;
+            });
+            this.data = p.data;
+            this.leftChild = p.leftChild;
+            this.rightChild = p.rightChild;
+            this.balanceFactor = p.balanceFactor;
+        }
     }
+
+    return {
+        success: success,
+        taller: taller
+    };
 };
+
+
+console.log('\nAVL tree insert2: ');
+var test = new BBSTNode();
+test.insert_recurse(3);
+test.insert_recurse(14);
+test.insert_recurse(25);
+test.insert_recurse(81);
+test.insert_recurse(44);
+test.inOrderTraverse(function (data) {
+    console.log(data);
+});
+
+/*
+      14
+    /    \
+  3       44
+         /   \
+       25     81
+ */
