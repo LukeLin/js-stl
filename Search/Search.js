@@ -1360,8 +1360,7 @@ B-树主要用于文件系统中，在B-树中，每个结点的大小为一个�
 
  */
 
-var M = 5
-；
+var M = 5;
 
 function BTNode() {
     // 关键字向量
@@ -1398,7 +1397,7 @@ BTNode.prototype = {
 
      在含有n个关键字的B_树上进行查找时，从根结点到待查找记录关键字的结点的路径上所涉及的结点数不超过1+ ㏒Math.floor(m/2)((n+1)/2) 。
 
-     * 
+     *
      * @param key
      * @returns {{node: BTNode, index: number, success: boolean}}
      */
