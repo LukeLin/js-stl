@@ -391,18 +391,7 @@ BSTNode.prototype = {
      * @param {*} key
      * @returns {*}
      */
-    search_nonRecurse: function (key) {
-        if (this.data == null) return null;
-
-        var p = this;
-        while (p && p.data !== key) {
-            if (key < p.data) p = p.leftChild;
-            else p = p.rightChild;
-        }
-
-        if (!p || key !== p.data) return null;
-        else return p;
-    },
+    search_nonRecurse: search_nonRecurse,
 
     /**
      * BST树的插入（递归）
@@ -608,6 +597,19 @@ BSTNode.prototype = {
         return [a, b];
     }
 };
+
+function search_nonRecurse(key) {
+    if (this.data == null) return null;
+
+    var p = this;
+    while (p && p.data !== key) {
+        if (key < p.data) p = p.leftChild;
+        else p = p.rightChild;
+    }
+
+    if (!p || key !== p.data) return null;
+    else return p;
+}
 
 /**
  * 判断tree是否是二叉排序树
@@ -1076,7 +1078,7 @@ BBSTNode.prototype = {
         else f.rightChild = p;
     },
 
-    search: function (elem) {}
+    search: search_nonRecurse
 };
 
 console.log('\nAVL tree insert1: ');
@@ -1355,4 +1357,71 @@ B-树主要用于文件系统中，在B-树中，每个结点的大小为一个�
 (n，A0，K1，A1，K2，A2，… ，Kn，An)
 其中Ki(1≤i≤n)是关键字，且Ki<Ki+1 (1≤i≤n-1)；Ai(i=0，1，… ，n)为指向孩子结点的指针，且Ai-1所指向的子树中所有结点的关键字都小于Ki ，Ai所指向的子树中所有结点的关键字都大于Ki ；n是结点中关键字的个数，且Math.ceil(m/2)-1≤n≤m-1，n+1为子树的棵数。
 当然，在实际应用中每个结点中还应包含n个指向每个关键字的记录指针.
+
  */
+
+var M = 5
+；
+
+function BTNode() {
+    // 关键字向量
+    this.data = new Array(M);
+    // 子树指针向量
+    this.ptr = new Array(M);
+    // 记录指针向量
+    this.recptr = new Array(M);
+}
+exports.BTNode = BTNode;
+BTNode.prototype = {
+    constructor: BTNode,
+
+    /**
+     * 2  B_树的查找
+
+     由B_树的定义可知，在其上的查找过程和二叉排序树的查找相似。
+
+     ⑴ 算法思想
+     ① 从树的根结点T开始，在T所指向的结点的关键字向量key[1…keynum]中查找给定值K(用折半查找) ：
+         若key[i]=K(1≤i≤keynum)，则查找成功，返回结点及关键字位置；否则，转⑵；
+         ② 将K与向量key[1…keynum]中的各个分量的值进行比较，以选定查找的子树：
+             ◆  若K<key[0]：T=T->ptr[0]；
+             ◆ 若key[i]<K<key[i+1](i=0， 1, 2, …keynum-2)：
+             T=T->ptr[i]；
+             ◆ 若K>key[keynum-1]：T=T->ptr[keynum-1]；
+         转①，直到T是叶子结点且未找到相等的关键字，则查找失败。
+
+     算法分析
+
+     在B_树上的查找有两中基本操作：
+     ◆  在B_树上查找结点(查找算法中没有体现)；
+     ◆  在结点中查找关键字：在磁盘上找到指针ptr所指向的结点后，将结点信息读入内存后再查找。因此，磁盘上的查找次数(待查找的记录关键字在B_树上的层次数)是决定B_树查找效率的首要因素。
+
+     在含有n个关键字的B_树上进行查找时，从根结点到待查找记录关键字的结点的路径上所涉及的结点数不超过1+ ㏒Math.floor(m/2)((n+1)/2) 。
+
+     * 
+     * @param key
+     * @returns {{node: BTNode, index: number, success: boolean}}
+     */
+    search: function (key) {
+        var p = this;
+        var q = null;
+        var found = false;
+        var i = -1;
+
+        while (p && !found) {
+            i = binarySearch(this.data, key);
+            if (i > 0 && this.data[i] === key) found = true;
+            else {
+                q = p;
+                p = p.ptr[i];
+            }
+        }
+
+        return {
+            node: found ? p : q,
+            index: i,
+            success: found
+        };
+    }
+
+};
