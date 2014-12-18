@@ -1363,6 +1363,7 @@ B-树主要用于文件系统中，在B-树中，每个结点的大小为一个�
 var M = 5;
 
 function BTNode() {
+    this.keynum = 0;
     // 关键字向量
     this.data = new Array(M);
     // 子树指针向量
@@ -1419,8 +1420,88 @@ BTNode.prototype = {
         return {
             node: found ? p : q,
             index: i,
-            success: found
+            found: found
         };
+    },
+    /*
+     B_树的插入
+
+     B_树的生成也是从空树起，逐个插入关键字。插入时不是每插入一个关键字就添加一个叶子结点，而是首先在最低层的某个叶子结点中添加一个关键字，然后有可能“分裂”。
+
+     ⑴ 插入思想
+     ① 在B_树的中查找关键字K，若找到，表明关键字已存在，返回；否则，K的查找操作失败于某个叶子结点，转 ②；
+     ② 将K插入到该叶子结点中，插入时，若：
+        ◆  叶子结点的关键字数<m-1：直接插入；
+        ◆ 叶子结点的关键字数=m-1：将结点“分裂” 。
+
+     ⑵ 结点“分裂”方法
+     设待“分裂”结点包含信息为：
+     (m，A0，K1，A1，K2，A2，… ，Km，Am)，从其中间位置分为两个结点：
+     (Math.floor(m/2)-1，A0，K1，A1，… ，K Math.floor(m/2)-1 ，A Math.floorm/2)-1 )
+     (m-Math.floor(m/2)，A Math.floor(m/2)，K Math.floor(m/2)+1，A Math.floor(m/2)+1 ，… ，Km，Am )
+
+     并将中间关键字K Math.floor(m/2)插入到p的父结点中，以分裂后的两个结点作为中间关键字K Math.floor(m/2)的两个子结点。
+     当将中间关键字K Math.floor(m/2)插入到p的父结点后，父结点也可能不满足m阶B_树的要求(分枝数大于m)，则必须对父结点进行“分裂”，一直进行下去，直到没有父结点或分裂后的父结点满足m阶B_树的要求。
+     当根结点分裂时，因没有父结点，则建立一个新的根，B_树增高一层。
+
+
+     ⑶ 算法实现
+     要实现插入，首先必须考虑结点的分裂。设待分裂的结点是p，分裂时先开辟一个新结点，依此将结点p中后半部分的关键字和指针移到新开辟的结点中。分裂之后，而需要插入到父结点中的关键字在p的关键字向量的p->keynum位置上。
+     */
+    insert: function(elem){
+        var ret = this.search(elem);
+        var s1 = null;
+        var s2 = null;
+
+        if(!ret.found) {
+            var p = ret.node;
+
+            while(p){
+                p.data[-1] = elem;
+
+                // 后移关键字和指针
+                for(var n = p.keynum - 1; elem < p.data[n]; --n){
+                    p.data[n + 1] = p.data[n];
+                    p.ptr[n + 1] = p.ptr[n];
+                }
+
+                // 置关键字的左右指针
+                p.data[n] = elem;
+                p.ptr[n - 1] = s1;
+                p.ptr[n + 1] = s2;
+
+                if(++p.keynum < M) break;
+                else {
+                    s2 = p.split();
+                    s1 = p;
+                    p = p.parent;
+                }
+
+                if(!P) {
+                    p = new BTNode();
+                    p.keynum = 1;
+                    p.data[0] = elem;
+                    p.ptr[0] = s1;
+                    p.ptr[1] = s2;
+                }
+            }
+        }
+    },
+
+    split: function(){
+        var q = new BTNode();
+        var mid = Math.floor(M + 1) / 2;
+        q.ptr[-1] = this.ptr[mid];
+
+        for(var i = 0, k = mid + 1; k < M; ++k){
+            q.data[i] = this.data[k];
+            q.ptr[i++] = this.ptr[k];
+        }
+
+        q.keynum = M - mid;
+        this.keynum = mid - 1;
+
+        return q;
     }
 
 };
