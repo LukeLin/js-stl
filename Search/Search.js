@@ -1360,7 +1360,7 @@ B-树主要用于文件系统中，在B-树中，每个结点的大小为一个�
 
  */
 
-var M = 5;
+var M = 3;
 
 function BTNode() {
     this.keynum = 0;
@@ -1370,6 +1370,7 @@ function BTNode() {
     this.ptr = new Array(M);
     // 记录指针向量
     this.recptr = new Array(M);
+    this.parent = null;
 }
 exports.BTNode = BTNode;
 BTNode.prototype = {
@@ -1448,6 +1449,10 @@ BTNode.prototype = {
      ⑶ 算法实现
      要实现插入，首先必须考虑结点的分裂。设待分裂的结点是p，分裂时先开辟一个新结点，依此将结点p中后半部分的关键字和指针移到新开辟的结点中。分裂之后，而需要插入到父结点中的关键字在p的关键字向量的p->keynum位置上。
      */
+    /**
+     * todo bug exists
+     * @param elem
+     */
     insert: function(elem){
         var ret = this.search(elem);
         var s1 = null;
@@ -1460,7 +1465,7 @@ BTNode.prototype = {
                 p.data[-1] = elem;
 
                 // 后移关键字和指针
-                for(var n = p.keynum - 1; elem < p.data[n]; --n){
+                for(var n = p.keynum; elem < p.data[n]; --n){
                     p.data[n + 1] = p.data[n];
                     p.ptr[n + 1] = p.ptr[n];
                 }
@@ -1475,14 +1480,14 @@ BTNode.prototype = {
                     s2 = p.split();
                     s1 = p;
                     p = p.parent;
-                }
 
-                if(!P) {
-                    p = new BTNode();
-                    p.keynum = 1;
-                    p.data[0] = elem;
-                    p.ptr[0] = s1;
-                    p.ptr[1] = s2;
+                    if(!p) {
+                        p = new BTNode();
+                        p.keynum = 1;
+                        p.data[0] = elem;
+                        p.ptr[0] = s1;
+                        p.ptr[1] = s2;
+                    }
                 }
             }
         }
@@ -1505,3 +1510,10 @@ BTNode.prototype = {
     }
 
 };
+
+var bt = new BTNode();
+bt.insert('f');
+bt.insert('b');
+bt.insert('h');
+bt.insert('m');
+bt.insert('d');
