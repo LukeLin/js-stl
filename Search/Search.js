@@ -469,11 +469,11 @@ BSTNode.prototype = {
             if (this.data === key) return deleteNode(this, parent);
             // 查找左子树，如果有的话
             else if (key < this.data) {
-                if (this.leftChild) return deleteBST.call(this.leftChild, key, this);
+                if (this.leftChild) return this.leftChild['delete'](key, this);
             }
             // 查找右子树，如果有的话
             else {
-                if (this.rightChild) return deleteBST.call(this.rightChild, key, this);
+                if (this.rightChild) return this.rightChild['delete'](key, this);
             }
         }
 
@@ -1078,7 +1078,106 @@ BBSTNode.prototype = {
         else f.rightChild = p;
     },
 
-    search: search_nonRecurse
+    search: search_nonRecurse,
+
+    // http://blog.chinaunix.net/uid-14348211-id-2821139.html
+    'delete': function(elem, parent){
+        var unbalanced = false;
+        var success = false;
+        var ret;
+
+        if(this.data === elem) {
+            unbalanced = true;
+            var p;
+
+            if(!this.rightChild && !this.leftChild){
+                if(parent) {
+                    var pos = parent.leftChild == this ? 'leftChild' : 'rightChild';
+                    parent[pos] = null;
+                } else this.data = null;
+            } else if(this.rightChild && !this.leftChild){
+                p = this.rightChild;
+                this.data = p.data;
+                this.leftChild = p.leftChild;
+                this.rightChild = p.rightChild;
+                this.balanceFactor = p.balanceFactor;
+            } else if(this.leftChild && !this.rightChild){
+                p = this.leftChild;
+                this.data = p.data;
+                this.leftChild = p.leftChild;
+                this.rightChild = p.rightChild;
+                this.balanceFactor = p.balanceFactor;
+            } else {
+                p = this.rightChild;
+                while (p.leftChild) p = p.leftChild;
+                var temp = p.data;
+                p.data = this.data;
+                this.data = temp;
+
+                ret = this.rightChild['delete'](elem, this);
+                unbalanced = ret.unbalanced;
+            }
+
+            success = true;
+        } else if(elem > this.data){
+            if(!this.rightChild) {
+                success = false;
+            } else {
+                ret = this.rightChild['delete'](elem, this);
+                success = ret.success;
+                unbalanced = ret.unbalanced;
+
+                if(success && unbalanced) {
+                    switch(this.balanceFactor){
+                        case EH:
+                            this.balanceFactor = LH;
+                            unbalanced = false;
+                            break;
+                        case RH:
+                            this.balanceFactor = EH;
+                            unbalanced = false;
+                            break;
+                        case LH:
+                            this.rotate_RR();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        } else {
+            if(!this.leftChild) {
+                success = false;
+            } else {
+                ret = this.leftChild['delete'](elem, this);
+                success = ret.success;
+                unbalanced = ret.unbalanced;
+
+                if(success && unbalanced){
+                    switch(this.balanceFactor){
+                        case EH:
+                            this.balanceFactor = RH;
+                            unbalanced = false;
+                            break;
+                        case LH:
+                            this.balanceFactor = EH;
+                            unbalanced = false;
+                            break;
+                        case RH:
+                            this.rotate_LL();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        return {
+            success: success,
+            unbalanced: unbalanced
+        };
+    }
 };
 
 console.log('\nAVL tree insert1: ');
@@ -1091,6 +1190,17 @@ test.insert(44);
 test.inOrderTraverse(function (data) {
     console.log(data);
 });
+
+console.log('search: ');
+console.log(test.search(44));
+
+console.log('delete: ');
+test.delete(1);
+test.delete(44);
+test.delete(81);
+test.delete(25);
+test.delete(14);
+test.delete(3);
 
 /*
       14
