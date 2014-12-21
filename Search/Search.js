@@ -1429,6 +1429,8 @@ test.inOrderTraverse(function (data) {
  */
 
 
+// todo insert() and insert_recurse() methods have bugs...
+// took me a day to find bug, but failed.. f**k!
 console.log('delete 2:');
 
 var str = 'ckbfjlaegmdh';
