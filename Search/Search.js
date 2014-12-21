@@ -923,6 +923,7 @@ BBSTNode.prototype = {
      * @returns {BSTNode|*}
      */
     rotate_LR: function () {
+        debugger;
         var b = this.leftChild;
         var c = b.rightChild;
         this.leftChild = c.rightChild;
@@ -979,7 +980,7 @@ BBSTNode.prototype = {
     },
 
     /**
-     * 在结点a的左孩子的右子树上进行插入
+     * 在结点a的右孩子的右子树上进行插入
      *        a                                   b
      *       / \                                 /  \
      *     aL   b                               a    bR
@@ -1080,7 +1081,7 @@ BBSTNode.prototype = {
 
     search: search_nonRecurse,
 
-    // http://blog.chinaunix.net/uid-14348211-id-2821139.html
+    //
     'delete': function(elem, parent){
         var unbalanced = false;
         var success = false;
@@ -1094,7 +1095,10 @@ BBSTNode.prototype = {
                 if(parent) {
                     var pos = parent.leftChild == this ? 'leftChild' : 'rightChild';
                     parent[pos] = null;
+                    if(pos == 'leftChild') --parent.balanceFactor;
+                    else ++parent.balanceFactor;
                 } else this.data = null;
+                unbalanced = false;
             } else if(this.rightChild && !this.leftChild){
                 p = this.rightChild;
                 this.data = p.data;
@@ -1138,6 +1142,7 @@ BBSTNode.prototype = {
                             unbalanced = false;
                             break;
                         case LH:
+                            debugger;
                             this.rotate_RR();
                             break;
                         default:
@@ -1164,6 +1169,7 @@ BBSTNode.prototype = {
                             unbalanced = false;
                             break;
                         case RH:
+                            debugger;
                             this.rotate_LL();
                             break;
                         default:
@@ -1180,6 +1186,7 @@ BBSTNode.prototype = {
     }
 };
 
+
 console.log('\nAVL tree insert1: ');
 var test = new BBSTNode();
 test.insert(3);
@@ -1194,13 +1201,6 @@ test.inOrderTraverse(function (data) {
 console.log('search: ');
 console.log(test.search(44));
 
-console.log('delete: ');
-test.delete(1);
-test.delete(44);
-test.delete(81);
-test.delete(25);
-test.delete(14);
-test.delete(3);
 
 /*
       14
@@ -1427,6 +1427,32 @@ test.inOrderTraverse(function (data) {
          /   \
        25     81
  */
+
+
+console.log('delete 2:');
+
+var str = 'ckbfjlaegmdh';
+
+test = new BBSTNode();
+for(var i = 0; i < str.length; ++i){
+    test.insert(str[i]);
+}
+
+var test2 = new BBSTNode();
+for(var i = 0; i < str.length; ++i){
+    test2.insert_recurse(str[i]);
+}
+
+test.delete('a');
+test.delete('j');
+test.delete('b');
+test.delete('b');
+
+
+test2.delete('a');
+test2.delete('j');
+test2.delete('b');
+test2.delete('b');
 
 
 /*
