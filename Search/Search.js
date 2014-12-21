@@ -923,7 +923,6 @@ BBSTNode.prototype = {
      * @returns {BSTNode|*}
      */
     rotate_LR: function () {
-        debugger;
         var b = this.leftChild;
         var c = b.rightChild;
         this.leftChild = c.rightChild;
@@ -1023,6 +1022,7 @@ BBSTNode.prototype = {
             if (s.data === p.data) return;
 
             if (p.balanceFactor !== EH) {
+                // todo 难道是这里？
                 a = p;
                 f = q;
             }
