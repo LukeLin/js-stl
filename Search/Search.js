@@ -240,7 +240,7 @@ function secondOptimal(tree, sTable, sWeights, low, high) {
         }
     }
 
-    // 调整树根权，选择邻近权值较大的关键字 todo 代码应该更简
+    // 调整树根权，选择邻近权值较大的关键字
     var a = 0, b, c = 0;
     if (i - 1 >= low)  b = sWeights[i] - sWeights[i - 1];
     if (i - 2 >= low) a = sWeights[i - 1] - sWeights[i - 2];
@@ -940,6 +940,8 @@ BBSTNode.prototype = {
             b.balanceFactor = LH;
         }
 
+        c.balanceFactor = EH;
+
         return c;
     },
 
@@ -974,6 +976,8 @@ BBSTNode.prototype = {
             this.balanceFactor = LH;
             b.balanceFactor = EH;
         }
+
+        c.balanceFactor = EH;
 
         return c;
     },
@@ -1022,7 +1026,6 @@ BBSTNode.prototype = {
             if (s.data === p.data) return;
 
             if (p.balanceFactor !== EH) {
-                // todo 难道是这里？
                 a = p;
                 f = q;
             }
@@ -1087,18 +1090,22 @@ BBSTNode.prototype = {
         var success = false;
         var ret;
 
+        if(this.data == null)
+            return {
+                success: success,
+                unbalanced: unbalanced
+            };
+
         if(this.data === elem) {
             unbalanced = true;
+            success = true;
             var p;
 
             if(!this.rightChild && !this.leftChild){
                 if(parent) {
                     var pos = parent.leftChild == this ? 'leftChild' : 'rightChild';
                     parent[pos] = null;
-                    if(pos == 'leftChild') --parent.balanceFactor;
-                    else ++parent.balanceFactor;
                 } else this.data = null;
-                unbalanced = false;
             } else if(this.rightChild && !this.leftChild){
                 p = this.rightChild;
                 this.data = p.data;
@@ -1119,10 +1126,27 @@ BBSTNode.prototype = {
                 this.data = temp;
 
                 ret = this.rightChild['delete'](elem, this);
+                success = ret.success;
                 unbalanced = ret.unbalanced;
-            }
 
-            success = true;
+                if(success && unbalanced) {
+                    switch(this.balanceFactor){
+                        case EH:
+                            this.balanceFactor = LH;
+                            unbalanced = false;
+                            break;
+                        case RH:
+                            this.balanceFactor = EH;
+                            unbalanced = false;
+                            break;
+                        case LH:
+                            this.rotate_RR();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         } else if(elem > this.data){
             if(!this.rightChild) {
                 success = false;
@@ -1142,7 +1166,6 @@ BBSTNode.prototype = {
                             unbalanced = false;
                             break;
                         case LH:
-                            debugger;
                             this.rotate_RR();
                             break;
                         default:
@@ -1169,7 +1192,6 @@ BBSTNode.prototype = {
                             unbalanced = false;
                             break;
                         case RH:
-                            debugger;
                             this.rotate_LL();
                             break;
                         default:
@@ -1200,6 +1222,13 @@ test.inOrderTraverse(function (data) {
 
 console.log('search: ');
 console.log(test.search(44));
+
+test.delete(25);
+test.delete(14);
+test.delete(81);
+test.delete(44);
+test.delete(3);
+
 
 
 /*
@@ -1311,6 +1340,7 @@ BBSTNode.prototype.rightBalance = function () {
  * @param {*} elem 待插入的关键字
  * @returns {{success: boolean, taller: boolean}} success表示是否插入成功，taller表示树是否有长高
  */
+// todo bug exists
 BBSTNode.prototype.insert_recurse = function (elem) {
     var taller = true;
     var success = false;
@@ -1429,7 +1459,6 @@ test.inOrderTraverse(function (data) {
  */
 
 
-// todo insert() and insert_recurse() methods have bugs...
 // took me a day to find bug, but failed.. f**k!
 console.log('delete 2:');
 
@@ -1449,12 +1478,30 @@ test.delete('a');
 test.delete('j');
 test.delete('b');
 test.delete('b');
+test.delete('l');
+test.delete('f');
+test.delete('d');
+test.delete('k');
+test.delete('g');
+test.delete('m');
+test.delete('c');
+test.delete('e');
+test.delete('h');
 
 
 test2.delete('a');
 test2.delete('j');
 test2.delete('b');
 test2.delete('b');
+test2.delete('l');
+test2.delete('f');
+test2.delete('d');
+test2.delete('k');
+test2.delete('g');
+test2.delete('m');
+test2.delete('c');
+test2.delete('e');
+test2.delete('h');
 
 
 /*
