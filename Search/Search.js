@@ -899,11 +899,11 @@ BBSTNode.prototype = {
      *    x
      * @returns {BSTNode|*}
      */
-    rotate_LL: function rRotate() {
+    rotate_LL: function rRotate(changeBF) {
         var b = this.leftChild;
         this.leftChild = b.rightChild;
         b.rightChild = this;
-        this.balanceFactor = b.balanceFactor = EH;
+        if(changeBF) this.balanceFactor = b.balanceFactor = EH;
 
         return b;
     },
@@ -994,11 +994,11 @@ BBSTNode.prototype = {
      *
      * @returns {BSTNode|*}
      */
-    rotate_RR: function lRotate() {
+    rotate_RR: function lRotate(changeBF) {
         var b = this.rightChild;
         this.rightChild = b.leftChild;
         b.leftChild = this;
-        this.balanceFactor = b.balanceFactor = EH;
+        if(changeBF) this.balanceFactor = b.balanceFactor = EH;
 
         return b;
     },
@@ -1060,12 +1060,12 @@ BBSTNode.prototype = {
         var b;
         if (a.balanceFactor === 2) {
             b = a.leftChild;
-            if (b.balanceFactor === LH) p = a.rotate_LL();
+            if (b.balanceFactor === LH) p = a.rotate_LL(true);
             else p = a.rotate_LR();
         } else {
             b = a.rightChild;
             if (b.balanceFactor === LH) p = a.rotate_RL();
-            else p = a.rotate_RR();
+            else p = a.rotate_RR(true);
         }
 
         // p为根结点
@@ -1116,6 +1116,7 @@ BBSTNode.prototype = {
                 var temp = p.data;
                 p.data = this.data;
                 this.data = temp;
+                // 这一步总感觉有问题，需要多测测
                 var forced = !this.rightChild.rightChild;
 
                 ret = this.rightChild['delete'](elem, this);
@@ -1344,13 +1345,12 @@ BBSTNode.prototype.rightBalance = function () {
  * @param {*} elem 待插入的关键字
  * @returns {{success: boolean, taller: boolean}} success表示是否插入成功，taller表示树是否有长高
  */
-// todo bug exists
 BBSTNode.prototype.insert_recurse = function (elem) {
     var taller = true;
     var success = false;
 
     // 插入的新结点， 树长高
-    if (!this.data) {
+    if (this.data == null) {
         this.data = elem;
         this.balanceFactor = EH;
         success = true;
