@@ -1212,10 +1212,10 @@ BBSTNode.prototype = {
 };
 
 function copyAVLNode(target, source){
-    target.data = source.data;
-    target.leftChild = source.leftChild;
-    target.rightChild = source.rightChild;
-    target.balanceFactor = source.balanceFactor;
+    for(var prop in source){
+        if(!source.hasOwnProperty(prop)) continue;
+        target[prop] = source[prop];
+    }
 }
 
 
