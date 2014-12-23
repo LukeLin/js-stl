@@ -1090,48 +1090,62 @@ BBSTNode.prototype = {
         var success = false;
         var ret;
 
+        // 只有根结点
         if(this.data == null)
             return {
                 success: success,
                 unbalanced: unbalanced
             };
 
+        // 找到当前结点
         if(this.data === elem) {
             unbalanced = true;
             success = true;
             var p;
 
+            // 如果没有左右子树，则删除当前结点
             if(!this.rightChild && !this.leftChild){
                 if(parent) {
                     var pos = parent.leftChild == this ? 'leftChild' : 'rightChild';
                     parent[pos] = null;
-                } else this.data = null;
-            } else if(this.rightChild && !this.leftChild){
+                }
+                // 根结点的情况
+                else this.data = null;
+            }
+            // 有右没左，直接替换
+            else if(this.rightChild && !this.leftChild){
                 copyAVLNode(this, this.rightChild);
-            } else if(this.leftChild && !this.rightChild){
+            }
+            // 有左没右，也直接替换
+            else if(this.leftChild && !this.rightChild){
                 copyAVLNode(this, this.leftChild);
-            } else {
+            }
+            // 既有左子树又有右子树
+            else {
+                // 在右子树的左子树中找到相邻仅小于elem的结点，然后交换值
                 p = this.rightChild;
                 while (p.leftChild) p = p.leftChild;
                 var temp = p.data;
                 p.data = this.data;
                 this.data = temp;
-                // 这一步总感觉有问题，需要多测测
-                var forced = !this.rightChild.rightChild;
 
+                // 从右子树递归删除
                 ret = this.rightChild['delete'](elem, this);
-                unbalanced = forced || ret.unbalanced;
+                unbalanced = ret.unbalanced;
 
+                // 返回的结果产生不平衡，即右子树变矮了，根据情况作调整
                 if(unbalanced) {
                     switch(this.balanceFactor){
+                        // 如果原来等高，现在左子树高了
                         case EH:
                             this.balanceFactor = LH;
                             unbalanced = false;
                             break;
+                        // 如果原来右子树高，现在等高了
                         case RH:
                             this.balanceFactor = EH;
-                            unbalanced = false;
                             break;
+                        // 如果原来左子树高，需要做做平衡处理
                         case LH:
                             p = this.leftBalance().copyBinaryTree_stack(function (target, source) {
                                 target.balanceFactor = source.balanceFactor;
@@ -1143,24 +1157,32 @@ BBSTNode.prototype = {
                     }
                 }
             }
-        } else if(elem > this.data){
+        }
+        // 在右子树中查找
+        else if(elem > this.data){
+            // 没找到
             if(!this.rightChild) {
                 success = false;
-            } else {
+            }
+            // 继续递归查找
+            else {
                 ret = this.rightChild['delete'](elem, this);
                 success = ret.success;
                 unbalanced = ret.unbalanced;
 
+                // 如果产生不平衡，即在右子树中被删除了
                 if(success && unbalanced) {
                     switch(this.balanceFactor){
+                        // 如果原来等高，现在左子树高了
                         case EH:
                             this.balanceFactor = LH;
                             unbalanced = false;
                             break;
+                        // 如果原来右子树高，现在等高了
                         case RH:
                             this.balanceFactor = EH;
-                            unbalanced = false;
                             break;
+                        // 如果原来左子树高，需要做左平衡处理
                         case LH:
                             p = this.leftBalance().copyBinaryTree_stack(function (target, source) {
                                 target.balanceFactor = source.balanceFactor;
@@ -1172,7 +1194,9 @@ BBSTNode.prototype = {
                     }
                 }
             }
-        } else {
+        }
+        // 在左子树中查找
+        else {
             if(!this.leftChild) {
                 success = false;
             } else {
@@ -1188,7 +1212,6 @@ BBSTNode.prototype = {
                             break;
                         case LH:
                             this.balanceFactor = EH;
-                            unbalanced = false;
                             break;
                         case RH:
                             p = this.rightBalance();
