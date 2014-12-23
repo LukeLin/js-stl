@@ -1107,29 +1107,21 @@ BBSTNode.prototype = {
                     parent[pos] = null;
                 } else this.data = null;
             } else if(this.rightChild && !this.leftChild){
-                p = this.rightChild;
-                this.data = p.data;
-                this.leftChild = p.leftChild;
-                this.rightChild = p.rightChild;
-                this.balanceFactor = p.balanceFactor;
+                copyAVLNode(this, this.rightChild);
             } else if(this.leftChild && !this.rightChild){
-                p = this.leftChild;
-                this.data = p.data;
-                this.leftChild = p.leftChild;
-                this.rightChild = p.rightChild;
-                this.balanceFactor = p.balanceFactor;
+                copyAVLNode(this, this.leftChild);
             } else {
                 p = this.rightChild;
                 while (p.leftChild) p = p.leftChild;
                 var temp = p.data;
                 p.data = this.data;
                 this.data = temp;
+                var forced = !this.rightChild.rightChild;
 
                 ret = this.rightChild['delete'](elem, this);
-                success = ret.success;
-                unbalanced = ret.unbalanced;
+                unbalanced = forced || ret.unbalanced;
 
-                if(success && unbalanced) {
+                if(unbalanced) {
                     switch(this.balanceFactor){
                         case EH:
                             this.balanceFactor = LH;
@@ -1140,7 +1132,10 @@ BBSTNode.prototype = {
                             unbalanced = false;
                             break;
                         case LH:
-                            this.rotate_RR();
+                            p = this.leftBalance().copyBinaryTree_stack(function (target, source) {
+                                target.balanceFactor = source.balanceFactor;
+                            });
+                            copyAVLNode(this, p);
                             break;
                         default:
                             break;
@@ -1166,7 +1161,10 @@ BBSTNode.prototype = {
                             unbalanced = false;
                             break;
                         case LH:
-                            this.rotate_RR();
+                            p = this.leftBalance().copyBinaryTree_stack(function (target, source) {
+                                target.balanceFactor = source.balanceFactor;
+                            });
+                            copyAVLNode(this, p);
                             break;
                         default:
                             break;
@@ -1192,7 +1190,11 @@ BBSTNode.prototype = {
                             unbalanced = false;
                             break;
                         case RH:
-                            this.rotate_LL();
+                            p = this.rightBalance();
+                            p = p.copyBinaryTree_stack(function (target, source) {
+                                target.balanceFactor = source.balanceFactor;
+                            });
+                            copyAVLNode(this, p);
                             break;
                         default:
                             break;
@@ -1207,6 +1209,13 @@ BBSTNode.prototype = {
         };
     }
 };
+
+function copyAVLNode(target, source){
+    target.data = source.data;
+    target.leftChild = source.leftChild;
+    target.rightChild = source.rightChild;
+    target.balanceFactor = source.balanceFactor;
+}
 
 
 console.log('\nAVL tree insert1: ');
@@ -1223,11 +1232,6 @@ test.inOrderTraverse(function (data) {
 console.log('search: ');
 console.log(test.search(44));
 
-test.delete(25);
-test.delete(14);
-test.delete(81);
-test.delete(44);
-test.delete(3);
 
 
 
@@ -1425,10 +1429,7 @@ BBSTNode.prototype.insert_recurse = function (elem) {
             p = p.copyBinaryTree_stack(function (target, source) {
                 target.balanceFactor = source.balanceFactor;
             });
-            this.data = p.data;
-            this.leftChild = p.leftChild;
-            this.rightChild = p.rightChild;
-            this.balanceFactor = p.balanceFactor;
+            copyAVLNode(this, p);
         }
     }
 
@@ -1461,6 +1462,13 @@ test.inOrderTraverse(function (data) {
 
 // took me a day to find bug, but failed.. f**k!
 console.log('delete 2:');
+
+test.delete(25);
+test.delete(14);
+test.delete(81);
+test.delete(44);
+test.delete(3);
+
 
 var str = 'ckbfjlaegmdh';
 
