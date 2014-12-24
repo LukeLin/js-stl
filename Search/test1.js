@@ -491,3 +491,39 @@ var AVLNode = (function(){
     return AVLNode;
 
 }());
+
+var test = new AVLNode();
+test.insert(3);
+test.insert(14);
+test.insert(25);
+test.insert(81);
+test.insert(44);
+
+test.delete(3);
+test.delete(25);
+test.delete(14);
+test.delete(81);
+test.delete(44);
+
+
+
+var str = 'ckbfjlaegmdh';
+
+test = new AVLNode();
+for(var i = 0; i < str.length; ++i){
+    test.insert(str[i]);
+}
+
+test.delete('a');
+test.delete('j');
+test.delete('b');
+test.delete('b');
+test.delete('l');
+test.delete('f');
+test.delete('d');
+test.delete('k');
+test.delete('g');
+test.delete('m');
+test.delete('c');
+test.delete('e');
+test.delete('h');
