@@ -1964,6 +1964,12 @@ AdjacencyMatrixGraph.prototype.shortestPath_Dijkstra = function (v0) {
     console.log(final);
     console.log(pre);
     console.log(dist);
+
+    return {
+        final: final,
+        pre: pre,
+        dist: dist
+    };
 };
 
 var dijTest = new AdjacencyMatrixGraph([], [], 0, 0, DN);
@@ -2037,6 +2043,12 @@ AdjacencyListGraph.prototype.shortestPath_Dijkstra = function (v0) {
     console.log(final);
     console.log(pre);
     console.log(dist);
+
+    return {
+        final: final,
+        pre: pre,
+        dist: dist
+    };
 };
 
 var dijTest = new AdjacencyListGraph([], [], 0, 0, DN);
