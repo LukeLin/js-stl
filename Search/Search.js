@@ -872,19 +872,24 @@ var RH = -1;    // 右高
 /**
  * AVL树，平衡二叉排序树
  * @param {*} data
- * @param {BBSTNode} leftChild
- * @param {BBSTNode} rightChild
+ * @param {AVLNode} leftChild
+ * @param {AVLNode} rightChild
  * @param {Number} balanceFactor 平衡因子
  * @constructor
  */
-function BBSTNode(data, leftChild, rightChild, balanceFactor) {
+function AVLNode(data, leftChild, rightChild, balanceFactor) {
     BinaryTree.call(this, data, leftChild, rightChild);
     this.balanceFactor = balanceFactor || EH;
 }
-exports.BBSTNode = BBSTNode;
-exports.AVLNode = BBSTNode;
-BBSTNode.prototype = {
-    constructor: BBSTNode,
+exports.AVLNode = AVLNode;
+AVLNode.cmp = function(a, b){
+    if(a > b) return 1;
+    else if(a < b) return -1;
+    else return 0;
+};
+AVLNode.prototype = {
+    constructor: AVLNode,
+
     __proto__: BinaryTree.prototype,
 
     /**
@@ -897,16 +902,23 @@ BBSTNode.prototype = {
      *    bL   bR                        x   bR  aR
      *    |
      *    x
-     * @returns {BSTNode|*}
+     * @returns {AVLNode|*}
      */
-    rotate_LL: function rRotate(changeBF) {
-        var b = this.leftChild;
-        this.leftChild = b.rightChild;
-        b.rightChild = this;
-        if(changeBF) this.balanceFactor = b.balanceFactor = EH;
+    rotate_LL: rotate('leftChild'),
 
-        return b;
-    },
+    /**
+     * 在结点a的右孩子的右子树上进行插入
+     *        a                                   b
+     *       / \                                 /  \
+     *     aL   b                               a    bR
+     *         /  \           ---->            / \   |
+     *        bL  bR                          aL bL  x
+     *             |
+     *             x
+     *
+     * @returns {AVLNode|*}
+     */
+    rotate_RR: rotate('rightChild'),
 
     /**
      *  在结点a的左孩子的右子树上进行插入
@@ -982,28 +994,130 @@ BBSTNode.prototype = {
         return c;
     },
 
-    /**
-     * 在结点a的右孩子的右子树上进行插入
-     *        a                                   b
-     *       / \                                 /  \
-     *     aL   b                               a    bR
-     *         /  \           ---->            / \   |
-     *        bL  bR                          aL bL  x
-     *             |
-     *             x
-     *
-     * @returns {BSTNode|*}
+    /*
+     另一种平衡二叉树的插入方法
+     分左平衡旋转和右平衡旋转，左平衡包括LL, LR，右平衡包括RL, RR
      */
-    rotate_RR: function lRotate(changeBF) {
-        var b = this.rightChild;
-        this.rightChild = b.leftChild;
-        b.leftChild = this;
-        if(changeBF) this.balanceFactor = b.balanceFactor = EH;
 
-        return b;
+    /**
+     * 左平衡处理
+     * @returns {AVLNode} 返回新的根结点
+     */
+    leftBalance : function (isDelete) {
+        var c = this.leftChild;
+        var p;
+
+        // 检查左子树的平衡度
+        switch (c.balanceFactor) {
+            case EH:
+                if(isDelete) {
+                    this.balanceFactor = LH;
+                    c.balanceFactor = RH;
+                    p = this.rotate_LL();
+                }
+                break;
+            // 如果新结点插入到左孩子的左子树上，要做单右旋处理
+            case LH:
+                this.balanceFactor = c.balanceFactor = EH;
+                p = this.rotate_LL();
+                break;
+            // 如果新结点插入到左孩子的右子树上，要做双旋处理
+            case RH:
+                var b = c.rightChild;
+                // 修改当前结点和左孩子的平衡因子
+                switch (b.balanceFactor) {
+                    case LH:
+                        this.balanceFactor = RH;
+                        c.balanceFactor = EH;
+                        break;
+                    case EH:
+                        this.balanceFactor = c.balanceFactor = EH;
+                        break;
+                    case RH:
+                        this.balanceFactor = EH;
+                        c.balanceFactor = LH;
+                        break;
+                    default:
+                        break;
+                }
+
+                b.balanceFactor = EH;
+                // 对当前结点的左子树做左旋平衡处理
+                this.leftChild = this.leftChild.rotate_RR();
+                // 对当前结点做右旋平衡处理
+                p = this.rotate_LL();
+                break;
+            default:
+                break;
+        }
+
+        return p;
     },
 
-    insert: function (elem) {
+    /**
+     * 右平衡处理
+     * @returns {AVLNode} 返回新的根结点
+     */
+    rightBalance: function (isDelete) {
+        var c = this.rightChild;
+        var p;
+
+        switch (c.balanceFactor) {
+            case EH:
+                if(isDelete) {
+                    this.balanceFactor = RH;
+                    c.balanceFactor = LH;
+                    p = this.rotate_RR();
+                }
+                break;
+            case RH:
+                this.balanceFactor = c.balanceFactor = EH;
+                p = this.rotate_RR();
+                break;
+            case LH:
+                var b = c.leftChild;
+                switch (b.balanceFactor) {
+                    case LH:
+                        this.balanceFactor = EH;
+                        c.balanceFactor = RH;
+                        break;
+                    case EH:
+                        this.balanceFactor = c.balanceFactor = EH;
+                        break;
+                    case RH:
+                        this.balanceFactor = LH;
+                        c.balanceFactor = EH;
+                        break;
+                    default:
+                        break;
+                }
+
+                b.balanceFactor = EH;
+                this.rightChild = this.rightChild.rotate_LL();
+                p = this.rotate_RR();
+                break;
+            default:
+                break;
+        }
+
+        return p;
+    },
+
+    search: function search_nonRecurse(key) {
+        if (this.data == null) return null;
+
+        var p = this;
+        var cmp;
+        while (p && (cmp = AVLNode.cmp(key, p.data) !== 0)) {
+            if (cmp < 0) p = p.leftChild;
+            else p = p.rightChild;
+        }
+
+        if (!p || AVLNode.cmp(key, p.data) !== 0) return null;
+        else return p;
+    },
+
+    insert_nonRecursive: function (elem) {
         if (this.data == null) {
             this.data = elem;
             this.leftChild = this.rightChild = null;
@@ -1011,7 +1125,7 @@ BBSTNode.prototype = {
             return;
         }
 
-        var s = new BBSTNode(elem, null, null, EH);
+        var s = new AVLNode(elem, null, null, EH);
         // a指向离s最近且平衡因子不为0的结点
         var a = this;
         var p = this;
@@ -1022,8 +1136,9 @@ BBSTNode.prototype = {
 
         // 找插入位置q结点
         while (p) {
+            var cmp = AVLNode.cmp(s.data, p.data);
             // 结点已存在
-            if (s.data === p.data) return;
+            if (cmp === 0) return;
 
             if (p.balanceFactor !== EH) {
                 a = p;
@@ -1031,12 +1146,12 @@ BBSTNode.prototype = {
             }
             q = p;
 
-            if (s.data < p.data) p = p.leftChild;
+            if (cmp < 0) p = p.leftChild;
             else p = p.rightChild;
         }
 
         // s插入到q结点的左或右子树
-        if (s.data < q.data) q.leftChild = s;
+        if (AVLNode.cmp(s.data, q.data) < 0) q.leftChild = s;
         else q.rightChild = s;
 
         p = a;
@@ -1044,7 +1159,7 @@ BBSTNode.prototype = {
         // 改变最近且平衡因子不为0的结点到插入结点的路径所有结点平衡因子
         // 插入到左子树，平衡因子加1，右子树平衡因子减1
         while (p != s) {
-            if (s.data < p.data) {
+            if (AVLNode.cmp(s.data, p.data) < 0) {
                 ++p.balanceFactor;
                 p = p.leftChild;
             } else {
@@ -1070,7 +1185,7 @@ BBSTNode.prototype = {
 
         // p为根结点
         // 深度拷贝，预防循环引用
-        p = p.copyBinaryTree_stack(function (target, source) {
+        p = p.copy(function (target, source) {
             target.balanceFactor = source.balanceFactor;
         });
         if (!f) {
@@ -1082,9 +1197,112 @@ BBSTNode.prototype = {
         else f.rightChild = p;
     },
 
-    search: search_nonRecurse,
+    /**
+     * AVL树的递归插入算法
+     * @param {*} elem 待插入的关键字
+     * @returns {{success: boolean, taller: boolean}} success表示是否插入成功，taller表示树是否有长高
+     */
+    insert: function (elem) {
+        var taller = true;
+        var success = false;
 
-    //
+        // 插入的新结点， 树长高
+        if (this.data == null) {
+            this.data = elem;
+            this.balanceFactor = EH;
+            success = true;
+        } else {
+            var ret, p;
+            var cmp = AVLNode.cmp(elem, this.data);
+            // 树中已存在相同关键字的结点，退出
+            if (cmp === 0) {
+                taller = false;
+                success = false;
+            }
+            // 左子树中进行搜索
+            else if (cmp < 0) {
+                this.leftChild = this.leftChild || new AVLNode();
+                ret = this.leftChild.insert(elem);
+                taller = ret.taller;
+                success = ret.success;
+
+                // 已插入到左子树中且左子树长高了
+                if (success && taller) {
+                    // 检查当前结点的平衡度
+                    switch (this.balanceFactor) {
+                        // 如果左子树比右子树高，需要做左平衡处理
+                        case LH:
+                            p = this.leftBalance();
+                            taller = false;
+                            break;
+                        // 如果等高， 左子树的增高使得树也增高了
+                        case EH:
+                            this.balanceFactor = LH;
+                            taller = true;
+                            break;
+                        // 如果右子树比左子树高，现在就等高了
+                        case RH:
+                            this.balanceFactor = EH;
+                            taller = false;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            // 右子树中进行搜索
+            else {
+                this.rightChild = this.rightChild || new AVLNode();
+                ret = this.rightChild.insert(elem);
+                taller = ret.taller;
+                success = ret.success;
+
+                // 已插入到右子树中且右子树长高了
+                if (success && taller) {
+                    // 检查当前结点的平衡度
+                    switch (this.balanceFactor) {
+                        // 如果原本左子树比右子树高，现在就等高了
+                        case LH:
+                            this.balanceFactor = EH;
+                            taller = false;
+                            break;
+                        // 如果原本等高，现在就是右子树高了
+                        case EH:
+                            this.balanceFactor = RH;
+                            taller = true;
+                            break;
+                        // 如果右子树高，现因右子树又高了，做右平衡处理
+                        case RH:
+                            p = this.rightBalance();
+                            taller = false;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            // 如果做了平衡处理，则深度拷贝
+            if (p) {
+                p = p.copy(function (target, source) {
+                    target.balanceFactor = source.balanceFactor;
+                });
+                copyAVLNode(this, p);
+            }
+        }
+
+        return {
+            success: success,
+            taller: taller
+        };
+    },
+
+    /**
+     * 在avl树中删除关键字
+     * @param elem
+     * @param parent
+     * @returns {{success: boolean, unbalanced: boolean}}
+     */
     'delete': function(elem, parent){
         var unbalanced = false;
         var success = false;
@@ -1097,11 +1315,13 @@ BBSTNode.prototype = {
                 unbalanced: unbalanced
             };
 
+        var p;
+        var cmp = AVLNode.cmp(elem, this.data);
         // 找到当前结点
-        if(this.data === elem) {
+        if(cmp === 0) {
             unbalanced = true;
             success = true;
-            var p;
+
 
             // 如果没有左右子树，则删除当前结点
             if(!this.rightChild && !this.leftChild){
@@ -1147,7 +1367,7 @@ BBSTNode.prototype = {
                             break;
                         // 如果原来左子树高，需要做做平衡处理
                         case LH:
-                            p = this.leftBalance().copyBinaryTree_stack(function (target, source) {
+                            p = this.leftBalance(true).copy(function (target, source) {
                                 target.balanceFactor = source.balanceFactor;
                             });
                             copyAVLNode(this, p);
@@ -1159,7 +1379,7 @@ BBSTNode.prototype = {
             }
         }
         // 在右子树中查找
-        else if(elem > this.data){
+        else if(cmp > 0){
             // 没找到
             if(!this.rightChild) {
                 success = false;
@@ -1184,7 +1404,7 @@ BBSTNode.prototype = {
                             break;
                         // 如果原来左子树高，需要做左平衡处理
                         case LH:
-                            p = this.leftBalance().copyBinaryTree_stack(function (target, source) {
+                            p = this.leftBalance(true).copy(function (target, source) {
                                 target.balanceFactor = source.balanceFactor;
                             });
                             copyAVLNode(this, p);
@@ -1214,8 +1434,8 @@ BBSTNode.prototype = {
                             this.balanceFactor = EH;
                             break;
                         case RH:
-                            p = this.rightBalance();
-                            p = p.copyBinaryTree_stack(function (target, source) {
+                            p = this.rightBalance(true);
+                            p = p.copy(function (target, source) {
                                 target.balanceFactor = source.balanceFactor;
                             });
                             copyAVLNode(this, p);
@@ -1234,6 +1454,19 @@ BBSTNode.prototype = {
     }
 };
 
+function rotate(to) {
+    var ato = to === 'leftChild' ? 'rightChild' : 'leftChild';
+
+    return function(changeBF){
+        var b = this[to];
+        this[to] = b[ato];
+        b[ato] = this;
+        if(changeBF) this.balanceFactor = b.balanceFactor = EH;
+
+        return b;
+    };
+}
+
 function copyAVLNode(target, source){
     for(var prop in source){
         if(!source.hasOwnProperty(prop)) continue;
@@ -1242,8 +1475,9 @@ function copyAVLNode(target, source){
 }
 
 
+
 console.log('\nAVL tree insert1: ');
-var test = new BBSTNode();
+var test = new AVLNode();
 test.insert(3);
 test.insert(14);
 test.insert(25);
@@ -1256,9 +1490,6 @@ test.inOrderTraverse(function (data) {
 console.log('search: ');
 console.log(test.search(44));
 
-
-
-
 /*
       14
     /    \
@@ -1268,208 +1499,15 @@ console.log(test.search(44));
  */
 
 
-/*
-另一种平衡二叉树的插入方法
-分左平衡旋转和右平衡旋转，左平衡包括LL, LR，右平衡包括RL, RR
- */
-
-/**
- * 左平衡处理
- * @returns {BBSTNode} 返回新的根结点
- */
-BBSTNode.prototype.leftBalance = function () {
-    var c = this.leftChild;
-    var p;
-
-    // 检查左子树的平衡度
-    switch (c.balanceFactor) {
-        // 如果新结点插入到左孩子的左子树上，要做单右旋处理
-        case LH:
-            this.balanceFactor = c.balanceFactor = EH;
-            p = this.rotate_LL();
-            break;
-        // 如果新结点插入到左孩子的右子树上，要做双旋处理
-        case RH:
-            var b = c.rightChild;
-            // 修改当前结点和左孩子的平衡因子
-            switch (b.balanceFactor) {
-                case LH:
-                    this.balanceFactor = RH;
-                    c.balanceFactor = EH;
-                    break;
-                case EH:
-                    this.balanceFactor = c.balanceFactor = EH;
-                    break;
-                case RH:
-                    this.balanceFactor = EH;
-                    c.balanceFactor = LH;
-                    break;
-                default:
-                    break;
-            }
-
-            b.balanceFactor = EH;
-            // 对当前结点的左子树做左旋平衡处理
-            this.leftChild = this.leftChild.rotate_RR();
-            // 对当前结点做右旋平衡处理
-            p = this.rotate_LL();
-            break;
-        default:
-            break;
-    }
-
-    return p;
-};
-
-/**
- * 右平衡处理
- * @returns {BBSTNode} 返回新的根结点
- */
-BBSTNode.prototype.rightBalance = function () {
-    var c = this.rightChild;
-    var p;
-
-    switch (c.balanceFactor) {
-        case RH:
-            this.balanceFactor = c.balanceFactor = EH;
-            p = this.rotate_RR();
-            break;
-        case LH:
-            var b = c.leftChild;
-            switch (b.balanceFactor) {
-                case LH:
-                    this.balanceFactor = EH;
-                    c.balanceFactor = RH;
-                    break;
-                case EH:
-                    this.balanceFactor = c.balanceFactor = EH;
-                    break;
-                case RH:
-                    this.balanceFactor = LH;
-                    c.balanceFactor = EH;
-                    break;
-                default:
-                    break;
-            }
-
-            b.balanceFactor = EH;
-            this.rightChild = this.rightChild.rotate_LL();
-            p = this.rotate_RR();
-            break;
-        default:
-            break;
-    }
-
-    return p;
-};
-
-/**
- * AVL树的递归插入算法
- * @param {*} elem 待插入的关键字
- * @returns {{success: boolean, taller: boolean}} success表示是否插入成功，taller表示树是否有长高
- */
-BBSTNode.prototype.insert_recurse = function (elem) {
-    var taller = true;
-    var success = false;
-
-    // 插入的新结点， 树长高
-    if (this.data == null) {
-        this.data = elem;
-        this.balanceFactor = EH;
-        success = true;
-    } else {
-        var ret, p;
-        // 树中已存在相同关键字的结点，退出
-        if (elem === this.data) {
-            taller = false;
-            success = false;
-        }
-        // 左子树中进行搜索
-        else if (elem < this.data) {
-            this.leftChild = this.leftChild || new BBSTNode();
-            ret = this.leftChild.insert_recurse(elem);
-            taller = ret.taller;
-            success = ret.success;
-
-            // 已插入到左子树中且左子树长高了
-            if (success && taller) {
-                // 检查当前结点的平衡度
-                switch (this.balanceFactor) {
-                    // 如果左子树比右子树高，需要做左平衡处理
-                    case LH:
-                        p = this.leftBalance();
-                        taller = false;
-                        break;
-                    // 如果等高， 左子树的增高使得树也增高了
-                    case EH:
-                        this.balanceFactor = LH;
-                        taller = true;
-                        break;
-                    // 如果右子树比左子树高，现在就等高了
-                    case RH:
-                        this.balanceFactor = EH;
-                        taller = false;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-        // 右子树中进行搜索
-        else {
-            this.rightChild = this.rightChild || new BBSTNode();
-            ret = this.rightChild.insert_recurse(elem);
-            taller = ret.taller;
-            success = ret.success;
-
-            // 已插入到右子树中且右子树长高了
-            if (success && taller) {
-                // 检查当前结点的平衡度
-                switch (this.balanceFactor) {
-                    // 如果原本左子树比右子树高，现在就等高了
-                    case LH:
-                        this.balanceFactor = EH;
-                        taller = false;
-                        break;
-                    // 如果原本等高，现在就是右子树高了
-                    case EH:
-                        this.balanceFactor = RH;
-                        taller = true;
-                        break;
-                    // 如果右子树高，现因右子树又高了，做右平衡处理
-                    case RH:
-                        p = this.rightBalance();
-                        taller = false;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        // 如果做了平衡处理，则深度拷贝
-        if (p) {
-            p = p.copyBinaryTree_stack(function (target, source) {
-                target.balanceFactor = source.balanceFactor;
-            });
-            copyAVLNode(this, p);
-        }
-    }
-
-    return {
-        success: success,
-        taller: taller
-    };
-};
 
 
 console.log('\nAVL tree insert2: ');
-var test = new BBSTNode();
-test.insert_recurse(3);
-test.insert_recurse(14);
-test.insert_recurse(25);
-test.insert_recurse(81);
-test.insert_recurse(44);
+var test = new AVLNode();
+test.insert_nonRecursive(3);
+test.insert_nonRecursive(14);
+test.insert_nonRecursive(25);
+test.insert_nonRecursive(81);
+test.insert_nonRecursive(44);
 test.inOrderTraverse(function (data) {
     console.log(data);
 });
@@ -1495,14 +1533,14 @@ test.delete(3);
 
 var str = 'ckbfjlaegmdh';
 
-test = new BBSTNode();
+test = new AVLNode();
 for(var i = 0; i < str.length; ++i){
     test.insert(str[i]);
 }
 
-var test2 = new BBSTNode();
+var test2 = new AVLNode();
 for(var i = 0; i < str.length; ++i){
-    test2.insert_recurse(str[i]);
+    test2.insert_nonRecursive(str[i]);
 }
 
 test.delete('a');

@@ -68,15 +68,96 @@ var AVLNode = (function(){
         rotate_RR: rotate('rightChild'),
 
         /**
+         *  在结点a的左孩子的右子树上进行插入
+         *         a                            c
+         *       /   \                        /   \
+         *      b    aR                      b     a
+         *    /  \                         /  \   /  \
+         *   bL   c           ---->       bL  cL cR  aR
+         *       / \                           |  |
+         *      cL cR                          x  x
+         *      |   |
+         *      x   x
+         *
+         * @returns {BSTNode|*}
+         */
+        rotate_LR: function () {
+            var b = this.leftChild;
+            var c = b.rightChild;
+            this.leftChild = c.rightChild;
+            b.rightChild = c.leftChild;
+            c.leftChild = b;
+            c.rightChild = this;
+
+            if (c.balanceFactor === LH) {
+                this.balanceFactor = RH;
+                b.balanceFactor = EH;
+            } else if (c.balanceFactor === EH) {
+                this.balanceFactor = b.balanceFactor = EH;
+            } else {
+                this.balanceFactor = EH;
+                b.balanceFactor = LH;
+            }
+
+            c.balanceFactor = EH;
+
+            return c;
+        },
+
+        /**
+         * 在结点a的右孩子的左子树上进行插入
+         *        a                                     c
+         *      /   \                                 /   \
+         *     aL    b                               a     b
+         *          / \                             / \   / \
+         *         c   bR          ---->           aL cL cR bR
+         *        / \                                 |  |
+         *       cL cR                                x  x
+         *       |  |
+         *       x  x
+         *
+         * @returns {BSTNode|*}
+         */
+        rotate_RL: function () {
+            var b = this.rightChild;
+            var c = b.leftChild;
+            this.rightChild = c.leftChild;
+            b.leftChild = c.rightChild;
+            c.rightChild = b;
+            c.leftChild = this;
+
+            if (c.balanceFactor === LH) {
+                this.balanceFactor = EH;
+                b.balanceFactor = RH;
+            } else if (c.balanceFactor === EH) {
+                this.balanceFactor = b.balanceFactor = EH;
+            } else {
+                this.balanceFactor = LH;
+                b.balanceFactor = EH;
+            }
+
+            c.balanceFactor = EH;
+
+            return c;
+        },
+
+        /**
          * 左平衡处理
          * @returns {AVLNode} 返回新的根结点
          */
-        leftBalance : function () {
+        leftBalance : function (isDelete) {
             var c = this.leftChild;
             var p;
 
             // 检查左子树的平衡度
             switch (c.balanceFactor) {
+                case EH:
+                    if(isDelete) {
+                        this.balanceFactor = LH;
+                        c.balanceFactor = RH;
+                        p = this.rotate_LL();
+                    }
+                    break;
                 // 如果新结点插入到左孩子的左子树上，要做单右旋处理
                 case LH:
                     this.balanceFactor = c.balanceFactor = EH;
@@ -119,11 +200,18 @@ var AVLNode = (function(){
          * 右平衡处理
          * @returns {AVLNode} 返回新的根结点
          */
-        rightBalance: function () {
+        rightBalance: function (isDelete) {
             var c = this.rightChild;
             var p;
 
             switch (c.balanceFactor) {
+                case EH:
+                    if(isDelete) {
+                        this.balanceFactor = RH;
+                        c.balanceFactor = LH;
+                        p = this.rotate_RR();
+                    }
+                    break;
                 case RH:
                     this.balanceFactor = c.balanceFactor = EH;
                     p = this.rotate_RR();
@@ -341,7 +429,7 @@ var AVLNode = (function(){
                                 break;
                             // 如果原来左子树高，需要做做平衡处理
                             case LH:
-                                p = this.leftBalance().copy(function (target, source) {
+                                p = this.leftBalance(true).copy(function (target, source) {
                                     target.balanceFactor = source.balanceFactor;
                                 });
                                 copyAVLNode(this, p);
@@ -378,7 +466,7 @@ var AVLNode = (function(){
                                 break;
                             // 如果原来左子树高，需要做左平衡处理
                             case LH:
-                                p = this.leftBalance().copy(function (target, source) {
+                                p = this.leftBalance(true).copy(function (target, source) {
                                     target.balanceFactor = source.balanceFactor;
                                 });
                                 copyAVLNode(this, p);
@@ -408,7 +496,7 @@ var AVLNode = (function(){
                                 this.balanceFactor = EH;
                                 break;
                             case RH:
-                                p = this.rightBalance();
+                                p = this.rightBalance(true);
                                 p = p.copy(function (target, source) {
                                     target.balanceFactor = source.balanceFactor;
                                 });

@@ -316,7 +316,7 @@ BinaryTree.prototype = {
      * @param {Function} cb 拷贝过程中会执行的回调，可以用来拷贝其它自定义属性
      * @returns {Cstr} 返回新的实例
      */
-    copyBinaryTree_stack: function (cb) {
+    copy: function (cb) {
         cb = cb || function(){};
         // 用来存放本体结点的栈
         var stack1 = new Stack();
@@ -516,7 +516,7 @@ void function test() {
         console.log('levelOrderTraverse: ' + value);
     });
 
-    var newTree = test.copyBinaryTree_stack();
+    var newTree = test.copy();
 
     var node1 = test.leftChild.leftChild;   // 4
     var node2 = test.leftChild.rightChild.leftChild;    // 7
