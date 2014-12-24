@@ -1581,11 +1581,11 @@ var M = 3;
 function BTNode() {
     this.keynum = 0;
     // 关键字向量
-    this.data = new Array(M);
+    this.data = new Array(M + 1);
     // 子树指针向量
-    this.ptr = new Array(M);
+    this.children = new Array(M + 1);
     // 记录指针向量
-    this.recptr = new Array(M);
+    this.recptr = new Array(M + 1);
     this.parent = null;
 }
 exports.BTNode = BTNode;
@@ -1602,9 +1602,9 @@ BTNode.prototype = {
          若key[i]=K(1≤i≤keynum)，则查找成功，返回结点及关键字位置；否则，转⑵；
          ② 将K与向量key[1…keynum]中的各个分量的值进行比较，以选定查找的子树：
              ◆  若K<key[0]：T=T->ptr[0]；
-             ◆ 若key[i]<K<key[i+1](i=0， 1, 2, …keynum-2)：
+             ◆ 若key[i]<K<key[i+1](i=0， 1, 2, …keynum-1)：
              T=T->ptr[i]；
-             ◆ 若K>key[keynum-1]：T=T->ptr[keynum-1]；
+             ◆ 若K>key[keynum-1]：T=T->ptr[keynum]；
          转①，直到T是叶子结点且未找到相等的关键字，则查找失败。
 
      算法分析
@@ -1630,7 +1630,7 @@ BTNode.prototype = {
             if (i > 0 && this.data[i] === key) found = true;
             else {
                 q = p;
-                p = p.ptr[i];
+                p = p.children[i];
             }
         }
 
@@ -1663,7 +1663,7 @@ BTNode.prototype = {
 
 
      ⑶ 算法实现
-     要实现插入，首先必须考虑结点的分裂。设待分裂的结点是p，分裂时先开辟一个新结点，依此将结点p中后半部分的关键字和指针移到新开辟的结点中。分裂之后，而需要插入到父结点中的关键字在p的关键字向量的p->keynum位置上。
+     要实现插入，首先必须考虑结点的分裂。设待分裂的结点是p，分裂时先开辟一个新结点，依此将结点p中后半部分的关键字和指针移到新开辟的结点中。分裂之后，而需要插入到父结点中的关键字在p的关键字向量的p->keynum+1位置上。
      */
     /**
      * todo bug exists
@@ -1674,35 +1674,40 @@ BTNode.prototype = {
         var s1 = null;
         var s2 = null;
 
+        // 树中不存在关键字
         if(!ret.found) {
             var p = ret.node;
 
             while(p){
-                p.data[-1] = elem;
+                // 设置哨兵
+                p.data[0] = elem;
 
                 // 后移关键字和指针
                 for(var n = p.keynum; elem < p.data[n]; --n){
                     p.data[n + 1] = p.data[n];
-                    p.ptr[n + 1] = p.ptr[n];
+                    p.children[n + 1] = p.children[n];
                 }
 
-                // 置关键字的左右指针
+                // 重置关键字的左右指针
                 p.data[n] = elem;
-                p.ptr[n - 1] = s1;
-                p.ptr[n + 1] = s2;
+                p.children[n - 1] = s1;
+                p.children[n + 1] = s2;
 
                 if(++p.keynum < M) break;
+                // 分裂结点p
                 else {
                     s2 = p.split();
                     s1 = p;
+                    // 取出父结点
                     p = p.parent;
 
+                    // 需要产生新的根结点
                     if(!p) {
                         p = new BTNode();
                         p.keynum = 1;
-                        p.data[0] = elem;
-                        p.ptr[0] = s1;
-                        p.ptr[1] = s2;
+                        p.data[1] = elem;
+                        p.children[0] = s1;
+                        p.children[1] = s2;
                     }
                 }
             }
@@ -1712,11 +1717,12 @@ BTNode.prototype = {
     split: function(){
         var q = new BTNode();
         var mid = Math.floor(M + 1) / 2;
-        q.ptr[-1] = this.ptr[mid];
+        q.children[0] = this.children[mid];
 
-        for(var i = 0, k = mid + 1; k < M; ++k){
+        // 将当前结点的后半部分移到新结点q中
+        for(var i = 1, k = mid + 1; k <= M; ++k){
             q.data[i] = this.data[k];
-            q.ptr[i++] = this.ptr[k];
+            q.children[i++] = this.children[k];
         }
 
         q.keynum = M - mid;
