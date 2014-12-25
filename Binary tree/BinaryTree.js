@@ -227,8 +227,8 @@ BinaryTree.prototype = {
 
     preOrderTraverse: function preOrderTraverse(visit) {
         visit(this.data);
-        if (this.leftChild) preOrderTraverse.call(this.leftChild, visit);
-        if (this.rightChild) preOrderTraverse.call(this.rightChild, visit);
+        if (this.leftChild) this.leftChild.preOrderTraverse(visit);
+        if (this.rightChild) this.rightChild.preOrderTraverse(visit);
     },
     inOrderTraverse: function inOrderTraverse(visit) {
         if (this.leftChild) inOrderTraverse.call(this.leftChild, visit);
