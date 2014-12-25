@@ -1307,6 +1307,7 @@ AVLNode.prototype = {
         var unbalanced = false;
         var success = false;
         var ret;
+        var data = null;
 
         // 只有根结点
         if(this.data == null)
@@ -1321,7 +1322,7 @@ AVLNode.prototype = {
         if(cmp === 0) {
             unbalanced = true;
             success = true;
-
+            data = this.data;
 
             // 如果没有左右子树，则删除当前结点
             if(!this.rightChild && !this.leftChild){
@@ -1389,6 +1390,7 @@ AVLNode.prototype = {
                 ret = this.rightChild['delete'](elem, this);
                 success = ret.success;
                 unbalanced = ret.unbalanced;
+                data = ret.data;
 
                 // 如果产生不平衡，即在右子树中被删除了
                 if(success && unbalanced) {
@@ -1423,6 +1425,7 @@ AVLNode.prototype = {
                 ret = this.leftChild['delete'](elem, this);
                 success = ret.success;
                 unbalanced = ret.unbalanced;
+                data = ret.data;
 
                 if(success && unbalanced){
                     switch(this.balanceFactor){
@@ -1449,7 +1452,8 @@ AVLNode.prototype = {
 
         return {
             success: success,
-            unbalanced: unbalanced
+            unbalanced: unbalanced,
+            data: data
         };
     }
 };
