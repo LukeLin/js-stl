@@ -1716,41 +1716,40 @@ BTNode.prototype = {
         var s1 = null;
         var s2 = null;
 
+        if(ret.found) return false;
+
         // 树中不存在关键字
-        if(!ret.found) {
-            var p = ret.node;
+        var p = ret.node;
+        while(p){
+            // 设置哨兵
+            p.data[0] = elem;
 
-            while(p){
-                // 设置哨兵
-                p.data[0] = elem;
+            // 后移关键字和指针
+            for(var n = p.keynum + 1; elem < p.data[n]; --n){
+                p.data[n + 1] = p.data[n];
+                p.children[n + 1] = p.children[n];
+            }
 
-                // 后移关键字和指针
-                for(var n = p.keynum; elem < p.data[n]; --n){
-                    p.data[n + 1] = p.data[n];
-                    p.children[n + 1] = p.children[n];
-                }
+            // 重置关键字的左右指针
+            p.data[n] = elem;
+            p.children[n - 1] = s1;
+            p.children[n + 1] = s2;
 
-                // 重置关键字的左右指针
-                p.data[n] = elem;
-                p.children[n - 1] = s1;
-                p.children[n + 1] = s2;
+            if(++p.keynum < M) break;
+            // 分裂结点p todo bu exists
+            else {
+                s2 = p.split();
+                s1 = p;
+                // 取出父结点
+                p = p.parent;
 
-                if(++p.keynum < M) break;
-                // 分裂结点p
-                else {
-                    s2 = p.split();
-                    s1 = p;
-                    // 取出父结点
-                    p = p.parent;
-
-                    // 需要产生新的根结点
-                    if(!p) {
-                        p = new BTNode();
-                        p.keynum = 1;
-                        p.data[1] = elem;
-                        p.children[0] = s1;
-                        p.children[1] = s2;
-                    }
+                // 需要产生新的根结点
+                if(!p) {
+                    p = new BTNode();
+                    p.keynum = 1;
+                    p.data[1] = elem;
+                    p.children[0] = s1;
+                    p.children[1] = s2;
                 }
             }
         }
