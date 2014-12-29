@@ -1623,11 +1623,11 @@ var M = 3;
 function BTNode() {
     this.keynum = 0;
     // 关键字向量
-    this.data = new Array(M + 1);
+    this.data = [];
     // 子树指针向量
-    this.children = new Array(M + 1);
+    this.children = [];
     // 记录指针向量
-    this.recptr = new Array(M + 1);
+    this.recptr = [];
     this.parent = null;
 }
 exports.BTNode = BTNode;
@@ -1750,6 +1750,7 @@ BTNode.prototype = {
                     p.data[1] = elem;
                     p.children[0] = s1;
                     p.children[1] = s2;
+                    s1.parent = s2.parent = p;
                 }
             }
         }
