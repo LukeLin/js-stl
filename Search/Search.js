@@ -1760,6 +1760,7 @@ BTNode.prototype = {
         var q = new BTNode();
         var mid = Math.floor(M + 1) / 2;
         q.children[0] = this.children[mid];
+        q.parent = this.parent;
 
         // 将当前结点的后半部分移到新结点q中
         for(var i = 1, k = mid + 1; k <= M; ++k){
