@@ -550,7 +550,7 @@ AVLNode.prototype = {
                 p = p.copy(function (target, source) {
                     target.balanceFactor = source.balanceFactor;
                 });
-                copyAVLNode(this, p);
+                copyNode(this, p);
             }
         }
 
@@ -598,11 +598,11 @@ AVLNode.prototype = {
             }
             // 有右没左，直接替换
             else if(this.rightChild && !this.leftChild){
-                copyAVLNode(this, this.rightChild);
+                copyNode(this, this.rightChild);
             }
             // 有左没右，也直接替换
             else if(this.leftChild && !this.rightChild){
-                copyAVLNode(this, this.leftChild);
+                copyNode(this, this.leftChild);
             }
             // 既有左子树又有右子树
             else {
@@ -634,7 +634,7 @@ AVLNode.prototype = {
                             p = this.leftBalance(true).copy(function (target, source) {
                                 target.balanceFactor = source.balanceFactor;
                             });
-                            copyAVLNode(this, p);
+                            copyNode(this, p);
                             break;
                         default:
                             break;
@@ -672,7 +672,7 @@ AVLNode.prototype = {
                             p = this.leftBalance(true).copy(function (target, source) {
                                 target.balanceFactor = source.balanceFactor;
                             });
-                            copyAVLNode(this, p);
+                            copyNode(this, p);
                             break;
                         default:
                             break;
@@ -704,7 +704,7 @@ AVLNode.prototype = {
                             p = p.copy(function (target, source) {
                                 target.balanceFactor = source.balanceFactor;
                             });
-                            copyAVLNode(this, p);
+                            copyNode(this, p);
                             break;
                         default:
                             break;
@@ -734,7 +734,7 @@ function rotate(to) {
     };
 }
 
-function copyAVLNode(target, source){
+function copyNode(target, source){
     for(var prop in source){
         if(!source.hasOwnProperty(prop)) continue;
         target[prop] = source[prop];
@@ -838,3 +838,44 @@ test2.delete('m');
 test2.delete('c');
 test2.delete('e');
 test2.delete('h');
+
+
+var LEFT = 0;
+var RIGHT = 1;
+var NEITHER = -1;
+
+function Node(){
+    this.data = null;
+    this.next = [];
+    this.longer = NEITHER;
+}
+Node.cmp = function(a, b){
+    if(a > b) return 1;
+    else if(a === b) return 0;
+    else return -1;
+};
+Node.prototype = {
+    search: function(elem){
+        var tree = this;
+
+        while(tree && elem !== tree.data){
+            var next_step = Node.cmp(elem, tree.data);
+            tree = tree.next[next_step];
+        }
+
+        return tree;
+    },
+
+    rotate_2: function(dir){
+        var b = this;
+        var d = b.next[dir];
+        var c = d.next[1 - dir];
+        var e = d.next[dir];
+
+        copyNode(this, d);
+        d.next[1 - dir] = b;
+        b.next[dir] = c;
+        b.longer = d.longer = NEITHER;
+        return e;
+    }
+};
