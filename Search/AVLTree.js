@@ -561,7 +561,7 @@ AVLNode.prototype = {
     },
 
     /**
-     * 在avl树中删除关键字
+     * 在avl树中删除关键字 todo 还是有bug..
      * @param elem
      * @param parent
      * @returns {{success: boolean, unbalanced: boolean}}
@@ -718,7 +718,129 @@ AVLNode.prototype = {
             unbalanced: unbalanced,
             data: data
         };
+    },
+
+    remove_nonRecursive: function(elem){
+        if(this.data == null) return {
+            success: false,
+            data: null
+        };
+
+        // a指向离p最近且平衡因子不为0的结点
+        var a = this;
+        // 待删除结点p
+        var p = this;
+        // f指向a的父结点
+        var f = null;
+        // 待删除结点的父结点q
+        var q = null;
+
+        while(p){
+            var cmp = AVLNode.cmp(elem, p.data);
+            if(cmp === 0) break;
+
+            // todo
+            if(p.balanceFactor !== EH) {
+                a = p;
+                f = q;
+            } else {
+                a = p;
+                f = null;
+            }
+            q = p;
+
+            if(cmp < 0) p = p.leftChild;
+            else p = p.rightChild;
+        }
+
+        if(!p) return {
+            success: false,
+            errormsg: 'data: ' + elem + ' not found!'
+        };
+
+        // m为p邻近结点
+        var m;
+        var pos;
+        var data = p.data;
+
+        if(p.leftChild && p.rightChild) {
+            q = p;
+            if(p.balanceFactor === LH) {
+                m = p.leftChild;
+                while(m.rightChild) {
+                    q = m;
+                    m = m.rightChild;
+                }
+            } else {
+                m = p.rightChild;
+                while(m.leftChild) {
+                    q = m;
+                    m = m.leftChild;
+                }
+            }
+
+            var temp = p.data;
+            p.data = m.data;
+            m.data = temp;
+
+            pos = q.leftChild && q.leftChild.data === m.data ? 'leftChild' : 'rightChild';
+            if(pos === 'leftChild') --q.balanceFactor;
+            else ++q.balanceFactor;
+            q[pos] = m.leftChild || m.rightChild;
+        } else if(p.leftChild || p.rightChild) {
+            copyNode(p, p.leftChild || p.rightChild);
+            if(q) q.balanceFactor = EH;
+        } else {
+            if(q) {
+                pos = q.leftChild == p ? 'leftChild' : 'rightChild';
+                q[pos] = null;
+                if(pos === 'leftChild') --q.balanceFactor;
+                else ++q.balanceFactor;
+            } else {
+                p.data = null;
+                p.balanceFactor = EH;
+            }
+        }
+
+        if(q) {
+            p = a;
+
+            while(p && p != q){
+                if(AVLNode.cmp(q.data, p.data) < 0) {
+                    --p.balanceFactor;
+                    p = p.leftChild;
+                } else {
+                    ++p.balanceFactor;
+                    p = p.rightChild;
+                }
+            }
+
+            if(a.balanceFactor > -2 || a.balanceFactor < 2) return {
+                success: true,
+                data: data
+            };
+
+            var b;
+            if(a.balanceFactor === 2) {
+                b = a.leftChild;
+                if(b.balanceFactor === LH) p = a.rotate_LL(true);
+                else p = a.rotate_LR();
+            } else {
+                b = a.rightChild;
+                if(b.balanceFactor === LH) p = a.rotate_RL();
+                else p = a.rotate_RR(true);
+            }
+        }
+
+        p = p.copy(function (target, source) {
+            target.balanceFactor = source.balanceFactor;
+        });
+        this.data = p.data;
+        this.leftChild = p.leftChild;
+        this.rightChild = p.rightChild;
+        this.balanceFactor = p.balanceFactor;
     }
+
 };
 
 function rotate(to) {
@@ -791,11 +913,11 @@ test.inOrderTraverse(function (data) {
 // took me a day to find bug, but failed.. f**k!
 console.log('delete 2:');
 
-test.delete(25);
-test.delete(14);
-test.delete(81);
-test.delete(44);
-test.delete(3);
+test.remove_nonRecursive(25);
+test.remove_nonRecursive(14);
+test.remove_nonRecursive(81);
+test.remove_nonRecursive(44);
+test.remove_nonRecursive(3);
 
 
 var str = 'ckbfjlaegmdh';
@@ -810,19 +932,19 @@ for(var i = 0; i < str.length; ++i){
     test2.insert_nonRecursive(str[i]);
 }
 
-test.delete('a');
-test.delete('j');
-test.delete('b');
-test.delete('b');
-test.delete('l');
-test.delete('f');
-test.delete('d');
-test.delete('k');
-test.delete('g');
-test.delete('m');
-test.delete('c');
-test.delete('e');
-test.delete('h');
+test.remove_nonRecursive('a');
+test.remove_nonRecursive('j');
+test.remove_nonRecursive('b');
+test.remove_nonRecursive('b');
+test.remove_nonRecursive('l');
+test.remove_nonRecursive('f');
+test.remove_nonRecursive('d');
+test.remove_nonRecursive('k');
+test.remove_nonRecursive('g');
+test.remove_nonRecursive('m');
+test.remove_nonRecursive('c');
+test.remove_nonRecursive('e');
+test.remove_nonRecursive('h');
 
 
 test2.delete('a');
@@ -877,5 +999,81 @@ Node.prototype = {
         b.next[dir] = c;
         b.longer = d.longer = NEITHER;
         return e;
+    },
+
+    rotate_3: function(dir, thirdDir){
+        var b = this;
+        var f = b.next[dir];
+        var d = f.next[1 - dir];
+
+        var c = d.next[1 - dir];
+        var e = d.next[dir];
+        copyNode(this, d);
+        d.next[1 - dir] = b;
+        d.next[dir] = f;
+        b.next[dir] = c;
+        f.next[1 - dir] = e;
+        d.longer = NEITHER;
+
+        b.longer = f.longer = NEITHER;
+
+        if(thirdDir === NEITHER) {
+            return null;
+        } else if(thirdDir === dir) {
+            b.longer = 1 - dir;
+            return e;
+        } else {
+            f.longer = dir;
+            return c;
+        }
+    },
+
+    rebalancePath: function(elem){
+        var path = this;
+
+        while(path && elem !== path.data){
+            var next_step =  Node.cmp(elem, path.data);
+            path.longer = next_step;
+            path = path.next[next_step];
+        }
+    },
+
+    rebalanceInsert: function(elem){
+        var path = this;
+        var first, second, third;
+
+        if(path.longer < 0) ;
+        else if(path.longer !== (first = Node.cmp(elem, path.data))){
+            path.longer = NEITHER;
+            path = path.next[first];
+        } else if(first === (second = Node.cmp(elem, path.next[first].data))){
+            path = this.rotate_2(first);
+        } else {
+            path = path.next[first].next[second];
+            if(elem === path.data) third = NEITHER;
+            else third = Node.cmp(elem, path.data);
+            path = this.rotate_3(first, third);
+        }
+
+        path.rebalancePath(elem);
+    },
+
+    insert: function(elem){
+        var tree = this;
+        var pathTop = this;
+
+        while(tree && elem !== tree.data){
+            var next_step = Node.cmp(elem, tree.data);
+            if(tree.longer >= 0) pathTop = tree;
+            tree = tree.next[next_step];
+        }
+
+        if(tree) return false;
+
+        tree = new Node();
+        tree.next[0] = tree.next[1] = null;
+        tree.longer = NEITHER;
+        tree.data = elem;
+
     }
 };
