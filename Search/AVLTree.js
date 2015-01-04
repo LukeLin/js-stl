@@ -720,6 +720,11 @@ AVLNode.prototype = {
         };
     },
 
+    /**
+     * 非递归删除， 测试了几个例子暂时没错，需要覆盖率高的单元测试
+     * @param elem
+     * @returns {*}
+     */
     remove_nonRecursive: function(elem){
         if(this.data == null) return {
             success: false,
@@ -730,8 +735,6 @@ AVLNode.prototype = {
         var a = this;
         // 待删除结点p
         var p = this;
-        // f指向a的父结点
-        var f = null;
         // 待删除结点的父结点q
         var q = null;
 
@@ -739,14 +742,10 @@ AVLNode.prototype = {
             var cmp = AVLNode.cmp(elem, p.data);
             if(cmp === 0) break;
 
-            // todo
-            if(p.balanceFactor !== EH) {
-                a = p;
-                f = q;
-            } else {
-                a = p;
-                f = null;
-            }
+            if(p.balanceFactor === EH
+                || (p.balanceFactor === LH && cmp > 0 && p.leftChild && p.leftChild.balanceFactor === EH)
+                || (p.balanceFactor === RH && cmp < 0 && p.rightChild && p.rightChild.balanceFactor === EH)) a = p;
+
             q = p;
 
             if(cmp < 0) p = p.leftChild;
@@ -762,6 +761,7 @@ AVLNode.prototype = {
         var m;
         var pos;
         var data = p.data;
+        var skip = false;
 
         if(p.leftChild && p.rightChild) {
             q = p;
@@ -784,12 +784,18 @@ AVLNode.prototype = {
             m.data = temp;
 
             pos = q.leftChild && q.leftChild.data === m.data ? 'leftChild' : 'rightChild';
+            var otherPos = pos === 'leftChild' ? 'rightChild' : 'leftChild';
+            if(q[otherPos] && !m.leftChild && !m.rightChild) skip = true;
+
             if(pos === 'leftChild') --q.balanceFactor;
             else ++q.balanceFactor;
             q[pos] = m.leftChild || m.rightChild;
         } else if(p.leftChild || p.rightChild) {
             copyNode(p, p.leftChild || p.rightChild);
-            if(q) q.balanceFactor = EH;
+            if(q) {
+                if(q.leftChild === p) --q.balanceFactor;
+                else ++q.balanceFactor;
+            }
         } else {
             if(q) {
                 pos = q.leftChild == p ? 'leftChild' : 'rightChild';
@@ -803,42 +809,45 @@ AVLNode.prototype = {
         }
 
         if(q) {
-            p = a;
+            if(!skip) {
+                p = a;
 
-            while(p && p != q){
-                if(AVLNode.cmp(q.data, p.data) < 0) {
-                    --p.balanceFactor;
-                    p = p.leftChild;
-                } else {
-                    ++p.balanceFactor;
-                    p = p.rightChild;
+                while(p && p != q){
+                    if(AVLNode.cmp(q.data, p.data) < 0) {
+                        --p.balanceFactor;
+                        p = p.leftChild;
+                    } else {
+                        ++p.balanceFactor;
+                        p = p.rightChild;
+                    }
                 }
             }
 
-            if(a.balanceFactor > -2 || a.balanceFactor < 2) return {
-                success: true,
-                data: data
-            };
+            p = a;
+            var top;
+            while(p){
+                var b;
+                if(p.balanceFactor === 2) {
+                    b = p.leftChild;
+                    if(b.balanceFactor === LH) top = p.rotate_LL(true);
+                    else top = p.rotate_LR();
+                    deepCopyNode(p, top);
+                } else if(p.balanceFactor === -2) {
+                    b = p.rightChild;
+                    if(b.balanceFactor === LH) top = p.rotate_RL();
+                    else top = p.rotate_RR(true);
+                    deepCopyNode(p, top);
+                }
 
-            var b;
-            if(a.balanceFactor === 2) {
-                b = a.leftChild;
-                if(b.balanceFactor === LH) p = a.rotate_LL(true);
-                else p = a.rotate_LR();
-            } else {
-                b = a.rightChild;
-                if(b.balanceFactor === LH) p = a.rotate_RL();
-                else p = a.rotate_RR(true);
+                if(AVLNode.cmp(q.data, p.data) < 0) p = p.leftChild;
+                else p = p.rightChild;
             }
         }
 
-        p = p.copy(function (target, source) {
-            target.balanceFactor = source.balanceFactor;
-        });
-        this.data = p.data;
-        this.leftChild = p.leftChild;
-        this.rightChild = p.rightChild;
-        this.balanceFactor = p.balanceFactor;
+        return {
+            success: true,
+            data: data
+        };
     }
 
 };
@@ -863,6 +872,15 @@ function copyNode(target, source){
     }
 }
 
+function deepCopyNode(target, source){
+    source = source.copy(function (t, s) {
+        t.balanceFactor = s.balanceFactor;
+    });
+    target.data = source.data;
+    target.leftChild = source.leftChild;
+    target.rightChild = source.rightChild;
+    target.balanceFactor = source.balanceFactor;
+}
 
 
 console.log('\nAVL tree insert1: ');
@@ -910,13 +928,12 @@ test.inOrderTraverse(function (data) {
  */
 
 
-// took me a day to find bug, but failed.. f**k!
 console.log('delete 2:');
 
-test.remove_nonRecursive(25);
 test.remove_nonRecursive(14);
-test.remove_nonRecursive(81);
+test.remove_nonRecursive(25);
 test.remove_nonRecursive(44);
+test.remove_nonRecursive(81);
 test.remove_nonRecursive(3);
 
 
@@ -962,6 +979,7 @@ test2.delete('e');
 test2.delete('h');
 
 
+// 国外大牛的一种简洁实现方式
 var LEFT = 0;
 var RIGHT = 1;
 var NEITHER = -1;
@@ -1060,11 +1078,13 @@ Node.prototype = {
 
     insert: function(elem){
         var tree = this;
+        var treeP = this;
         var pathTop = this;
 
         while(tree && elem !== tree.data){
             var next_step = Node.cmp(elem, tree.data);
             if(tree.longer >= 0) pathTop = tree;
+            treeP = tree;
             tree = tree.next[next_step];
         }
 
@@ -1074,6 +1094,14 @@ Node.prototype = {
         tree.next[0] = tree.next[1] = null;
         tree.longer = NEITHER;
         tree.data = elem;
+        next_step = Node.cmp(elem, treeP.data);
+        treeP.next[next_step] = tree;
+        pathTop.rebalanceInsert(elem);
+
+        return true;
+    },
+
+    swapDel: function(treeP, dir){
 
     }
 };
