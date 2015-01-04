@@ -566,7 +566,7 @@ AVLNode.prototype = {
      * @param parent
      * @returns {{success: boolean, unbalanced: boolean}}
      */
-    'delete': function(elem, parent){
+    remove_Recursive: function(elem, parent){
         var unbalanced = false;
         var success = false;
         var ret;
@@ -614,7 +614,7 @@ AVLNode.prototype = {
                 this.data = temp;
 
                 // 从右子树递归删除
-                ret = this.rightChild['delete'](elem, this);
+                ret = this.rightChild.remove_Recursive(elem, this);
                 unbalanced = ret.unbalanced;
 
                 // 返回的结果产生不平衡，即右子树变矮了，根据情况作调整
@@ -650,7 +650,7 @@ AVLNode.prototype = {
             }
             // 继续递归查找
             else {
-                ret = this.rightChild['delete'](elem, this);
+                ret = this.rightChild.remove_Recursive(elem, this);
                 success = ret.success;
                 unbalanced = ret.unbalanced;
                 data = ret.data;
@@ -685,7 +685,7 @@ AVLNode.prototype = {
             if(!this.leftChild) {
                 success = false;
             } else {
-                ret = this.leftChild['delete'](elem, this);
+                ret = this.leftChild.remove_Recursive(elem, this);
                 success = ret.success;
                 unbalanced = ret.unbalanced;
                 data = ret.data;
@@ -742,6 +742,7 @@ AVLNode.prototype = {
             var cmp = AVLNode.cmp(elem, p.data);
             if(cmp === 0) break;
 
+            // 如果平衡因子为等高或者要在较短一端删除关键字
             if(p.balanceFactor === EH
                 || (p.balanceFactor === LH && cmp > 0 && p.leftChild && p.leftChild.balanceFactor === EH)
                 || (p.balanceFactor === RH && cmp < 0 && p.rightChild && p.rightChild.balanceFactor === EH)) a = p;
@@ -752,6 +753,7 @@ AVLNode.prototype = {
             else p = p.rightChild;
         }
 
+        // 未找到
         if(!p) return {
             success: false,
             errormsg: 'data: ' + elem + ' not found!'
@@ -763,6 +765,7 @@ AVLNode.prototype = {
         var data = p.data;
         var skip = false;
 
+        // 待删除元素有左右子树，根据较长的子树选择相邻结点，然后替换，最后删除
         if(p.leftChild && p.rightChild) {
             q = p;
             if(p.balanceFactor === LH) {
@@ -779,24 +782,33 @@ AVLNode.prototype = {
                 }
             }
 
+            // 交换关键字
             var temp = p.data;
             p.data = m.data;
             m.data = temp;
 
             pos = q.leftChild && q.leftChild.data === m.data ? 'leftChild' : 'rightChild';
             var otherPos = pos === 'leftChild' ? 'rightChild' : 'leftChild';
+            // 如果父结点另一子树有结点且待删除结点没有左右子树，
+            // 说明删除当前结点不会影响除父结点以上的其他结点
             if(q[otherPos] && !m.leftChild && !m.rightChild) skip = true;
 
+            // 更改父结点的平衡因子
             if(pos === 'leftChild') --q.balanceFactor;
             else ++q.balanceFactor;
+            // 删除，如果右子树就替换
             q[pos] = m.leftChild || m.rightChild;
-        } else if(p.leftChild || p.rightChild) {
+        }
+        // 只有左子树或右子树的情况，直接替换
+        else if(p.leftChild || p.rightChild) {
             copyNode(p, p.leftChild || p.rightChild);
             if(q) {
                 if(q.leftChild === p) --q.balanceFactor;
                 else ++q.balanceFactor;
             }
-        } else {
+        }
+        // 没有子树的情况，考虑根结点的情况
+        else {
             if(q) {
                 pos = q.leftChild == p ? 'leftChild' : 'rightChild';
                 q[pos] = null;
@@ -809,6 +821,7 @@ AVLNode.prototype = {
         }
 
         if(q) {
+            // 删除后，更改路径上的平衡因子
             if(!skip) {
                 p = a;
 
@@ -823,6 +836,7 @@ AVLNode.prototype = {
                 }
             }
 
+            // 如果路径上的平衡因子出现不平衡则根据情况做平衡处理
             p = a;
             var top;
             while(p){
@@ -928,7 +942,7 @@ test.inOrderTraverse(function (data) {
  */
 
 
-console.log('delete 2:');
+console.log('remove_Recursive 2:');
 
 test.remove_nonRecursive(14);
 test.remove_nonRecursive(25);
@@ -949,34 +963,35 @@ for(var i = 0; i < str.length; ++i){
     test2.insert_nonRecursive(str[i]);
 }
 
+test.remove_nonRecursive('e');
+test.remove_nonRecursive('h');
 test.remove_nonRecursive('a');
 test.remove_nonRecursive('j');
 test.remove_nonRecursive('b');
-test.remove_nonRecursive('b');
-test.remove_nonRecursive('l');
-test.remove_nonRecursive('f');
 test.remove_nonRecursive('d');
 test.remove_nonRecursive('k');
 test.remove_nonRecursive('g');
 test.remove_nonRecursive('m');
 test.remove_nonRecursive('c');
-test.remove_nonRecursive('e');
-test.remove_nonRecursive('h');
+test.remove_nonRecursive('b');
+test.remove_nonRecursive('l');
+test.remove_nonRecursive('f');
 
 
-test2.delete('a');
-test2.delete('j');
-test2.delete('b');
-test2.delete('b');
-test2.delete('l');
-test2.delete('f');
-test2.delete('d');
-test2.delete('k');
-test2.delete('g');
-test2.delete('m');
-test2.delete('c');
-test2.delete('e');
-test2.delete('h');
+
+test2.remove_Recursive('a');
+test2.remove_Recursive('j');
+test2.remove_Recursive('b');
+test2.remove_Recursive('b');
+test2.remove_Recursive('l');
+test2.remove_Recursive('f');
+test2.remove_Recursive('d');
+test2.remove_Recursive('k');
+test2.remove_Recursive('g');
+test2.remove_Recursive('m');
+test2.remove_Recursive('c');
+test2.remove_Recursive('e');
+test2.remove_Recursive('h');
 
 
 // 国外大牛的一种简洁实现方式
