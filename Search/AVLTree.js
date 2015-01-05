@@ -721,7 +721,7 @@ AVLNode.prototype = {
     },
 
     /**
-     * 非递归删除， 测试了几个例子暂时没错，需要覆盖率高的单元测试
+     * 非递归删除， 测试了几个例子暂时没错，需要覆盖率高的单元测试 todo bugs exist
      * @param elem
      * @returns {*}
      */
@@ -791,6 +791,7 @@ AVLNode.prototype = {
             var otherPos = pos === 'leftChild' ? 'rightChild' : 'leftChild';
             // 如果父结点另一子树有结点且待删除结点没有左右子树，
             // 说明删除当前结点不会影响除父结点以上的其他结点
+            // todo
             if(q[otherPos] && !m.leftChild && !m.rightChild) skip = true;
 
             // 更改父结点的平衡因子
@@ -965,17 +966,18 @@ for(var i = 0; i < str.length; ++i){
 
 test.remove_nonRecursive('e');
 test.remove_nonRecursive('h');
-test.remove_nonRecursive('a');
-test.remove_nonRecursive('j');
-test.remove_nonRecursive('b');
 test.remove_nonRecursive('d');
 test.remove_nonRecursive('k');
-test.remove_nonRecursive('g');
-test.remove_nonRecursive('m');
-test.remove_nonRecursive('c');
+test.remove_nonRecursive('a');
 test.remove_nonRecursive('b');
 test.remove_nonRecursive('l');
 test.remove_nonRecursive('f');
+test.remove_nonRecursive('j');
+test.remove_nonRecursive('b');
+test.remove_nonRecursive('g');
+test.remove_nonRecursive('m');
+test.remove_nonRecursive('c');
+
 
 
 
