@@ -766,17 +766,34 @@ AVLNode.prototype = {
         var skip = false;
 
         // 待删除元素有左右子树，根据较长的子树选择相邻结点，然后替换，最后删除
+        // todo，交换元素要考虑a结点的变更。。
         if(p.leftChild && p.rightChild) {
             q = p;
             if(p.balanceFactor === LH) {
                 m = p.leftChild;
+                cmp = AVLNode.cmp(elem, m.data);
+                if(m.balanceFactor === EH
+                    || (m.balanceFactor === LH && cmp > 0 && m.leftChild && m.leftChild.balanceFactor === EH)
+                    || (m.balanceFactor === RH && cmp < 0 && m.rightChild && m.rightChild.balanceFactor === EH)) a = m;
                 while(m.rightChild) {
+                    cmp = AVLNode.cmp(elem, m.data);
+                    if(m.balanceFactor === EH
+                        || (m.balanceFactor === LH && cmp > 0 && m.leftChild && m.leftChild.balanceFactor === EH)
+                        || (m.balanceFactor === RH && cmp < 0 && m.rightChild && m.rightChild.balanceFactor === EH)) a = m;
                     q = m;
                     m = m.rightChild;
                 }
             } else {
                 m = p.rightChild;
+                cmp = AVLNode.cmp(elem, m.data);
+                if(m.balanceFactor === EH
+                    || (m.balanceFactor === LH && cmp > 0 && m.leftChild && m.leftChild.balanceFactor === EH)
+                    || (m.balanceFactor === RH && cmp < 0 && m.rightChild && m.rightChild.balanceFactor === EH)) a = m;
                 while(m.leftChild) {
+                    cmp = AVLNode.cmp(elem, m.data);
+                    if(m.balanceFactor === EH
+                        || (m.balanceFactor === LH && cmp > 0 && m.leftChild && m.leftChild.balanceFactor === EH)
+                        || (m.balanceFactor === RH && cmp < 0 && m.rightChild && m.rightChild.balanceFactor === EH)) a = m;
                     q = m;
                     m = m.leftChild;
                 }
@@ -788,11 +805,6 @@ AVLNode.prototype = {
             m.data = temp;
 
             pos = q.leftChild && q.leftChild.data === m.data ? 'leftChild' : 'rightChild';
-            var otherPos = pos === 'leftChild' ? 'rightChild' : 'leftChild';
-            // 如果父结点另一子树有结点且待删除结点没有左右子树，
-            // 说明删除当前结点不会影响除父结点以上的其他结点
-            // todo
-            if(q[otherPos] && !m.leftChild && !m.rightChild) skip = true;
 
             // 更改父结点的平衡因子
             if(pos === 'leftChild') --q.balanceFactor;
@@ -823,17 +835,15 @@ AVLNode.prototype = {
 
         if(q) {
             // 删除后，更改路径上的平衡因子
-            if(!skip) {
-                p = a;
+            p = a;
 
-                while(p && p != q){
-                    if(AVLNode.cmp(q.data, p.data) < 0) {
-                        --p.balanceFactor;
-                        p = p.leftChild;
-                    } else {
-                        ++p.balanceFactor;
-                        p = p.rightChild;
-                    }
+            while(p && p != q){
+                if(AVLNode.cmp(q.data, p.data) < 0) {
+                    --p.balanceFactor;
+                    p = p.leftChild;
+                } else {
+                    ++p.balanceFactor;
+                    p = p.rightChild;
                 }
             }
 
@@ -945,10 +955,10 @@ test.inOrderTraverse(function (data) {
 
 console.log('remove_Recursive 2:');
 
+test.remove_nonRecursive(81);
 test.remove_nonRecursive(14);
 test.remove_nonRecursive(25);
 test.remove_nonRecursive(44);
-test.remove_nonRecursive(81);
 test.remove_nonRecursive(3);
 
 
