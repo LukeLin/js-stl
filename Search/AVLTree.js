@@ -744,8 +744,8 @@ AVLNode.prototype = {
 
             // 如果平衡因子为等高或者要在较短一端删除关键字
             if(p.balanceFactor === EH
-                || (p.balanceFactor === LH && cmp > 0 && p.leftChild && p.leftChild.balanceFactor === EH)
-                || (p.balanceFactor === RH && cmp < 0 && p.rightChild && p.rightChild.balanceFactor === EH)) a = p;
+                || (p.balanceFactor === LH && cmp > 0 && p.leftChild.balanceFactor === EH)
+                || (p.balanceFactor === RH && cmp < 0 && p.rightChild.balanceFactor === EH)) a = p;
 
             q = p;
 
@@ -763,40 +763,37 @@ AVLNode.prototype = {
         var m;
         var pos;
         var data = p.data;
-        var skip = false;
 
         // 待删除元素有左右子树，根据较长的子树选择相邻结点，然后替换，最后删除
         // todo，交换元素要考虑a结点的变更。。
         if(p.leftChild && p.rightChild) {
             q = p;
+            var m2;
             if(p.balanceFactor === LH) {
-                m = p.leftChild;
-                cmp = AVLNode.cmp(elem, m.data);
-                if(m.balanceFactor === EH
-                    || (m.balanceFactor === LH && cmp > 0 && m.leftChild && m.leftChild.balanceFactor === EH)
-                    || (m.balanceFactor === RH && cmp < 0 && m.rightChild && m.rightChild.balanceFactor === EH)) a = m;
+                m2 = m = p.leftChild;
                 while(m.rightChild) {
-                    cmp = AVLNode.cmp(elem, m.data);
-                    if(m.balanceFactor === EH
-                        || (m.balanceFactor === LH && cmp > 0 && m.leftChild && m.leftChild.balanceFactor === EH)
-                        || (m.balanceFactor === RH && cmp < 0 && m.rightChild && m.rightChild.balanceFactor === EH)) a = m;
                     q = m;
                     m = m.rightChild;
                 }
             } else {
-                m = p.rightChild;
-                cmp = AVLNode.cmp(elem, m.data);
-                if(m.balanceFactor === EH
-                    || (m.balanceFactor === LH && cmp > 0 && m.leftChild && m.leftChild.balanceFactor === EH)
-                    || (m.balanceFactor === RH && cmp < 0 && m.rightChild && m.rightChild.balanceFactor === EH)) a = m;
+                if(p.balanceFactor === EH) a = p;
+                m2 = m = p.rightChild;
                 while(m.leftChild) {
-                    cmp = AVLNode.cmp(elem, m.data);
-                    if(m.balanceFactor === EH
-                        || (m.balanceFactor === LH && cmp > 0 && m.leftChild && m.leftChild.balanceFactor === EH)
-                        || (m.balanceFactor === RH && cmp < 0 && m.rightChild && m.rightChild.balanceFactor === EH)) a = m;
                     q = m;
                     m = m.leftChild;
                 }
+            }
+
+            while(m2){
+                cmp = AVLNode.cmp(m.data, m2.data);
+                if(cmp === 0) break;
+
+                if(m2.balanceFactor === EH
+                    || (m2.balanceFactor === LH && cmp > 0 && m2.leftChild.balanceFactor === EH)
+                    || (m2.balanceFactor === RH && cmp < 0 && m2.rightChild.balanceFactor === EH)) a = m2;
+
+                if(cmp < 0) m2 = m2.leftChild;
+                else m2 = m2.rightChild;
             }
 
             // 交换关键字
@@ -855,11 +852,13 @@ AVLNode.prototype = {
                 if(p.balanceFactor === 2) {
                     b = p.leftChild;
                     if(b.balanceFactor === LH) top = p.rotate_LL(true);
+                    // todo 删除要考虑长子树等高的情况
                     else top = p.rotate_LR();
                     deepCopyNode(p, top);
                 } else if(p.balanceFactor === -2) {
                     b = p.rightChild;
                     if(b.balanceFactor === LH) top = p.rotate_RL();
+                    // todo
                     else top = p.rotate_RR(true);
                     deepCopyNode(p, top);
                 }
@@ -962,7 +961,9 @@ test.remove_nonRecursive(44);
 test.remove_nonRecursive(3);
 
 
-var str = 'ckbfjlaegmdh';
+var str = 'cknobfjtlpqaegrmdhs';
+//var str = 'ckbfjlaegmdh';
+
 
 test = new AVLNode();
 for(var i = 0; i < str.length; ++i){
@@ -976,18 +977,23 @@ for(var i = 0; i < str.length; ++i){
 
 test.remove_nonRecursive('e');
 test.remove_nonRecursive('h');
-test.remove_nonRecursive('d');
-test.remove_nonRecursive('k');
-test.remove_nonRecursive('a');
 test.remove_nonRecursive('b');
 test.remove_nonRecursive('l');
 test.remove_nonRecursive('f');
 test.remove_nonRecursive('j');
-test.remove_nonRecursive('b');
 test.remove_nonRecursive('g');
+test.remove_nonRecursive('d');
+test.remove_nonRecursive('k');
+test.remove_nonRecursive('a');
 test.remove_nonRecursive('m');
-test.remove_nonRecursive('c');
-
+//test.remove_nonRecursive('n');
+//test.remove_nonRecursive('o');
+//test.remove_nonRecursive('p');
+//test.remove_nonRecursive('q');
+//test.remove_nonRecursive('r');
+//test.remove_nonRecursive('s');
+//test.remove_nonRecursive('t');
+//test.remove_nonRecursive('c');
 
 
 
