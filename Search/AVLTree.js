@@ -765,7 +765,6 @@ AVLNode.prototype = {
         var data = p.data;
 
         // 待删除元素有左右子树，根据较长的子树选择相邻结点，然后替换，最后删除
-        // todo，交换元素要考虑a结点的变更。。
         if(p.leftChild && p.rightChild) {
             q = p;
             var m2;
@@ -852,12 +851,22 @@ AVLNode.prototype = {
                 if(p.balanceFactor === 2) {
                     b = p.leftChild;
                     if(b.balanceFactor === LH) top = p.rotate_LL(true);
-                    // todo 删除要考虑长子树等高的情况
+                    //else if(b.balanceFactor === EH) {
+                    //    top = p.rotate_LL(true);
+                    //    top.balanceFactor = LH;
+                    //    top.leftChild.balanceFactor = RH;
+                    //}
+                    // todo
                     else top = p.rotate_LR();
                     deepCopyNode(p, top);
                 } else if(p.balanceFactor === -2) {
                     b = p.rightChild;
                     if(b.balanceFactor === LH) top = p.rotate_RL();
+                    //else if(b.balanceFactor === EH){
+                    //    top = p.rotate_RR(true);
+                    //    top.balanceFactor = RH;
+                    //    top.rightChild.balanceFactor = LH;
+                    //}
                     // todo
                     else top = p.rotate_RR(true);
                     deepCopyNode(p, top);
@@ -986,14 +995,14 @@ test.remove_nonRecursive('d');
 test.remove_nonRecursive('k');
 test.remove_nonRecursive('a');
 test.remove_nonRecursive('m');
-//test.remove_nonRecursive('n');
-//test.remove_nonRecursive('o');
-//test.remove_nonRecursive('p');
-//test.remove_nonRecursive('q');
-//test.remove_nonRecursive('r');
-//test.remove_nonRecursive('s');
-//test.remove_nonRecursive('t');
-//test.remove_nonRecursive('c');
+test.remove_nonRecursive('n');
+test.remove_nonRecursive('o');
+test.remove_nonRecursive('p');
+test.remove_nonRecursive('q');
+test.remove_nonRecursive('r');
+test.remove_nonRecursive('s');
+test.remove_nonRecursive('t');
+test.remove_nonRecursive('c');
 
 
 
@@ -1093,7 +1102,7 @@ Node.prototype = {
         var path = this;
         var first, second, third;
 
-        if(path.longer < 0) ;
+        if(path.longer === NEITHER) ;
         else if(path.longer !== (first = Node.cmp(elem, path.data))){
             path.longer = NEITHER;
             path = path.next[first];
@@ -1116,7 +1125,7 @@ Node.prototype = {
 
         while(tree && elem !== tree.data){
             var next_step = Node.cmp(elem, tree.data);
-            if(tree.longer >= 0) pathTop = tree;
+            if(tree.longer !== NEITHER) pathTop = tree;
             treeP = tree;
             tree = tree.next[next_step];
         }
@@ -1135,6 +1144,67 @@ Node.prototype = {
     },
 
     swapDel: function(treeP, dir){
+        var targetn = this;
+        var tree = treeP;
 
+        copyNode(treeP, tree.next[1 - dir]);
+        copyNode(tree, targetn);
+    },
+    rebalanceDel: function(elem, targetp){
+        var treep = this;
+
+        while(1){
+            var tree = treep;
+            var dir = Node.cmp(elem, tree.data);
+
+            if(!tree.next[dir]) break;
+
+            if(tree.longer === NEITHER){
+                tree.longer = 1 - dir;
+            } else if(tree.longer === dir){
+                tree.longer = NEITHER;
+            } else {
+                var second = tree.next[1 - dir].longer;
+
+                if(second === dir) {
+                    treep.rotate_3(1 - dir, tree.next[1 - dir].next[dir].longer)
+                } else if(second === NEITHER){
+                    treep.rotate_2(1 - dir);
+                    tree.longer = 1 - dir;
+                    treep.longer = dir;
+                } else {
+                    treep.rotate_2(1 - dir);
+                }
+
+                if(tree === targetp) targetp = treep.next[dir];
+            }
+
+            treep = tree.next[dir];
+        }
+
+        return targetp;
+    },
+
+    delete: function(elem){
+        var tree = this;
+        var targetp = null;
+        var pathTop = this;
+
+        while(tree){
+            var dir = Node.cmp(elem, tree.data);
+
+            if(elem === tree.data) targetp = tree;
+            if(!tree.next[dir]) break;
+            if(tree.longer === NEITHER || (tree.longer == (1 - dir) && tree.next[1 - dir].longer < 0)) pathTop = tree;
+
+            tree = tree.next[dir];
+        }
+
+        if(!targetp) return false;
+
+        targetp = pathTop.rebalanceDel(elem, targetp);
+        targetp.swapDel(tree, dir);
+
+        return true;
     }
 };
