@@ -1033,9 +1033,9 @@ function Node(){
     this.longer = NEITHER;
 }
 Node.cmp = function(a, b){
-    if(a > b) return 1;
-    else if(a === b) return 0;
-    else return -1;
+    if(a > b) return RIGHT;
+    else if(a === b) return NEITHER;
+    else return LEFT;
 };
 Node.prototype = {
     constructor: Node,
@@ -1108,7 +1108,9 @@ Node.prototype = {
     },
 
     rotate_3: function(dir, thirdDir){
-        var b = this;
+        var b = this.copy(function(a, b){
+            a.longer = b.longer;
+        });
         var f = b.next[dir];
         var d = f.next[1 - dir];
 
@@ -1122,6 +1124,8 @@ Node.prototype = {
         d.longer = NEITHER;
 
         b.longer = f.longer = NEITHER;
+
+        copyNode(this, d);
 
         if(thirdDir === NEITHER) {
             return null;
@@ -1161,7 +1165,7 @@ Node.prototype = {
             path = this.rotate_3(first, third);
         }
 
-        path.rebalancePath(elem);
+        if(path) path.rebalancePath(elem);
     },
 
     insert: function(elem){
