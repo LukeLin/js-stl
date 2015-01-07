@@ -130,6 +130,7 @@ var EH = 0;     // 等高
 var RH = -1;    // 右高
 
 var BinaryTree = require('../Binary tree/BinaryTree').BinaryTree;
+var Stack = require('../Stack/stack');
 
 
 /**
@@ -963,11 +964,11 @@ test.inOrderTraverse(function (data) {
 
 console.log('remove_Recursive 2:');
 
+test.remove_nonRecursive(3);
 test.remove_nonRecursive(81);
 test.remove_nonRecursive(14);
 test.remove_nonRecursive(25);
 test.remove_nonRecursive(44);
-test.remove_nonRecursive(3);
 
 
 var str = 'cknobfjtlpqaegrmdhs';
@@ -1037,6 +1038,7 @@ Node.cmp = function(a, b){
     else return -1;
 };
 Node.prototype = {
+    constructor: Node,
     search: function(elem){
         var tree = this;
 
@@ -1048,16 +1050,60 @@ Node.prototype = {
         return tree;
     },
 
+    copy: function (cb) {
+        cb = cb || function(){};
+        // 用来存放本体结点的栈
+        var stack1 = new Stack();
+        // 用来存放新二叉树结点的栈
+        var stack2 = new Stack();
+        stack1.push(this);
+        var Cstr = this.constructor;
+        var newTree = new Cstr();
+        var q = newTree;
+        stack2.push(newTree);
+        var p;
+
+        while (stack1.top) {
+            // 向左走到尽头
+            while ((p = stack1.peek())) {
+                if (p.next[0]) q.next[0] = new Cstr();
+                q = q.next[0];
+                stack1.push(p.next[0]);
+                stack2.push(q);
+            }
+
+            p = stack1.pop();
+            q = stack2.pop();
+
+            if (stack1.top) {
+                p = stack1.pop();
+                q = stack2.pop();
+                if (p.next[1]) q.next[1] = new Cstr();
+                q.data = p.data;
+                cb(q, p);
+                q = q.next[1];
+                stack1.push(p.next[1]);  // 向右一步
+                stack2.push(q);
+            }
+        }
+
+        return newTree;
+    },
+
     rotate_2: function(dir){
-        var b = this;
+        var b = this.copy(function(a, b){
+            a.longer = b.longer;
+        });
         var d = b.next[dir];
         var c = d.next[1 - dir];
         var e = d.next[dir];
 
-        copyNode(this, d);
-        d.next[1 - dir] = b;
         b.next[dir] = c;
+        d.next[1 - dir] = b;
         b.longer = d.longer = NEITHER;
+
+        copyNode(this, d);
+
         return e;
     },
 
@@ -1068,7 +1114,7 @@ Node.prototype = {
 
         var c = d.next[1 - dir];
         var e = d.next[dir];
-        copyNode(this, d);
+
         d.next[1 - dir] = b;
         d.next[dir] = f;
         b.next[dir] = c;
@@ -1122,6 +1168,11 @@ Node.prototype = {
         var tree = this;
         var treeP = this;
         var pathTop = this;
+
+        if(this.data == null) {
+            this.data = elem;
+            return true;
+        }
 
         while(tree && elem !== tree.data){
             var next_step = Node.cmp(elem, tree.data);
@@ -1185,7 +1236,7 @@ Node.prototype = {
         return targetp;
     },
 
-    delete: function(elem){
+    remove: function(elem){
         var tree = this;
         var targetp = null;
         var pathTop = this;
@@ -1206,5 +1257,58 @@ Node.prototype = {
         targetp.swapDel(tree, dir);
 
         return true;
+    },
+
+    checkDepth: function (){
+        if(this.data == null) return 0;
+
+        var err = 0;
+        var b = this.next[LEFT] && this.next[LEFT].checkDepth() || 0;
+        var f = this.next[RIGHT] && this.next[RIGHT].checkDepth() || 0;
+        var rv;
+
+        if(b === f) {
+            if(this.longer !== NEITHER) err = 1;
+            rv = b + 1;
+        } else if(b === f - 1){
+            if(this.longer !== RIGHT) err = 1;
+            rv = f + 1;
+        } else if(b - 1 === f){
+            if(this.longer !== LEFT) err = 1;
+            rv = b + 1;
+        } else {
+            err = 1;
+            rv = 0;
+        }
+
+        if(err) console.log('error at %d: b = %d, f = %d, longer = %d\n', this.data, b, f, this.longer);
+
+        return rv;
     }
 };
+
+
+console.log('\nAVL tree insert2: ');
+var test = new Node();
+test.insert(3);
+test.insert(14);
+test.insert(25);
+test.insert(81);
+test.insert(44);
+
+/*
+      14
+    /    \
+  3       44
+         /   \
+       25     81
+ */
+
+
+console.log('remove_Recursive 2:');
+
+test.remove(3);
+test.remove(81);
+test.remove(14);
+test.remove(25);
+test.remove(44);
