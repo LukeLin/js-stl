@@ -1198,13 +1198,6 @@ Node.prototype = {
         return true;
     },
 
-    swapDel: function(treeP, dir){
-        var targetn = this;
-        var tree = treeP;
-
-        copyNode(treeP, tree.next[1 - dir]);
-        copyNode(tree, targetn);
-    },
     rebalanceDel: function(elem, targetp){
         var treep = this;
 
@@ -1244,6 +1237,7 @@ Node.prototype = {
         var tree = this;
         var targetp = null;
         var pathTop = this;
+        var treep = this;
 
         while(tree){
             var dir = Node.cmp(elem, tree.data);
@@ -1252,13 +1246,20 @@ Node.prototype = {
             if(!tree.next[dir]) break;
             if(tree.longer === NEITHER || (tree.longer == (1 - dir) && tree.next[1 - dir].longer < 0)) pathTop = tree;
 
+            treep = tree;
             tree = tree.next[dir];
         }
 
         if(!targetp) return false;
 
-        targetp = pathTop.rebalanceDel(elem, targetp);
-        targetp.swapDel(tree, dir);
+        targetp = pathTop.rebalanceDel(elem, treep);
+
+        dir = Node.cmp(elem, treep.data);
+        if(targetp == tree) {
+            if(targetp.next[LEFT]) copyNode(targetp, targetp.next[LEFT]);
+            else if(targetp.next[RIGHT]) copyNode(targetp, targetp.next[RIGHT]);
+            else this.data = null;
+        } else targetp.next[dir] = tree.next[1 - dir];
 
         return true;
     },
@@ -1311,8 +1312,40 @@ test.insert(44);
 
 console.log('remove_Recursive 2:');
 
-test.remove(3);
 test.remove(81);
+test.remove(3);
 test.remove(14);
 test.remove(25);
 test.remove(44);
+
+
+str = 'cknobfjtlpqaegrmdhs';
+//var str = 'ckbfjlaegmdh';
+
+
+test = new Node();
+for(var i = 0; i < str.length; ++i){
+    test.insert(str[i]);
+}
+
+
+test.remove('e');
+test.remove('h');
+test.remove('b');
+test.remove('l');
+test.remove('f');
+test.remove('j');
+test.remove('g');
+test.remove('d');
+test.remove('k');
+test.remove('a');
+test.remove('m');
+test.remove('n');
+test.remove('o');
+test.remove('p');
+test.remove('q');
+test.remove('r');
+test.remove('s');
+test.remove('t');
+// todo bug exists
+test.remove('c');
