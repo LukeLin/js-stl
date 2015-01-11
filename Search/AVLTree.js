@@ -883,7 +883,6 @@ AVLNode.prototype = {
             data: data
         };
     }
-
 };
 
 function rotate(to) {
@@ -1195,11 +1194,16 @@ Node.prototype = {
         treeP.next[next_step] = tree;
         pathTop.rebalanceInsert(elem);
 
+        console.log(elem + ' inserted\n');
+        this.checkDepth();
+
         return true;
     },
 
+    // todo bug exists
     rebalanceDel: function(elem, targetp){
         var treep = this;
+        var targetn = targetp;
 
         while(1){
             var tree = treep;
@@ -1215,7 +1219,7 @@ Node.prototype = {
                 var second = tree.next[1 - dir].longer;
 
                 if(second === dir) {
-                    treep.rotate_3(1 - dir, tree.next[1 - dir].next[dir].longer)
+                    treep.rotate_3(1 - dir, tree.next[1 - dir].next[dir].longer);
                 } else if(second === NEITHER){
                     treep.rotate_2(1 - dir);
                     tree.longer = 1 - dir;
@@ -1224,7 +1228,7 @@ Node.prototype = {
                     treep.rotate_2(1 - dir);
                 }
 
-                if(tree === targetp) targetp = treep.next[dir];
+                if(tree === targetn) targetp = treep.next[dir];
             }
 
             treep = tree.next[dir];
@@ -1256,11 +1260,17 @@ Node.prototype = {
 
         dir = Node.cmp(elem, treep.data);
         if(targetp == tree) {
-            if(targetp.next[LEFT]) copyNode(targetp, targetp.next[LEFT]);
-            else if(targetp.next[RIGHT]) copyNode(targetp, targetp.next[RIGHT]);
-            else this.data = null;
-        } else targetp.next[dir] = tree.next[1 - dir];
+            var next = targetp.next[LEFT] || targetp.next[RIGHT];
+            if(next) {
+                copyNode(targetp, next);
+                targetp.longer = next.longer;
+            } else this.data = null;
+        } else {
+            targetp.next[dir] = tree.next[1 - dir];
+        }
 
+        console.log('' + elem + ' removed"\n');
+        this.checkDepth();
         return true;
     },
 
@@ -1286,7 +1296,7 @@ Node.prototype = {
             rv = 0;
         }
 
-        if(err) console.log('error at %d: b = %d, f = %d, longer = %d\n', this.data, b, f, this.longer);
+        if(err) console.log('error at %s: b = %d, f = %d, longer = %d\n', this.data, b, f, this.longer);
 
         return rv;
     }
