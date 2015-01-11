@@ -1359,3 +1359,6 @@ test.remove('s');
 test.remove('t');
 // todo bug exists
 test.remove('c');
+
+
+/*插入算法都有问题。。不想在这里纠结太久，以后有空再看吧。。先去研究红黑树*/
