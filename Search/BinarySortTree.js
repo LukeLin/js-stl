@@ -67,10 +67,12 @@ BSTNode.prototype = {
         if (this.data != null) {
             if (this.data === key) return this;
             else if (key < this.data) {
-                if (this.leftChild) return this.search.call(this.leftChild, key);
+                if (this.leftChild)
+                    return this.search.call(this.leftChild, key);
             }
             else {
-                if (this.rightChild) return this.search.call(this.rightChild, key);
+                if (this.rightChild)
+                    return this.search.call(this.rightChild, key);
             }
         }
 
@@ -82,7 +84,7 @@ BSTNode.prototype = {
      * @param {*} key
      * @returns {*}
      */
-    search_nonRecurse: search_nonRecurse,
+    search_nonRecursive: search_nonRecursive,
 
     /**
      * BST树的插入（递归）
@@ -108,7 +110,7 @@ BSTNode.prototype = {
      * BST树的插入（非递归）
      * @param {*} key
      */
-    insert_nonRecurse: function (key) {
+    insert_nonRecursive: function (key) {
         var node = new BSTNode(key);
 
         if (this.data == null) this.data = key;
@@ -131,13 +133,13 @@ BSTNode.prototype = {
     /**
      * 利用BST树的插入操作建立一棵BST树
      * @param {Array} arr
-     * @param {Boolean|undefined} useNonRecurse 是否使用非递归
+     * @param {Boolean|undefined} usenonRecursive 是否使用非递归
      */
-    createBST: function (arr, useNonRecurse) {
+    createBST: function (arr, usenonRecursive) {
         var i;
-        if (useNonRecurse) {
+        if (usenonRecursive) {
             for (i = 0; i < arr.length; ++i)
-                this.insert_nonRecurse(arr[i]);
+                this.insert_nonRecursive(arr[i]);
         } else {
             for (i = 0; i < arr.length; ++i)
                 this.insert(arr[i]);
@@ -177,7 +179,7 @@ BSTNode.prototype = {
      * @param {*} key 需要查找的关键字
      * @returns {boolean}
      */
-    delete_nonRecurse: function (key) {
+    delete_nonRecursive: function (key) {
         var p = this;
         var f;
 
@@ -225,7 +227,7 @@ BSTNode.prototype = {
      * @returns {Array} [min, max]
      */
     findNeighborElem: function (x) {
-        var last = typeof tree.data === 'number' ? -Infinity : 'a';
+        var last = typeof this.data === 'number' ? -Infinity : 'a';
         var ret = [];
 
         void function recurse(tree, x) {
@@ -289,7 +291,7 @@ BSTNode.prototype = {
     }
 };
 
-function search_nonRecurse(key) {
+function search_nonRecursive(key) {
     if (this.data == null) return null;
 
     var p = this;
@@ -372,8 +374,8 @@ console.log(bst.search(13));
 
 var bst2 = new BSTNode();
 bst2.createBST([45, 24, 53, 12, 24, 90], true);
-console.log(bst2.search_nonRecurse(12));
-console.log(bst2.search_nonRecurse(13));
+console.log(bst2.search_nonRecursive(12));
+console.log(bst2.search_nonRecursive(13));
 
 console.log('\nfindSiblingElem: ');
 console.log(bst.findNeighborElem(12) + '');
@@ -388,17 +390,17 @@ console.log(bst['delete'](90));
 console.log(bst['delete'](24));
 console.log(bst['delete'](2));
 
-//console.log(bst2.delete_nonRecurse(45));
-//console.log(bst2.delete_nonRecurse(1));
-//console.log(bst2.delete_nonRecurse(53));
-//console.log(bst2.delete_nonRecurse(12));
-//console.log(bst2.delete_nonRecurse(90));
-//console.log(bst2.delete_nonRecurse(24));
-//console.log(bst2.delete_nonRecurse(2));
+//console.log(bst2.delete_nonRecursive(45));
+//console.log(bst2.delete_nonRecursive(1));
+//console.log(bst2.delete_nonRecursive(53));
+//console.log(bst2.delete_nonRecursive(12));
+//console.log(bst2.delete_nonRecursive(90));
+//console.log(bst2.delete_nonRecursive(24));
+//console.log(bst2.delete_nonRecursive(2));
 
 console.log('\nisBSTTree: ');
 console.log(BSTNode.isBSTTree(bst));
-console.log(BSTNode.isBSTTree(sosTree));
+//console.log(BSTNode.isBSTTree(sosTree));
 
 
 /**

@@ -59,7 +59,6 @@ function fibonacciSearch(sTable, key, n) {
             f2 = f2 - f1;
         }
     }
-
     return -1;
 }
 
