@@ -6,7 +6,7 @@
  查找过程中，先确定待查找记录在表中的范围，然后逐步缩小范围(每次将待查记录所在区间缩小一半)，直到找到或找不到记录为止。
 
  1  查找思想
- 用Low、High和Mid表示待查找区间的下界、上界和中间位置指针，初值为Low=1，High=n。
+ 用Low、High和Mid表示待查找区间的下界、上界和中间位置指针，初值为Low=0，High=n - 1。
  ⑴   取中间位置Mid：Mid=Math.floor((Low+High)/2)；
  ⑵   比较中间位置记录的关键字与给定的K值：
  ①  相等： 查找成功；
@@ -54,9 +54,12 @@ function binarySearchRecursive(sTable, key, low, high) {
 
     var mid = Math.floor((low + high) / 2);
 
-    if (sTable[mid] === key) return mid;
-    else if (sTable[mid] > key) return binarySearchRecursive(sTable, key, low, mid - 1);
-    else return binarySearchRecursive(sTable, mid + 1, high);
+    if (sTable[mid] === key)
+        return mid;
+    else if (sTable[mid] > key)
+        return binarySearchRecursive(sTable, key, low, mid - 1);
+    else
+        return binarySearchRecursive(sTable, mid + 1, high);
 }
 
 console.log('binarySearchRecursive: ');
