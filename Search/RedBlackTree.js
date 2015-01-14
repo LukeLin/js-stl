@@ -103,6 +103,69 @@ RedBlackNode.prototype = {
         }
 
         this.root.color = BLACK;
+    },
+
+    removeNode: function(z){
+        var x, y;
+
+        if(z.leftChild == null || z.rightChild == null)
+            y = z;
+        else
+            y = this.successor(z);
+
+        if(y.leftChild) x = y.leftChild;
+        else x = y.rightChild;
+
+        x.parent = y.parent;
+
+        if(y.parent == null) this.root = x;
+        else if(y == y.parent.leftChild) y.parent.left = x;
+        else y.parent.rightChild = x;
+
+        if(y != z) z.data = y.data;
+        if(y.color === BLACK) this._removeFixup(x);
+    },
+
+    _removeFixup: function(z){
+        var w;
+
+        while(z !== this.root && z.color === BLACK){
+            if(z == z.parent.left)
+                leftRemoveFixup(z);
+            else
+                rightRemoveFixup(z);
+        }
+
+        z.color = BLACK;
+    },
+
+    successor: function(z){
+        if(z.rightChild) return this.min(z.rightChild);
+
+        var y = z.parent;
+
+        while(y && z == y.rightChild){
+            z = y;
+            y = y.parent;
+        }
+
+        return y;
+    },
+
+    min: function(z){
+        while(z.leftChild){
+            z = z.leftChild;
+        }
+
+        return z;
+    },
+
+    remove: function(key){
+        var z = this.search(key);
+
+        if(z == null) return false;
+
+        return this.removeNode(z);
     }
 
 
@@ -167,3 +230,73 @@ function addFixup(dir){
 
 var leftAddFixup = addFixup('left');
 var rightAddFixup = addFixup('right');
+var leftRemoveFixup = removeFixup('left');
+var rightRemoveFixup = removeFixup('right');
+
+function removeFixup(dir){
+    var c1, c2, r1, r2;
+    if(dir === 'left') {
+        c1 = 'rightChild';
+        c2 = 'leftChild';
+        r1 = '_rotateLeft';
+        r2 = '_rotateRight';
+    } else {
+        c1 = 'leftChild';
+        c2 = 'rightChild';
+        r1 = '_rotateRight';
+        r2 = '_rotateLeft';
+    }
+
+    return function(z){
+        var w = z.parent[c1];
+
+        if(w.color === RED){
+            w.color = BLACK;
+            z.parent.color = RED;
+            this[r1](z.parent);
+            w = z.parent[c1];
+        }
+
+        if(w[c2].color === BLACK && w[c1].color == BLACK){
+            w.color = RED;
+            z = z.parent;
+        } else {
+            if(w[c1].color = BLACK) {
+                w[c2].color = BLACK;
+                w.color = RED;
+                this[r2](w);
+                w = z.parent[c1];
+            }
+
+            w.color = z.parent.color;
+            z.parent.color = BLACK;
+            w[c1].color = BLACK;
+            this[r1](z.parent);
+            z = this.root;
+        }
+    };
+}
+
+
+var test = new RedBlackNode();
+test.add(13);
+test.add(8);
+test.add(17);
+test.add(1);
+test.add(6);
+test.add(11);
+test.add(15);
+test.add(22);
+test.add(25);
+test.add(27);
+
+test.remove(13);
+test.remove(8);
+test.remove(17);
+test.remove(1);
+test.remove(6);
+test.remove(11);
+test.remove(15);
+test.remove(22);
+test.remove(25);
+test.remove(27);
