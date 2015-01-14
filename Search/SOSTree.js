@@ -51,11 +51,8 @@ function secondOptimal(tree, sTable, sWeights, low, high) {
     if (i - 2 >= low) a = sWeights[i - 1] - sWeights[i - 2];
     if (i + 1 < high) c = sWeights[i + 1] - sWeights[i];
     if (typeof b === 'number') {
-        if (a > c && a > b) {
-            --i;
-        } else if (a < c && c > b) {
-            ++i;
-        }
+        if (a > c && a > b) --i;
+        else if (a < c && c > b)  ++i;
     }
 
     tree.data = sTable[i];
