@@ -80,31 +80,59 @@
 
  最后值得一提的是上述删除修复的情况1~4都只是树的局部，并非树的整体全部，且删除修复情况3、4在经过上面的调整后，调整还没结束,还得继续调整直至重新恢复平衡
 */
-var BinaryTree = require('../Binary tree/BinaryTree').BinaryTree;
+var BSTNode = require('./BinarySortTree').BSTNode;
 
-var RED = 0;
-var BLACK = 1;
+var RED = 'red';
+var BLACK = 'black';
 
-function RedBlackNode(data, leftChild, rightChild, color, parent){
-    BinaryTree.call(this, data, leftChild, rightChild);
-    this.color = color || RED;
-    this.parent = parent || null;
-    this.root = null;
+function RedBlackNode(data) {
+    this.leftChild = null;
+    this.rightChild = null;
+    this.parent = null;
+
+    this.color = RED;
+    this.data = data || null;
 }
 
-RedBlackNode.prototype = {
-    constructor: RedBlackNode,
-    __proto__: BinaryTree,
+function RedBlackLeaf(){
+    this.color = BLACK;
+    this.leftChild = this;
+    this.rightChild = this;
+}
+
+function RedBlackTree(){
+    this.nil = new RedBlackLeaf();
+    //this.nil.color = BLACK;
+    //this.nil.data = null;
+    this.root = this.nil;
+}
+
+RedBlackTree.prototype = {
+    constructor: RedBlackTree,
 
     _rotateLeft: rotate('left'),
     _rotateRight: rotate('right'),
 
+    find: function(data){
+        var z = this.root;
+        var me = this;
+
+        return (function find(z, data){
+            if(z == me.nil || data === z.data) return z;
+
+            if(data < z.data) return find(z.leftChild, data);
+            else return find(z.rightChild, data);
+        })(z, data);
+    },
+
     add: function(data){
         var z = new RedBlackNode(data);
-        var y = null;
+        z.leftChild = this.nil;
+        z.rightChild = this.nil;
+        var y = this.nil;
         var x = this.root;
 
-        while(x){
+        while(x != this.nil){
             y = x;
 
             if(z.data < x.data) x = x.leftChild;
@@ -113,10 +141,10 @@ RedBlackNode.prototype = {
 
         z.parent = y;
 
-        if(y) {
+        if(y != this.nil) {
             if(z.data < y.data) y.leftChild = z;
             else y.rightChild = z;
-        } else this.root = z;
+        } else this.root = z == this.nil ? null : z;
 
         this._addFixup(z);
     },
@@ -135,18 +163,18 @@ RedBlackNode.prototype = {
     removeNode: function(z){
         var x, y;
 
-        if(z.leftChild == null || z.rightChild == null)
+        if(z.leftChild == this.nil || z.rightChild == this.nil)
             y = z;
         else
             y = this.successor(z);
 
-        if(y.leftChild) x = y.leftChild;
+        if(y.leftChild != this.nil) x = y.leftChild;
         else x = y.rightChild;
 
         x.parent = y.parent;
 
-        if(y.parent == null) this.root = x;
-        else if(y == y.parent.leftChild) y.parent.left = x;
+        if(y.parent == this.nil) this.root = x;
+        else if(y == y.parent.leftChild) y.parent.leftChild = x;
         else y.parent.rightChild = x;
 
         if(y != z) z.data = y.data;
@@ -154,24 +182,22 @@ RedBlackNode.prototype = {
     },
 
     _removeFixup: function(z){
-        var w;
-
         while(z !== this.root && z.color === BLACK){
-            if(z == z.parent.left)
-                leftRemoveFixup(z);
+            if(z == z.parent.leftChild)
+                leftRemoveFixup(this, z);
             else
-                rightRemoveFixup(z);
+                rightRemoveFixup(this, z);
         }
 
         z.color = BLACK;
     },
 
     successor: function(z){
-        if(z.rightChild) return this.min(z.rightChild);
+        if(z.rightChild != this.nil) return this.min(z.rightChild);
 
         var y = z.parent;
 
-        while(y && z == y.rightChild){
+        while(y != this.nil && z == y.rightChild){
             z = y;
             y = y.parent;
         }
@@ -180,7 +206,7 @@ RedBlackNode.prototype = {
     },
 
     min: function(z){
-        while(z.leftChild){
+        while(z.leftChild != this.nil){
             z = z.leftChild;
         }
 
@@ -188,9 +214,9 @@ RedBlackNode.prototype = {
     },
 
     remove: function(key){
-        var z = this.search(key);
+        var z = this.find(key);
 
-        if(z == null) return false;
+        if(z == this.nil) return false;
 
         return this.removeNode(z);
     }
@@ -212,10 +238,10 @@ function rotate(dir){
         var y = x[c1];
         x[c1] = y[c2];
 
-        if(y[c2]) y[c2].parent = x;
+        if(y[c2] != this.nil) y[c2].parent = x;
         y.parent = x.parent;
 
-        if(!x.parent) this.root = y;
+        if(x.parent == this.nil) this.root = y;
         else if(x == x.parent[c2]) x.parent[c2] = y;
         else x.parent[c1] = y;
 
@@ -278,38 +304,38 @@ function removeFixup(dir){
         r2 = '_rotateLeft';
     }
 
-    return function(z){
+    return function(tree, z){
         var w = z.parent[c1];
 
         if(w.color === RED){
             w.color = BLACK;
             z.parent.color = RED;
-            this[r1](z.parent);
+            tree[r1](z.parent);
             w = z.parent[c1];
         }
 
-        if(w[c2].color === BLACK && w[c1].color == BLACK){
+        if(w[c2].color === BLACK && w[c1].color === BLACK){
             w.color = RED;
             z = z.parent;
         } else {
-            if(w[c1].color = BLACK) {
+            if(w[c1].color === BLACK) {
                 w[c2].color = BLACK;
                 w.color = RED;
-                this[r2](w);
+                tree[r2](w);
                 w = z.parent[c1];
             }
 
             w.color = z.parent.color;
             z.parent.color = BLACK;
             w[c1].color = BLACK;
-            this[r1](z.parent);
-            z = this.root;
+            tree[r1](z.parent);
+            z = tree.root;
         }
     };
 }
 
 
-var test = new RedBlackNode();
+var test = new RedBlackTree();
 test.add(13);
 test.add(8);
 test.add(17);

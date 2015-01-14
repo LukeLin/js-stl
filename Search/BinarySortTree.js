@@ -54,6 +54,9 @@ var BinaryTree = require('../Binary tree/BinaryTree').BinaryTree;
 function BSTNode(data, leftChild, rightChild) {
     BinaryTree.apply(this, arguments);
 }
+
+exports.BSTNode = BSTNode;
+
 BSTNode.prototype = {
     constructor: BSTNode,
     __proto__: BinaryTree.prototype,
