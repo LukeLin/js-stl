@@ -107,6 +107,7 @@ function RedBlackLeaf(){
 }
 
 function RedBlackTree(){
+    // 哨兵
     this.nil = new RedBlackLeaf();
     this.root = this.nil;
 }
@@ -117,6 +118,10 @@ RedBlackTree.prototype = {
     _rotateLeft: rotate('left'),
     _rotateRight: rotate('right'),
 
+    /**
+     * 红黑树的递归查找算法
+     * @param data
+     */
     find: function(data){
         var z = this.root;
         var me = this;
@@ -129,6 +134,10 @@ RedBlackTree.prototype = {
         })(z, data);
     },
 
+    /**
+     * 红黑树的插入
+     * @param {*} data
+     */
     add: function(data){
         var z = new RedBlackNode(data);
         z.leftChild = this.nil;
@@ -136,6 +145,7 @@ RedBlackTree.prototype = {
         var y = this.nil;
         var x = this.root;
 
+        // 找到要插入位置的结点y
         while(x != this.nil){
             y = x;
 
@@ -145,15 +155,25 @@ RedBlackTree.prototype = {
 
         z.parent = y;
 
+        // 如果y不是根结点，根据大小插入到左或右子树
         if(y != this.nil) {
             if(z.data < y.data) y.leftChild = z;
             else y.rightChild = z;
-        } else this.root = z == this.nil ? null : z;
+        }
+        // 否则插入到根结点
+        else this.root = z == this.nil ? null : z;
 
+        // 插入修复操作
         this._addFixup(z);
     },
 
+    /**
+     * 插入算法修复
+     * @param {RedBlackNode} z 待插入的结点
+     * @private
+     */
     _addFixup: function(z){
+
         while(z != this.root && z.parent.color === RED){
             if(z.parent == z.parent.parent.leftChild)
                 leftAddFixup(this, z);
@@ -161,12 +181,18 @@ RedBlackTree.prototype = {
                 rightAddFixup(this, z);
         }
 
+        // 最后，把根结点涂为黑色，整棵红黑树便重新恢复了平衡
         this.root.color = BLACK;
     },
 
+    /**
+     * 红黑树的删除算法
+     * @param {RedBlackNode} z 待删除结点
+     */
     removeNode: function(z){
         var x, y;
 
+        // 找到待删除结点的父结点或相邻待替换结点
         if(z.leftChild == this.nil || z.rightChild == this.nil)
             y = z;
         else
@@ -177,14 +203,63 @@ RedBlackTree.prototype = {
 
         x.parent = y.parent;
 
+        // 删除操作
         if(y.parent == this.nil) this.root = x;
         else if(y == y.parent.leftChild) y.parent.leftChild = x;
         else y.parent.rightChild = x;
 
         if(y != z) z.data = y.data;
+
+        // 删除修复
         if(y.color === BLACK) this._removeFixup(x);
     },
 
+    // 算法导论上的删除结点
+    removeNode2: function(z){
+        var y = z;
+        var originalYColor = y.color;
+        var x;
+
+        if(z.leftChild == this.nil) {
+            x = z.rightChild;
+            this._transplant(z, z.rightChild);
+        } else if(z.rightChild == this.nil) {
+            x = z.leftChild;
+            this._transplant(z, z.leftChild);
+        } else {
+            y = this.min(z.rightChild);
+            originalYColor = y.color;
+            x = y.rightChild;
+
+            if(y.parent == z) x.parent = y;
+            else {
+                this._transplant(y, y.rightChild);
+                y.rightChild = z.rightChild;
+                y.rightChild.parent = y;
+            }
+
+            this._transplant(z, y);
+            y.leftChild = z.leftChild;
+            y.leftChild.parent = y;
+            y.color = z.color;
+        }
+
+        if(originalYColor === BLACK) this._removeFixup(x);
+    },
+
+    _transplant: function(u, v){
+        if(u.parent == this.nil) this.root = v;
+        else if(u == u.parent.leftChild) u.parent.leftChild = v;
+        else u.parent.rightChild = v;
+
+        v.parent = u.parent;
+    },
+
+    /**
+     * 删除修复
+     * @param {RedBlackNode} z
+     * @private
+     */
     _removeFixup: function(z){
         while(z !== this.root && z.color === BLACK){
             if(z == z.parent.leftChild)
@@ -217,6 +292,11 @@ RedBlackTree.prototype = {
         return z;
     },
 
+    /**
+     * 根据key值删除结点
+     * @param {*} key
+     * @returns {*}
+     */
     remove: function(key){
         var z = this.find(key);
 
@@ -269,19 +349,29 @@ function addFixup(dir){
     }
 
     return function(tree, z){
+        // note: 注释以左边为情况
+
+        // 叔结点
         var y = z.parent.parent[c1];
 
+        // 插入修复情况1：如果当前结点的父结点是红色且祖父结点的另一个子结点（叔结点）是红色
+        // 将当前节点的父节点和叔叔节点涂黑，祖父结点涂红，把当前结点指向祖父节点，从新的当前节点重新开始算法。
         if(y.color === RED) {
             z.parent.color = BLACK;
             y.color = BLACK;
             z.parent.parent.color = RED;
             z = z.parent.parent;
         } else {
+            // 插入修复情况2：当前节点的父节点是红色,叔节点是黑色，当前节点是其父节点的右子
+            // 解决对策是：当前节点的父节点做为新的当前节点，以新当前节点为支点左旋。
+            // 从而插入修复情况2转换成了插入修复情况3。
             if(z === z.parent[c1]) {
                 z = z.parent;
                 tree[rotate1](z);
             }
 
+            // 插入修复情况3：当前节点的父节点是红色,叔节点是黑色，当前节点是其父节点的左子
+            // 解决对策是：父节点变为黑色，祖父节点变为红色，在祖父节点为支点右旋，
             z.parent.color = BLACK;
             z.parent.parent.color = RED;
             tree[rotate2](z.parent.parent);
@@ -309,8 +399,13 @@ function removeFixup(dir){
     }
 
     return function(tree, z){
+        // note: 注释以左边为情况
+
+        // 叔结点
         var w = z.parent[c1];
 
+        // 删除修复情况1：当前节点是黑+黑且兄弟节点为红色(此时父节点和兄弟节点的子节点分为黑)。
+        // 解法：把父节点染成红色，把兄弟结点染成黑色，之后重新进入算法
         if(w.color === RED){
             w.color = BLACK;
             z.parent.color = RED;
@@ -318,10 +413,14 @@ function removeFixup(dir){
             w = z.parent[c1];
         }
 
+        // 删除修复情况2：当前节点是黑加黑且兄弟是黑色且兄弟节点的两个子节点全为黑色。
+        // 解法：把当前节点和兄弟节点中抽取一重黑色追加到父节点上，把父节点当成新的当前节点，重新进入算法。
         if(w[c2].color === BLACK && w[c1].color === BLACK){
             w.color = RED;
             z = z.parent;
         } else {
+            // 删除修复情况3：当前节点颜色是黑+黑，兄弟节点是黑色，兄弟的左子是红色，右子是黑色。
+            // 解法：把兄弟结点染红，兄弟左子节点染黑，之后再在兄弟节点为支点解右旋，之后重新进入算法。
             if(w[c1].color === BLACK) {
                 w[c2].color = BLACK;
                 w.color = RED;
@@ -329,6 +428,8 @@ function removeFixup(dir){
                 w = z.parent[c1];
             }
 
+            // 删除修复情况4：当前节点颜色是黑-黑色，它的兄弟节点是黑色，但是兄弟节点的右子是红色，兄弟节点左子的颜色任意。
+            // 解法：把兄弟节点染成当前节点父节点的颜色，把当前节点父节点染成黑色，兄弟节点右子染成黑色，之后以当前节点的父节点为支点进行左旋，此时算法结束，红黑树所有性质调整正确
             w.color = z.parent.color;
             z.parent.color = BLACK;
             w[c1].color = BLACK;
