@@ -84,7 +84,7 @@
 
  最后值得一提的是上述删除修复的情况1~4都只是树的局部，并非树的整体全部，且删除修复情况3、4在经过上面的调整后，调整还没结束,还得继续调整直至重新恢复平衡
 */
-var BSTNode = require('./BinarySortTree').BSTNode;
+var BSTNode = require('./BinarySortedTree').BSTNode;
 
 var RED = 'red';
 var BLACK = 'black';
