@@ -3,6 +3,7 @@ data-structure-with-js
 classic data structures implemented in javascript.
 
 directory
+
     Array
         -- CrossList
         -- TSMatrix
@@ -13,7 +14,7 @@ directory
         -- backtracking
 
     Generalized List
-        -- GList.js
+        -- GList
 
     Graph
         -- AdjacencyListGraph
