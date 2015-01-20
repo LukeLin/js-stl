@@ -273,6 +273,7 @@ HashTable.prototype = {
 
 };
 
+// 保留余数法
 function hash(str, max){
     var hash = 0;
     for (var i = 0; i < str.length; i++) {
