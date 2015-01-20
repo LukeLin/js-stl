@@ -210,4 +210,114 @@ RecNode *linkhash[m]，其中RecNode是结点类型，每个分量的初值为�
  overtable表：
                      关键字    18
 
+
+
+
+ 哈希查找过程及分析
+
+ 1   哈希查找过程
+ 哈希表的主要目的是用于快速查找，且插入和删除操作都要用到查找。由于散列表的特殊组织形式，其查找有特殊的方法。
+
+ 给定K值，根据造表时设定的哈希函数求得哈希地址，若表中此位置上没有记录，则查找不成功；否则比较关键字，若和给定关键字相等，则查找成功；否则根据造表时设定的处理冲突的方法找“下一地址”，直到哈希表中某个位置为空或者表中所填记录的关键字等于给定值时为止。
  */
+
+
+function HashTable(){
+    this.data = [];
+    // 当前数据元素个数;
+    this.count = 0;
+    // 当前容量
+    this.sizeIndex = 0;
+}
+
+var hashSize = buildHashSize(977, 20);
+
+HashTable.prototype = {
+    constructor: HashTable,
+
+    search: function(key){
+        var max = hashSize[this.sizeIndex];
+        var p = hash(key, max);
+        var c = 0;
+
+        while(p < max && this.data[p] != null && key !== this.data[p]){
+            p = collision(key, ++c, max);
+        }
+
+        return {
+            success: key === this.data[p],
+            collisionTimes: c,
+            index: p
+        };
+    },
+
+    insert: function(key){
+        var ret = this.search(key);
+        var p = ret.index;
+        var c = ret.collisionTimes;
+
+        if(ret.success) return -1;
+        else if(c < hashSize[this.sizeIndex] / 2){
+            this.data[p] = key;
+            ++this.count;
+            return true;
+        } else {
+            this.recreateHashTable();
+            return false;
+        }
+    },
+
+    recreateHashTable: function(){
+        return ++this.sizeIndex < hashSize.length;
+    }
+
+};
+
+function hash(str, max){
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+        hash = (hash << 5) + hash + str.charCodeAt(i);
+        hash = hash & hash; // Convert to 32bit integer
+        hash = Math.abs(hash);
+    }
+    return hash % max;
+}
+
+function collision(key, times, max){
+    // 线性探测法
+    return (hash(key, max) + times) % max;
+}
+
+function isPrime(n) {
+    if (n <= 3) return n > 1;
+    if (n % 2 === 0 || n % 3 === 0) return false;
+    for (var  i = 5; i * i <= n; i += 6) {
+        if (n % i === 0 || n % (i + 2) === 0) return false;
+    }
+
+    return true;
+}
+
+function buildHashSize(begin, length){
+    var hashSize = [];
+
+    while(1){
+        if(hashSize.length >= length) break;
+        if(isPrime(begin)) hashSize.push(begin);
+        ++begin;
+    }
+
+    return hashSize;
+}
+
+// 开放定址法
+hashSize = [5]; // for test. will be deleted
+var test = new HashTable();
+test.insert('17');
+test.insert('60');
+test.insert('29');
+test.insert('38');
+test.insert('39');
+test.insert('40');
+
+
