@@ -221,6 +221,12 @@ RecNode *linkhash[m]，其中RecNode是结点类型，每个分量的初值为�
  给定K值，根据造表时设定的哈希函数求得哈希地址，若表中此位置上没有记录，则查找不成功；否则比较关键字，若和给定关键字相等，则查找成功；否则根据造表时设定的处理冲突的方法找“下一地址”，直到哈希表中某个位置为空或者表中所填记录的关键字等于给定值时为止。
  */
 
+var LinkedList = require('../linkedList/LinkedList');
+
+function HNode(data, next){
+    this.data = data || null;
+    this.next = next || null;
+}
 
 function HashTable(){
     this.data = [];
@@ -235,6 +241,7 @@ var hashSize = buildHashSize(977, 20);
 HashTable.prototype = {
     constructor: HashTable,
 
+    // 使用线性探测法解决冲突
     search: function(key){
         var max = hashSize[this.sizeIndex];
         var p = hash(key, max);
@@ -252,11 +259,14 @@ HashTable.prototype = {
     },
 
     insert: function(key){
+        var max = hashSize[this.sizeIndex];
+        if(this.count >= max) return {success: false, errormsg: 'table overflowed'};
+
         var ret = this.search(key);
         var p = ret.index;
         var c = ret.collisionTimes;
 
-        if(ret.success) return -1;
+        if(ret.success) return false;
         else if(c < hashSize[this.sizeIndex] / 2){
             this.data[p] = key;
             ++this.count;
@@ -265,6 +275,28 @@ HashTable.prototype = {
             this.recreateHashTable();
             return false;
         }
+    },
+
+    remove: function(key){
+        if(!this.count) return false;
+
+        var max = hashSize[this.sizeIndex];
+        var p = hash(key, max);
+        var c = 0;
+
+        while(key !== this.data[p])
+            p = collision(key, ++c, max);
+
+
+        if(key === this.data[p]) {
+            var data = this.data[p];
+            this.data.splice(p, 1);
+            --this.count;
+
+            return data;
+        }
+
+        return false;
     },
 
     recreateHashTable: function(){
@@ -312,7 +344,7 @@ function buildHashSize(begin, length){
 }
 
 // 开放定址法
-hashSize = [5]; // for test. will be deleted
+hashSize = [5, 7]; // for test. will be deleted
 var test = new HashTable();
 test.insert('17');
 test.insert('60');
@@ -321,4 +353,98 @@ test.insert('38');
 test.insert('39');
 test.insert('40');
 
+test.remove('17');
+test.remove('60');
+test.remove('29');
+test.remove('38');
+test.remove('39');
+test.remove('40');
 
+
+// 使用链地址法解决冲突的哈希表
+function LinkedListHashTable(){
+    // 当前数据元素个数;
+    this.count = 0;
+    // 当前容量
+    this.sizeIndex = 0;
+    this.hNodes = [];
+}
+LinkedListHashTable.prototype = {
+    constructor: LinkedListHashTable,
+
+    search: function(key){
+        var max = hashSize[this.sizeIndex];
+        var i = hash(key, max);
+        var t = this.hNodes;
+
+        if(t[i] == null) return {success: false, index: i};
+
+        var p = t[i];
+        var data = null;
+
+        p.each(function(node){
+            if(node.data === key) {
+                data = node.data;
+                return true;
+            }
+        });
+
+        return {success: data === key, index: i};
+    },
+
+    insert: function(key){
+        var max = hashSize[this.sizeIndex];
+        if(this.count >= max) return {success: false, errormsg: 'table overflowed'};
+
+        var ret = this.search(key);
+        var index = ret.index;
+
+        if(ret.success) return false;
+
+        if(!this.hNodes[index]) this.hNodes[index] = new LinkedList();
+
+        if(this.hNodes[index].size() < hashSize[this.sizeIndex] / 2) {
+            this.hNodes[index].orderInsert(key);
+            ++this.count;
+            return true;
+        } else {
+            this.recreateHashTable();
+            return false;
+        }
+    },
+
+    remove: function(key){
+        if(!this.count) return false;
+
+        var ret = this.search(key);
+
+        if(ret.success) {
+            var index = ret.index;
+            var data = ret.data;
+            this.hNodes[index]['delete'](key);
+            --this.count;
+            return data;
+        }
+
+        return false;
+    },
+
+    recreateHashTable: function(){
+        return ++this.sizeIndex < hashSize.length;
+    }
+};
+
+var test2 = new LinkedListHashTable();
+test2.insert('17');
+test2.insert('60');
+test2.insert('29');
+test2.insert('38');
+test2.insert('39');
+test2.insert('40');
+
+test2.remove('17');
+test2.remove('60');
+test2.remove('29');
+test2.remove('38');
+test2.remove('39');
+test2.remove('40');

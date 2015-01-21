@@ -2,7 +2,7 @@
  * 由于链表在空间的合理利用上和插入，删除时不需要移动等的有点，因此在很多场合下，它是线性表的首选存储结构。然而，它也存在着实现某些基本操作，如求线性表长度时不如顺序存储结构的缺点；另一方面，由于在链表中，结点之间的关系使用指针来表示，则数据元素在线性表中的“位序”的概念已淡化，而被数据元素在线性链表中的“位置”所代替。为此，从实际出发重新定义线性链表及其基本操作
  */
 
-(function (module) {
+(function () {
     function List() {
         this.head = null;
         this.tail = null;
@@ -147,10 +147,23 @@
             var current = this.head;
 
             while (current !== null) {
-                callback(current);
+                if(callback(current)) break;
                 current = current.next;
             }
         },
+
+        size: function(){
+            var current = this.head;
+            var size = 0;
+
+            while (current !== null) {
+                ++size;
+                current = current.next;
+            }
+
+            return size;
+        },
+
         orderInsert: function (data, cmp) {
             cmp = typeof cmp === 'function' ? cmp : function (a, b) {
                 if (a > b)
@@ -439,4 +452,4 @@
     test.intersect_delete(a, b);
     console.log(test);
 
-}(this.module || this));
+}());

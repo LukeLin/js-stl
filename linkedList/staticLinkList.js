@@ -8,7 +8,7 @@
  仅需要修改指针，故仍具有李安是存储结构的主要优点
  */
 
-(function (module) {
+(function () {
     function SLinkList(data, cur, MAXSIZE) {
         this[0] = {};
         this[0].data = data;
@@ -123,5 +123,5 @@
     var sl = new SLinkList(1, 0, 10);
     var ret = sl.difference([1, 2, 3], [3, 4, 5]);
     console.log(sl);
-})(this.module || this);
+})();
 

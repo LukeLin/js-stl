@@ -13,7 +13,7 @@
  * 双向链表也可以有循环表。
  */
 
-(function (module) {
+(function () {
     function DuLNode(data, prior, next) {
         this.data = data;
         this.prior = prior || this;
@@ -69,4 +69,4 @@
     a.listDelete(1);
     console.log(a);
 
-})(this.module || this);
+})();
