@@ -344,7 +344,7 @@ function buildHashSize(begin, length){
 }
 
 // 开放定址法
-hashSize = [5, 7]; // for test. will be deleted
+//hashSize = [5, 7]; // for test. will be deleted
 var test = new HashTable();
 test.insert('17');
 test.insert('60');
