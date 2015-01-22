@@ -48,7 +48,7 @@ directory
         -- RedBlackTree
         -- B-Tree
         -- B+Tree
-        -- TrieTree
+        -- DigitalSearchTree / DictionryTree / DoubleLinkedTree / TrieTree
         -- HashTable
 
     Sort
