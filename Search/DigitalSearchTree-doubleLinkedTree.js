@@ -49,7 +49,7 @@ var LEAF = 'leaf';
 var BRANCH = 'branch';
 
 function DoubleLinkedTree(symbol, kind, info){
-    this.symbol = symbol || '';
+    this.symbol = symbol || 'root';
     this.next = null;
     this.kind = kind || BRANCH;
     this.info = info || null;
@@ -123,6 +123,7 @@ DoubleLinkedTree.prototype = {
             // 如果不存在关键字则说明插入成功，否则插入失败
             if(!(child && child.symbol === '$')) {
                 cur.first = new DoubleLinkedTree('$', LEAF, key);
+                cur.first.parent = cur;
                 cur.first.next = child;
                 success = true;
             }
@@ -131,33 +132,26 @@ DoubleLinkedTree.prototype = {
         return success;
     },
 
-    // todo bugs exist
     remove: function(key){
         var p = this.first;
         var i = 0;
-        var top = this;
 
         while(p && i < key.length){
             while(p && p.symbol < key[i]) p = p.next;
 
             if(p && p.symbol === key[i]) {
-                var s = p.first;
-                var found = false;
-                while(s) {
-                    if(!s.next) found = true;
-                    else found = false;
-
-                    if(!found) break;
-
-                    s = s.first;
-                }
-                if(found) {top = p;break;}
                 p = p.first;
                 ++i;
             } else return false;
         }
 
-        if(top == this) return false;
+        while(!p.next && p.parent) p = p.parent;
+        var top = p;
+
+        if(top == this) {
+            this.first = null;
+            return true;
+        }
 
         p = top.parent;
         if(p) {
@@ -165,11 +159,11 @@ DoubleLinkedTree.prototype = {
             while(p){
                 var pre;
                 if(p == top) {
-                    if(!pre) {
+                    if(!pre)
                         top.parent.first = top.parent.first.next;
-                    } else {
+                    else
                         pre.next = pre.next.next;
-                    }
+
                     return true;
                 } else {
                     pre = p;
