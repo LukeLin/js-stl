@@ -298,7 +298,7 @@ TrieTree.prototype = {
         // 自上而下查找
         var last;
         for(var p = this, i = 0;
-            p && i < key.length && p.branch.nodes[order(key[i])];
+            p && p.kind === BRANCH && i < key.length && p.branch.nodes[order(key[i])];
             p = p.branch.nodes[order(key[i])], ++i) last = p;
 
         // 如果最后落到分支结点（无同义词）
