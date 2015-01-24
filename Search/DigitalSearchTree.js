@@ -337,17 +337,11 @@ TrieTree.prototype = {
 
         if(!p) return false;
 
-        if(p.kind === LEAF && p.leaf.key === key) {
-            last.branch.nodes[order(key[i - 1])] = null;
-            --last.branch.num;
-            clearUselessness(last, key);
-            return true;
-        } else if(p.kind === BRANCH && p.branch.nodes[0] && p.branch.nodes[0].leaf.key === key) {
-            p.branch.nodes[0] = null;
-            --p.branch.num;
-            clearUselessness(p, key);
-            return true;
-        }
+        if(p.kind === LEAF && p.leaf.key === key)
+            return removeNode(last, order(key[i - 1]));
+        else if(p.kind === BRANCH && p.branch.nodes[0] && p.branch.nodes[0].leaf.key === key)
+            return removeNode(p, 0);
+
 
         return false;
     }
@@ -360,7 +354,10 @@ function order(c){
 }
 
 // 通过回溯法清理Trie树的函数
-function clearUselessness(trieNode){
+function removeNode(trieNode, order){
+    trieNode.branch.nodes[order] = null;
+    --trieNode.branch.num;
+
     var nodes = trieNode.branch.nodes;
     var parent = trieNode.parent;
     var pre = trieNode;
@@ -382,6 +379,8 @@ function clearUselessness(trieNode){
         nodes = parent.branch.nodes;
         parent = parent.parent;
     }
+
+    return true;
 }
 
 
