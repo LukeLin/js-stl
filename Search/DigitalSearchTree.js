@@ -21,19 +21,31 @@
 
 
 键树的应用场景
- 1. 保存一本字典，英文字典大约只有50,000个单词，并且Trie还演化出来一种叫做Directed acyclic word graph的东西，它将后缀一样的字符串也进行了压缩，所以空间利用率有了进一步提高。所以Trie在空间利用率上不会比Binary Search Tree差太多。
- 2. 根据保存的字典，可以预测用户输入内容
- 3. 断词和拼写查错软件也运用了Trie -- spellings/suggestions/type-ahead-lookup/auto-completion/
- 这些应用场景都有一个特点，就是不是单独地查询一个词，而是获取以有一定字母顺序的一组字符串
 
+ Trie是一种非常简单高效的数据结构，但有大量的应用实例。
+ （1） 字符串检索
+ 事先将已知的一些字符串（字典）的有关信息保存到trie树里，查找另外一些未知字符串是否出现过或者出现频率。
+ 举例：
+ @  给出N 个单词组成的熟词表，以及一篇全用小写英文书写的文章，请你按最早出现的顺序写出所有不在熟词表中的生词。
+ @  给出一个词典，其中的单词为不良单词。单词均为小写字母。再给出一段文本，文本的每一行也由小写字母构成。判断文本中是否含有任何不良单词。例如，若rob是不良单词，那么文本problem含有不良单词。
 
- 有一个存放英文单词的文本文件，现在需要知道某些给定的单词是否在该文件中存在，若存在，它又出现了多少次？
+ （2）字符串最长公共前缀
+ Trie树利用多个字符串的公共前缀来节省存储空间，反之，当我们把大量字符串存储到一棵trie树上时，我们可以快速得到某些字符串的公共前缀。
+ 举例：
+ @ 给出N 个小写英文字母串，以及Q 个询问，即询问某两个串的最长公共前缀的长度是多少？
+ 解决方案：首先对所有的串建立其对应的字母树。此时发现，对于两个串的最长公共前缀的长度即它们所在结点的公共祖先个数，于是，问题就转化为了离线（Offline）的最近公共祖先（Least Common Ancestor，简称LCA）问题。
+ 而最近公共祖先问题同样是一个经典问题，可以用下面几种方法：
+ 1. 利用并查集（Disjoint Set），可以采用采用经典的Tarjan 算法；
+ 2. 求出字母树的欧拉序列（Euler Sequence ）后，就可以转为经典的最小值查询（Range Minimum Query，简称RMQ）问题了；
+ （关于并查集，Tarjan算法，RMQ问题，网上有很多资料。）
 
- 这样的问题解法有多种，普通青年直接暴力查找，稍文艺点的用map。顺序查找的话，每给定一个单词就得遍历整个字符串数组，时间开销实在太大；如果将所有的单词都存放在一个map中，每次查找的时间复杂度则降为O(log(n))。不得不说，对于一般的应用场景，map足够满足所有需求。
+ （3）排序
+ Trie树是一棵多叉树，只要先序遍历整棵树，输出相应的字符串便是按字典序排序的结果。
+ 举例：
+ @ 给你N 个互不相同的仅由一个单词构成的英文名，让你将它们按字典序从小到大排序输出。
 
- 但对于这个问题，还有更好的方法。有一种数据结构似乎就是为解决此类问题而诞生的，它就是字典树。我们知道，英文单词有很多都有相同的前缀，对于相同的前缀，字典树只存储一次，而map则是有多少个单词就存储多少次，所以在这个问题中，字典树比map省空间；在字典树中查找字符串的时间复杂度只跟树的深度有关而跟究竟有多少个字符串无关，而树的深度只跟字符串的长度有关，超过30个拉丁字母的英文单词基本没有，所以在该问题中查找字符串的时间复杂度只有O(1)，比map省时间。
-
- 所以对于这样一个特定的问题，字典树自然是最佳的选择
+ （4） 作为其他数据结构和算法的辅助结构
+ 如后缀树，AC自动机等
  */
 
 
@@ -58,7 +70,8 @@ next域：存储指向右兄弟的指针。
 从双链树的根指针出发，顺first指针找到第一棵子树的根结点，以K.ch[0]和此结点的symbol域比较，若相等，则顺first域再比较下一字符，否则沿next域顺序查找。
 若直至空仍比较不等，则查找不成功。
 
-
+// 相关资料
+ http://www.cnblogs.com/rollenholt/archive/2012/04/24/2468932.html
  */
 
 var LEAF = 'leaf';
@@ -244,11 +257,13 @@ test.remove('ZHAO');
 
 function TrieTree(kind){
     this.kind = kind || BRANCH;
+    this.parent = null;
     this.leaf = {
         key: null,
         info: null
     };
     this.branch = {
+        // “$”为第一个字符，后续为26个字母
         nodes: new Array(27),
         num: 0
     };
@@ -267,8 +282,7 @@ TrieTree.prototype = {
 
     insert: function(key, value){
         // 建叶子结点
-        var q = new TrieTree();
-        q.kind = LEAF;
+        var q = new TrieTree(LEAF);
         q.leaf.key = key;
         q.leaf.info = value;
 
@@ -282,20 +296,27 @@ TrieTree.prototype = {
         // 直接连上叶子
         if(p.kind === BRANCH) {
             p.branch.nodes[order(key[i])] = q;
+            q.parent = p;
             ++p.branch.num;
         }
         // 如果最后落到叶子结点（有同义词）
         else {
+            if(p.leaf.key === key) return false;
+
             // 建立新的分支结点
-            var r = new TrieTree();
+            var r = new TrieTree(BRANCH);
             // 用新的分支结点取代老叶子结点和上一层的联系
             last.branch.nodes[order(key[i - 1])] = r;
-            r.kind = BRANCH;
+            r.parent = last;
             r.branch.num = 2;
             r.branch.nodes[order(key[i])] = q;
-            // 新分支结点与新老两个叶子结点相连 todo bug exists
+            q.parent = r;
+            // 新分支结点与新老两个叶子结点相连
             r.branch.nodes[order(p.leaf.key[i])] = p;
+            p.parent = r;
         }
+
+        return true;
     },
 
     remove: function(key){
@@ -305,23 +326,58 @@ TrieTree.prototype = {
             p && p.kind === BRANCH && i < key.length;
             p = p.branch.nodes[order(key[i])], ++i) last = p;
 
-        if(p && p.kind === LEAF && p.leaf.key === key) {
+        if(!p) return false;
+
+        if(p.kind === LEAF && p.leaf.key === key) {
             last.branch.nodes[order(key[i - 1])] = null;
+            clearUselessness(last, key);
             return true;
-        } else return false;
+        } else if(p.kind === BRANCH && p.branch.nodes[0] && p.branch.nodes[0].leaf.key === key) {
+            p.branch.nodes[0] = null;
+            clearUselessness(p, key);
+            return true;
+        }
+
+        return false;
     }
 
 };
 
 // 求字符在字母表中的序号
 function order(c){
-    return c.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0);
+    return c ? c.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0) + 1 : 0;
+}
+
+// 通过回溯法清理Trie树的函数
+function clearUselessness(trieNode){
+    var nodes = trieNode.branch.nodes;
+    var parent = trieNode.parent;
+
+    if(!parent) return;
+
+    for(var i in nodes) {
+        if(nodes.hasOwnProperty(i) && nodes[i]) return false;
+    }
+
+    var index;
+    var parentNodes = parent.branch.nodes;
+    for(i in parentNodes) {
+        if(parentNodes.hasOwnProperty(i) && parentNodes[i] && parentNodes[i] == trieNode) index = i;
+    }
+
+    if(parent) {
+        parent.branch.nodes[index] = null;
+        clearUselessness(parent);
+    } else return false;
+
+    return true;
 }
 
 
 
 var test = new TrieTree();
 
+test.insert('CHA');
 test.insert('CHA');
 test.insert('CHANG');
 test.insert('CAI');
@@ -339,8 +395,9 @@ test.insert('YANG');
 test.insert('YUN');
 test.insert('ZHAO');
 
-test.search('YUN');
-test.search('ZHAO');
+console.log(test.search('YUN'));
+console.log(test.search('ZHAO'));
+console.log(test.search('ZHAOKK'));
 
 test.remove('LAN');
 test.remove('LIU');
