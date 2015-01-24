@@ -339,10 +339,12 @@ TrieTree.prototype = {
 
         if(p.kind === LEAF && p.leaf.key === key) {
             last.branch.nodes[order(key[i - 1])] = null;
+            --last.branch.num;
             clearUselessness(last, key);
             return true;
         } else if(p.kind === BRANCH && p.branch.nodes[0] && p.branch.nodes[0].leaf.key === key) {
             p.branch.nodes[0] = null;
+            --p.branch.num;
             clearUselessness(p, key);
             return true;
         }
@@ -361,25 +363,25 @@ function order(c){
 function clearUselessness(trieNode){
     var nodes = trieNode.branch.nodes;
     var parent = trieNode.parent;
+    var pre = trieNode;
 
-    if(!parent) return;
+    while(parent){
+        for(var i in nodes) {
+            if(nodes.hasOwnProperty(i) && nodes[i]) return false;
+        }
 
-    for(var i in nodes) {
-        if(nodes.hasOwnProperty(i) && nodes[i]) return false;
-    }
-
-    var index;
-    var parentNodes = parent.branch.nodes;
-    for(i in parentNodes) {
-        if(parentNodes.hasOwnProperty(i) && parentNodes[i] && parentNodes[i] == trieNode) index = i;
-    }
-
-    if(parent) {
+        var index;
+        var parentNodes = parent.branch.nodes;
+        for(i in parentNodes) {
+            if(parentNodes.hasOwnProperty(i) && parentNodes[i] && parentNodes[i] == pre) index = i;
+        }
         parent.branch.nodes[index] = null;
-        clearUselessness(parent);
-    } else return false;
+        --parent.branch.num;
 
-    return true;
+        pre = parent;
+        nodes = parent.branch.nodes;
+        parent = parent.parent;
+    }
 }
 
 
