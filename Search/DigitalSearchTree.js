@@ -252,21 +252,30 @@ test.remove('ZHAO');
 在Trie树上进行查找
 
 从根结点出发，沿和给定值相应的指针逐层向下，直至叶子结点，若叶子结点中的关键字和给定值相等，则查找成功，若分支结点中和给定值相应的指针为空，或叶子结点中的关键字和给定值不相等，则查找不成功。
+
+
+优化Trie树的深度
+
+我们可对关键字集选择一种合适的分割。先按首字符不通分成多个子集之后，然后按最后一个字符不同分割每个子集，再按第二个字符。。。前后交叉分割。一缩减Trie树的深度
  */
 
 
 function TrieTree(kind){
     this.kind = kind || BRANCH;
     this.parent = null;
-    this.leaf = {
-        key: null,
-        info: null
-    };
-    this.branch = {
-        // “$”为第一个字符，后续为26个字母
-        nodes: new Array(27),
-        num: 0
-    };
+
+    if(kind === LEAF) {
+        this.leaf = {
+            key: null,
+            info: null
+        };
+    } else {
+        this.branch = {
+            // “$”为第一个字符，后续为26个字母
+            nodes: new Array(27),
+            num: 0
+        };
+    }
 }
 TrieTree.prototype = {
     constructor: TrieTree,
