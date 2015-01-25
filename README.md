@@ -7,9 +7,12 @@ directory
     Array
         -- CrossList
         -- TSMatrix
+        -- algorithms
 
     Binary Tree
-        -- BinaryTree
+        -- BinaryTree   ParentTree, ChildTree, ChildSiblingTree
+        -- EBTNode
+        -- PBTNode
         -- huffManCoding
         -- backtracking
 
@@ -19,6 +22,8 @@ directory
     Graph
         -- AdjacencyListGraph
         -- AdjacencyMatrixGraph
+        -- AMLGraph
+        -- OLGraph
 
     LinkedList
         -- linkedList
@@ -37,6 +42,7 @@ directory
         -- HeapString
         -- LString
         -- SString
+        -- algorithms
 
     Search
         -- sequentialSearch
@@ -52,7 +58,7 @@ directory
         -- HashTable
 
     Sort
-        todo
+        todo to be continued
 
 
 博客地址：
