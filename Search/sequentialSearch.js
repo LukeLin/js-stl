@@ -14,11 +14,8 @@
  */
 
 function sequentialSearch(sTable, key) {
-    // 设置监视哨兵,失败返回-1
-    sTable[-1] = key;
-    for (var i = sTable.length - 1; sTable[i] !== key; --i);
+    for (var i = sTable.length - 1; i >= 0 && sTable[i] !== key; --i);
     return i;
 }
 
-console.log('sequentialSearch: ');
 console.log(sequentialSearch([1, 2, 3, 4, 5], 6));  // -1

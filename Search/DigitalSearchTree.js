@@ -342,7 +342,6 @@ TrieTree.prototype = {
         else if(p.kind === BRANCH && p.branch.nodes[0] && p.branch.nodes[0].leaf.key === key)
             return removeNode(p, 0);
 
-
         return false;
     }
 

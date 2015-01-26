@@ -44,3 +44,114 @@
  ①比较适合记录数较少的情况；而②、③则适合记录数较多的情况。
  为讨论方便，假设待排序的记录是以①的情况存储，且设排序是按升序排列的；关键字是一些可直接用比较运算符进行比较的类型。
  */
+
+/*
+插入排序
+
+采用的是以 “玩桥牌者”的方法为基础的。即在考察记录Ri之前，设以前的所有记录R1, R2 ,…., Ri-1已排好序，然后将Ri插入到已排好序的诸记录的适当位置
+
+最基本的插入排序是直接插入排序(Straight Insertion Sort) 。
+
+
+直接插入排序
+
+1  排序思想
+将待排序的记录Ri，插入到已排好序的记录表R1, R2 ,…., Ri-1中，得到一个新的、记录数增加1的有序表。 直到所有的记录都插入完为止。
+   设待排序的记录顺序存放在数组R[1…n]中，在排序的某一时刻，将记录序列分成两部分：
+     ◆ R[1…i-1]：已排好序的有序部分；
+     ◆ R[i…n]：未排好序的无序部分。
+显然，在刚开始排序时，R[1]是已经排好序的。
+
+2.算法实现
+
+3.算法分析
+⑴ 最好情况：若待排序记录按关键字从小到大排列(正序)，算法中的内循环无须执行，则一趟排序时：关键字比较次数1次，记录移动次数2次(R[i]→R[0], R[0]→R[j+1])。
+则整个排序的关键字比较次数和记录移动次数分别是：
+比较次数：n - 1          移动次数： 2 * (n - 1)
+
+⑵ 最坏情况：若待排序记录按关键字从大到小排列(逆序)，则一趟排序时：算法中的内循环体执行i-1，关键字比较次数i次，记录移动次数i+1。
+则就整个排序而言：
+比较次数： (n - 1) * (n + 1) / 2     移动次数: (n - 1) * (n + 4) / 2
+
+一般地，认为待排序的记录可能出现的各种排列的概率相同，则取以上两种情况的平均值，作为排序的关键字比较次数和记录移动次数，约为n2/4，则复杂度为O(n2) 。
+
+
+ */
+
+function straightInsertSort(sqList) {
+    for (var i = 1, len = sqList.length; i < len; ++i) {
+        // 设置哨兵, 当设置sqList[-1] = sqList[i]时，经测试效率更慢
+        // 因为js里面的变量作用域在函数内的
+        var temp = sqList[i];
+        var j = i - 1;
+        // 查找插入位置，并将记录后移
+        while (temp < sqList[j]) {
+            sqList[j + 1] = sqList[j];
+            --j;
+        }
+
+        // 插入到正确位置
+        sqList[j + 1] = temp;
+    }
+}
+
+var a = [7, 4, -2, 19, 13, 6];
+straightInsertSort(a);
+console.log(a + '');
+
+
+
+/*
+其它插入排序
+
+1  折半插入排序
+当将待排序的记录R[i] 插入到已排好序的记录子表R[1…i-1]中时，由于R1, R2 ,…, Ri-1已排好序，则查找插入位置可以用“折半查找”实现，则直接插入排序就变成为折半插入排序。
+
+从时间上比较，折半插入排序仅仅减少了关键字的比较次数，却没有减少记录的移动次数，故时间复杂度仍然为O(n2) 。
+
+
+ */
+
+function binaryInsertSort(sqList){
+    for(var i = 1; i < sqList.length; ++i){
+        var temp = sqList[i];
+        var low = 0;
+        var high = i - 1;
+
+        while(low <= high){
+            var mid = Math.floor((low + high) / 2);
+
+            if(temp < sqList[mid]) high = mid - 1;
+            else low = mid + 1;
+        }
+
+        for(var j = i - 1; j >= high + 1; --j){
+            sqList[j + 1] = sqList[j];
+        }
+
+        sqList[high + 1] = temp;
+    }
+}
+
+var b = [30, 13, 70 ,85, 39, 42, 6, 20];
+binaryInsertSort(b);
+console.log(b + '');
+
+
+// for comparison
+var arr = [];
+var arr2 = [];
+for(var i = 0; i < 100000; ++i){
+    var num = parseInt(Math.random() * 100, 10);
+    arr.push(num);
+    arr2.push(num);
+}
+
+console.time('a');
+straightInsertSort(arr);
+console.timeEnd('a');   // a: 26284ms
+
+
+console.time('b');
+binaryInsertSort(arr2);
+console.timeEnd('b');   // b: 10367ms
