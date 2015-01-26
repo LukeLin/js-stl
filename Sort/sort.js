@@ -148,10 +148,10 @@ for(var i = 0; i < 100000; ++i){
 }
 
 console.time('a');
-straightInsertSort(arr);
+//straightInsertSort(arr);
 console.timeEnd('a');   // a: 26284ms
 
 
 console.time('b');
-binaryInsertSort(arr2);
+//binaryInsertSort(arr2);
 console.timeEnd('b');   // b: 10367ms
