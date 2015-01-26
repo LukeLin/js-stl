@@ -6,6 +6,8 @@
 划分等价类需对集合进行的操作有3个：其一是构造只含单个成员的集合；其二是判定某个单元素所在子集；其三是归并两个互不相交的集合为一个集合。
 
  */
+var ParentTree = require('./BinaryTree').ParentTree;
+
 // MFSet的树的双亲表存储表示
 function MFSet() {
     ParentTree.apply(this, arguments);

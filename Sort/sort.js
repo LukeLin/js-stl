@@ -46,34 +46,34 @@
  */
 
 /*
-插入排序
+ 插入排序
 
-采用的是以 “玩桥牌者”的方法为基础的。即在考察记录Ri之前，设以前的所有记录R1, R2 ,…., Ri-1已排好序，然后将Ri插入到已排好序的诸记录的适当位置
+ 采用的是以 “玩桥牌者”的方法为基础的。即在考察记录Ri之前，设以前的所有记录R1, R2 ,…., Ri-1已排好序，然后将Ri插入到已排好序的诸记录的适当位置
 
-最基本的插入排序是直接插入排序(Straight Insertion Sort) 。
+ 最基本的插入排序是直接插入排序(Straight Insertion Sort) 。
 
 
-直接插入排序
+ 直接插入排序
 
-1  排序思想
-将待排序的记录Ri，插入到已排好序的记录表R1, R2 ,…., Ri-1中，得到一个新的、记录数增加1的有序表。 直到所有的记录都插入完为止。
-   设待排序的记录顺序存放在数组R[1…n]中，在排序的某一时刻，将记录序列分成两部分：
-     ◆ R[1…i-1]：已排好序的有序部分；
-     ◆ R[i…n]：未排好序的无序部分。
-显然，在刚开始排序时，R[1]是已经排好序的。
+ 1  排序思想
+ 将待排序的记录Ri，插入到已排好序的记录表R1, R2 ,…., Ri-1中，得到一个新的、记录数增加1的有序表。 直到所有的记录都插入完为止。
+ 设待排序的记录顺序存放在数组R[1…n]中，在排序的某一时刻，将记录序列分成两部分：
+ ◆ R[1…i-1]：已排好序的有序部分；
+ ◆ R[i…n]：未排好序的无序部分。
+ 显然，在刚开始排序时，R[1]是已经排好序的。
 
-2.算法实现
+ 2.算法实现
 
-3.算法分析
-⑴ 最好情况：若待排序记录按关键字从小到大排列(正序)，算法中的内循环无须执行，则一趟排序时：关键字比较次数1次，记录移动次数2次(R[i]→R[0], R[0]→R[j+1])。
-则整个排序的关键字比较次数和记录移动次数分别是：
-比较次数：n - 1          移动次数： 2 * (n - 1)
+ 3.算法分析
+ ⑴ 最好情况：若待排序记录按关键字从小到大排列(正序)，算法中的内循环无须执行，则一趟排序时：关键字比较次数1次，记录移动次数2次(R[i]→R[0], R[0]→R[j+1])。
+ 则整个排序的关键字比较次数和记录移动次数分别是：
+ 比较次数：n - 1          移动次数： 2 * (n - 1)
 
-⑵ 最坏情况：若待排序记录按关键字从大到小排列(逆序)，则一趟排序时：算法中的内循环体执行i-1，关键字比较次数i次，记录移动次数i+1。
-则就整个排序而言：
-比较次数： (n - 1) * (n + 1) / 2     移动次数: (n - 1) * (n + 4) / 2
+ ⑵ 最坏情况：若待排序记录按关键字从大到小排列(逆序)，则一趟排序时：算法中的内循环体执行i-1，关键字比较次数i次，记录移动次数i+1。
+ 则就整个排序而言：
+ 比较次数： (n - 1) * (n + 1) / 2     移动次数: (n - 1) * (n + 4) / 2
 
-一般地，认为待排序的记录可能出现的各种排列的概率相同，则取以上两种情况的平均值，作为排序的关键字比较次数和记录移动次数，约为n2/4，则复杂度为O(n2) 。
+ 一般地，认为待排序的记录可能出现的各种排列的概率相同，则取以上两种情况的平均值，作为排序的关键字比较次数和记录移动次数，约为n2/4，则复杂度为O(n2) 。
 
 
  */
@@ -100,32 +100,31 @@ straightInsertSort(a);
 console.log(a + '');
 
 
-
 /*
-其它插入排序
+ 其它插入排序
 
-1  折半插入排序
-当将待排序的记录R[i] 插入到已排好序的记录子表R[1…i-1]中时，由于R1, R2 ,…, Ri-1已排好序，则查找插入位置可以用“折半查找”实现，则直接插入排序就变成为折半插入排序。
+ 1  折半插入排序
+ 当将待排序的记录R[i] 插入到已排好序的记录子表R[1…i-1]中时，由于R1, R2 ,…, Ri-1已排好序，则查找插入位置可以用“折半查找”实现，则直接插入排序就变成为折半插入排序。
 
-从时间上比较，折半插入排序仅仅减少了关键字的比较次数，却没有减少记录的移动次数，故时间复杂度仍然为O(n2) 。
+ 从时间上比较，折半插入排序仅仅减少了关键字的比较次数，却没有减少记录的移动次数，故时间复杂度仍然为O(n2) 。
 
 
  */
 
-function binaryInsertSort(sqList){
-    for(var i = 1; i < sqList.length; ++i){
+function binaryInsertSort(sqList) {
+    for (var i = 1, len = sqList.length; i < len; ++i) {
         var temp = sqList[i];
         var low = 0;
         var high = i - 1;
 
-        while(low <= high){
+        while (low <= high) {
             var mid = Math.floor((low + high) / 2);
 
-            if(temp < sqList[mid]) high = mid - 1;
+            if (temp < sqList[mid]) high = mid - 1;
             else low = mid + 1;
         }
 
-        for(var j = i - 1; j >= high + 1; --j){
+        for (var j = i - 1; j >= high + 1; --j) {
             sqList[j + 1] = sqList[j];
         }
 
@@ -133,18 +132,74 @@ function binaryInsertSort(sqList){
     }
 }
 
-var b = [30, 13, 70 ,85, 39, 42, 6, 20];
+var b = [30, 13, 70, 85, 39, 42, 6, 20];
 binaryInsertSort(b);
 console.log(b + '');
+
+
+/*
+ 2-路插入排序
+
+ 是对折半插入排序的改进，以减少排序过程中移动记录的次数。附加n个记录的辅助空间，方法是：
+ ①  另设一个数组d，L[1]赋给d[1]，将d[1]看成是排好序的序列中中间位置的记录；
+ ②  分别将L[ ]中的第i个记录依次插入到d[1]之前或之后的有序序列中，具体方法：
+ ◆  L[i].key<d[1].key： L[i]插入到d[1]之前的有序表中；
+ ◆ L[i].key≥d[1].key： L[i]插入到d[1]之后的有序表中；
+ 关键点：实现时将向量d看成是循环向量，并设两个指针first和final分别指示排序过程中得到的有序序列中的第一个和最后一个记录。
+
+ 在2-路插入排序中，移动记录的次数约为n2/8 。但当L[1]是待排序记录中关键字最大或最小的记录时，2-路插入排序就完全失去了优越性。
+ */
+
+function path2InsertSort(sqList) {
+    var d = [sqList[0]];
+    // first、final分别指示d中排好序的记录的第1个和最后1个记录的位置。
+    var first = 0;
+    var final = 0;
+
+    for (var i = 1, len = sqList.length; i < len; ++i) {
+        var item = sqList[i];
+
+        // 待插入记录小于d中最小值，插入到d[first]之前（不需移动d数组的元素）。
+        if (item < d[first]) {
+            first = (first - 1 + len) % len;
+            d[first] = item;
+        }
+        // 待插入记录大于d中最小值，插入到d[final]之后（不需移动d数组的元素）。
+        else if (item > d[final]) {
+            d[++final] = item;
+        }
+        // 待插入记录大于d中最小值，小于d中最大值，插入到d的中间（需要移动d数组的元素）。
+        else {
+            // 移动d尾部元素以便按序插入记录。
+            var j = final++;
+            while (item < d[j]) {
+                d[(j + 1) % len] = d[j];
+                j = (j - 1 + len) % len;
+            }
+            d[(j + 1) % len] = item;
+        }
+    }
+
+    // 循环把d赋给sqList
+    for (i = 0; i < len; ++i) {
+        sqList[i] = d[(i + first) % len];
+    }
+}
+
+var c = [49, 38, 65, 13, 97, 27, 76, 5, 100, 78, 15, 15, 20];
+path2InsertSort(c);
+console.log(c + '');
 
 
 // for comparison
 var arr = [];
 var arr2 = [];
-for(var i = 0; i < 100000; ++i){
+var arr3 = [];
+for (var i = 0; i < 100000; ++i) {
     var num = parseInt(Math.random() * 100, 10);
     arr.push(num);
     arr2.push(num);
+    arr3.push(num);
 }
 
 console.time('a');
@@ -155,3 +210,27 @@ console.timeEnd('a');   // a: 26284ms
 console.time('b');
 //binaryInsertSort(arr2);
 console.timeEnd('b');   // b: 10367ms
+
+
+console.time('c');
+//path2InsertSort(arr3);
+console.timeEnd('c');   // c: 10367ms
+
+/*
+ 在我家的老爷机上跑
+ 100000条数据，
+ 机器配置：
+ 电脑型号	海尔 HaierComputer 台式电脑
+ 操作系统	Windows 8 专业版 32位 ( DirectX 11 )
+
+ 处理器	英特尔 Pentium(奔腾) 双核 E5200 @ 2.50GHz
+ 主板	海尔 G31T-M5 ( 英特尔 P35/G33/G31/P31 Express - ICH7 )
+ 内存	4 GB ( 威刚 DDR2 800MHz )
+ 主硬盘	希捷 ST3500418AS ( 500 GB / 7200 转/分 )
+
+
+ straightInsertSort a: 34722ms
+ binaryInsertSort b: 13080ms
+ path2InsertSort c: 116103ms  md，我差点睡着！！
+
+ */
