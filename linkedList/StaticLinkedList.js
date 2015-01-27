@@ -10,7 +10,6 @@
 
 (function () {
     function StaticLinkedList(MAXSIZE) {
-        Array.call(this);
         this[-1] = {cur: 0};
         this.MAXSIZE = MAXSIZE || 1000;
     }
@@ -18,7 +17,6 @@
     module.exports = StaticLinkedList;
     StaticLinkedList.prototype = {
         constructor: StaticLinkedList,
-        __proto__: Array.prototype,
         /**
          * 在静态单链线性表L中查找第1个值为e的元素，
          * 若找到，则返回它在L中的位序
