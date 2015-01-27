@@ -161,7 +161,7 @@ function path2InsertSort(sqList) {
 
         // 待插入记录小于d中最小值，插入到d[first]之前（不需移动d数组的元素）。
         if (item < d[first]) {
-            first = (first - 1 + len) % len;
+            first = (first - 1) % len;
             d[first] = item;
         }
         // 待插入记录大于d中最小值，插入到d[final]之后（不需移动d数组的元素）。
@@ -174,7 +174,7 @@ function path2InsertSort(sqList) {
             var j = final++;
             while (item < d[j]) {
                 d[(j + 1) % len] = d[j];
-                j = (j - 1 + len) % len;
+                j = (j - 1) % len;
             }
             d[(j + 1) % len] = item;
         }
@@ -191,30 +191,46 @@ path2InsertSort(c);
 console.log(c + '');
 
 
+
+/*
+表插入排序
+
+前面的插入排序不可避免地要移动记录，若不移动记录就需要改变数据结构。
+初始化：下标值为0的分量作为表头结点，关键字取为最大值，各分量的指针值为空；
+①  将静态链表中数组下标值为1的分量(结点)与表头结点构成一个循环链表；
+② i=2 ，将分量R[i]按关键字递减插入到循环链表；
+③  增加i ，重复②，直到全部分量插入到循环链表。
+
+ */
+
+
 // for comparison
 var arr = [];
 var arr2 = [];
 var arr3 = [];
+var arr4 = [];
 for (var i = 0; i < 100000; ++i) {
     var num = parseInt(Math.random() * 100, 10);
     arr.push(num);
     arr2.push(num);
     arr3.push(num);
+    arr4.push(num);
 }
 
 console.time('a');
 //straightInsertSort(arr);
-console.timeEnd('a');   // a: 26284ms
+console.timeEnd('a');   // a: 32306ms
 
 
 console.time('b');
 //binaryInsertSort(arr2);
-console.timeEnd('b');   // b: 10367ms
+console.timeEnd('b');   // b: 11309ms
 
 
 console.time('c');
 //path2InsertSort(arr3);
-console.timeEnd('c');   // c: 10367ms
+console.timeEnd('c');   // c: 55707ms
+
 
 /*
  在我家的老爷机上跑
