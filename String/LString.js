@@ -152,28 +152,6 @@
             }
 
             return str;
-        },
-
-        // 判断是否为回文字符串
-        palindrome: function(){
-            var stack = new Stack();
-            var p = this.head;
-            var i = 0;
-
-            for(var k = 1; k <= this.length; ++k){
-                if(k <= this.length / 2) stack.push(p.ch[i]);
-                else if(k > (this.length + 1) / 2){
-                    var c = stack.pop();
-                    if(p.ch[i] !== c) return false;
-                }
-
-                if(++i === this.chunkSize) {
-                    p = p.next;
-                    i = 0;
-                }
-            }
-
-            return true;
         }
     };
 
@@ -228,5 +206,28 @@
     console.log(t + '');
     t = t.substring(2, 5);
     console.log(t + '');
+
+
+    // 判断是否为回文字符串
+    function palindrome(lStr){
+        var stack = new Stack();
+        var p = lStr.head;
+        var i = 0;
+
+        for(var k = 1; k <= lStr.length; ++k){
+            if(k <= lStr.length / 2) stack.push(p.ch[i]);
+            else if(k > (lStr.length + 1) / 2){
+                var c = stack.pop();
+                if(p.ch[i] !== c) return false;
+            }
+
+            if(++i === lStr.chunkSize) {
+                p = p.next;
+                i = 0;
+            }
+        }
+
+        return true;
+    }
 
 })(this.exports || this);
