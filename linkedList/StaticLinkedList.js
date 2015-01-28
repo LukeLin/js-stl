@@ -11,7 +11,8 @@
 (function () {
     function StaticLinkedList(MAXSIZE) {
         this[-1] = {cur: 0};
-        this.MAXSIZE = MAXSIZE || 1000;
+        this.length = 0;
+        this.MAXSIZE = MAXSIZE + 1 || 1000;
     }
 
     module.exports = StaticLinkedList;
@@ -36,7 +37,7 @@
         initSpace: function (len) {
             len = len ? len + 1 : this.MAXSIZE;
             for (var i = 0; i < len - 1; ++i) {
-                this[i] = this[i] || {};
+                this[i] = this[i] || {data: null, cur: null};
                 this[i].cur = i + 1;
             }
 
@@ -78,11 +79,17 @@
                 this[i].data = sqList[j];
                 // 插入到表尾
                 this[r].cur = i;
+                ++this.length;
                 r = i;
             }
             // 尾结点的指针为空
             this[r].cur = 0;
-        }
+        },
+
+        // todo
+        add: function(index, elem){},
+
+        remove: function(index){}
     };
 
     /**

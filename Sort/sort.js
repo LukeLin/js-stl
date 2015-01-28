@@ -45,6 +45,8 @@
  为讨论方便，假设待排序的记录是以①的情况存储，且设排序是按升序排列的；关键字是一些可直接用比较运算符进行比较的类型。
  */
 
+var StaticLinkedList = require('../linkedList/StaticLinkedList');
+
 /*
  插入排序
 
@@ -201,7 +203,73 @@ console.log(c + '');
 ② i=2 ，将分量R[i]按关键字递减插入到循环链表；
 ③  增加i ，重复②，直到全部分量插入到循环链表。
 
+和直接插入排序相比，不同的是修改2n次指针值以代替移动记录，而关键字的比较次数相同，故时间复杂度为O(n2)。
+
+表插入排序得到一个有序链表，对其可以方便地进行顺序查找，但不能实现随机查找。为了能实现有序表的折半查找根据需要，可以对记录进行重排.
+
+重排记录的做法是：顺序扫描有序链表，将链表中第i个结点移动至数组的第i个分量中。
+
+例子中，链表中第一个结点，即关键字最小的结点是数组中下标为6的分量，其中记录应移至数组的第一个分量，则将list[1]和list[6]互换，并为了不中断静态链表中的链，即在继续顺链表扫描时仍能找到互换之前在list[1]中的结点，令互换之后的list[1]中的游标改为6
+
+推广至一般情况，若第i个最小关键字的结点是数组中下标为p且p > i的分量，则互换list[i]和list[p]，且令list[i]中的游标改为p；
+由于此时数组中所有小于i的分量中已是到位记录，则当p<i时，应顺链继续查找直到p>=i为止。
  */
+
+
+// 表插入排序
+function staticLinkedListInsertSort(sllist){
+    // 构成循环链表
+    sllist[0].cur = 1;
+    sllist[1].cur = 0;
+
+    var p, q;
+    for(var i = 2, len = sllist.length; i <= len; ++i){
+        p = 0;
+        var x = sllist[i].data;
+
+        while(sllist[p].cur && sllist[sllist[p].cur].data < x)
+            p = sllist[p].cur;
+
+        // 当遇到大于当前关键字的下标时，插入到其前驱和后继的中间
+        q = sllist[p].cur;
+        sllist[p].cur = i;
+        sllist[i].cur = q;
+    }
+}
+
+// 重排静态链表，静态链表下标已排好序
+function arrange(sllist){
+    var p = sllist[0].cur;
+
+    for(var i = 1, len = sllist.length; i < len; ++i){
+        // 第i个记录在list中的当前位置应不小于i
+        // 找到第i个记录，并用p指示其在list中当前位置
+        while(p < i) p = sllist[p].cur;
+        // q指向尚未调整的表尾
+        var q = sllist[p].cur;
+
+        if(p !== i) {
+            // 交换记录，使第i个记录到位
+            var temp = sllist[p];
+            sllist[p] = sllist[i];
+            sllist[i] = temp;
+            // 指向被移走的记录，使得以后可有while循环找到
+            sllist[i].cur = p;
+        }
+
+        // p指向尚未调整的表尾
+        p = q;
+    }
+}
+
+
+var arr = [49, 38, 65, 97, 76, 13, 27, 52];
+var d = new StaticLinkedList();
+d.create(arr);
+staticLinkedListInsertSort(d);
+console.log(d);
+arrange(d);
+console.log(d);
 
 
 // for comparison
