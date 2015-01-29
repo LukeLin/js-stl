@@ -218,10 +218,11 @@ test.insert('LIU');
 test.insert('ZHAO');
 test.insert('ZHAO');
 
+console.log('\nsearch: ');
 console.log(test.search('CAI'));
-console.log(test.search('CAT'));
+console.log(test.search('CHA'));
 console.log(test.search('CHANG'));
-console.log(test.search('ZHAO'));
+console.log(test.search('ZHAOx'));
 
 test.remove('CAI');
 test.remove('CAI');
@@ -285,8 +286,16 @@ TrieTree.prototype = {
              p && p.kind === BRANCH && i < key.length;
              p = p.branch.nodes[order(key[i])], ++i);
 
-        if(p && p.kind === LEAF && p.leaf.key === key) return p.leaf.info;
-        else return null;
+        if(p) {
+            if(p.kind === LEAF && p.leaf.key === key) return p.leaf.info;
+            // 同义词
+            else if(p.kind === BRANCH) {
+                p = p.branch.nodes[0];
+                if(p && p.leaf.key === key) return p.leaf.info;
+            }
+        }
+
+        return null;
     },
 
     insert: function(key, value){
@@ -404,9 +413,10 @@ test.insert('YANG');
 test.insert('YUN');
 test.insert('ZHAO');
 
+console.log('\nsearch: ');
 console.log(test.search('YUN'));
 console.log(test.search('ZHAO'));
-console.log(test.search('ZHAOKK'));
+console.log(test.search('CHA'));
 
 test.remove('LAN');
 test.remove('LIU');
