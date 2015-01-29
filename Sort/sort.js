@@ -193,7 +193,6 @@ path2InsertSort(c);
 console.log(c + '');
 
 
-
 /*
 表插入排序
 
@@ -217,17 +216,17 @@ console.log(c + '');
 
 
 // 表插入排序
-function staticLinkedListInsertSort(sllist){
+function staticLinkedListInsertSort(sllist) {
     // 构成循环链表
     sllist[0].cur = 1;
     sllist[1].cur = 0;
 
     var p, q;
-    for(var i = 2, len = sllist.length; i <= len; ++i){
+    for (var i = 2, len = sllist.length; i <= len; ++i) {
         p = 0;
         var x = sllist[i].data;
 
-        while(sllist[p].cur && sllist[sllist[p].cur].data < x)
+        while (sllist[p].cur && sllist[sllist[p].cur].data < x)
             p = sllist[p].cur;
 
         // 当遇到大于当前关键字的下标时，插入到其前驱和后继的中间
@@ -238,17 +237,17 @@ function staticLinkedListInsertSort(sllist){
 }
 
 // 重排静态链表，静态链表下标已排好序
-function arrange(sllist){
+function arrange(sllist) {
     var p = sllist[0].cur;
 
-    for(var i = 1, len = sllist.length; i < len; ++i){
+    for (var i = 1, len = sllist.length; i < len; ++i) {
         // 第i个记录在list中的当前位置应不小于i
         // 找到第i个记录，并用p指示其在list中当前位置
-        while(p < i) p = sllist[p].cur;
+        while (p < i) p = sllist[p].cur;
         // q指向尚未调整的表尾
         var q = sllist[p].cur;
 
-        if(p !== i) {
+        if (p !== i) {
             // 交换记录，使第i个记录到位
             var temp = sllist[p];
             sllist[p] = sllist[i];
@@ -270,6 +269,77 @@ staticLinkedListInsertSort(d);
 console.log(d);
 arrange(d);
 console.log(d);
+
+
+/*
+希尔排序
+
+希尔排序(Shell Sort，又称缩小增量法)是一种分组插入排序方法。
+
+1  排序思想
+①   先取一个正整数d1(d1<n)作为第一个增量，将全部n个记录分成d1组，把所有相隔d1的记录放在一组中，即对于每个k(k=1, 2,  … d1)，R[k], R[d1+k], R[2d1+k] , …分在同一组中，在各组内进行直接插入排序。这样一次分组和排序过程称为一趟希尔排序；
+②   取新的增量d2<d1，重复①的分组和排序操作；直至所取的增量di=1为止，即所有记录放进一个组中排序为止。
+
+2  排序示例
+设有10个待排序的记录，关键字分别为9, 13, 8, 2, 5, 13, 7, 1, 15, 11，增量序列是5, 3, 1，希尔排序的过程:
+初始关键字序列:    9     13     8      2      5      13      7      1      15      11
+第一趟排序后:      9     7      1      2      5      13      13     8      15      11
+第二趟排序后:      2     5      1      9      7      13      11     8      15      13
+第三趟排序后:      1     2      5      7      8      9      11     13      13      15
+
+
+希尔排序的分析比较复杂，涉及一些数学上的问题，其时间是所取的“增量”序列的函数。
+
+希尔排序特点
+子序列的构成不是简单的“逐段分割”，而是将相隔某个增量的记录组成一个子序列。
+希尔排序可提高排序速度，原因是：
+◆ 分组后n值减小，n²更小，而T(n)=O(n²),所以T(n)从总体上看是减小了；
+◆ 关键字较小的记录跳跃式前移，在进行最后一趟增量为1的插入排序时，序列已基本有序。
+
+增量序列取法
+◆ 无除1以外的公因子；
+◆ 最后一个增量值必须为1。
+
+相关资料： http://wenku.baidu.com/link?url=q7kzOxXqc0BLaGUVDY43FQOh2aX1UqBHkkYd3VMwJhJo6rv4SiU686RW3kQCSqGEKytl12S8fBOpwhq-runhX_pbZcg6BeD-miYMPgDhXxK
+ */
+
+function shellInsert(sqList, dk) {
+    for (var i = dk, len = sqList.length; i < len; ++i) {
+        var temp = sqList[i];
+        if (temp < sqList[i - dk]) {
+            for (var j = i - dk; j >= 0 && temp < sqList[j]; j -= dk)
+                sqList[j + dk] = sqList[j];
+
+            sqList[j + dk] = temp;
+        }
+    }
+}
+
+function shellSort(sqList) {
+    var delta = createDelta(sqList.length);
+    //console.log(delta);
+    for (var k = 0, t = delta.length; k < t; ++k) {
+        shellInsert(sqList, delta[k]);
+    }
+}
+
+function createDelta(n) {
+    var arr = [];
+    var t = Math.floor(Math.log(n + 1) / Math.log(2));
+    for(var i = 0; i < t; ++i)
+        arr[i] = Math.pow(2, t - i) + 1;
+
+    arr[arr.length] = 1;
+
+    return arr;
+}
+
+
+console.log('\n\nShell Sort:');
+var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 04];
+shellSort(arr);     // Math.pow(2, t - i + 1) - 1: 4ms, Math.pow(2, t - i) + 1: 2ms
+console.log(arr + '');
+
 
 
 // for comparison
@@ -299,6 +369,10 @@ console.time('c');
 //path2InsertSort(arr3);
 console.timeEnd('c');   // c: 55707ms
 
+
+console.time('d');
+//shellSort(arr4);
+console.timeEnd('d');   // d: 20ms  notice: 因为随机数太小，都聚集了，希尔排序优势巨大。。
 
 /*
  在我家的老爷机上跑
