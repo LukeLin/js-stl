@@ -111,7 +111,7 @@ DoubleLinkedTree.prototype = {
             var c = key[i];
             var p = cur;
             cur = cur.first;
-            var node = new DoubleLinkedTree(c, BRANCH, value != null ? value : key);
+            var node = new DoubleLinkedTree(c, BRANCH);
 
             // 如果没有子结点则将新结点作为子结点
             if (!cur) {
