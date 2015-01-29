@@ -58,6 +58,12 @@ directory
         -- HashTable
 
     Sort
+        -- insertion sort
+                -- straightInsertSort
+                -- binaryInsertSort
+                -- path2InsertSort
+                -- staticLinkedListInsertSort
+                -- shellSort
         todo to be continued
 
 
