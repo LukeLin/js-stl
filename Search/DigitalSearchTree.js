@@ -174,9 +174,9 @@ DoubleLinkedTree.prototype = {
             } else return false;
         }
 
+        var data = p.info;
         while(!p.next && p.parent) p = p.parent;
         var top = p;
-        var data = null;
 
         if(top == this) {
             data = this.first && this.first.info;
@@ -191,15 +191,9 @@ DoubleLinkedTree.prototype = {
                 var pre;
                 if(p == top) {
                     // 删除在first域上的子树结点
-                    if(!pre) {
-                        data = top.parent.first.info;
-                        top.parent.first = top.parent.first.next;
-                    }
+                    if(!pre) top.parent.first = top.parent.first.next;
                     // 删除在next域的兄弟结点
-                    else {
-                        data = pre.next.info;
-                        pre.next = pre.next.next;
-                    }
+                    else  pre.next = pre.next.next;
 
                     return data;
                 } else {
@@ -232,17 +226,18 @@ console.log(test.search('CHA'));
 console.log(test.search('CHANG'));
 console.log(test.search('ZHAOx'));
 
-test.remove('CAI');
-test.remove('CAI');
-test.remove('LAN');
-test.remove('CAO');
-test.remove('CHA');
-test.remove('CHANG');
-test.remove('CHAO');
-test.remove('CHEN');
-test.remove('LI');
-test.remove('LIU');
-test.remove('ZHAO');
+console.log('\nremove:');
+console.log(test.remove('CAI'));
+console.log(test.remove('CAI'));
+console.log(test.remove('LAN'));
+console.log(test.remove('CAO'));
+console.log(test.remove('CHA'));
+console.log(test.remove('CHANG'));
+console.log(test.remove('CHAO'));
+console.log(test.remove('CHEN'));
+console.log(test.remove('LI'));
+console.log(test.remove('LIU'));
+console.log(test.remove('ZHAO'));
 
 
 
