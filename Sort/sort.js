@@ -85,12 +85,9 @@ function straightInsertSort(sqList) {
         // 设置哨兵, 当设置sqList[-1] = sqList[i]时，经测试效率更慢
         // 因为js里面的变量作用域在函数内的
         var temp = sqList[i];
-        var j = i - 1;
         // 查找插入位置，并将记录后移
-        while (temp < sqList[j]) {
+        for(var j = i - 1; j >= 0 && temp < sqList[j]; --j)
             sqList[j + 1] = sqList[j];
-            --j;
-        }
 
         // 插入到正确位置
         sqList[j + 1] = temp;
@@ -317,7 +314,7 @@ function shellInsert(sqList, dk) {
 
 function shellSort(sqList) {
     var delta = createDelta(sqList.length);
-    //console.log(delta);
+    console.log(delta);
     for (var k = 0, t = delta.length; k < t; ++k) {
         shellInsert(sqList, delta[k]);
     }
@@ -325,9 +322,9 @@ function shellSort(sqList) {
 
 function createDelta(n) {
     var arr = [];
-    var t = Math.floor(Math.log(n + 1) / Math.log(2));
-    for(var i = 0; i < t; ++i)
-        arr[i] = Math.pow(2, t - i) + 1;    // Math.pow(2, t - i + 1) - 1, Math.pow(2, t - i) + 1
+    var t = Math.floor(Math.log(n - 1) / Math.log(2));  // Math.log(n - 1) / Math.log(2), Math.log(n + 1) / Math.log(2)
+    for(var k = 0; k <= t; ++k)
+        arr[k] = Math.pow(2, t - k) + 1;    // Math.pow(2, t - i + 1) - 1, Math.pow(2, t - i) + 1
 
     arr[arr.length] = 1;
 
@@ -347,8 +344,9 @@ var arr = [];
 var arr2 = [];
 var arr3 = [];
 var arr4 = [];
-for (var i = 0; i < 100000; ++i) {
-    var num = parseInt(Math.random() * 10000, 10);
+for (var i = 0, len = 100000; i < len; ++i) {
+    //var num = parseInt(Math.random() * 10000, 10);
+    var num = len - i;
     arr.push(num);
     arr2.push(num);
     arr3.push(num);
@@ -401,3 +399,6 @@ console.timeEnd('d');   // d: 20ms  notice: 因为随机数太小，都聚集了
  path2InsertSort c: 116103ms  md，我差点睡着！！
 
  */
+
+
+// http://blog.csdn.net/hguisu/article/details/7776068
