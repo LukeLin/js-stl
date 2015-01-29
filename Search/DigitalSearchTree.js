@@ -179,7 +179,6 @@ DoubleLinkedTree.prototype = {
         var top = p;
 
         if(top == this) {
-            data = this.first && this.first.info;
             this.first = null;
             return data;
         }
