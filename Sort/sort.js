@@ -327,7 +327,7 @@ function createDelta(n) {
     var arr = [];
     var t = Math.floor(Math.log(n + 1) / Math.log(2));
     for(var i = 0; i < t; ++i)
-        arr[i] = Math.pow(2, t - i) + 1;
+        arr[i] = Math.pow(2, t - i) + 1;    // Math.pow(2, t - i + 1) - 1, Math.pow(2, t - i) + 1
 
     arr[arr.length] = 1;
 
@@ -337,7 +337,7 @@ function createDelta(n) {
 
 console.log('\n\nShell Sort:');
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 04];
-shellSort(arr);     // Math.pow(2, t - i + 1) - 1: 4ms, Math.pow(2, t - i) + 1: 2ms
+shellSort(arr);
 console.log(arr + '');
 
 
@@ -348,7 +348,7 @@ var arr2 = [];
 var arr3 = [];
 var arr4 = [];
 for (var i = 0; i < 100000; ++i) {
-    var num = parseInt(Math.random() * 100, 10);
+    var num = parseInt(Math.random() * 10000, 10);
     arr.push(num);
     arr2.push(num);
     arr3.push(num);
@@ -371,8 +371,17 @@ console.timeEnd('c');   // c: 55707ms
 
 
 console.time('d');
-//shellSort(arr4);
-console.timeEnd('d');   // d: 20ms  notice: 因为随机数太小，都聚集了，希尔排序优势巨大。。
+shellSort(arr4);
+console.timeEnd('d');   // d: 20ms  notice: 因为随机数太小，都聚集了，希尔排序优势巨大。
+/*
+希尔排序：
+随机数在0-999
+第一种增量序列： Math.pow(2, t - i + 1) - 1
+耗时  28ms
+
+第二种增量序列： Math.pow(2, t - i) + 1
+耗时 28ms
+ */
 
 /*
  在我家的老爷机上跑
