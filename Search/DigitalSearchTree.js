@@ -103,7 +103,7 @@ DoubleLinkedTree.prototype = {
         return p && p.kind === LEAF ? p.info : null;
     },
 
-    insert: function(key) {
+    insert: function(key, value) {
         key += '';
         var cur = this;
 
@@ -111,7 +111,7 @@ DoubleLinkedTree.prototype = {
             var c = key[i];
             var p = cur;
             cur = cur.first;
-            var node = new DoubleLinkedTree(c);
+            var node = new DoubleLinkedTree(c, BRANCH, value != null ? value : key);
 
             // 如果没有子结点则将新结点作为子结点
             if (!cur) {
@@ -151,7 +151,7 @@ DoubleLinkedTree.prototype = {
 
             // 如果不存在关键字则说明插入成功，否则插入失败
             if(!(child && child.symbol === '$')) {
-                cur.first = new DoubleLinkedTree('$', LEAF, key);
+                cur.first = new DoubleLinkedTree('$', LEAF, value != null ? value : key);
                 cur.first.parent = cur;
                 cur.first.next = child;
                 success = true;
@@ -176,10 +176,12 @@ DoubleLinkedTree.prototype = {
 
         while(!p.next && p.parent) p = p.parent;
         var top = p;
+        var data = null;
 
         if(top == this) {
+            data = this.first && this.first.info;
             this.first = null;
-            return true;
+            return data;
         }
 
         p = top.parent;
@@ -188,12 +190,18 @@ DoubleLinkedTree.prototype = {
             while(p){
                 var pre;
                 if(p == top) {
-                    if(!pre)
+                    // 删除在first域上的子树结点
+                    if(!pre) {
+                        data = top.parent.first.info;
                         top.parent.first = top.parent.first.next;
-                    else
+                    }
+                    // 删除在next域的兄弟结点
+                    else {
+                        data = pre.next.info;
                         pre.next = pre.next.next;
+                    }
 
-                    return true;
+                    return data;
                 } else {
                     pre = p;
                     p = p.next;
@@ -337,7 +345,13 @@ TrieTree.prototype = {
         return true;
     },
 
-    remove: function(key){
+    /**
+     *
+     * @param key
+     * @param {Boolean} clear 是否需要清理结点
+     * @returns {*} 如果删除成功返回info数据否则返回false
+     */
+    remove: function(key, clear){
         var last;
         // 查找待删除元素
         for(var p = this, i = 0;
@@ -346,10 +360,21 @@ TrieTree.prototype = {
 
         if(!p) return false;
 
-        if(p.kind === LEAF && p.leaf.key === key)
-            return removeNode(last, order(key[i - 1]));
-        else if(p.kind === BRANCH && p.branch.nodes[0] && p.branch.nodes[0].leaf.key === key)
-            return removeNode(p, 0);
+        clear = typeof clear !== 'undefined' ? clear : true;
+        var data = null;
+
+        if(p.kind === LEAF && p.leaf.key === key) {
+            data = p.leaf.info;
+            removeNode(last, order(key[i - 1]), clear);
+            return data;
+        } else if(p.kind === BRANCH) {
+            p = p.branch.nodes[0];
+            if(p && p.leaf.key === key) {
+                data = p.leaf.info;
+                removeNode(p.parent, 0, clear);
+                return data;
+            }
+        }
 
         return false;
     }
@@ -362,9 +387,11 @@ function order(c){
 }
 
 // 通过回溯法清理Trie树的函数
-function removeNode(trieNode, order){
+function removeNode(trieNode, order, clear){
     trieNode.branch.nodes[order] = null;
     --trieNode.branch.num;
+
+    if(!clear) return;
 
     var nodes = trieNode.branch.nodes;
     var parent = trieNode.parent;
@@ -372,7 +399,7 @@ function removeNode(trieNode, order){
 
     while(parent){
         for(var i in nodes) {
-            if(nodes.hasOwnProperty(i) && nodes[i]) return false;
+            if(nodes.hasOwnProperty(i) && nodes[i]) return;
         }
 
         var index;
@@ -387,8 +414,6 @@ function removeNode(trieNode, order){
         nodes = parent.branch.nodes;
         parent = parent.parent;
     }
-
-    return true;
 }
 
 
@@ -434,3 +459,7 @@ test.remove('CAO');
 test.remove('CHAO');
 test.remove('LONG');
 test.remove('LI');
+
+test.insert('LI');
+test.insert('LAN');
+test.insert('LIU');
