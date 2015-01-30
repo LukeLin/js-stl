@@ -1061,3 +1061,6 @@ floyd.addArc('v1', 'v2', {adj: 4});
 floyd.addArc('v2', 'v0', {adj: 5});
 
 floyd.shortestPath_FLOYD();
+
+// http://blog.csdn.net/hguisu/article/details/7719428
+// 添加《图的应用详解-数据结构》
