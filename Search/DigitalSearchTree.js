@@ -149,6 +149,7 @@ DoubleLinkedTree.prototype = {
                             node.parent = cur.parent;
                             node.next = cur;
                             b.next = node;
+                            cur = node;
                             break;
                         } else {
                             b = cur;
