@@ -90,8 +90,7 @@ DoubleLinkedTree.prototype = {
 
     synoSearch: function (key) {
         var p = this.first;
-
-
+        
         for (var i = 0; p && i < key.length; ++i) {
             if (p && p.kind === LEAF) break;
             while (p && p.symbol < key[i]) p = p.next;
@@ -106,21 +105,19 @@ DoubleLinkedTree.prototype = {
 
     search: function (key) {
         var p = this.first;
-        var i = 0;
-
-        while (p && i < key.length) {
+        
+        for (var i = 0; p && i < key.length; ++i) {
             while (p && p.symbol < key[i]) p = p.next;
 
-            if (p && p.symbol === key[i]) {
+            if (p && p.symbol === key[i])
                 p = p.first;
-                ++i;
-            } else p = null;
+            else p = null;
         }
 
         return p && p.kind === LEAF ? p.info : null;
     },
 
-    insert: function (key, value) {
+    insert: function(key, value) {
         key += '';
         var cur = this;
 
@@ -137,29 +134,30 @@ DoubleLinkedTree.prototype = {
                 cur = node;
             } else {
                 // 在兄弟结点中找到对应结点
-                if (c < cur.symbol) {
+                if(c < cur.symbol) {
                     node.parent = cur.parent;
                     node.next = cur;
                     node.parent.first = node;
                     cur = node;
-                } else {
+                } else if(c > cur.symbol) {
                     var b;
                     while (cur) {
                         // 如果相等，退出该循环查找下一字符
                         if (c === cur.symbol) break;
                         // 如果小于当前字符，则插入到当前结点前面
-                        else if (c < cur.symbol) {
+                        else if(c < cur.symbol) {
                             node.parent = cur.parent;
-                            node.next = cur.next;
-                            cur.next = node;
+                            node.next = cur;
+                            b.next = node;
+                            break;
+                        } else {
+                            b = cur;
+                            cur = cur.next;
                         }
-
-                        b = cur;
-                        cur = cur.next;
                     }
 
                     // 如果没有兄弟结点则插入到兄弟结点
-                    if (!cur) {
+                    if(!cur) {
                         b.next = node;
                         node.parent = b.parent;
                         cur = node;
@@ -174,7 +172,7 @@ DoubleLinkedTree.prototype = {
             var child = cur.first;
 
             // 如果不存在关键字则说明插入成功，否则插入失败
-            if (!(child && child.symbol === terminal)) {
+            if(!(child && child.symbol === terminal)) {
                 cur.first = new DoubleLinkedTree(terminal, LEAF, value != null ? value : key);
                 cur.first.parent = cur;
                 cur.first.next = child;
