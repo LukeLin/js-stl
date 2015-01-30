@@ -76,8 +76,9 @@ next域：存储指向右兄弟的指针。
 
 var LEAF = 'leaf';
 var BRANCH = 'branch';
+var terminal = new String('$');
 
-function DoubleLinkedTree(symbol, kind, info){
+function DoubleLinkedTree(symbol, kind, info) {
     this.symbol = symbol || 'root';
     this.next = null;
     this.kind = kind || BRANCH;
@@ -87,14 +88,30 @@ function DoubleLinkedTree(symbol, kind, info){
 DoubleLinkedTree.prototype = {
     constructor: DoubleLinkedTree,
 
-    search: function(key){
+    synoSearch: function (key) {
+        var p = this.first;
+
+
+        for (var i = 0; p && i < key.length; ++i) {
+            if (p && p.kind === LEAF) break;
+            while (p && p.symbol < key[i]) p = p.next;
+
+            if (p && p.symbol === key[i])
+                p = p.first;
+            else p = null;
+        }
+
+        return p && p.kind === LEAF ? p.info : null;
+    },
+
+    search: function (key) {
         var p = this.first;
         var i = 0;
 
-        while(p && i < key.length){
-            while(p && p.symbol < key[i]) p = p.next;
+        while (p && i < key.length) {
+            while (p && p.symbol < key[i]) p = p.next;
 
-            if(p && p.symbol === key[i]) {
+            if (p && p.symbol === key[i]) {
                 p = p.first;
                 ++i;
             } else p = null;
@@ -103,7 +120,7 @@ DoubleLinkedTree.prototype = {
         return p && p.kind === LEAF ? p.info : null;
     },
 
-    insert: function(key, value) {
+    insert: function (key, value) {
         key += '';
         var cur = this;
 
@@ -120,26 +137,33 @@ DoubleLinkedTree.prototype = {
                 cur = node;
             } else {
                 // 在兄弟结点中找到对应结点
-                var b;
-                while (cur) {
-                    // 如果相等，退出该循环查找下一字符
-                    if (c === cur.symbol) break;
-                    // 如果小于当前字符，则插入到当前结点前面
-                    else if(c < cur.symbol) {
-                        node.parent = cur.parent;
-                        node.next = cur.next;
-                        cur.next = node;
+                if (c < cur.symbol) {
+                    node.parent = cur.parent;
+                    node.next = cur;
+                    node.parent.first = node;
+                    cur = node;
+                } else {
+                    var b;
+                    while (cur) {
+                        // 如果相等，退出该循环查找下一字符
+                        if (c === cur.symbol) break;
+                        // 如果小于当前字符，则插入到当前结点前面
+                        else if (c < cur.symbol) {
+                            node.parent = cur.parent;
+                            node.next = cur.next;
+                            cur.next = node;
+                        }
+
+                        b = cur;
+                        cur = cur.next;
                     }
 
-                    b = cur;
-                    cur = cur.next;
-                }
-
-                // 如果没有兄弟结点则插入到兄弟结点
-                if(!cur) {
-                    b.next = node;
-                    node.parent = b.parent;
-                    cur = node;
+                    // 如果没有兄弟结点则插入到兄弟结点
+                    if (!cur) {
+                        b.next = node;
+                        node.parent = b.parent;
+                        cur = node;
+                    }
                 }
             }
         }
@@ -150,8 +174,8 @@ DoubleLinkedTree.prototype = {
             var child = cur.first;
 
             // 如果不存在关键字则说明插入成功，否则插入失败
-            if(!(child && child.symbol === '$')) {
-                cur.first = new DoubleLinkedTree('$', LEAF, value != null ? value : key);
+            if (!(child && child.symbol === terminal)) {
+                cur.first = new DoubleLinkedTree(terminal, LEAF, value != null ? value : key);
                 cur.first.parent = cur;
                 cur.first.next = child;
                 success = true;
@@ -161,36 +185,36 @@ DoubleLinkedTree.prototype = {
         return success;
     },
 
-    remove: function(key){
+    remove: function (key) {
         var p = this.first;
         var i = 0;
 
-        while(p && i < key.length){
-            while(p && p.symbol < key[i]) p = p.next;
+        while (p && i < key.length) {
+            while (p && p.symbol < key[i]) p = p.next;
 
-            if(p && p.symbol === key[i]) {
+            if (p && p.symbol === key[i]) {
                 p = p.first;
                 ++i;
             } else return false;
         }
 
         var data = p.info;
-        while(!p.next && p.parent) p = p.parent;
+        while (!p.next && p.parent) p = p.parent;
         var top = p;
 
-        if(top == this) {
+        if (top == this) {
             this.first = null;
             return data;
         }
 
         p = top.parent;
-        if(p) {
+        if (p) {
             p = p.first;
-            while(p){
+            while (p) {
                 var pre;
-                if(p == top) {
+                if (p == top) {
                     // 删除在first域上的子树结点
-                    if(!pre) top.parent.first = top.parent.first.next;
+                    if (!pre) top.parent.first = top.parent.first.next;
                     // 删除在next域的兄弟结点
                     else  pre.next = pre.next.next;
 
@@ -239,8 +263,6 @@ console.log(test.remove('LIU'));
 console.log(test.remove('ZHAO'));
 
 
-
-
 /*
 多重链表表示
 
@@ -263,11 +285,11 @@ console.log(test.remove('ZHAO'));
  */
 
 
-function TrieTree(kind){
+function TrieTree(kind) {
     this.kind = kind || BRANCH;
     this.parent = null;
 
-    if(kind === LEAF) {
+    if (kind === LEAF) {
         this.leaf = {
             key: null,
             info: null
@@ -283,24 +305,24 @@ function TrieTree(kind){
 TrieTree.prototype = {
     constructor: TrieTree,
 
-    search: function(key) {
+    search: function (key) {
         for (var p = this, i = 0;
              p && p.kind === BRANCH && i < key.length;
              p = p.branch.nodes[order(key[i])], ++i);
 
-        if(p) {
-            if(p.kind === LEAF && p.leaf.key === key) return p.leaf.info;
+        if (p) {
+            if (p.kind === LEAF && p.leaf.key === key) return p.leaf.info;
             // 同义词
-            else if(p.kind === BRANCH) {
+            else if (p.kind === BRANCH) {
                 p = p.branch.nodes[0];
-                if(p && p.leaf.key === key) return p.leaf.info;
+                if (p && p.leaf.key === key) return p.leaf.info;
             }
         }
 
         return null;
     },
 
-    insert: function(key, value){
+    insert: function (key, value) {
         // 建叶子结点
         var q = new TrieTree(LEAF);
         q.leaf.key = key;
@@ -308,20 +330,20 @@ TrieTree.prototype = {
 
         // 自上而下查找
         var last;
-        for(var p = this, i = 0;
-            p && p.kind === BRANCH && i < key.length && p.branch.nodes[order(key[i])];
-            p = p.branch.nodes[order(key[i])], ++i) last = p;
+        for (var p = this, i = 0;
+             p && p.kind === BRANCH && i < key.length && p.branch.nodes[order(key[i])];
+             p = p.branch.nodes[order(key[i])], ++i) last = p;
 
         // 如果最后落到分支结点（无同义词）
         // 直接连上叶子
-        if(p.kind === BRANCH) {
+        if (p.kind === BRANCH) {
             p.branch.nodes[order(key[i])] = q;
             q.parent = p;
             ++p.branch.num;
         }
         // 如果最后落到叶子结点（有同义词）
         else {
-            if(p.leaf.key === key) return false;
+            if (p.leaf.key === key) return false;
 
             // 建立新的分支结点
             var r = new TrieTree(BRANCH);
@@ -345,25 +367,25 @@ TrieTree.prototype = {
      * @param {Boolean} clear 是否需要清理结点
      * @returns {*} 如果删除成功返回info数据否则返回false
      */
-    remove: function(key, clear){
+    remove: function (key, clear) {
         var last;
         // 查找待删除元素
-        for(var p = this, i = 0;
-            p && p.kind === BRANCH && i < key.length;
-            p = p.branch.nodes[order(key[i])], ++i) last = p;
+        for (var p = this, i = 0;
+             p && p.kind === BRANCH && i < key.length;
+             p = p.branch.nodes[order(key[i])], ++i) last = p;
 
-        if(!p) return false;
+        if (!p) return false;
 
         clear = typeof clear !== 'undefined' ? clear : true;
         var data = null;
 
-        if(p.kind === LEAF && p.leaf.key === key) {
+        if (p.kind === LEAF && p.leaf.key === key) {
             data = p.leaf.info;
             removeNode(last, order(key[i - 1]), clear);
             return data;
-        } else if(p.kind === BRANCH) {
+        } else if (p.kind === BRANCH) {
             p = p.branch.nodes[0];
-            if(p && p.leaf.key === key) {
+            if (p && p.leaf.key === key) {
                 data = p.leaf.info;
                 removeNode(p.parent, 0, clear);
                 return data;
@@ -376,30 +398,30 @@ TrieTree.prototype = {
 };
 
 // 求字符在字母表中的序号
-function order(c){
+function order(c) {
     return c ? c.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0) + 1 : 0;
 }
 
 // 通过回溯法清理Trie树的函数
-function removeNode(trieNode, order, clear){
+function removeNode(trieNode, order, clear) {
     trieNode.branch.nodes[order] = null;
     --trieNode.branch.num;
 
-    if(!clear) return;
+    if (!clear) return;
 
     var nodes = trieNode.branch.nodes;
     var parent = trieNode.parent;
     var pre = trieNode;
 
-    while(parent){
-        for(var i in nodes) {
-            if(nodes.hasOwnProperty(i) && nodes[i]) return;
+    while (parent) {
+        for (var i in nodes) {
+            if (nodes.hasOwnProperty(i) && nodes[i]) return;
         }
 
         var index;
         var parentNodes = parent.branch.nodes;
-        for(i in parentNodes) {
-            if(parentNodes.hasOwnProperty(i) && parentNodes[i] && parentNodes[i] == pre) index = i;
+        for (i in parentNodes) {
+            if (parentNodes.hasOwnProperty(i) && parentNodes[i] && parentNodes[i] == pre) index = i;
         }
         parent.branch.nodes[index] = null;
         --parent.branch.num;
@@ -409,7 +431,6 @@ function removeNode(trieNode, order, clear){
         parent = parent.parent;
     }
 }
-
 
 
 var test = new TrieTree();
