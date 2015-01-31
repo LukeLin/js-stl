@@ -72,6 +72,8 @@ next域：存储指向右兄弟的指针。
 
 // 相关资料
  http://www.cnblogs.com/rollenholt/archive/2012/04/24/2468932.html
+ http://blog.csdn.net/v_july_v/article/details/6897097
+ http://www.raychase.net/1783
  */
 
 var LEAF = 'leaf';
