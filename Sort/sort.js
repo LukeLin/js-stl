@@ -46,6 +46,7 @@
  */
 
 var StaticLinkedList = require('../linkedList/StaticLinkedList');
+var Stack = require('../Stack/stack');
 
 /*
  插入排序
@@ -340,7 +341,7 @@ console.log(arr + '');
 
 
 /*
- 快速排序
+ 交换排序
 
  是一类基于交换的排序，系统地交换反序的记录的偶对，直到不再有这样的偶对为止。其中最基本的是冒泡排序(Bubble Sort)。
 
@@ -502,6 +503,169 @@ console.log('bubbleSort3:\n' + arr + '');
 
 
 
+/*
+ 快速排序
+
+ 1  排序思想
+ 通过一趟排序，将待排序记录分割成独立的两部分，其中一部分记录的关键字均比另一部分记录的关键字小，再分别对这两部分记录进行下一趟排序，以达到整个序列有序。
+
+ 2  排序过程
+ 设待排序的记录序列是R[s…t] ，在记录序列中任取一个记录(一般取R[s])作为参照(又称为基准或枢轴)，以R[s].key为基准重新排列其余的所有记录，方法是：
+     ◆ 所有关键字比基准小的放R[s]之前；
+     ◆ 所有关键字比基准大的放R[s]之后。
+ 以R[s].key最后所在位置i作为分界，将序列R[s…t]分割成两个子序列，称为一趟快速排序。
+
+ 3  一趟快速排序方法
+ 从序列的两端交替扫描各个记录，将关键字小于基准关键字的记录依次放置到序列的前边；而将关键字大于基准关键字的记录从序列的最后端起，依次放置到序列的后边，直到扫描完所有的记录。
+
+ 设置指针low，high，初值为第1个和最后一个记录的位置。
+ 设两个变量i，j，初始时令i=low，j=high，以R[low].key作为基准(将R[low]保存在R[0]中) 。
+ ① 从j所指位置向前搜索：将R[0].key与R[j].key进行比较：
+    ◆  若R[0].key≤R[j].key ：令j=j-1，然后继续进行比较， 直到i=j或R[0].key>R[j].key为止；
+    ◆ 若R[0].key>R[j].key ：R[j]R[i]，腾空R[j]的位置， 且令i=i+1；
+ ② 从i所指位置起向后搜索：将R[0].key与R[i].key进行比较：
+    ◆ 若R[0].key≥R[i].key ：令i=i+1，然后继续进行比较， 直到i=j或R[0].key<R[i].key为止；
+    ◆ 若R[0].key<R[i].key ：R[i]R[j]，腾空R[i]的位置， 且令j=j-1；
+ ③ 重复①、②，直至i=j为止，i就是R[0](基准)所应放置的位置。
+
+ 算法分析
+ 快速排序的主要时间是花费在划分上，对长度为k的记录序列进行划分时关键字的比较次数是k-1 。设长度为n的记录序列进行排序的比较次数为C(n)，则C(n)=n-1+C(k)+C(n-k-1) 。
+ ◆  最好情况：每次划分得到的子序列大致相等，则
+ C(n)<=h×n+2h×C(n/2h) ，当n/2h=1时排序结束。
+ 即C(n)≤O(n×㏒2n) ；
+ ◆  最坏情况：每次划分得到的子序列中有一个为空，另一个子序列的长度为n-1。即每次划分所选择的基准是当前待排序序列中的最小(或最大)关键字。
+ 比较次数：:  即C(n)=O(n2)
+ ◆  一般情况： 对n个记录进行快速排序所需的时间T(n)组成是：
+     ① 对n个记录进行一趟划分所需的时间是：n×C ，C是常数；
+     ② 对所得到的两个子序列进行快速排序的时间：
+        Tavg(n)=C(n)+Tavg(k-1)+Tavg(n-k)          ……
+
+ 快速排序的平均时间复杂度是：T(n)=O(n㏒2n)
+ 从所需要的附加空间来看，快速排序算法是递归调用，系统内用堆栈保存递归参数，当每次划分比较均匀时，栈的最大深度为[㏒2n]+1 。
+
+ 快速排序的空间复杂度是：S(n)=O(㏒2n)
+ 从排序的稳定性来看，快速排序是不稳定的。
+
+ */
+
+function partition(sqList, low, high){
+    var temp = sqList[low];
+
+    while(low < high){
+        while(low < high && sqList[high] >= temp) --high;
+        sqList[low] = sqList[high];
+        while(low < high && sqList[low] <= temp) ++low;
+        sqList[high] = sqList[low];
+    }
+
+    sqList[low] = temp;
+
+    return low;
+}
+
+function quickSortRecursive(sqList, low, high){
+    low = low || 0;
+    high = high || sqList.length - 1;
+
+    if(low < high) {
+        var k = partition(sqList, low, high);
+        quickSortRecursive(sqList, low, k - 1);
+        quickSortRecursive(sqList, k + 1, high);
+    }
+}
+
+var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
+quickSortRecursive(arr);
+console.log('quickSortRecursive:\n' + arr + '');
+
+
+function quickSortNonRecursive(sqList, low, high){
+    low = low || 0;
+    high = high || sqList.length - 1;
+    var stack = new Stack();
+    var k;
+
+    do {
+        while(low < high){
+            k = partition(sqList, low, high);
+            // 第二个子序列的上,下界分别入栈
+            stack.push(high);
+            stack.push(k + 1);
+            high = k - 1;
+        }
+
+        if(stack.top) {
+            low = stack.pop();
+            high = stack.pop();
+        }
+    } while(stack.top || low < high);
+}
+
+var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
+quickSortNonRecursive(arr);
+console.log('quickSortNonRecursive:\n' + arr + '');
+
+function quickSort(sqList, low, high){
+    low = low || 0;
+    high = high || sqList.length - 1;
+    var stack = new Stack();
+    var pivot;
+
+    do {
+        if(high - low > 2) {
+            pivot = partition(sqList, low, high);
+
+            if(high - pivot > pivot - low) {
+                stack.push([pivot + 1, high]);
+                high = pivot - 1;
+            } else {
+                stack.push([low, pivot - 1]);
+                low = pivot + 1;
+            }
+        } else if(low < high && high - low < 3) {
+            easySort(sqList, low, high);
+            low = high;
+        } else {
+            var a = stack.pop();
+            low = a[0];
+            high = a[1];
+        }
+    } while(stack.top || low < high);
+}
+
+function easySort(sqList, low, high){
+    var temp;
+
+    if(high - low === 1) {
+        if(sqList[low] > sqList[high]) {
+            temp = sqList[low];
+            sqList[low] = sqList[high];
+            sqList[high] = temp;
+        }
+    } else {
+        if(sqList[low] > sqList[low + 1]) {
+            temp = sqList[low];
+            sqList[low] = sqList[low + 1];
+            sqList[low + 1] = temp;
+        }
+        if(sqList[low + 1] > sqList[high]) {
+            temp = sqList[low + 1];
+            sqList[low + 1] = sqList[high];
+            sqList[high] = temp;
+        }
+        if(sqList[low] > sqList[low + 1]) {
+            temp = sqList[low];
+            sqList[low] = sqList[low + 1];
+            sqList[low + 1] = temp;
+        }
+    }
+}
+
+var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
+quickSort(arr);
+console.log('quickSort:\n' + arr + '');
+
+
 // for comparison
 var arr = [];
 var arr2 = [];
@@ -512,10 +676,13 @@ var arr5 = [];
 var arr6 = [];
 var arr7 = [];
 var arr8 = [];
+var arr9 = [];
+var arr10 = [];
+var arr11 = [];
 
 for (var i = 0, len = 100000; i < len; ++i) {
-    var num = parseInt(Math.random() * 100, 10);
-    //var num = len - i;
+    //var num = parseInt(Math.random() * 100, 10);
+    var num = len - i;
 
     arr.push(num);
     arr2.push(num);
@@ -526,26 +693,30 @@ for (var i = 0, len = 100000; i < len; ++i) {
     arr6.push(num);
     arr7.push(num);
     arr8.push(num);
+    arr9.push(num);
+    arr10.push(num);
+    arr11.push(num);
 }
 
 console.time('straightInsertSort');
-straightInsertSort(arr);
+//straightInsertSort(arr);
 console.timeEnd('straightInsertSort');   // a: 32306ms
 
 
 console.time('binaryInsertSort');
-binaryInsertSort(arr2);
+//binaryInsertSort(arr2);
 console.timeEnd('binaryInsertSort');   // b: 11309ms
 
 
 console.time('path2InsertSort');
-path2InsertSort(arr3);
+//path2InsertSort(arr3);
 console.timeEnd('path2InsertSort');   // c: 55707ms
 
 
 console.time('shellSort');
 shellSort(arr4);
 console.timeEnd('shellSort');   // d: 20ms  notice: 因为随机数太小，都聚集了，希尔排序优势巨大。
+
 /*
 希尔排序：
 随机数在0-999
@@ -557,20 +728,33 @@ console.timeEnd('shellSort');   // d: 20ms  notice: 因为随机数太小，都�
  */
 
 console.time('bubbleSort');
-bubbleSort(arr5);
+//bubbleSort(arr5);
 console.timeEnd('bubbleSort');
 
 console.time('bubbleSort1');
-bubbleSort1(arr6);
+//bubbleSort1(arr6);
 console.timeEnd('bubbleSort1');
 
 console.time('bubbleSort2');
-bubbleSort2(arr7);
+//bubbleSort2(arr7);
 console.timeEnd('bubbleSort2');
 
 console.time('bubbleSort3');
-bubbleSort3(arr8);
+//bubbleSort3(arr8);
 console.timeEnd('bubbleSort3');
+
+console.time('quickSortRecursive');
+//quickSortRecursive(arr9);
+console.timeEnd('quickSortRecursive');
+
+console.time('quickSortNonRecursive');
+quickSortNonRecursive(arr10);
+console.timeEnd('quickSortNonRecursive');
+
+console.time('quickSort');
+quickSort(arr11);
+console.timeEnd('quickSort');
+
 
 
 /*
@@ -604,6 +788,11 @@ console.timeEnd('bubbleSort3');
  bubbleSort1: 40989ms
  bubbleSort2: 28798ms
  bubbleSort3: 57511ms
+
+ quickSortNonRecursive: 11884ms Stack
+ quickSortNonRecursive: 11765ms native Array
+
+ quickSort: 13905ms
  */
 
 

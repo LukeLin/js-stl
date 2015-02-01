@@ -422,7 +422,8 @@ function removeNode(trieNode, order, clear) {
         var index;
         var parentNodes = parent.branch.nodes;
         for (i in parentNodes) {
-            if (parentNodes.hasOwnProperty(i) && parentNodes[i] && parentNodes[i] == pre) index = i;
+            if (parentNodes.hasOwnProperty(i) && parentNodes[i] && parentNodes[i] == pre)
+                index = i;
         }
         parent.branch.nodes[index] = null;
         --parent.branch.num;
