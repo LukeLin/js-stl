@@ -616,19 +616,20 @@ function quickSort(sqList, low, high){
             pivot = partition(sqList, low, high);
 
             if(high - pivot > pivot - low) {
-                stack.push([pivot + 1, high]);
+                stack.push(high);
+                stack.push(pivot + 1);
                 high = pivot - 1;
             } else {
-                stack.push([low, pivot - 1]);
+                stack.push(pivot - 1);
+                stack.push(low);
                 low = pivot + 1;
             }
         } else if(low < high && high - low < 3) {
             easySort(sqList, low, high);
             low = high;
         } else {
-            var a = stack.pop();
-            low = a[0];
-            high = a[1];
+            low = stack.pop();
+            high = stack.pop();
         }
     } while(stack.top || low < high);
 }
@@ -681,7 +682,7 @@ var arr10 = [];
 var arr11 = [];
 
 for (var i = 0, len = 100000; i < len; ++i) {
-    var num = parseInt(Math.random() * 10000, 10);
+    var num = parseInt(Math.random() * 1000, 10);
     //var num = len - i;
 
     arr.push(num);
