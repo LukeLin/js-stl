@@ -1062,7 +1062,7 @@ Node.prototype = {
         stack2.push(newTree);
         var p;
 
-        while (stack1.top) {
+        while (stack1.length) {
             // 向左走到尽头
             while ((p = stack1.peek())) {
                 if (p.next[0]) q.next[0] = new Cstr();
@@ -1074,7 +1074,7 @@ Node.prototype = {
             p = stack1.pop();
             q = stack2.pop();
 
-            if (stack1.top) {
+            if (stack1.length) {
                 p = stack1.pop();
                 q = stack2.pop();
                 if (p.next[1]) q.next[1] = new Cstr();

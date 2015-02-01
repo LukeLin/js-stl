@@ -20,7 +20,7 @@ module.exports = Stack;
 Stack.prototype = {
     constructor: Stack,
     isEmpty: function(){
-        return this.top === null;
+        return this.length === 0;
     },
     push: function (data) {
         var node = {
@@ -91,7 +91,7 @@ function trainArrange(train){
         i++;
     }
 
-    while(stack.top){
+    while(stack.length){
         var c = stack.pop();
         q[j++] = c;
     }
@@ -116,14 +116,14 @@ function isReverse(str){
     i++;
 
     while(str[i] !== '@') {
-        if(!stack.top) return false;
+        if(!stack.length) return false;
 
         var s = stack.pop();
         if(s !== str[i]) return false;
         i++;
     }
 
-    return !stack.top;
+    return !stack.length;
 }
 
 console.log('isReverse: ' + isReverse('abcd&dcba@a'));  // true
@@ -161,7 +161,7 @@ function bracketsMatch(str) {
         if (c === '[') {
             stack.push(c);
         } else if (c === ']') {
-            if (!stack.top || stack.pop() !== '[') throw new Error('unexpected brackets:' + c);
+            if (!stack.length || stack.pop() !== '[') throw new Error('unexpected brackets:' + c);
         } else {
             text += c;
         }
@@ -185,7 +185,7 @@ Matcher.prototype = {
             if (c === this.left) {
                 this.stack.push(c);
             } else if (c === this.right) {
-                if (!this.stack.top || this.stack.pop() !== this.left) {
+                if (!this.stack.length || this.stack.pop() !== this.left) {
                     throw new Error('unexpected brackets:' + c);
                 } else {
                     text += ',';
@@ -225,7 +225,7 @@ LineEditor.prototype = {
         }
 
         var result = '';
-        var current = stack.top;
+        var current = stack.length;
         while (current) {
             result = current.data + result;
             current = current.next;

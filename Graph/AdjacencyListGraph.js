@@ -901,7 +901,7 @@ AdjacencyListGraph.prototype.topologicSort = function () {
     }
 
     var count = 0;
-    while (stack.top) {
+    while (stack.length) {
         i = stack.pop();
         this.topologicalOrder.push(i);
         console.log(this.vertices[i].data);

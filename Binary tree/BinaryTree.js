@@ -130,7 +130,7 @@ BinaryTree.prototype = {
         var stack = new Stack();
         stack.push(this);
 
-        while (stack.top) {
+        while (stack.length) {
             var p;
             // 向左走到尽头
             while ((p = stack.peek())) {
@@ -140,7 +140,7 @@ BinaryTree.prototype = {
 
             stack.pop();
 
-            if (stack.top) {
+            if (stack.length) {
                 p = stack.pop();
                 stack.push(p.rightChild);
             }
@@ -150,7 +150,7 @@ BinaryTree.prototype = {
         var stack = new Stack();
         var p = this;
 
-        while (p || stack.top) {
+        while (p || stack.length) {
             if (p) {
                 stack.push(p);
                 p.data && visit(p.data);
@@ -165,7 +165,7 @@ BinaryTree.prototype = {
         var stack = new Stack();
         stack.push(this);
 
-        while (stack.top) {
+        while (stack.length) {
             var p;
             // 向左走到尽头
             while ((p = stack.peek())) {
@@ -174,7 +174,7 @@ BinaryTree.prototype = {
 
             stack.pop();
 
-            if (stack.top) {
+            if (stack.length) {
                 p = stack.pop();
                 p.data && visit(p.data);
                 stack.push(p.rightChild);
@@ -185,7 +185,7 @@ BinaryTree.prototype = {
         var stack = new Stack();
         var p = this;
 
-        while (p || stack.top) {
+        while (p || stack.length) {
             if (p) {
                 stack.push(p);
                 p = p.leftChild;
@@ -203,7 +203,7 @@ BinaryTree.prototype = {
         var stack = new Stack();
         stack.push([this, 0]);
 
-        while (stack.top) {
+        while (stack.length) {
             var a = stack.pop();
             var node = a[0];
 
@@ -329,7 +329,7 @@ BinaryTree.prototype = {
         stack2.push(newTree);
         var p;
 
-        while (stack1.top) {
+        while (stack1.length) {
             // 向左走到尽头
             while ((p = stack1.peek())) {
                 if (p.leftChild) q.leftChild = new Cstr();
@@ -341,7 +341,7 @@ BinaryTree.prototype = {
             p = stack1.pop();
             q = stack2.pop();
 
-            if (stack1.top) {
+            if (stack1.length) {
                 p = stack1.pop();
                 q = stack2.pop();
                 if (p.rightChild) q.rightChild = new Cstr();
