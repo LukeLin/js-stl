@@ -314,7 +314,7 @@ function shellInsert(sqList, dk) {
 
 function shellSort(sqList) {
     var delta = createDelta(sqList.length);
-    console.log(delta);
+    //console.log(delta);
     for (var k = 0, t = delta.length; k < t; ++k) {
         shellInsert(sqList, delta[k]);
     }
@@ -339,38 +339,213 @@ console.log(arr + '');
 
 
 
+/*
+ 快速排序
+
+ 是一类基于交换的排序，系统地交换反序的记录的偶对，直到不再有这样的偶对为止。其中最基本的是冒泡排序(Bubble Sort)。
+
+ 冒泡排序
+ 1  排序思想
+ 依次比较相邻的两个记录的关键字，若两个记录是反序的(即前一个记录的关键字大于后前一个记录的关键字)，则进行交换，直到没有反序的记录为止。
+     ① 首先将L->R[1]与L->R[2]的关键字进行比较，若为反序(L->R[1]的关键字大于L->R[2]的关键字)，则交换两个记录；然后比较L->R[2]与L->R[3]的关键字，依此类推，直到L->R[n-1]与L->R[n]的关键字比较后为止，称为一趟冒泡排序，L->R[n]为关键字最大的记录。
+     ②  然后进行第二趟冒泡排序，对前n-1个记录进行同样的操作。
+ 一般地，第i趟冒泡排序是对L->R[1 … n-i+1]中的记录进行的，因此，若待排序的记录有n个，则要经过n-1趟冒泡排序才能使所有的记录有序。
+
+ 2  排序示例
+ 设有9个待排序的记录，关键字分别为23, 38, 22, 45, 23, 67, 31, 15, 41
+
+ 初始关键字序列:  23    38     22     45     23     67     31     15    41
+ 第一趟排序后:    23    22     38     23     45     31     15     41    67
+ 第二趟排序后:    22    23     23     38     31     15     41     45    67
+ 第三趟排序后:    22    23     23     31     15     38     41     45    67
+ 第四趟排序后:    22    23     23     15     31     38     41     45    67
+ 第五趟排序后:    22    23     15     23     31     38     41     45    67
+ 第六趟排序后:    22    15     23     23     31     38     41     45    67
+ 第七趟排序后:    15    22     23     23     31     38     41     45    67
+
+3.算法分析
+ 时间复杂度
+ ◆  最好情况(正序)：比较次数：n-1；移动次数：0；
+ ◆  最坏情况(逆序)：
+ 比较次数： n * (n - 1) / 2
+ 移动次数： 3*n*(n - 1) / 2
+
+ 故时间复杂度：T(n)=O(n²)
+ 空间复杂度：S(n)=O(1)
+
+ */
+
+function bubbleSort(sqList){
+    for(var i = 1, len = sqList.length; i < len; ++i){
+        var change = 1;
+
+        for(var j = 0; j <= len - i; ++j){
+            if(sqList[j + 1] < sqList[j]) {
+                change = 0;
+                var temp = sqList[j];
+                sqList[j] = sqList[j + 1];
+                sqList[j + 1] = temp;
+            }
+        }
+
+        if(change) break;
+    }
+}
+
+var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
+bubbleSort(arr);
+console.log('bubbleSort:\n' + arr + '');
+
+
+// 冒泡改进1
+function bubbleSort1(sqList){
+    var len = sqList.length;
+    var change = len - 1;
+
+    while(change){
+        for(var c = 0, i = 0; i < change; ++i){
+            if(sqList[i] > sqList[i + 1]) {
+                var temp = sqList[i];
+                sqList[i] = sqList[i + 1];
+                sqList[i + 1] = temp;
+                // c指示这一趟冒泡中发生交换的元素
+                c = i + 1;
+            }
+        }
+
+        change = c;
+    }
+}
+
+var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
+bubbleSort1(arr);
+console.log('bubbleSort1:\n' + arr + '');
+
+
+// 相邻两趟反方向起泡的冒泡排序算法
+function bubbleSort2(sqList){
+    var len = sqList.length;
+    // 冒泡上下界
+    var low = 0, high = len - 1;
+    var change = 1;
+    var temp;
+
+    while(low < high && change){
+        change = 0;
+
+        // 从上向下起泡
+        for(var i = low; i < high; ++i){
+            if(sqList[i] > sqList[i + 1]) {
+                temp = sqList[i];
+                sqList[i] = sqList[i + 1];
+                sqList[i + 1] = temp;
+                change = 1;
+            }
+        }
+        // 修改上界
+        --high;
+
+        // 从下向上起泡
+        for(i = high; i > low; --i){
+            if(sqList[i] < sqList[i - 1]) {
+                temp = sqList[i];
+                sqList[i] = sqList[i - 1];
+                sqList[i - 1] = temp;
+                change = 1;
+            }
+        }
+        // 修改下界
+        ++low;
+    }
+}
+
+var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
+bubbleSort2(arr);
+console.log('bubbleSort2:\n' + arr + '');
+
+
+// 改进3
+function bubbleSort3(sqList){
+    var b = {};
+    var len = sqList.length;
+    // d为冒泡方向标识， 1为向上，-1为向下
+    var d = 1;
+    // b[0]为冒泡上界，b[2]为冒泡上界，b[1]无用
+    b[0] = 0;
+    b[2] = len - 1;
+    var change = 1;
+
+    while(b[0] < b[2] && change){
+        change = 0;
+
+        // 统一的冒泡算法
+        for(var i = b[1 - d]; i !== b[1 + d]; i += d){
+            // 注意这个交换条件
+            if((sqList[i] - sqList[i + d]) * d > 0){
+                var temp = sqList[i];
+                sqList[i] = sqList[i + d];
+                sqList[i + d] = temp;
+                change = 1;
+            }
+        }
+
+        // 修改边界
+        b[1 + d] -= d;
+        // 换个方向
+        d *= -1;
+    }
+}
+
+var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
+bubbleSort3(arr);
+console.log('bubbleSort3:\n' + arr + '');
+
+
+
 // for comparison
 var arr = [];
 var arr2 = [];
 var arr3 = [];
 var arr4 = [];
+
+var arr5 = [];
+var arr6 = [];
+var arr7 = [];
+var arr8 = [];
+
 for (var i = 0, len = 100000; i < len; ++i) {
-    //var num = parseInt(Math.random() * 10000, 10);
-    var num = len - i;
+    var num = parseInt(Math.random() * 100, 10);
+    //var num = len - i;
+
     arr.push(num);
     arr2.push(num);
     arr3.push(num);
     arr4.push(num);
+
+    arr5.push(num);
+    arr6.push(num);
+    arr7.push(num);
+    arr8.push(num);
 }
 
-console.time('a');
-//straightInsertSort(arr);
-console.timeEnd('a');   // a: 32306ms
+console.time('straightInsertSort');
+straightInsertSort(arr);
+console.timeEnd('straightInsertSort');   // a: 32306ms
 
 
-console.time('b');
-//binaryInsertSort(arr2);
-console.timeEnd('b');   // b: 11309ms
+console.time('binaryInsertSort');
+binaryInsertSort(arr2);
+console.timeEnd('binaryInsertSort');   // b: 11309ms
 
 
-console.time('c');
-//path2InsertSort(arr3);
-console.timeEnd('c');   // c: 55707ms
+console.time('path2InsertSort');
+path2InsertSort(arr3);
+console.timeEnd('path2InsertSort');   // c: 55707ms
 
 
-console.time('d');
+console.time('shellSort');
 shellSort(arr4);
-console.timeEnd('d');   // d: 20ms  notice: 因为随机数太小，都聚集了，希尔排序优势巨大。
+console.timeEnd('shellSort');   // d: 20ms  notice: 因为随机数太小，都聚集了，希尔排序优势巨大。
 /*
 希尔排序：
 随机数在0-999
@@ -380,6 +555,23 @@ console.timeEnd('d');   // d: 20ms  notice: 因为随机数太小，都聚集了
 第二种增量序列： Math.pow(2, t - i) + 1
 耗时 28ms
  */
+
+console.time('bubbleSort');
+bubbleSort(arr5);
+console.timeEnd('bubbleSort');
+
+console.time('bubbleSort1');
+bubbleSort1(arr6);
+console.timeEnd('bubbleSort1');
+
+console.time('bubbleSort2');
+bubbleSort2(arr7);
+console.timeEnd('bubbleSort2');
+
+console.time('bubbleSort3');
+bubbleSort3(arr8);
+console.timeEnd('bubbleSort3');
+
 
 /*
  在我家的老爷机上跑
@@ -393,11 +585,25 @@ console.timeEnd('d');   // d: 20ms  notice: 因为随机数太小，都聚集了
  内存	4 GB ( 威刚 DDR2 800MHz )
  主硬盘	希捷 ST3500418AS ( 500 GB / 7200 转/分 )
 
+ 随机情况
+ straightInsertSort: 13219ms
+ binaryInsertSort: 12278ms
+ path2InsertSort: 72619ms
+ shellSort: 29ms
 
- straightInsertSort a: 34722ms
- binaryInsertSort b: 13080ms
- path2InsertSort c: 116103ms  md，我差点睡着！！
 
+随机情况
+ bubbleSort: 104551ms
+ bubbleSort1: 43809ms
+ bubbleSort2: 26993ms
+ bubbleSort3: 54022ms
+
+
+ 最差情况，reverse
+ bubbleSort: 92582ms
+ bubbleSort1: 40989ms
+ bubbleSort2: 28798ms
+ bubbleSort3: 57511ms
  */
 
 
