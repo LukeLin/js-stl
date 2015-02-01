@@ -378,18 +378,18 @@ console.log(arr + '');
 
 function bubbleSort(sqList){
     for(var i = 1, len = sqList.length; i < len; ++i){
-        var change = 1;
+        var change = 0;
 
         for(var j = 0; j <= len - i; ++j){
             if(sqList[j + 1] < sqList[j]) {
-                change = 0;
+                change = 1;
                 var temp = sqList[j];
                 sqList[j] = sqList[j + 1];
                 sqList[j + 1] = temp;
             }
         }
 
-        if(change) break;
+        if(!change) break;
     }
 }
 
