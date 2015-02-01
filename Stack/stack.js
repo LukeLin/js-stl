@@ -14,7 +14,7 @@
     // 找的链式表示
 function Stack() {
     this.top = null;
-    this.size = 0;
+    this.length = 0;
 }
 module.exports = Stack;
 Stack.prototype = {
@@ -30,7 +30,7 @@ Stack.prototype = {
 
         node.next = this.top;
         this.top = node;
-        this.size++;
+        this.length++;
     },
     peek: function () {
         return this.top === null ?
@@ -43,13 +43,13 @@ Stack.prototype = {
         var out = this.top;
         this.top = this.top.next;
 
-        if (this.size > 0) this.size--;
+        if (this.length > 0) this.length--;
 
         return out.data;
     },
     clear: function () {
         this.top = null;
-        this.size = 0;
+        this.length = 0;
     },
     toString: function () {
         if (this.top === null) return null;

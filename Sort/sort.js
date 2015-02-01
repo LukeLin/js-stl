@@ -594,11 +594,11 @@ function quickSortNonRecursive(sqList, low, high){
             high = k - 1;
         }
 
-        if(stack.top) {
+        if(stack.length) {
             low = stack.pop();
             high = stack.pop();
         }
-    } while(stack.top || low < high);
+    } while(stack.length || low < high);
 }
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
@@ -631,7 +631,7 @@ function quickSort(sqList, low, high){
             low = stack.pop();
             high = stack.pop();
         }
-    } while(stack.top || low < high);
+    } while(stack.length || low < high);
 }
 
 function easySort(sqList, low, high){
