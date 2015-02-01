@@ -681,8 +681,8 @@ var arr10 = [];
 var arr11 = [];
 
 for (var i = 0, len = 100000; i < len; ++i) {
-    //var num = parseInt(Math.random() * 100, 10);
-    var num = len - i;
+    var num = parseInt(Math.random() * 10000, 10);
+    //var num = len - i;
 
     arr.push(num);
     arr2.push(num);
@@ -793,6 +793,10 @@ console.timeEnd('quickSort');
  quickSortNonRecursive: 11765ms native Array
 
  quickSort: 13905ms
+
+
+ 当对比的数据范围比较小时，希尔排序比快速快，
+ 当数据范围比较大时，快排比希尔快
  */
 
 
