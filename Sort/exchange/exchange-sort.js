@@ -276,6 +276,7 @@ var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
 quickSortNonRecursive(arr);
 console.log('quickSortNonRecursive:\n' + arr + '');
 
+// 优化版本
 function quickSort(sqList, low, high){
     low = low || 0;
     high = high || sqList.length - 1;
@@ -283,9 +284,13 @@ function quickSort(sqList, low, high){
     var pivot;
 
     do {
+        // 如果当前子序列长度大于3且尚未排好序
         if(high - low > 2) {
+            // 进行一趟划分
             pivot = partition(sqList, low, high);
 
+            // 吧长的子序列边界入栈，
+            // 短的子序列留待下次排序
             if(high - pivot > pivot - low) {
                 stack.push(high);
                 stack.push(pivot + 1);
@@ -295,10 +300,16 @@ function quickSort(sqList, low, high){
                 stack.push(low);
                 low = pivot + 1;
             }
-        } else if(low < high && high - low < 3) {
+        }
+        // 如果当前子序列长度小于3，且尚未排好序，
+        // 直接进行比较排序买当前子序列标志为已排好序
+        else if(low < high && high - low < 3) {
             easySort(sqList, low, high);
             low = high;
-        } else {
+        }
+        // 如果当前子序列已排好序但栈中还有未排序的子序列
+        // 从栈中取出一个子序列
+        else {
             low = stack.pop();
             high = stack.pop();
         }
