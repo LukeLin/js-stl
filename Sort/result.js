@@ -24,3 +24,158 @@
        R[0].key≤R[1].key≤…≤R[n-1].key
 则可以在排序结束后，再按辅助表所规定的次序重排各记录，完成这种重排的时间是O(n)。
  */
+
+var insertionSort = require('./insertion/insertion-sort');
+var exchangeSort = require('./exchange/exchange-sort');
+
+var straightInsertSort = insertionSort.straightInsertSort;
+var binaryInsertSort = insertionSort.binaryInsertSort;
+var path2InsertSort = insertionSort.path2InsertSort;
+var shellSort = insertionSort.shellSort;
+
+var bubbleSort = exchangeSort.bubbleSort;
+var bubbleSort1 = exchangeSort.bubbleSort1;
+var bubbleSort2 = exchangeSort.bubbleSort2;
+var bubbleSort3 = exchangeSort.bubbleSort3;
+var quickSortRecursive = exchangeSort.quickSortRecursive;
+var quickSortNonRecursive = exchangeSort.quickSortNonRecursive;
+var quickSort = exchangeSort.quickSortNonRecursive;
+
+// for comparison
+var arr = [];
+var arr2 = [];
+var arr3 = [];
+var arr4 = [];
+
+var arr5 = [];
+var arr6 = [];
+var arr7 = [];
+var arr8 = [];
+var arr9 = [];
+var arr10 = [];
+var arr11 = [];
+
+for (var i = 0, len = 100000; i < len; ++i) {
+    var num = parseInt(Math.random() * 1000, 10);
+    //var num = len - i;
+
+    arr.push(num);
+    arr2.push(num);
+    arr3.push(num);
+    arr4.push(num);
+
+    arr5.push(num);
+    arr6.push(num);
+    arr7.push(num);
+    arr8.push(num);
+    arr9.push(num);
+    arr10.push(num);
+    arr11.push(num);
+}
+
+console.time('straightInsertSort');
+//straightInsertSort(arr);
+console.timeEnd('straightInsertSort');   // a: 32306ms
+
+
+console.time('binaryInsertSort');
+//binaryInsertSort(arr2);
+console.timeEnd('binaryInsertSort');   // b: 11309ms
+
+
+console.time('path2InsertSort');
+//path2InsertSort(arr3);
+console.timeEnd('path2InsertSort');   // c: 55707ms
+
+
+console.time('shellSort');
+shellSort(arr4);
+console.timeEnd('shellSort');   // d: 20ms  notice: 因为随机数太小，都聚集了，希尔排序优势巨大。
+
+/*
+希尔排序：
+随机数在0-999
+第一种增量序列： Math.pow(2, t - i + 1) - 1
+耗时  28ms
+
+第二种增量序列： Math.pow(2, t - i) + 1
+耗时 28ms
+ */
+
+console.time('bubbleSort');
+//bubbleSort(arr5);
+console.timeEnd('bubbleSort');
+
+console.time('bubbleSort1');
+//bubbleSort1(arr6);
+console.timeEnd('bubbleSort1');
+
+console.time('bubbleSort2');
+//bubbleSort2(arr7);
+console.timeEnd('bubbleSort2');
+
+console.time('bubbleSort3');
+//bubbleSort3(arr8);
+console.timeEnd('bubbleSort3');
+
+console.time('quickSortRecursive');
+//quickSortRecursive(arr9);
+console.timeEnd('quickSortRecursive');
+
+console.time('quickSortNonRecursive');
+quickSortNonRecursive(arr10);
+console.timeEnd('quickSortNonRecursive');
+
+console.time('quickSort');
+quickSort(arr11);
+console.timeEnd('quickSort');
+
+
+
+/*
+ 在我家的老爷机上跑
+ 100000条数据，
+ 机器配置：
+ 电脑型号	海尔 HaierComputer 台式电脑
+ 操作系统	Windows 8 专业版 32位 ( DirectX 11 )
+
+ 处理器	英特尔 Pentium(奔腾) 双核 E5200 @ 2.50GHz
+ 主板	海尔 G31T-M5 ( 英特尔 P35/G33/G31/P31 Express - ICH7 )
+ 内存	4 GB ( 威刚 DDR2 800MHz )
+ 主硬盘	希捷 ST3500418AS ( 500 GB / 7200 转/分 )
+
+ 随机情况
+ straightInsertSort: 13219ms
+ binaryInsertSort: 12278ms
+ path2InsertSort: 72619ms
+ shellSort: 29ms
+
+
+随机情况
+ bubbleSort: 104551ms
+ bubbleSort1: 43809ms
+ bubbleSort2: 26993ms
+ bubbleSort3: 54022ms
+
+ quickSortNonRecursive: 29ms
+ quickSort: 28ms
+
+
+ 最差情况，reverse
+ bubbleSort: 92582ms
+ bubbleSort1: 40989ms
+ bubbleSort2: 28798ms
+ bubbleSort3: 57511ms
+
+ quickSortNonRecursive: 11884ms Stack
+ quickSortNonRecursive: 11765ms native Array
+
+ quickSort: 13905ms
+
+
+ 当对比的数据范围比较小时，希尔排序比快速快，
+ 当数据范围比较大时，快排比希尔快
+ */
+
+
+// http://blog.csdn.net/hguisu/article/details/7776068
