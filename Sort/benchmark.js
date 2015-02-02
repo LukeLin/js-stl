@@ -39,7 +39,7 @@ var bubbleSort2 = exchangeSort.bubbleSort2;
 var bubbleSort3 = exchangeSort.bubbleSort3;
 var quickSortRecursive = exchangeSort.quickSortRecursive;
 var quickSortNonRecursive = exchangeSort.quickSortNonRecursive;
-var quickSort = exchangeSort.quickSortNonRecursive;
+var quickSort = exchangeSort.quickSort;
 
 // for comparison
 var arr = [];
