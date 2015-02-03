@@ -32,6 +32,7 @@ var selectionSort = require('./selection/selection-sort');
 var straightInsertSort = insertionSort.straightInsertSort;
 var binaryInsertSort = insertionSort.binaryInsertSort;
 var path2InsertSort = insertionSort.path2InsertSort;
+var staticLinkedListInsertSort = insertionSort.staticLinkedListInsertSort;
 var shellSort = insertionSort.shellSort;
 
 var bubbleSort = exchangeSort.bubbleSort;
@@ -60,6 +61,8 @@ var arr11 = [];
 
 var arr12 = [];
 
+var arr13 = [];
+
 for (var i = 0, len = 100000; i < len; ++i) {
     var num = parseInt(Math.random() * 1000, 10);
     //var num = len - i;
@@ -78,6 +81,8 @@ for (var i = 0, len = 100000; i < len; ++i) {
     arr11.push(num);
 
     arr12.push(num);
+
+    arr13.push(num);
 }
 
 console.time('straightInsertSort');
@@ -140,8 +145,16 @@ console.timeEnd('quickSort');
 
 
 console.time('simpleSelectionSort');
-simpleSelectionSort(arr);
+//simpleSelectionSort(arr12);
 console.timeEnd('simpleSelectionSort');
+
+
+//var StaticLinkedList = require('../linkedList/StaticLinkedList');
+//var sl = new StaticLinkedList();
+//sl.create(arr13);
+console.time('staticLinkedListInsertSort');
+//staticLinkedListInsertSort(sl);       // staticLinkedListInsertSort: 105518ms random
+console.timeEnd('staticLinkedListInsertSort');
 
 /*
  在我家的老爷机上跑
