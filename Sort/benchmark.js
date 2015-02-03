@@ -27,6 +27,7 @@
 
 var insertionSort = require('./insertion/insertion-sort');
 var exchangeSort = require('./exchange/exchange-sort');
+var selectionSort = require('./selection/selection-sort');
 
 var straightInsertSort = insertionSort.straightInsertSort;
 var binaryInsertSort = insertionSort.binaryInsertSort;
@@ -41,6 +42,8 @@ var quickSortRecursive = exchangeSort.quickSortRecursive;
 var quickSortNonRecursive = exchangeSort.quickSortNonRecursive;
 var quickSort = exchangeSort.quickSort;
 
+var simpleSelectionSort = selectionSort.simpleSelectionSort;
+
 // for comparison
 var arr = [];
 var arr2 = [];
@@ -54,6 +57,8 @@ var arr8 = [];
 var arr9 = [];
 var arr10 = [];
 var arr11 = [];
+
+var arr12 = [];
 
 for (var i = 0, len = 100000; i < len; ++i) {
     var num = parseInt(Math.random() * 1000, 10);
@@ -71,6 +76,8 @@ for (var i = 0, len = 100000; i < len; ++i) {
     arr9.push(num);
     arr10.push(num);
     arr11.push(num);
+
+    arr12.push(num);
 }
 
 console.time('straightInsertSort');
@@ -131,6 +138,10 @@ quickSort(arr11);
 console.timeEnd('quickSort');
 
 
+
+console.time('simpleSelectionSort');
+simpleSelectionSort(arr);
+console.timeEnd('simpleSelectionSort');
 
 /*
  在我家的老爷机上跑
