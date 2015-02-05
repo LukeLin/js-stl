@@ -64,6 +64,22 @@ directory
                 -- path2InsertSort
                 -- staticLinkedListInsertSort
                 -- shellSort
+                
+        --  exchange sort
+                -- bubbleSort
+                -- bubbleSort1
+                -- bubbleSort2
+                -- bubbleSort3
+                -- quickSortRecursive
+                -- quickSortNonRecursive
+                -- quickSort
+                -- oddEvenSort
+                
+        -- selection sort
+                -- simpleSelectionSort
+                -- heapSort
+                
+        -- merge sort
         todo to be continued
 
 
