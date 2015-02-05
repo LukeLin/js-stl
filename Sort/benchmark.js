@@ -42,28 +42,33 @@ var bubbleSort3 = exchangeSort.bubbleSort3;
 var quickSortRecursive = exchangeSort.quickSortRecursive;
 var quickSortNonRecursive = exchangeSort.quickSortNonRecursive;
 var quickSort = exchangeSort.quickSort;
+var oddEvenSort = exchangeSort.oddEvenSort;
 
 var simpleSelectionSort = selectionSort.simpleSelectionSort;
 var heapSort = selectionSort.heapSort;
 
 // for comparison
+
+// insertionSort
 var arr = [];
 var arr2 = [];
 var arr3 = [];
 var arr4 = [];
-
 var arr5 = [];
+
+// exchangeSort
 var arr6 = [];
 var arr7 = [];
 var arr8 = [];
 var arr9 = [];
 var arr10 = [];
 var arr11 = [];
-
 var arr12 = [];
-
 var arr13 = [];
+
+// selectionSort
 var arr14 = [];
+var arr15 = [];
 
 for (var i = 0, len = 100000; i < len; ++i) {
     var num = parseInt(Math.random() * 1000, 10);
@@ -73,20 +78,21 @@ for (var i = 0, len = 100000; i < len; ++i) {
     arr2.push(num);
     arr3.push(num);
     arr4.push(num);
-
     arr5.push(num);
+
     arr6.push(num);
     arr7.push(num);
     arr8.push(num);
     arr9.push(num);
     arr10.push(num);
     arr11.push(num);
-
     arr12.push(num);
-
     arr13.push(num);
+
     arr14.push(num);
+    arr15.push(num);
 }
+console.log('\n');
 
 console.time('straightInsertSort');
 //straightInsertSort(arr);
@@ -102,11 +108,18 @@ console.time('path2InsertSort');
 //path2InsertSort(arr3);
 console.timeEnd('path2InsertSort');   // c: 55707ms
 
+//var StaticLinkedList = require('../linkedList/StaticLinkedList');
+//var sl = new StaticLinkedList();
+//sl.create(arr4);
+console.time('staticLinkedListInsertSort');
+//staticLinkedListInsertSort(sl);       // staticLinkedListInsertSort: 105518ms random
+console.timeEnd('staticLinkedListInsertSort');
 
 console.time('shellSort');
-shellSort(arr4);
+shellSort(arr5);
 console.timeEnd('shellSort');   // d: 20ms  notice: 因为随机数太小，都聚集了，希尔排序优势巨大。
 
+console.log('\n');
 /*
 希尔排序：
 随机数在0-999
@@ -117,52 +130,51 @@ console.timeEnd('shellSort');   // d: 20ms  notice: 因为随机数太小，都�
 耗时 28ms
  */
 
+
 console.time('bubbleSort');
-//bubbleSort(arr5);
+//bubbleSort(arr6);
 console.timeEnd('bubbleSort');
 
 console.time('bubbleSort1');
-//bubbleSort1(arr6);
+//bubbleSort1(arr7);
 console.timeEnd('bubbleSort1');
 
 console.time('bubbleSort2');
-//bubbleSort2(arr7);
+//bubbleSort2(arr8);
 console.timeEnd('bubbleSort2');
 
 console.time('bubbleSort3');
-//bubbleSort3(arr8);
+//bubbleSort3(arr9);
 console.timeEnd('bubbleSort3');
 
 console.time('quickSortRecursive');
-//quickSortRecursive(arr9);
+//quickSortRecursive(arr10);
 console.timeEnd('quickSortRecursive');
 
 console.time('quickSortNonRecursive');
-quickSortNonRecursive(arr10);
+quickSortNonRecursive(arr11);
 console.timeEnd('quickSortNonRecursive');
 
 console.time('quickSort');
-quickSort(arr11);
+quickSort(arr12);
 console.timeEnd('quickSort');
 
+console.time('oddEvenSort');
+//oddEvenSort(arr13);
+console.timeEnd('oddEvenSort');
+
+console.log('\n');
 
 
 console.time('simpleSelectionSort');
-//simpleSelectionSort(arr12);
+//simpleSelectionSort(arr14);
 console.timeEnd('simpleSelectionSort');
 
-
-//var StaticLinkedList = require('../linkedList/StaticLinkedList');
-//var sl = new StaticLinkedList();
-//sl.create(arr13);
-console.time('staticLinkedListInsertSort');
-//staticLinkedListInsertSort(sl);       // staticLinkedListInsertSort: 105518ms random
-console.timeEnd('staticLinkedListInsertSort');
-
 console.time('heapSort');
-heapSort(arr14);
+heapSort(arr15);
 console.timeEnd('heapSort');
 
+console.log('\n');
 
 /*
  在我家的老爷机上跑

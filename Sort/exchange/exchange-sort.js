@@ -348,3 +348,41 @@ function easySort(sqList, low, high){
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
 quickSort(arr);
 console.log('quickSort:\n' + arr + '');
+
+
+// 奇偶交换排序
+function oddEvenSort(sqList){
+    var change = 1;
+    var temp;
+    var len = sqList.length;
+
+    while(change){
+        change = 0;
+        // 对所有奇数进行一趟比较
+        for(var i = 1; i < len - 1; i += 2){
+            if(sqList[i] > sqList[i + 1]) {
+                temp = sqList[i];
+                sqList[i] = sqList[i + 1];
+                sqList[i + 1] = temp;
+
+                change = 1;
+            }
+        }
+
+        // 对所有偶数进行一趟比较
+        for(i = 0; i < len - 1; i += 2){
+            if(sqList[i] > sqList[i + 1]) {
+                temp = sqList[i];
+                sqList[i] = sqList[i + 1];
+                sqList[i + 1] = temp;
+
+                change = 1;
+            }
+        }
+    }
+}
+exports.oddEvenSort = oddEvenSort;
+
+var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
+oddEvenSort(arr);
+console.log('oddEvenSort:\n' + arr + '');
