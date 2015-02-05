@@ -44,6 +44,7 @@ var quickSortNonRecursive = exchangeSort.quickSortNonRecursive;
 var quickSort = exchangeSort.quickSort;
 
 var simpleSelectionSort = selectionSort.simpleSelectionSort;
+var heapSort = selectionSort.heapSort;
 
 // for comparison
 var arr = [];
@@ -62,6 +63,7 @@ var arr11 = [];
 var arr12 = [];
 
 var arr13 = [];
+var arr14 = [];
 
 for (var i = 0, len = 100000; i < len; ++i) {
     var num = parseInt(Math.random() * 1000, 10);
@@ -83,6 +85,7 @@ for (var i = 0, len = 100000; i < len; ++i) {
     arr12.push(num);
 
     arr13.push(num);
+    arr14.push(num);
 }
 
 console.time('straightInsertSort');
@@ -155,6 +158,11 @@ console.timeEnd('simpleSelectionSort');
 console.time('staticLinkedListInsertSort');
 //staticLinkedListInsertSort(sl);       // staticLinkedListInsertSort: 105518ms random
 console.timeEnd('staticLinkedListInsertSort');
+
+console.time('heapSort');
+heapSort(arr14);
+console.timeEnd('heapSort');
+
 
 /*
  在我家的老爷机上跑
