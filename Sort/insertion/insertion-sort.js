@@ -280,7 +280,7 @@ function shellSort(sqList) {
         shellInsert(sqList, delta[k]);
     }
 }
-exports. shellSort = shellSort;
+exports.shellSort = shellSort;
 
 function createDelta(n) {
     var arr = [];
