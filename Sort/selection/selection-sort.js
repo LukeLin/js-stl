@@ -117,6 +117,10 @@ C1(n)≤4(n-㏒2n-1)
 C2(n)<2n㏒2n
 堆排序的比较次数的数量级为： T(n)=O(n㏒2n)；而附加空间就是交换时所用的临时空间，故空间复杂度为： S(n)=O(1) 。
 
+堆排序适合记录数较大的情况
+
+
+http://blog.csdn.net/zz198808/article/details/7678055
  */
 
 /**
@@ -130,7 +134,7 @@ function heapAdjust(sqList, s, m) {
     var rc = sqList[s];
 
     // 沿关键字较大的孩子结点向下筛选
-    for (var j = 2 * s; j <= m; j *= 2) {
+    for (var j = 2 * s + 1; j <= m; j = j * 2 + 1) {
         // j为关键字较大的记录下标
         if (j < m && sqList[j] < sqList[j + 1]) ++j;
         // rc应插入在位置s上
@@ -145,7 +149,7 @@ function heapAdjust(sqList, s, m) {
 function heapSort(sqList) {
     var len = sqList.length;
     // 建立大堆顶
-    for (var i = Math.floor((len - 1) / 2); i >= 0; --i)
+    for (var i = Math.floor(len / 2 - 1); i >= 0; --i)
         heapAdjust(sqList, i, len - 1);
 
     for (i = len - 1; i > 0; --i) {
@@ -161,6 +165,6 @@ function heapSort(sqList) {
 }
 exports.heapSort = heapSort;
 
-var arr = [7, 4, -2, 19, 13, 6];
+var arr = [1, 3, 4, 5, 7, 2, 6, 8, 0];
 heapSort(arr);
 console.log(arr + '');
