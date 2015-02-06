@@ -252,7 +252,7 @@ console.log('quickSortRecursive:\n' + arr + '');
 function quickSortNonRecursive(sqList, low, high){
     low = low || 0;
     high = high || sqList.length - 1;
-    var stack = new Stack();
+    var stack = [];
     var k;
 
     do {
@@ -264,11 +264,11 @@ function quickSortNonRecursive(sqList, low, high){
             high = k - 1;
         }
 
-        if(stack.length) {
-            low = stack.pop();
-            high = stack.pop();
-        }
-    } while(stack.length || low < high);
+        if(!stack.length) return;
+
+        low = stack.pop();
+        high = stack.pop();
+    } while(1);
 }
 exports.quickSortNonRecursive = quickSortNonRecursive;
 
@@ -280,7 +280,7 @@ console.log('quickSortNonRecursive:\n' + arr + '');
 function quickSort(sqList, low, high){
     low = low || 0;
     high = high || sqList.length - 1;
-    var stack = new Stack();
+    var stack = [];
     var pivot;
 
     do {
@@ -310,10 +310,12 @@ function quickSort(sqList, low, high){
         // 如果当前子序列已排好序但栈中还有未排序的子序列
         // 从栈中取出一个子序列
         else {
+            if(!stack.length) return;
+
             low = stack.pop();
             high = stack.pop();
         }
-    } while(stack.length || low < high);
+    } while(1);
 }
 exports.quickSort = quickSort;
 
