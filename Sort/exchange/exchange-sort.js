@@ -388,3 +388,47 @@ exports.oddEvenSort = oddEvenSort;
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
 oddEvenSort(arr);
 console.log('oddEvenSort:\n' + arr + '');
+
+
+/*
+把由三种颜色组成的序列重排为按照红白蓝的顺序排列，
+思路：
+设立三个指针，其中j表示当前元素；i以前的元素全部为红色；k以后的颜色全为蓝色。这样就可以根据j的颜色把其交换到序列的前面或者后面。
+ */
+var RED = 0;
+var WHITE = 1;
+var BLUE = 2;
+
+function flagArrage(colors){
+    var i = 0;
+    var j = 0;
+    var k = colors.length - 1;
+    var temp;
+
+    while(j <= k){
+        switch(colors[j]){
+            case RED:
+                temp = colors[i];
+                colors[i] = colors[j];
+                colors[j] = temp;
+                ++i;
+                ++j;
+                break;
+            case WHITE:
+                ++j;
+                break;
+            case BLUE:
+                temp = colors[j];
+                colors[j] = colors[k];
+                colors[k] = temp;
+                --k;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+var arr = [2, 1, 0, 2, 1, 1, 0, 2, 0, 2, 1];
+flagArrage(arr);
+console.log(arr + '');
