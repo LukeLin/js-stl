@@ -3,9 +3,15 @@
  */
 
 (function () {
-    function List() {
+    function List(sqList) {
         this.head = null;
         this.tail = null;
+
+        if (sqList) {
+            for (var i = 0, len = sqList.length; i < len; ++i) {
+                this.add(sqList[i]);
+            }
+        }
     }
 
     module.exports = List;
@@ -144,15 +150,13 @@
             return null;
         },
         each: function (callback) {
-            var current = this.head;
+            if(typeof callback !== 'function') return;
 
-            while (current !== null) {
-                if(callback(current)) break;
-                current = current.next;
-            }
+            for(var current = this.head; current; current = current.next)
+                if (callback(current)) break;
         },
 
-        size: function(){
+        size: function () {
             var current = this.head;
             var size = 0;
 
@@ -162,6 +166,16 @@
             }
 
             return size;
+        },
+
+        toString: function(){
+            var str = '';
+
+            this.each(function(node){
+                str += node.data + (node.next ? ',' : '');
+            });
+
+            return str;
         },
 
         orderInsert: function (data, cmp) {
@@ -283,7 +297,7 @@
     };
 
     // 求元素递增排列的线性表A和B的元素的交集并存入C
-    function intersect (list, bList) {
+    function intersect(list, bList) {
         var cList = new List();
 
         var p = list.head;
@@ -329,7 +343,7 @@
 
     // a，b，c的元素均是非递减排列
     // 求a链表中非b链表和c链表的交集的元素。
-    function intersect_delete (list, b, c) {
+    function intersect_delete(list, b, c) {
         var p = b.head;
         var q = c.head;
         var r = list.head;
@@ -341,7 +355,7 @@
                 // 确定待删除元素
                 var elem = p.data;
 
-                if(r.data === elem && r === list.head) {
+                if (r.data === elem && r === list.head) {
                     list.head = list.head.next;
                 } else {
                     // 确定最后一个小于elem的元素指针
