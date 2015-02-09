@@ -36,3 +36,52 @@
 
  */
 
+/**
+ * 将有序的sr[i..m]和sr[m + 1..n]归并为有序的tr[i..n]
+ * @param {Array} sr
+ * @param {Array} tr
+ * @param {Number} i
+ * @param {Number} m
+ * @param {Number} n
+ */
+function merge(sr, tr, i, m, n){
+    for(var j = m + 1, k = i; i <= m && j <= n; ++k){
+        if(sr[i] < sr[j]) tr[k] = sr[i++];
+        else tr[k] = sr[j++];
+    }
+
+    while(i <= m) tr[k++] = sr[i++];
+    while(j <= n) tr[k++] = sr[j++];
+}
+
+/**
+ * 2-路归并排序递归算法
+ * @param {Array} sr
+ * @param {Array} tr1
+ * @param {Number} s
+ * @param {Number} t
+ */
+function mergeSortRecursive(sr, tr1, s, t){
+    tr1 = tr1 || sr;
+    s = s != null ? s : 0;
+    t = t != null ? t : sr.length;
+
+    if(s === t) tr1[s] = sr[s];
+    else {
+        // 将sr[s..t]平分为sr[s..m]和sr[m+1..t]
+        var m = Math.floor((s + t) / 2);
+        var tr2 = [];
+        // 递归地将sr[s..m]归并为有序的sr[s..m]
+        mergeSortRecursive(sr, tr2, s, m);
+        // 递归地将sr[m+1..t]归并为有序的sr[m+1..t]
+        mergeSortRecursive(sr, tr2, m + 1, t);
+        // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
+        merge(tr2, tr1, s, m, t);
+    }
+}
+
+// todo bug exists
+console.log('\n\nmergeSortRecursive:');
+var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 04];
+mergeSortRecursive(arr);
+console.log(arr + '');
