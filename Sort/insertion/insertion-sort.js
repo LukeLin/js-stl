@@ -75,7 +75,7 @@ function binaryInsertSort(sqList) {
         var high = i - 1;
 
         while (low <= high) {
-            var mid = Math.floor((low + high) / 2);
+            var mid = ((low + high) / 2) | 0;
 
             if (temp < sqList[mid]) high = mid - 1;
             else low = mid + 1;
@@ -284,7 +284,7 @@ exports.shellSort = shellSort;
 
 function createDelta(n) {
     var arr = [];
-    var t = Math.floor(Math.log(n - 1) / Math.log(2));  // Math.log(n - 1) / Math.log(2), Math.log(n + 1) / Math.log(2)
+    var t = (Math.log(n - 1) / Math.log(2)) | 0;  // Math.log(n - 1) / Math.log(2), Math.log(n + 1) / Math.log(2)
     for(var k = 0; k <= t; ++k)
         arr[k] = Math.pow(2, t - k) + 1;    // Math.pow(2, t - i + 1) - 1, Math.pow(2, t - i) + 1
 

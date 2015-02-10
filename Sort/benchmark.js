@@ -28,6 +28,7 @@
 var insertionSort = require('./insertion/insertion-sort');
 var exchangeSort = require('./exchange/exchange-sort');
 var selectionSort = require('./selection/selection-sort');
+var mergingSort = require('./merging/merging-sort');
 
 var straightInsertSort = insertionSort.straightInsertSort;
 var binaryInsertSort = insertionSort.binaryInsertSort;
@@ -47,10 +48,14 @@ var oddEvenSort = exchangeSort.oddEvenSort;
 var simpleSelectionSort = selectionSort.simpleSelectionSort;
 var heapSort = selectionSort.heapSort;
 
+var mergeSortRecursive = mergingSort.mergeSortRecursive;
+var mergeSortNonRecursive = mergingSort.mergeSortNonRecursive;
+
 // for comparison
 
 // insertionSort
 var arr = [];
+var arr1 = [];
 var arr2 = [];
 var arr3 = [];
 var arr4 = [];
@@ -70,11 +75,16 @@ var arr13 = [];
 var arr14 = [];
 var arr15 = [];
 
+// mergingSort
+var arr16 = [];
+var arr17 = [];
+
 for (var i = 0, len = 100000; i < len; ++i) {
     var num = parseInt(Math.random() * 1000, 10);
     //var num = len - i;
 
     arr.push(num);
+    arr1.push(num);
     arr2.push(num);
     arr3.push(num);
     arr4.push(num);
@@ -91,29 +101,37 @@ for (var i = 0, len = 100000; i < len; ++i) {
 
     arr14.push(num);
     arr15.push(num);
+
+    arr16.push(num);
+    arr17.push(num);
 }
 console.log('\n');
 
-console.time('straightInsertSort');
-//straightInsertSort(arr);
-console.timeEnd('straightInsertSort');   // a: 32306ms
+console.time('nativeSort');
+arr.sort();
+console.timeEnd('nativeSort');   // a: 32306ms
 
 
-console.time('binaryInsertSort');
+//console.time('straightInsertSort');
+//straightInsertSort(arr1);
+//console.timeEnd('straightInsertSort');   // a: 32306ms
+
+
+//console.time('binaryInsertSort');
 //binaryInsertSort(arr2);
-console.timeEnd('binaryInsertSort');   // b: 11309ms
+//console.timeEnd('binaryInsertSort');   // b: 11309ms
 
 
-console.time('path2InsertSort');
+//console.time('path2InsertSort');
 //path2InsertSort(arr3);
-console.timeEnd('path2InsertSort');   // c: 55707ms
+//console.timeEnd('path2InsertSort');   // c: 55707ms
 
 //var StaticLinkedList = require('../linkedList/StaticLinkedList');
 //var sl = new StaticLinkedList();
 //sl.create(arr4);
-console.time('staticLinkedListInsertSort');
+//console.time('staticLinkedListInsertSort');
 //staticLinkedListInsertSort(sl);       // staticLinkedListInsertSort: 105518ms random
-console.timeEnd('staticLinkedListInsertSort');
+//console.timeEnd('staticLinkedListInsertSort');
 
 console.time('shellSort');
 shellSort(arr5);
@@ -131,25 +149,25 @@ console.log('\n');
  */
 
 
-console.time('bubbleSort');
+//console.time('bubbleSort');
 //bubbleSort(arr6);
-console.timeEnd('bubbleSort');
+//console.timeEnd('bubbleSort');
 
-console.time('bubbleSort1');
+//console.time('bubbleSort1');
 //bubbleSort1(arr7);
-console.timeEnd('bubbleSort1');
+//console.timeEnd('bubbleSort1');
 
-console.time('bubbleSort2');
+//console.time('bubbleSort2');
 //bubbleSort2(arr8);
-console.timeEnd('bubbleSort2');
+//console.timeEnd('bubbleSort2');
 
-console.time('bubbleSort3');
+//console.time('bubbleSort3');
 //bubbleSort3(arr9);
-console.timeEnd('bubbleSort3');
+//console.timeEnd('bubbleSort3');
 
-console.time('quickSortRecursive');
+//console.time('quickSortRecursive');
 //quickSortRecursive(arr10);
-console.timeEnd('quickSortRecursive');
+//console.timeEnd('quickSortRecursive');
 
 console.time('quickSortNonRecursive');
 quickSortNonRecursive(arr11);
@@ -159,16 +177,16 @@ console.time('quickSort');
 quickSort(arr12);
 console.timeEnd('quickSort');
 
-console.time('oddEvenSort');
+//console.time('oddEvenSort');
 //oddEvenSort(arr13);
-console.timeEnd('oddEvenSort');
+//console.timeEnd('oddEvenSort');
 
 console.log('\n');
 
 
-console.time('simpleSelectionSort');
+//console.time('simpleSelectionSort');
 //simpleSelectionSort(arr14);
-console.timeEnd('simpleSelectionSort');
+//console.timeEnd('simpleSelectionSort');
 
 console.time('heapSort');
 heapSort(arr15);
@@ -176,6 +194,16 @@ console.timeEnd('heapSort');
 
 console.log('\n');
 
+
+//console.time('mergeSortRecursive');
+//mergeSortRecursive(arr16);
+//console.timeEnd('mergeSortRecursive');
+
+//console.time('mergeSortNonRecursive');
+//mergeSortNonRecursive(arr17);
+//console.timeEnd('mergeSortNonRecursive');
+
+console.log('\n');
 /*
  在我家的老爷机上跑
  100000条数据，
