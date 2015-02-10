@@ -51,6 +51,7 @@ var heapSort = selectionSort.heapSort;
 
 // insertionSort
 var arr = [];
+var arr1 = [];
 var arr2 = [];
 var arr3 = [];
 var arr4 = [];
@@ -75,6 +76,7 @@ for (var i = 0, len = 100000; i < len; ++i) {
     //var num = len - i;
 
     arr.push(num);
+    arr1.push(num);
     arr2.push(num);
     arr3.push(num);
     arr4.push(num);
@@ -94,26 +96,31 @@ for (var i = 0, len = 100000; i < len; ++i) {
 }
 console.log('\n');
 
-console.time('straightInsertSort');
-//straightInsertSort(arr);
-console.timeEnd('straightInsertSort');   // a: 32306ms
+console.time('nativeSort');
+arr.sort();
+console.timeEnd('nativeSort');   // a: 32306ms
 
 
-console.time('binaryInsertSort');
+//console.time('straightInsertSort');
+//straightInsertSort(arr1);
+//console.timeEnd('straightInsertSort');   // a: 32306ms
+
+
+//console.time('binaryInsertSort');
 //binaryInsertSort(arr2);
-console.timeEnd('binaryInsertSort');   // b: 11309ms
+//console.timeEnd('binaryInsertSort');   // b: 11309ms
 
 
-console.time('path2InsertSort');
+//console.time('path2InsertSort');
 //path2InsertSort(arr3);
-console.timeEnd('path2InsertSort');   // c: 55707ms
+//console.timeEnd('path2InsertSort');   // c: 55707ms
 
 //var StaticLinkedList = require('../linkedList/StaticLinkedList');
 //var sl = new StaticLinkedList();
 //sl.create(arr4);
-console.time('staticLinkedListInsertSort');
+//console.time('staticLinkedListInsertSort');
 //staticLinkedListInsertSort(sl);       // staticLinkedListInsertSort: 105518ms random
-console.timeEnd('staticLinkedListInsertSort');
+//console.timeEnd('staticLinkedListInsertSort');
 
 console.time('shellSort');
 shellSort(arr5);
@@ -131,25 +138,25 @@ console.log('\n');
  */
 
 
-console.time('bubbleSort');
+//console.time('bubbleSort');
 //bubbleSort(arr6);
-console.timeEnd('bubbleSort');
+//console.timeEnd('bubbleSort');
 
-console.time('bubbleSort1');
+//console.time('bubbleSort1');
 //bubbleSort1(arr7);
-console.timeEnd('bubbleSort1');
+//console.timeEnd('bubbleSort1');
 
-console.time('bubbleSort2');
+//console.time('bubbleSort2');
 //bubbleSort2(arr8);
-console.timeEnd('bubbleSort2');
+//console.timeEnd('bubbleSort2');
 
-console.time('bubbleSort3');
+//console.time('bubbleSort3');
 //bubbleSort3(arr9);
-console.timeEnd('bubbleSort3');
+//console.timeEnd('bubbleSort3');
 
-console.time('quickSortRecursive');
+//console.time('quickSortRecursive');
 //quickSortRecursive(arr10);
-console.timeEnd('quickSortRecursive');
+//console.timeEnd('quickSortRecursive');
 
 console.time('quickSortNonRecursive');
 quickSortNonRecursive(arr11);
@@ -159,16 +166,16 @@ console.time('quickSort');
 quickSort(arr12);
 console.timeEnd('quickSort');
 
-console.time('oddEvenSort');
+//console.time('oddEvenSort');
 //oddEvenSort(arr13);
-console.timeEnd('oddEvenSort');
+//console.timeEnd('oddEvenSort');
 
 console.log('\n');
 
 
-console.time('simpleSelectionSort');
+//console.time('simpleSelectionSort');
 //simpleSelectionSort(arr14);
-console.timeEnd('simpleSelectionSort');
+//console.timeEnd('simpleSelectionSort');
 
 console.time('heapSort');
 heapSort(arr15);

@@ -149,7 +149,7 @@ function heapAdjust(sqList, s, m) {
 function heapSort(sqList) {
     var len = sqList.length;
     // 建立大堆顶
-    for (var i = Math.floor(len / 2 - 1); i >= 0; --i)
+    for (var i = (len / 2 - 1) | 0; i >= 0; --i)
         heapAdjust(sqList, i, len - 1);
 
     for (i = len - 1; i > 0; --i) {

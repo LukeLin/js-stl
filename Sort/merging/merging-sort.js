@@ -69,7 +69,7 @@ function mergeSortRecursive(sr, tr1, s, t){
     if(s === t) tr1[s] = sr[s];
     else {
         // 将sr[s..t]平分为sr[s..m]和sr[m+1..t]
-        var m = Math.floor((s + t) / 2);
+        var m = ((s + t) / 2) | 0;
         var tr2 = [];
         // 递归地将sr[s..m]归并为有序的sr[s..m]
         mergeSortRecursive(sr, tr2, s, m);
