@@ -35,55 +35,87 @@
  四趟归并后: [15     22      23     23     31     38     41     45     67
 
 
+2.算法分析
+具有n个待排序记录的归并次数是㏒2n，而一趟归并的时间复杂度为O(n)，则整个归并排序的时间复杂度无论是最好还是最坏情况均为O(n㏒2n)。在排序过程中，使用了辅助向量DR，大小与待排序记录空间相同，则空间复杂度为O(n)。归并排序是稳定的。
+
+
 http://blog.csdn.net/prstaxy/article/details/8166360
  */
 
 /**
- * 将有序的sr[i..m]和sr[m + 1..n]归并为有序的tr[i..n]
- * @param {Array} sr
- * @param {Array} tr
- * @param {Number} i
- * @param {Number} m
- * @param {Number} n
+ * 将有序的sr[s1..e1]和sr[s2..e2]归并为有序的tr[s1..e2]
+ * @param sr
+ * @param s1
+ * @param e1
+ * @param s2
+ * @param e2
  */
-function merge(sr, tr, i, m, n){
-    for(var j = m + 1, k = i; i <= m && j <= n; ++k){
-        if(sr[i] < sr[j]) tr[k] = sr[i++];
-        else tr[k] = sr[j++];
-    }
+function merge(sr, s1, e1, s2, e2){
+    var temp = [];
+    var i = s1;
+    var j = s2;
+    var k = 0;
 
-    while(i <= m) tr[k++] = sr[i++];
-    while(j <= n) tr[k++] = sr[j++];
+    while(i <= e1 && j <= e2){
+        if(sr[i] < sr[j]) temp[k++] = sr[i++];
+        else temp[k++] = sr[j++];
+    }
+    while(i <= e1) temp[k++] = sr[i++];
+    while(j <= e2) temp[k++] = sr[j++];
+
+    // 复制回去
+    for(i = s1, k = 0; i <= e2; ++i, ++k) sr[i] = temp[k];
 }
 
 /**
  * 2-路归并排序递归算法
  * @param {Array} sr
- * @param {Array} tr1
  * @param {Number} s
  * @param {Number} t
  */
-function mergeSortRecursive(sr, tr1, s, t){
-    tr1 = tr1 || sr;
+function mergeSortRecursive(sr, s, t){
     s = s != null ? s : 0;
-    t = t != null ? t : sr.length;
+    t = t != null ? t : sr.length - 1;
 
-    if(s === t) tr1[s] = sr[s];
-    else {
+    if(s < t) {
         // 将sr[s..t]平分为sr[s..m]和sr[m+1..t]
         var m = ((s + t) / 2) | 0;
-        var tr2 = [];
         // 递归地将sr[s..m]归并为有序的sr[s..m]
-        mergeSortRecursive(sr, tr2, s, m);
+        mergeSortRecursive(sr, s, m);
         // 递归地将sr[m+1..t]归并为有序的sr[m+1..t]
-        mergeSortRecursive(sr, tr2, m + 1, t);
+        mergeSortRecursive(sr, m + 1, t);
         // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
-        merge(tr2, tr1, s, m, t);
+        merge(sr, s, m, m + 1, t);
     }
 }
+exports.mergeSortRecursive = mergeSortRecursive
 
-// todo bug exists
+
 console.log('\n\nmergeSortRecursive:');
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 04];
 mergeSortRecursive(arr);
+console.log(arr + '');
+
+
+function mergeSortNonRecursive(sr){
+    // l为一趟归并段的段长
+    for(var l = 1, len = sr.length; l < len; l *= 2){
+        // i为本趟的归并段序号
+        for(var i = 0; (2 * i - l) * l < len; ++i){
+            // 求出待归并的上下界
+            var s1 = 2 * l * i;
+            var e1 = s1 + l - 1;
+            var s2 = e1 + 1;
+            // e2可能超界
+            var e2 = s2 + l - 1 > len - 1 ? len - 1 : s2 + l - 1;
+            // 归并
+            merge(sr, s1, e1, s2, e2);
+        }
+    }
+}
+exports.mergeSortNonRecursive = mergeSortNonRecursive;
+
+console.log('\n\mergeSortNonRecursive:');
+var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 04];
+mergeSortNonRecursive(arr);
 console.log(arr + '');

@@ -28,6 +28,7 @@
 var insertionSort = require('./insertion/insertion-sort');
 var exchangeSort = require('./exchange/exchange-sort');
 var selectionSort = require('./selection/selection-sort');
+var mergingSort = require('./merging/merging-sort');
 
 var straightInsertSort = insertionSort.straightInsertSort;
 var binaryInsertSort = insertionSort.binaryInsertSort;
@@ -46,6 +47,9 @@ var oddEvenSort = exchangeSort.oddEvenSort;
 
 var simpleSelectionSort = selectionSort.simpleSelectionSort;
 var heapSort = selectionSort.heapSort;
+
+var mergeSortRecursive = mergingSort.mergeSortRecursive;
+var mergeSortNonRecursive = mergingSort.mergeSortNonRecursive;
 
 // for comparison
 
@@ -71,6 +75,10 @@ var arr13 = [];
 var arr14 = [];
 var arr15 = [];
 
+// mergingSort
+var arr16 = [];
+var arr17 = [];
+
 for (var i = 0, len = 100000; i < len; ++i) {
     var num = parseInt(Math.random() * 1000, 10);
     //var num = len - i;
@@ -93,6 +101,9 @@ for (var i = 0, len = 100000; i < len; ++i) {
 
     arr14.push(num);
     arr15.push(num);
+
+    arr16.push(num);
+    arr17.push(num);
 }
 console.log('\n');
 
@@ -183,6 +194,16 @@ console.timeEnd('heapSort');
 
 console.log('\n');
 
+
+//console.time('mergeSortRecursive');
+//mergeSortRecursive(arr16);
+//console.timeEnd('mergeSortRecursive');
+
+//console.time('mergeSortNonRecursive');
+//mergeSortNonRecursive(arr17);
+//console.timeEnd('mergeSortNonRecursive');
+
+console.log('\n');
 /*
  在我家的老爷机上跑
  100000条数据，
