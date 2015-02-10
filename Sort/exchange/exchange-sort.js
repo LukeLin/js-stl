@@ -91,7 +91,7 @@ console.log('bubbleSort1:\n' + arr + '');
 
 
 // 相邻两趟反方向起泡的冒泡排序算法
-function bubbleSort2(sqList){
+function cockTailSort(sqList){
     var len = sqList.length;
     // 冒泡上下界
     var low = 0, high = len - 1;
@@ -126,11 +126,11 @@ function bubbleSort2(sqList){
         ++low;
     }
 }
-exports.bubbleSort2 = bubbleSort2;
+exports.cockTailSort = cockTailSort;
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
-bubbleSort2(arr);
-console.log('bubbleSort2:\n' + arr + '');
+cockTailSort(arr);
+console.log('cockTailSort:\n' + arr + '');
 
 
 // 改进3

@@ -38,7 +38,7 @@ var shellSort = insertionSort.shellSort;
 
 var bubbleSort = exchangeSort.bubbleSort;
 var bubbleSort1 = exchangeSort.bubbleSort1;
-var bubbleSort2 = exchangeSort.bubbleSort2;
+var cockTailSort = exchangeSort.cockTailSort;
 var bubbleSort3 = exchangeSort.bubbleSort3;
 var quickSortRecursive = exchangeSort.quickSortRecursive;
 var quickSortNonRecursive = exchangeSort.quickSortNonRecursive;
@@ -157,9 +157,9 @@ console.log('\n');
 //bubbleSort1(arr7);
 //console.timeEnd('bubbleSort1');
 
-//console.time('bubbleSort2');
-//bubbleSort2(arr8);
-//console.timeEnd('bubbleSort2');
+//console.time('cockTailSort');
+//cockTailSort(arr8);
+//console.timeEnd('cockTailSort');
 
 //console.time('bubbleSort3');
 //bubbleSort3(arr9);
@@ -226,7 +226,7 @@ console.log('\n');
 随机情况
  bubbleSort: 104551ms
  bubbleSort1: 43809ms
- bubbleSort2: 26993ms
+ cockTailSort: 26993ms
  bubbleSort3: 54022ms
 
  quickSortNonRecursive: 29ms
@@ -236,7 +236,7 @@ console.log('\n');
  最差情况，reverse
  bubbleSort: 92582ms
  bubbleSort1: 40989ms
- bubbleSort2: 28798ms
+ cockTailSort: 28798ms
  bubbleSort3: 57511ms
 
  quickSortNonRecursive: 11884ms Stack

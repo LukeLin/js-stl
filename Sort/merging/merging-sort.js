@@ -88,11 +88,11 @@ function mergeSortRecursive(sr, s, t){
         merge(sr, s, m, m + 1, t);
     }
 }
-exports.mergeSortRecursive = mergeSortRecursive
+exports.mergeSortRecursive = mergeSortRecursive;
 
 
 console.log('\n\nmergeSortRecursive:');
-var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 04];
+var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 mergeSortRecursive(arr);
 console.log(arr + '');
 
@@ -115,7 +115,7 @@ function mergeSortNonRecursive(sr){
 }
 exports.mergeSortNonRecursive = mergeSortNonRecursive;
 
-console.log('\n\mergeSortNonRecursive:');
-var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 04];
+console.log('\nmergeSortNonRecursive:');
+var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 mergeSortNonRecursive(arr);
 console.log(arr + '');

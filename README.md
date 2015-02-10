@@ -68,7 +68,7 @@ directory
         --  exchange sort
                 -- bubbleSort
                 -- bubbleSort1
-                -- bubbleSort2
+                -- cockTailSort
                 -- bubbleSort3
                 -- quickSortRecursive
                 -- quickSortNonRecursive
