@@ -195,13 +195,13 @@ console.timeEnd('heapSort');
 console.log('\n');
 
 
-//console.time('mergeSortRecursive');
-//mergeSortRecursive(arr16);
-//console.timeEnd('mergeSortRecursive');
+console.time('mergeSortRecursive');
+mergeSortRecursive(arr16);
+console.timeEnd('mergeSortRecursive');
 
-//console.time('mergeSortNonRecursive');
-//mergeSortNonRecursive(arr17);
-//console.timeEnd('mergeSortNonRecursive');
+console.time('mergeSortNonRecursive');
+mergeSortNonRecursive(arr17);
+console.timeEnd('mergeSortNonRecursive');
 
 console.log('\n');
 /*
