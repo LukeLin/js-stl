@@ -75,7 +75,7 @@ function binaryInsertSort(sqList) {
         var high = i - 1;
 
         while (low <= high) {
-            var mid = ((low + high) / 2) | 0;
+            var mid = (low + high) >> 1;
 
             if (temp < sqList[mid]) high = mid - 1;
             else low = mid + 1;
