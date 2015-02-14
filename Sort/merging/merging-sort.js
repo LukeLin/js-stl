@@ -35,7 +35,16 @@
  四趟归并后: [15     22      23     23     31     38     41     45     67
 
 
-2.算法分析
+ 2  一趟归并排序
+ 一趟归并排序都是从前到后，依次将相邻的两个有序子序列归并为一个，且除最后一个子序列外，其余每个子序列的长度都相同。设这些子序列的长度为d，则一趟归并排序的过程是：
+ 从j=0开始，依次将相邻的两个有序子序列
+ R[j…j+d-1]和R[j+d…j+2d-1]进行归并；每次归并两个子序列后，j后移动2d个位置，即
+ j=j+2d；若剩下的元素不足两个子序列时，分以下两种情况处理：
+ ①  剩下的元素个数>d：再调用一次上述过程，将一个长度为d的子序列和不足d的子序列进行归并；
+ ②  剩下的元素个数≤d：将剩下的元素依次复制到归并后的序列中。
+
+
+ 3.算法分析
 具有n个待排序记录的归并次数是㏒2n，而一趟归并的时间复杂度为O(n)，则整个归并排序的时间复杂度无论是最好还是最坏情况均为O(n㏒2n)。在排序过程中，使用了辅助向量DR，大小与待排序记录空间相同，则空间复杂度为O(n)。归并排序是稳定的。
 
  */
@@ -45,12 +54,12 @@
  * @param sr
  * @param s1
  * @param e1
- * @param s2
  * @param e2
  */
-function merge(sr, s1, e1, s2, e2){
+function merge(sr, s1, e1, e2){
     var temp = [];
     var i = s1;
+    var s2 = e1 + 1;
     var j = s2;
     var k = 0;
 
@@ -84,7 +93,7 @@ function mergeSortRecursive(sr, s, t){
     // 递归地将sr[m+1..t]归并为有序的sr[m+1..t]
     mergeSortRecursive(sr, m + 1, t);
     // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
-    merge(sr, s, m, m + 1, t);
+    merge(sr, s, m, t);
 }
 exports.mergeSortRecursive = mergeSortRecursive;
 
@@ -103,14 +112,14 @@ function mergePass(sr, d, n){
 
     // 子序列两两归并
     while((k = (j + 2 * d - 1)) <= n){
-        merge(sr, j, j + d - 1, j + d, k);
+        merge(sr, j, j + d - 1, k);
         j = k + 1;
     }
 
     // 剩余元素个数超过一个子序列长度
-    if(j + d - 1 < n) merge(sr, j, j + d - 1, j + d, n);
+    if(j + d - 1 < n) merge(sr, j, j + d - 1, n);
     // 剩余子序列复制
-    else merge(sr, j, n, n, n);
+    else merge(sr, j, n, n);
 }
 
 function mergeSortNonRecursive(sr){
