@@ -105,26 +105,23 @@ console.log(arr + '');
 
 
 
-// 一趟归并排序算法
-function mergePass(sr, d, n){
-    var j = 0;
-    var k;
-
-    // 子序列两两归并
-    while((k = (j + 2 * d - 1)) <= n){
-        merge(sr, j, j + d - 1, k);
-        j = k + 1;
-    }
-
-    // 剩余元素个数超过一个子序列长度
-    if(j + d - 1 < n) merge(sr, j, j + d - 1, n);
-    // 剩余子序列复制
-    else merge(sr, j, n, n);
-}
-
 function mergeSortNonRecursive(sr){
-    for(var d = 1, len = sr.length; d < len; d *= 2)
-        mergePass(sr, d, len - 1);
+    var j, k;
+    for(var d = 1, n = sr.length - 1; d < n; d *= 2) {
+        // 一趟归并排序算法
+        j = 0;
+
+        // 子序列两两归并
+        while((k = (j + 2 * d - 1)) <= n){
+            merge(sr, j, j + d - 1, k);
+            j = k + 1;
+        }
+
+        // 剩余元素个数超过一个子序列长度
+        if(j + d - 1 < n) merge(sr, j, j + d - 1, n);
+        // 剩余子序列复制
+        else merge(sr, j, n, n);
+    }
 }
 exports.mergeSortNonRecursive = mergeSortNonRecursive;
 
