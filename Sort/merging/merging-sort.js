@@ -75,16 +75,16 @@ function mergeSortRecursive(sr, s, t){
     s = s != null ? s : 0;
     t = t != null ? t : sr.length - 1;
 
-    if(s < t) {
-        // 将sr[s..t]平分为sr[s..m]和sr[m+1..t]
-        var m = ((s + t) / 2) | 0;
-        // 递归地将sr[s..m]归并为有序的sr[s..m]
-        mergeSortRecursive(sr, s, m);
-        // 递归地将sr[m+1..t]归并为有序的sr[m+1..t]
-        mergeSortRecursive(sr, m + 1, t);
-        // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
-        merge(sr, s, m, m + 1, t);
-    }
+    if(s >= t) return;
+
+    // 将sr[s..t]平分为sr[s..m]和sr[m+1..t]
+    var m = (s + t) >> 1;
+    // 递归地将sr[s..m]归并为有序的sr[s..m]
+    mergeSortRecursive(sr, s, m);
+    // 递归地将sr[m+1..t]归并为有序的sr[m+1..t]
+    mergeSortRecursive(sr, m + 1, t);
+    // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
+    merge(sr, s, m, m + 1, t);
 }
 exports.mergeSortRecursive = mergeSortRecursive;
 
@@ -95,21 +95,27 @@ mergeSortRecursive(arr);
 console.log(arr + '');
 
 
-function mergeSortNonRecursive(sr){
-    // l为一趟归并段的段长
-    for(var l = 1, len = sr.length; l < len; l *= 2){
-        // i为本趟的归并段序号
-        for(var i = 0; (2 * i - l) * l < len; ++i){
-            // 求出待归并的上下界
-            var s1 = 2 * l * i;
-            var e1 = s1 + l - 1;
-            var s2 = e1 + 1;
-            // e2可能超界
-            var e2 = s2 + l - 1 > len - 1 ? len - 1 : s2 + l - 1;
-            // 归并
-            merge(sr, s1, e1, s2, e2);
-        }
+
+// 一趟归并排序算法
+function mergePass(sr, d, n){
+    var j = 0;
+    var k;
+
+    // 子序列两两归并
+    while((k = (j + 2 * d - 1)) <= n){
+        merge(sr, j, j + d - 1, j + d, k);
+        j = k + 1;
     }
+
+    // 剩余元素个数超过一个子序列长度
+    if(j + d - 1 < n) merge(sr, j, j + d - 1, j + d, n);
+    // 剩余子序列复制
+    else merge(sr, j, n, n, n);
+}
+
+function mergeSortNonRecursive(sr){
+    for(var d = 1, len = sr.length; d < len; d *= 2)
+        mergePass(sr, d, len - 1);
 }
 exports.mergeSortNonRecursive = mergeSortNonRecursive;
 
@@ -117,3 +123,7 @@ console.log('\nmergeSortNonRecursive:');
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 mergeSortNonRecursive(arr);
 console.log(arr + '');
+
+
+// todo 自然合并排序
+// http://www.cnblogs.com/liushang0419/archive/2011/09/19/2181476.html
