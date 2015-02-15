@@ -83,6 +83,7 @@ var arr17 = [];
 for (var i = 0, len = 100000; i < len; ++i) {
     var num = parseInt(Math.random() * 1000, 10);
     //var num = len - i;
+    //var num = i + Math.random() * 10;
 
     arr.push(num);
     arr1.push(num);
@@ -275,3 +276,4 @@ console.timeEnd('heapSort');
 
 
 // http://blog.csdn.net/hguisu/article/details/7776068
+// http://blog.csdn.net/xiazdong/article/details/8462393
