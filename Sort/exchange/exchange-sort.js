@@ -217,7 +217,7 @@ console.log('bubbleSort3:\n' + arr + '');
 
  */
 
-function partition(sqList, low, high){
+function partitionUnOptimized(sqList, low, high){
     var temp = sqList[low];
 
     while(low < high){
@@ -230,6 +230,47 @@ function partition(sqList, low, high){
     sqList[low] = temp;
 
     return low;
+}
+
+// 优化一趟快速排序方法： 随机化partition
+// 最坏情况效率大幅提升，时间复杂度T(n)=O(n㏒2n)
+function partition(sqList, low, high){
+    var temp;
+    var n = high - low + 1;
+    var gap = Math.random() * n | 0;
+
+    temp = sqList[high];
+    sqList[high] = sqList[low + gap];
+    sqList[low + gap] = temp;
+
+    var i = low - 1;
+    var k = high;
+    var pivot = sqList[high];
+
+    for(var j = low; j < high; ++j){
+        if(sqList[j] < pivot) {
+            ++i;
+            temp = sqList[i];
+            sqList[i] = sqList[j];
+            sqList[j] = temp;
+        } else if(sqList[j] === pivot) {
+            --k;
+            temp = sqList[k];
+            sqList[k] = sqList[j];
+            sqList[j] = temp;
+        }
+    }
+
+    ++i;
+    for(var t = high; t <= k; ++t){
+        if(i < k) {
+            temp = sqList[i];
+            sqList[i] = sqList[t];
+            sqList[t] = temp;
+        }
+    }
+
+    return i;
 }
 
 function quickSortRecursive(sqList, low, high){
