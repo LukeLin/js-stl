@@ -233,14 +233,14 @@ function partition(sqList, low, high){
 }
 
 function quickSortRecursive(sqList, low, high){
-    low = low || 0;
-    high = high || sqList.length - 1;
+    if(low == null) low = 0;
+    if(high == null) high = sqList.length - 1;
 
-    if(low < high) {
-        var k = partition(sqList, low, high);
-        quickSortRecursive(sqList, low, k - 1);
-        quickSortRecursive(sqList, k + 1, high);
-    }
+    if(low >= high) return;
+
+    var k = partition(sqList, low, high);
+    quickSortRecursive(sqList, low, k - 1);
+    quickSortRecursive(sqList, k + 1, high);
 }
 exports.quickSortRecursive = quickSortRecursive;
 
@@ -250,8 +250,8 @@ console.log('quickSortRecursive:\n' + arr + '');
 
 
 function quickSortNonRecursive(sqList, low, high){
-    low = low || 0;
-    high = high || sqList.length - 1;
+    if(low == null) low = 0;
+    if(high == null) high = sqList.length - 1;
     var stack = [];
     var k;
 
@@ -278,8 +278,8 @@ console.log('quickSortNonRecursive:\n' + arr + '');
 
 // 优化版本
 function quickSort(sqList, low, high){
-    low = low || 0;
-    high = high || sqList.length - 1;
+    if(low == null) low = 0;
+    if(high == null) high = sqList.length - 1;
     var stack = [];
     var pivot;
 

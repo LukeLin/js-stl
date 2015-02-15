@@ -29,6 +29,7 @@ var insertionSort = require('./insertion/insertion-sort');
 var exchangeSort = require('./exchange/exchange-sort');
 var selectionSort = require('./selection/selection-sort');
 var mergingSort = require('./merging/merging-sort');
+var otherSort = require('./sort');
 
 var straightInsertSort = insertionSort.straightInsertSort;
 var binaryInsertSort = insertionSort.binaryInsertSort;
@@ -204,6 +205,29 @@ mergeSortNonRecursive(arr17);
 console.timeEnd('mergeSortNonRecursive');
 
 console.log('\n');
+
+
+
+console.time('shellSort');
+arr3.shellSort();
+console.timeEnd('shellSort');
+
+console.time('quickSort');
+arr4.quickSort();
+console.timeEnd('quickSort');
+
+console.time('stackQuickSort');
+arr6.stackQuickSort();
+console.timeEnd('stackQuickSort');
+
+console.time('mergeSort');
+arr7.mergeSort();
+console.timeEnd('mergeSort');
+
+console.time('heapSort');
+arr8.heapSort();
+console.timeEnd('heapSort');
+
 /*
  在我家的老爷机上跑
  100000条数据，

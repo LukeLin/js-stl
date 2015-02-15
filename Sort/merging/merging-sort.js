@@ -81,8 +81,8 @@ function merge(sr, s1, e1, e2){
  * @param {Number} t
  */
 function mergeSortRecursive(sr, s, t){
-    s = s != null ? s : 0;
-    t = t != null ? t : sr.length - 1;
+    if(s == null) s = 0;
+    if(t == null) t = sr.length - 1;
 
     if(s >= t) return;
 
