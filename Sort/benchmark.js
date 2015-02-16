@@ -167,9 +167,9 @@ console.log('\n');
 //bubbleSort3(arr9);
 //console.timeEnd('bubbleSort3');
 
-//console.time('quickSortRecursive');
-//quickSortRecursive(arr10);
-//console.timeEnd('quickSortRecursive');
+console.time('quickSortRecursive');
+quickSortRecursive(arr10);
+console.timeEnd('quickSortRecursive');
 
 console.time('quickSortNonRecursive');
 quickSortNonRecursive(arr11);
