@@ -63,8 +63,7 @@ var recursiveCount = 0;
 function merge(sr, s1, e1, e2){
     var temp = [];
     var i = s1;
-    var s2 = e1 + 1;
-    var j = s2;
+    var j = e1 + 1;
     var k = 0;
 
     while(i <= e1 && j <= e2){
@@ -98,7 +97,6 @@ function mergeSortRecursive(sr, s, t){
     mergeSortRecursive(sr, m + 1, t);
     // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
     merge(sr, s, m, t);
-    ++recursiveCount;
 }
 exports.mergeSortRecursive = mergeSortRecursive;
 
@@ -117,9 +115,8 @@ function mergeSortNonRecursive(sr){
         j = 0;
 
         // 子序列两两归并
-        while((k = (j + 2 * d - 1)) <= n){
-            ++nonRecursiveCount;
-            merge(sr, j, j + d - 1, k);
+        while((k = (j + 2 * d - 1)) < n){
+            merge(sr, j,  j + d - 1, k);
             j = k + 1;
         }
 
@@ -127,7 +124,6 @@ function mergeSortNonRecursive(sr){
         if(j + d - 1 < n) merge(sr, j, j + d - 1, n);
         // 剩余子序列复制
         else merge(sr, j, n, n);
-        ++nonRecursiveCount;
     }
 }
 exports.mergeSortNonRecursive = mergeSortNonRecursive;
@@ -149,12 +145,10 @@ console.log(arr + '');
 // 扫描得到子串的函数
 function pass(sqList, rec){
     var num = 0;
-    var bigger = sqList[0];
     rec[num++] = 0;
 
     for(var i = 1, len = sqList.length; i < len; ++i){
-        if(sqList[i] >= bigger) bigger = sqList[i];
-        else rec[num++] = i;
+        if(sqList[i] > sqList[i + 1]) rec[num++] = i + 1;
     }
     rec[num++] = len;
 
@@ -167,9 +161,8 @@ function mergeSort(sqList){
     //num=2说明已经排好序了
     //每循环一次，进行一次pass()操作
     for(var num = pass(sqList, rec); num !== 2; num = pass(sqList, rec)){
-        for(var i = 0; i < num; i += 2) {
+        for(var i = 0; i + 2 < num; i += 2) {
             merge(sqList, rec[i], rec[i + 1] - 1, rec[i + 2] - 1);
-            ++nCount;
         }
     }
 }
