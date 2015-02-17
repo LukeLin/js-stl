@@ -49,6 +49,10 @@
 
  */
 
+var nCount = 0;
+var nonRecursiveCount = 0;
+var recursiveCount = 0;
+
 /**
  * 将有序的sr[s1..e1]和sr[s2..e2]归并为有序的tr[s1..e2]
  * @param sr
@@ -94,6 +98,7 @@ function mergeSortRecursive(sr, s, t){
     mergeSortRecursive(sr, m + 1, t);
     // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
     merge(sr, s, m, t);
+    ++recursiveCount;
 }
 exports.mergeSortRecursive = mergeSortRecursive;
 
@@ -113,6 +118,7 @@ function mergeSortNonRecursive(sr){
 
         // 子序列两两归并
         while((k = (j + 2 * d - 1)) <= n){
+            ++nonRecursiveCount;
             merge(sr, j, j + d - 1, k);
             j = k + 1;
         }
@@ -121,6 +127,7 @@ function mergeSortNonRecursive(sr){
         if(j + d - 1 < n) merge(sr, j, j + d - 1, n);
         // 剩余子序列复制
         else merge(sr, j, n, n);
+        ++nonRecursiveCount;
     }
 }
 exports.mergeSortNonRecursive = mergeSortNonRecursive;
@@ -131,5 +138,50 @@ mergeSortNonRecursive(arr);
 console.log(arr + '');
 
 
-// todo 自然合并排序
+// 自然合并排序
 // http://www.cnblogs.com/liushang0419/archive/2011/09/19/2181476.html
+// http://www.cnblogs.com/lanke/archive/2013/01/15/2860487.html
+/*
+自然归并是归并排序的一个变形，效率更高一些，可以在归并排序非递归实现的基础上进行修改.对于已经一个已经给定数组a,通常存在多个长度大于1的已经自然排好的子数组段,因此用一次对数组a的线性扫描就可以找出所有这些排好序的子数组段,然后再对这些子数组段俩俩合并.
+ */
+
+
+// 扫描得到子串的函数
+function pass(sqList, rec){
+    var num = 0;
+    var bigger = sqList[0];
+    rec[num++] = 0;
+
+    for(var i = 1, len = sqList.length; i < len; ++i){
+        if(sqList[i] >= bigger) bigger = sqList[i];
+        else rec[num++] = i;
+    }
+    rec[num++] = len;
+
+    return num;
+}
+
+function mergeSort(sqList){
+    var rec = [];
+
+    //num=2说明已经排好序了
+    //每循环一次，进行一次pass()操作
+    for(var num = pass(sqList, rec); num !== 2; num = pass(sqList, rec)){
+        for(var i = 0; i < num; i += 2) {
+            merge(sqList, rec[i], rec[i + 1] - 1, rec[i + 2] - 1);
+            ++nCount;
+        }
+    }
+}
+
+exports.mergeSort = mergeSort;
+
+console.log('\nmergeSort:');
+var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
+mergeSort(arr);
+console.log(arr + '');
+
+
+console.log(recursiveCount);
+console.log(nonRecursiveCount);
+console.log(nCount);

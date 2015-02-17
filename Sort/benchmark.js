@@ -51,6 +51,7 @@ var heapSort = selectionSort.heapSort;
 
 var mergeSortRecursive = mergingSort.mergeSortRecursive;
 var mergeSortNonRecursive = mergingSort.mergeSortNonRecursive;
+var merSort = mergingSort.mergeSort;
 
 // for comparison
 
@@ -79,6 +80,7 @@ var arr15 = [];
 // mergingSort
 var arr16 = [];
 var arr17 = [];
+var arr18 = [];
 
 for (var i = 0, len = 100000; i < len; ++i) {
     var num = parseInt(Math.random() * 1000, 10);
@@ -106,6 +108,7 @@ for (var i = 0, len = 100000; i < len; ++i) {
 
     arr16.push(num);
     arr17.push(num);
+    arr18.push(num);
 }
 console.log('\n');
 
@@ -204,6 +207,10 @@ console.timeEnd('mergeSortRecursive');
 console.time('mergeSortNonRecursive');
 mergeSortNonRecursive(arr17);
 console.timeEnd('mergeSortNonRecursive');
+
+console.time('mergeSort');
+arr18.mergeSort();
+console.timeEnd('mergeSort');
 
 console.log('\n');
 
