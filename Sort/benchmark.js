@@ -29,6 +29,7 @@ var insertionSort = require('./insertion/insertion-sort');
 var exchangeSort = require('./exchange/exchange-sort');
 var selectionSort = require('./selection/selection-sort');
 var mergingSort = require('./merging/merging-sort');
+var distributionSort = require('./distribution/distribution-sort');
 var otherSort = require('./sort');
 
 var straightInsertSort = insertionSort.straightInsertSort;
@@ -52,6 +53,9 @@ var heapSort = selectionSort.heapSort;
 var mergeSortRecursive = mergingSort.mergeSortRecursive;
 var mergeSortNonRecursive = mergingSort.mergeSortNonRecursive;
 var merSort = mergingSort.mergeSort;
+
+var countingSort = distributionSort.countingSort;
+var radixSort = distributionSort.radixSort;
 
 // for comparison
 
@@ -82,6 +86,12 @@ var arr16 = [];
 var arr17 = [];
 var arr18 = [];
 
+// distribution sort
+var arr19 = [];
+var arr20 = [];
+var arr21 = [];
+var arr22 = [];
+
 for (var i = 0, len = 100000; i < len; ++i) {
     var num = parseInt(Math.random() * 1000, 10);
     //var num = len - i;
@@ -109,6 +119,11 @@ for (var i = 0, len = 100000; i < len; ++i) {
     arr16.push(num);
     arr17.push(num);
     arr18.push(num);
+
+    arr19.push(num);
+    arr20.push(num);
+    arr21.push(num);
+    arr22.push(num);
 }
 console.log('\n');
 
@@ -211,6 +226,17 @@ console.timeEnd('mergeSortNonRecursive');
 console.time('mergeSort');
 arr18.mergeSort();
 console.timeEnd('mergeSort');
+
+console.log('\n');
+
+
+console.time('countingSort');
+countingSort(arr19);
+console.timeEnd('countingSort');
+
+console.time('radixSort');
+radixSort(arr20);
+console.timeEnd('radixSort');
 
 console.log('\n');
 

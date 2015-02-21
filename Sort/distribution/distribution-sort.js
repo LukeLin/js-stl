@@ -24,37 +24,14 @@
  4.计数排序是稳定的（排序后值相同的元素相对于原先的位置是不会发生变化的）
  */
 
-function countingSort(sqList){
-    var c = [];
-    var b = [];
+function maxElem(arr){
+    var max = arr[0];
 
-    // 对每个元素统计关键字比它小的元素个数
-    for(var i = 0, len = sqList.length; i < len; ++i){
-        for(var j = 0, count = 0; j < len; ++j)
-            if(sqList[j] < sqList[i]) ++count;
-        c[i] = count;
-    }
+    for(var i = 1, len = arr.length; i < len; ++i)
+        if(max < arr[i]) max = arr[i];
 
-    // 依次求出关键字最小，第二小。。。最大的记录
-    for(i = 0; i < len; ++i){
-        var min = 0;
-        // 求出最小记录的下标
-        for(j = 0; j < len; ++j)
-            if(c[j] < c[min]) min = j;
-
-        b[i] = sqList[min];
-        // 修改该记录的c值为无穷大以便下次选取
-        c[min] = Infinity;
-    }
-
-    return b;
+    return max;
 }
-exports.countingSort = countingSort;
-
-var arr = [100, 93, 97, 92, 96, 99, 92, 89, 93, 97, 90, 94, 92, 95];
-arr = countingSort(arr);
-console.log(arr + '');
-
 
 /**
  *
@@ -62,7 +39,8 @@ console.log(arr + '');
  * @param {Number} k 数组中最大的元素值
  * @returns {Array}
  */
-function countingSort2(sqList, k){
+function countingSort(sqList, k){
+    if(k == null) k = maxElem(sqList);
     var len = sqList.length;
     var c = [];
     var b = [];
@@ -78,12 +56,12 @@ function countingSort2(sqList, k){
         --c[sqList[i]];
     }
 
-    return b;
+    for(i = 0; i < len; ++i) sqList[i] = b[i];
 }
-exports.countingSort2 = countingSort2;
+exports.countingSort = countingSort;
 
 var arr = [100, 93, 97, 92, 96, 99, 92, 89, 93, 97, 90, 94, 92, 95];
-arr = countingSort2(arr, 100);
+countingSort(arr, 100);
 console.log(arr + '');
 
 
@@ -124,8 +102,8 @@ function maxBit(arr){
     return d;
 }
 
-function radixSort(arr){
-    var d = maxBit(arr);
+function radixSort(arr, d){
+    d = d || maxBit(arr);
     var n = arr.length;
     var temp = [];
     // 计数器
