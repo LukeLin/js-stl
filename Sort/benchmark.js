@@ -129,9 +129,10 @@ for (var i = 0, len = 100000; i < len; ++i) {
 console.log('\n');
 
 console.time('nativeSort');
-arr.sort();
+arr.sort(function(a, b){
+    return a - b;
+});
 console.timeEnd('nativeSort');   // a: 32306ms
-
 
 //console.time('straightInsertSort');
 //straightInsertSort(arr1);
