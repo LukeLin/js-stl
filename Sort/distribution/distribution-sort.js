@@ -189,6 +189,7 @@ function bucketSort(sqList){
     // 给桶填装数据
     for(i = 0; i < n; ++i){
         var data = sqList[i];
+        // noto: 这里的映射函数是针对两位数的
         var bucket = data / BUCKETSNUM | 0;
         b[bucket][bucketA[bucket]] = data;
         ++bucketA[bucket];
@@ -221,7 +222,7 @@ function bucketSort(sqList){
     }
 }
 
-var arr = [51, 93, 97, 92, 96, 99, 92, 89, 93, 97, 90, 94, 92, 95];
+var arr = [51.2, 93, 97, 92.2, 96, 99.5, 92.0, 89, 93, 97, 90, 94, 92.1, 95];
 bucketSort(arr);
 console.log(arr + '');
 
