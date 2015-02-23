@@ -52,7 +52,7 @@ var heapSort = selectionSort.heapSort;
 
 var mergeSortRecursive = mergingSort.mergeSortRecursive;
 var mergeSortNonRecursive = mergingSort.mergeSortNonRecursive;
-var merSort = mergingSort.mergeSort;
+var mergeSort = mergingSort.mergeSort;
 
 var countingSort = distributionSort.countingSort;
 var radixSort = distributionSort.radixSort;
@@ -226,7 +226,7 @@ mergeSortNonRecursive(arr17);
 console.timeEnd('mergeSortNonRecursive');
 
 console.time('mergeSort');
-arr18.mergeSort();
+mergeSort(arr18);
 console.timeEnd('mergeSort');
 
 console.log('\n');

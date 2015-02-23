@@ -80,7 +80,14 @@ directory
                 -- heapSort
                 
         -- merge sort
-        todo to be continued
+                -- mergeSortRecursive
+                -- mergeSortNonRecursive
+                -- mergeSort
+
+        -- distribution sort
+                -- countingSort
+                -- radixSort
+                -- bucketSort
 
 
 博客地址：
