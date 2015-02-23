@@ -56,6 +56,7 @@ var merSort = mergingSort.mergeSort;
 
 var countingSort = distributionSort.countingSort;
 var radixSort = distributionSort.radixSort;
+var bucketSort = distributionSort.bucketSort;
 
 // for comparison
 
@@ -237,6 +238,10 @@ console.timeEnd('countingSort');
 console.time('radixSort');
 radixSort(arr20);
 console.timeEnd('radixSort');
+
+//console.time('bucketSort');
+//bucketSort(arr21);
+//console.timeEnd('bucketSort');
 
 console.log('\n');
 

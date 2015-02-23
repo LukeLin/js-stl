@@ -237,38 +237,28 @@ function partitionUnOptimized(sqList, low, high){
 function partition(sqList, low, high){
     var temp;
     var n = high - low + 1;
-    var gap = Math.random() * n | 0;
+    var gap = Math.random() * n | 0 + low;
 
     temp = sqList[high];
-    sqList[high] = sqList[low + gap];
-    sqList[low + gap] = temp;
+    sqList[high] = sqList[gap];
+    sqList[gap] = temp;
 
     var i = low - 1;
-    var k = high;
     var pivot = sqList[high];
 
     for(var j = low; j < high; ++j){
-        if(sqList[j] < pivot) {
+        if(sqList[j] <= pivot) {
             ++i;
             temp = sqList[i];
             sqList[i] = sqList[j];
-            sqList[j] = temp;
-        } else if(sqList[j] === pivot) {
-            --k;
-            temp = sqList[k];
-            sqList[k] = sqList[j];
             sqList[j] = temp;
         }
     }
 
     ++i;
-    for(var t = high; t <= k; ++t){
-        if(i < k) {
-            temp = sqList[i];
-            sqList[i] = sqList[t];
-            sqList[t] = temp;
-        }
-    }
+    temp = sqList[i];
+    sqList[i] = sqList[high];
+    sqList[high] = temp;
 
     return i;
 }

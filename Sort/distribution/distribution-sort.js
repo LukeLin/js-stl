@@ -183,28 +183,29 @@ function bucketSort(sqList){
         bucketA[i] = 0;
 
         for(var j = 0; j < n; ++j)
-            b[i][j] = 0
+            b[i][j] = Infinity;
     }
 
     // 给桶填装数据
     for(i = 0; i < n; ++i){
         var data = sqList[i];
-        // noto: 这里的映射函数是针对两位数的
+        // noto: 这里的映射函数是针对1-100之间的实数
         var bucket = data / BUCKETSNUM | 0;
         b[bucket][bucketA[bucket]] = data;
         ++bucketA[bucket];
     }
 
-    // 针对每个桶进行插入排序
+    // 针对每个桶进行快速排序
     for(i = 0; i < BUCKETSNUM; ++i){
         if(bucketA[i] !== 0) {
-            for(j = 1; j < bucketA[i]; ++j){
-                var p = b[i][j];
-                for(var k = j - 1; k >= 0 && p < b[i][k]; --k){
-                    b[i][k + 1] = b[i][k];
-                }
-                b[i][k + 1] = p;
-            }
+            quickSort(b[i], 0, bucketA[i] - 1);
+            //for(j = 1; j < bucketA[i]; ++j){
+            //    var p = b[i][j];
+            //    for(var k = j - 1; k >= 0 && p < b[i][k]; --k){
+            //        b[i][k + 1] = b[i][k];
+            //    }
+            //    b[i][k + 1] = p;
+            //}
         }
     }
 
@@ -221,9 +222,14 @@ function bucketSort(sqList){
         }
     }
 }
+exports.bucketSort = bucketSort;
 
-var arr = [51.2, 93, 97, 92.2, 96, 99.5, 92.0, 89, 93, 97, 90, 94, 92.1, 95];
+var arr = [51.2, 93, 1, 92.2, 8, 99.5, 92.0, 89, 93, 97, 90, 94, 92.1, 95];
 bucketSort(arr);
+console.log(arr + '');
+
+var arr = [51.2, 93, 1, 92.2, 8, 99.5, 92.0, 89, 93, 97, 90, 94, 92.1, 95, Infinity, Infinity, Infinity];
+quickSort(arr);
 console.log(arr + '');
 
 
