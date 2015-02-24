@@ -268,51 +268,6 @@ console.time('heapSort');
 arr8.heapSort();
 console.timeEnd('heapSort');
 
-/*
- 在我家的老爷机上跑
- 100000条数据，
- 机器配置：
- 电脑型号	海尔 HaierComputer 台式电脑
- 操作系统	Windows 8 专业版 32位 ( DirectX 11 )
-
- 处理器	英特尔 Pentium(奔腾) 双核 E5200 @ 2.50GHz
- 主板	海尔 G31T-M5 ( 英特尔 P35/G33/G31/P31 Express - ICH7 )
- 内存	4 GB ( 威刚 DDR2 800MHz )
- 主硬盘	希捷 ST3500418AS ( 500 GB / 7200 转/分 )
-
- 随机情况
- straightInsertSort: 13219ms
- binaryInsertSort: 12278ms
- path2InsertSort: 72619ms
- shellSort: 29ms
-
-
-随机情况
- bubbleSort: 104551ms
- bubbleSort1: 43809ms
- cockTailSort: 26993ms
- bubbleSort3: 54022ms
-
- quickSortNonRecursive: 29ms
- quickSort: 28ms
-
-
- 最差情况，reverse
- bubbleSort: 92582ms
- bubbleSort1: 40989ms
- cockTailSort: 28798ms
- bubbleSort3: 57511ms
-
- quickSortNonRecursive: 11884ms Stack
- quickSortNonRecursive: 11765ms native Array
-
- quickSort: 13905ms
-
-
- 当对比的数据范围比较小时，希尔排序比快速快，
- 当数据范围比较大时，快排比希尔快
- */
-
 
 // http://blog.csdn.net/hguisu/article/details/7776068
 // http://blog.csdn.net/xiazdong/article/details/8462393
