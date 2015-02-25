@@ -82,10 +82,10 @@ directory
         -- merge sort
                 -- mergeSortRecursive
                 -- mergeSortNonRecursive
-                -- mergeSort
+                -- natureMergeSort
 
         -- distribution sort
-                -- countingSort
+                -- countSort
                 -- radixSort
                 -- bucketSort
 

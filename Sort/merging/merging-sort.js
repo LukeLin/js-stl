@@ -155,7 +155,7 @@ function pass(sqList, rec){
     return num;
 }
 
-function mergeSort(sqList){
+function natureMergeSort(sqList){
     var rec = [];
 
     //num=2说明已经排好序了
@@ -167,11 +167,11 @@ function mergeSort(sqList){
     }
 }
 
-exports.mergeSort = mergeSort;
+exports.natureMergeSort = natureMergeSort;
 
-console.log('\nmergeSort:');
+console.log('\nnatureMergeSort:');
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
-mergeSort(arr);
+natureMergeSort(arr);
 console.log(arr + '');
 
 

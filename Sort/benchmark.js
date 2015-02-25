@@ -52,9 +52,9 @@ var heapSort = selectionSort.heapSort;
 
 var mergeSortRecursive = mergingSort.mergeSortRecursive;
 var mergeSortNonRecursive = mergingSort.mergeSortNonRecursive;
-var mergeSort = mergingSort.mergeSort;
+var natureMergeSort = mergingSort.natureMergeSort;
 
-var countingSort = distributionSort.countingSort;
+var countSort = distributionSort.countSort;
 var radixSort = distributionSort.radixSort;
 var bucketSort = distributionSort.bucketSort;
 
@@ -225,16 +225,16 @@ console.time('mergeSortNonRecursive');
 mergeSortNonRecursive(arr17);
 console.timeEnd('mergeSortNonRecursive');
 
-console.time('mergeSort');
-mergeSort(arr18);
-console.timeEnd('mergeSort');
+console.time('natureMergeSort');
+natureMergeSort(arr18);
+console.timeEnd('natureMergeSort');
 
 console.log('\n');
 
 
-console.time('countingSort');
-countingSort(arr19);
-console.timeEnd('countingSort');
+console.time('countSort');
+countSort(arr19);
+console.timeEnd('countSort');
 
 console.time('radixSort');
 radixSort(arr20);

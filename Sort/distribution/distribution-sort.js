@@ -39,7 +39,7 @@ function maxElem(arr){
  * @param {Number} k 数组中最大的元素值
  * @returns {Array}
  */
-function countingSort(sqList, k){
+function countSort(sqList, k){
     if(k == null) k = maxElem(sqList);
     var len = sqList.length;
     var c = [];
@@ -58,10 +58,10 @@ function countingSort(sqList, k){
 
     for(i = 0; i < len; ++i) sqList[i] = b[i];
 }
-exports.countingSort = countingSort;
+exports.countSort = countSort;
 
 var arr = [100, 93, 97, 92, 96, 99, 92, 89, 93, 97, 90, 94, 92, 95];
-countingSort(arr, 100);
+countSort(arr, 100);
 console.log(arr + '');
 
 
