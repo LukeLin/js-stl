@@ -2,8 +2,6 @@
  * Created by Luke on 2015/2/2.
  */
 
-var Stack = require('../../Stack/stack');
-
 /*
  交换排序
 
@@ -217,7 +215,7 @@ console.log('bubbleSort3:\n' + arr + '');
 
  */
 
-function partitionUnOptimized(sqList, low, high){
+function partition1(sqList, low, high){
     var temp = sqList[low];
 
     while(low < high){
@@ -234,14 +232,15 @@ function partitionUnOptimized(sqList, low, high){
 
 // 优化一趟快速排序方法： 随机化partition
 // 最坏情况效率大幅提升，时间复杂度T(n)=O(n㏒2n)
-function partition(sqList, low, high){
+function partition2(sqList, low, high){
     var temp;
     var n = high - low + 1;
-    var gap = Math.random() * n | 0 + low;
+    var rand = Math.random() * n | 0 + low;
 
+    //var rand = (low + high) >> 1;
     temp = sqList[high];
-    sqList[high] = sqList[gap];
-    sqList[gap] = temp;
+    sqList[high] = sqList[rand];
+    sqList[rand] = temp;
 
     var i = low - 1;
     var pivot = sqList[high];
@@ -256,11 +255,38 @@ function partition(sqList, low, high){
     }
 
     ++i;
-    temp = sqList[i];
-    sqList[i] = sqList[high];
-    sqList[high] = temp;
+    sqList[high] = sqList[i];
+    sqList[i] = pivot;
 
     return i;
+}
+
+function partition(sqList, low, high){
+    var temp;
+    var i = low;
+    var j = high + 1;
+    var rand = Math.random() * (j - i) | 0 + i + 1;
+
+    //var rand = (low + high) >> 1;
+    temp = sqList[low];
+    sqList[low] = sqList[rand];
+    sqList[rand] = temp;
+
+    var x = sqList[low];
+
+    while(1){
+        while(sqList[++i] < x && i < high);
+        while(sqList[--j] > x);
+        if(i >= j) break;
+        temp = sqList[i];
+        sqList[i] = sqList[j];
+        sqList[j] = temp;
+    }
+
+    sqList[low] = sqList[j];
+    sqList[j] = x;
+
+    return j;
 }
 
 function quickSortRecursive(sqList, low, high){
@@ -290,8 +316,8 @@ function quickSortNonRecursive(sqList, low, high){
         while(low < high){
             k = partition(sqList, low, high);
             // 第二个子序列的上,下界分别入栈
-            stack.push(high);
-            stack.push(k + 1);
+            stack.push(high, k + 1);
+            //stack.push(k + 1);
             high = k - 1;
         }
 
@@ -323,12 +349,12 @@ function quickSort(sqList, low, high){
             // 吧长的子序列边界入栈，
             // 短的子序列留待下次排序
             if(high - pivot > pivot - low) {
-                stack.push(high);
-                stack.push(pivot + 1);
+                stack.push(high, pivot + 1);
+                //stack.push();
                 high = pivot - 1;
             } else {
-                stack.push(pivot - 1);
-                stack.push(low);
+                stack.push(pivot - 1, low);
+                //stack.push();
                 low = pivot + 1;
             }
         }
