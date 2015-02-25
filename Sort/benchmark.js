@@ -267,7 +267,3 @@ console.timeEnd('mergeSort');
 console.time('heapSort');
 arr8.heapSort();
 console.timeEnd('heapSort');
-
-
-// http://blog.csdn.net/hguisu/article/details/7776068
-// http://blog.csdn.net/xiazdong/article/details/8462393
