@@ -32,7 +32,7 @@ function binarySearch(sTable, key) {
     var high = sTable.length - 1;
 
     while (low <= high) {
-        var mid = Math.floor((low + high) / 2);
+        var mid = (low + high) >> 1;
         var elem = sTable[mid];
 
         if (key === elem) return mid;
@@ -47,12 +47,11 @@ console.log('binarySearch: ');
 console.log(binarySearch([1, 2, 3, 4, 5], 1));  // 0
 
 function binarySearchRecursive(sTable, key, low, high) {
-    low = low || 0;
-    high = high || sTable.length - 1;
-
+    if(low == null) low = 0;
+    if(high == null) high = sTable.length - 1;
     if (low > high) return -1;
 
-    var mid = Math.floor((low + high) / 2);
+    var mid = (low + high) >> 1;
 
     if (sTable[mid] === key)
         return mid;
