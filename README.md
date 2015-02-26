@@ -34,6 +34,7 @@ directory
     Queue
         -- Queue
         -- CycleQueue
+        -- PriorityQueue
 
     Stack
         -- stack
