@@ -22,9 +22,9 @@
 function PriorityQueue(){
     this.heap = [];
 }
+exports.PriorityQueue = PriorityQueue;
 PriorityQueue.prototype = {
     constructor: PriorityQueue,
-    // todo bug exists
     enQueue: function(value, priority){
         // 将当前节点追加到堆尾
         this.heap.push({
