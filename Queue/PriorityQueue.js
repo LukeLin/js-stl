@@ -36,7 +36,7 @@ PriorityQueue.prototype = {
         if(this.heap.length === 1) return;
 
         // 获取最后一个非叶子节点，并进行堆调整
-        upHeapAdjust(this.heap, this.heap.length >> 1 - 1);
+        upHeapAdjust(this.heap, (this.heap.length >> 1) - 1);
     },
     deQueue: function(){
         if(!this.heap.length) return null;
