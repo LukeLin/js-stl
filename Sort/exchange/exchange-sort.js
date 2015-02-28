@@ -456,7 +456,7 @@ var RED = 0;
 var WHITE = 1;
 var BLUE = 2;
 
-function flagArrage(colors){
+function flagArrange(colors){
     var i = 0;
     var j = 0;
     var k = colors.length - 1;
@@ -487,5 +487,5 @@ function flagArrage(colors){
 }
 
 var arr = [2, 1, 0, 2, 1, 1, 0, 2, 0, 2, 1];
-flagArrage(arr);
+flagArrange(arr);
 console.log(arr + '');
