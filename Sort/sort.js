@@ -46,6 +46,7 @@
  */
 
 
+// It's just a comparison version, will be removed soon.
 Array.prototype.swap = function(i, j)
 {
     var temp = this[i];

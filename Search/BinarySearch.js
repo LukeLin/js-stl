@@ -25,6 +25,7 @@
  (n+1)/n*㏒2(n+1)-1
  当n很大 (n>50)时， ASL≈ ㏒2(n+1)-1。
 
+最坏情况的计算时间复杂度为O(logn)
  */
 
 function binarySearch(sTable, key) {

@@ -132,7 +132,7 @@ console.log('cockTailSort:\n' + arr + '');
 
 
 // 改进3
-function bubbleSort3(sqList){
+function cockTailSort2(sqList){
     var b = {};
     var len = sqList.length;
     // d为冒泡方向标识， 1为向上，-1为向下
@@ -162,11 +162,11 @@ function bubbleSort3(sqList){
         d *= -1;
     }
 }
-exports.bubbleSort3 = bubbleSort3;
+exports.cockTailSort2 = cockTailSort2;
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
-bubbleSort3(arr);
-console.log('bubbleSort3:\n' + arr + '');
+cockTailSort2(arr);
+console.log('cockTailSort2:\n' + arr + '');
 
 
 
