@@ -53,41 +53,6 @@ Array.prototype.swap = function(i, j)
     this[i] = this[j];
     this[j] = temp;
 }
-Array.prototype.bubbleSort = function()
-{
-    for (var i = this.length - 1; i > 0; --i)
-    {
-        for (var j = 0; j < i; ++j)
-        {
-            if (this[j] > this[j + 1]) this.swap(j, j + 1);
-        }
-    }
-}
-Array.prototype.selectionSort = function()
-{
-    for (var i = 0; i < this.length; ++i)
-    {
-        var index = i;
-        for (var j = i + 1; j < this.length; ++j)
-        {
-            if (this[j] < this[index]) index = j;
-        }
-        this.swap(i, index);
-    }
-}
-Array.prototype.insertionSort = function()
-{
-    for (var i = 1; i < this.length; ++i)
-    {
-        var j = i, value = this[i];
-        while (j > 0 && this[j - 1] > value)
-        {
-            this[j] = this[j - 1];
-            --j;
-        }
-        this[j] = value;
-    }
-}
 Array.prototype.shellSort = function()
 {
     for (var step = this.length >> 1; step > 0; step >>= 1)
