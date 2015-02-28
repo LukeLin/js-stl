@@ -55,8 +55,14 @@ directory
         -- RedBlackTree
         -- B-Tree
         -- B+Tree
-        -- DigitalSearchTree / DictionryTree / DoubleLinkedTree / TrieTree
+        -- DigitalSearchTree / DictionaryTree
+            -- DoubleLinkedTree
+            -- TrieTree
+            -- PatriciaTree    todo
+            -- SuffixTree    todo
         -- HashTable
+        -- Treap    todo
+        -- SplayTree    todo
 
     Sort
         -- insertion sort
