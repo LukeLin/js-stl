@@ -74,9 +74,9 @@ directory
                 
         --  exchange sort
                 -- bubbleSort
-                -- bubbleSort1
+                -- bubbleSort2
                 -- cockTailSort
-                -- bubbleSort3
+                -- cockTailSort2
                 -- quickSortRecursive
                 -- quickSortNonRecursive
                 -- quickSort

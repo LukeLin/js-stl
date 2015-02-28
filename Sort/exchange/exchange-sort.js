@@ -63,7 +63,7 @@ console.log('bubbleSort:\n' + arr + '');
 
 
 // 冒泡改进1
-function bubbleSort1(sqList){
+function bubbleSort2(sqList){
     var len = sqList.length;
     var change = len - 1;
 
@@ -81,11 +81,11 @@ function bubbleSort1(sqList){
         change = c;
     }
 }
-exports.bubbleSort1 = bubbleSort1;
+exports.bubbleSort2 = bubbleSort2;
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
-bubbleSort1(arr);
-console.log('bubbleSort1:\n' + arr + '');
+bubbleSort2(arr);
+console.log('bubbleSort2:\n' + arr + '');
 
 
 // 相邻两趟反方向起泡的冒泡排序算法

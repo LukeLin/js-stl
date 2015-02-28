@@ -39,7 +39,7 @@ var staticLinkedListInsertSort = insertionSort.staticLinkedListInsertSort;
 var shellSort = insertionSort.shellSort;
 
 var bubbleSort = exchangeSort.bubbleSort;
-var bubbleSort1 = exchangeSort.bubbleSort1;
+var bubbleSort2 = exchangeSort.bubbleSort2;
 var cockTailSort = exchangeSort.cockTailSort;
 var cockTailSort2 = exchangeSort.cockTailSort2;
 var quickSortRecursive = exchangeSort.quickSortRecursive;
@@ -175,9 +175,9 @@ console.log('\n');
 //bubbleSort(arr6);
 //console.timeEnd('bubbleSort');
 
-//console.time('bubbleSort1');
-//bubbleSort1(arr7);
-//console.timeEnd('bubbleSort1');
+//console.time('bubbleSort2');
+//bubbleSort2(arr7);
+//console.timeEnd('bubbleSort2');
 
 //console.time('cockTailSort');
 //cockTailSort(arr8);
