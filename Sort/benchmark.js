@@ -30,7 +30,6 @@ var exchangeSort = require('./exchange/exchange-sort');
 var selectionSort = require('./selection/selection-sort');
 var mergingSort = require('./merging/merging-sort');
 var distributionSort = require('./distribution/distribution-sort');
-var otherSort = require('./sort');
 
 var straightInsertSort = insertionSort.straightInsertSort;
 var binaryInsertSort = insertionSort.binaryInsertSort;
@@ -245,25 +244,3 @@ console.timeEnd('radixSort');
 //console.timeEnd('bucketSort');
 
 console.log('\n');
-
-
-
-console.time('shellSort');
-arr3.shellSort();
-console.timeEnd('shellSort');
-
-console.time('quickSort');
-arr4.quickSort();
-console.timeEnd('quickSort');
-
-console.time('stackQuickSort');
-arr6.stackQuickSort();
-console.timeEnd('stackQuickSort');
-
-console.time('mergeSort');
-arr7.mergeSort();
-console.timeEnd('mergeSort');
-
-console.time('heapSort');
-arr8.heapSort();
-console.timeEnd('heapSort');
