@@ -923,7 +923,7 @@ test.insert(14);
 test.insert(25);
 test.insert(81);
 test.insert(44);
-test.inOrderTraverse(function (data) {
+test.inOrderRecursive(function (data) {
     console.log(data);
 });
 
@@ -948,7 +948,7 @@ test.insert_nonRecursive(14);
 test.insert_nonRecursive(25);
 test.insert_nonRecursive(81);
 test.insert_nonRecursive(44);
-test.inOrderTraverse(function (data) {
+test.inOrderRecursive(function (data) {
     console.log(data);
 });
 

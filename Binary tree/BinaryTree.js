@@ -58,27 +58,27 @@
     var tree = [1, 2, 3, 4, 5, , 6, , , 7];
 
     console.log('preOrder:');
-    void function preOrderTraverse(x, visit) {
+    void function preOrderRecursive(x, visit) {
         visit(tree[x]);
-        if (tree[2 * x + 1]) preOrderTraverse(2 * x + 1, visit);
-        if (tree[2 * x + 2]) preOrderTraverse(2 * x + 2, visit);
+        if (tree[2 * x + 1]) preOrderRecursive(2 * x + 1, visit);
+        if (tree[2 * x + 2]) preOrderRecursive(2 * x + 2, visit);
     }(0, function (value) {
         console.log(value);
     });
 
     console.log('inOrder:');
-    void function inOrderTraverse(x, visit) {
-        if (tree[2 * x + 1]) inOrderTraverse(2 * x + 1, visit);
+    void function inOrderRecursive(x, visit) {
+        if (tree[2 * x + 1]) inOrderRecursive(2 * x + 1, visit);
         visit(tree[x]);
-        if (tree[2 * x + 2]) inOrderTraverse(2 * x + 2, visit);
+        if (tree[2 * x + 2]) inOrderRecursive(2 * x + 2, visit);
     }(0, function (value) {
         console.log(value);
     });
 
     console.log('postOrder:');
-    void function postOrderTraverse(x, visit) {
-        if (tree[2 * x + 1]) postOrderTraverse(2 * x + 1, visit);
-        if (tree[2 * x + 2]) postOrderTraverse(2 * x + 2, visit);
+    void function postOrderRecursive(x, visit) {
+        if (tree[2 * x + 1]) postOrderRecursive(2 * x + 1, visit);
+        if (tree[2 * x + 2]) postOrderRecursive(2 * x + 2, visit);
         visit(tree[x]);
     }(0, function (value) {
         console.log(value);
@@ -106,17 +106,17 @@ BinaryTree.prototype = {
             this.rightChild && isSimilar.call(this.rightChild, tree.rightChild);
     },
     createBinaryTree: function (tree) {
-        void function preOrderTraverse(node, x, visit) {
+        void function preOrderRecursive(node, x, visit) {
             visit(node, tree[x]);
 
             var p;
             if (tree[2 * x + 1]) {
                 p = node.leftChild = new BinaryTree();
-                preOrderTraverse(p, 2 * x + 1, visit);
+                preOrderRecursive(p, 2 * x + 1, visit);
             }
             if (tree[2 * x + 2]) {
                 p = node.rightChild = new BinaryTree();
-                preOrderTraverse(p, 2 * x + 2, visit);
+                preOrderRecursive(p, 2 * x + 2, visit);
             }
 
             if(p) p.parentNode = node;
@@ -126,7 +126,7 @@ BinaryTree.prototype = {
     },
 
     // 先序遍历二叉树的非递归算法
-    preOrder_stack: function (visit) {
+    preOrderNonRecursive: function (visit) {
         var stack = new Stack();
         stack.push(this);
 
@@ -146,7 +146,7 @@ BinaryTree.prototype = {
             }
         }
     },
-    preOrder_stack2: function (visit) {
+    preOrderNonRecursive2: function (visit) {
         var stack = new Stack();
         var p = this;
 
@@ -161,7 +161,7 @@ BinaryTree.prototype = {
             }
         }
     },
-    inOrder_stack1: function (visit) {
+    inOrderNonRecursive1: function (visit) {
         var stack = new Stack();
         stack.push(this);
 
@@ -181,7 +181,7 @@ BinaryTree.prototype = {
             }
         }
     },
-    inOrder_stack2: function (visit) {
+    inOrderNonRecursive2: function (visit) {
         var stack = new Stack();
         var p = this;
 
@@ -199,7 +199,7 @@ BinaryTree.prototype = {
     // 为了区分两次过栈的不同处理方式，在堆栈中增加一个mark域，
     // mark=0表示刚刚访问此结点，mark=1表示左子树处理结束返回，
     // mark=2表示右子树处理结束返回。每次根据栈顶的mark域决定做何动作
-    postOrder_stack: function (visit) {
+    postOrderNonRecursive: function (visit) {
         var stack = new Stack();
         stack.push([this, 0]);
 
@@ -225,19 +225,19 @@ BinaryTree.prototype = {
         }
     },
 
-    preOrderTraverse: function preOrderTraverse(visit) {
+    preOrderRecursive: function preOrderRecursive(visit) {
         visit(this.data);
-        if (this.leftChild) this.leftChild.preOrderTraverse(visit);
-        if (this.rightChild) this.rightChild.preOrderTraverse(visit);
+        if (this.leftChild) this.leftChild.preOrderRecursive(visit);
+        if (this.rightChild) this.rightChild.preOrderRecursive(visit);
     },
-    inOrderTraverse: function inOrderTraverse(visit) {
-        if (this.leftChild) inOrderTraverse.call(this.leftChild, visit);
+    inOrderRecursive: function inOrderRecursive(visit) {
+        if (this.leftChild) inOrderRecursive.call(this.leftChild, visit);
         visit(this.data);
-        if (this.rightChild) inOrderTraverse.call(this.rightChild, visit);
+        if (this.rightChild) inOrderRecursive.call(this.rightChild, visit);
     },
-    postOrderTraverse: function postOrderTraverse(visit) {
-        if (this.leftChild) postOrderTraverse.call(this.leftChild, visit);
-        if (this.rightChild) postOrderTraverse.call(this.rightChild, visit);
+    postOrderRecursive: function postOrderRecursive(visit) {
+        if (this.leftChild) postOrderRecursive.call(this.leftChild, visit);
+        if (this.rightChild) postOrderRecursive.call(this.rightChild, visit);
         visit(this.data);
     },
 
@@ -484,29 +484,29 @@ void function test() {
     var tree = [1, 2, 3, 4, 5, , 6, , , 7];
     var test = new BinaryTree;
     test.createBinaryTree(tree);
-    test.preOrderTraverse(function (value) {
+    test.preOrderRecursive(function (value) {
         console.log('preOrder: ' + value);
     });
-    test.inOrderTraverse(function (value) {
+    test.inOrderRecursive(function (value) {
         console.log('inOrder: ' + value);
     });
-    test.postOrderTraverse(function (value) {
+    test.postOrderRecursive(function (value) {
         console.log('postOrder: ' + value);
     });
-    test.preOrder_stack(function (data) {
+    test.preOrderNonRecursive(function (data) {
         console.log('preOrderNonRecusive: ' + data);
     });
-    test.preOrder_stack2(function (data) {
-        console.log('preOrder_stack2: ' + data);
+    test.preOrderNonRecursive2(function (data) {
+        console.log('preOrderNonRecursive2: ' + data);
     });
-    test.inOrder_stack1(function (value) {
-        console.log('inOrder_stack1: ' + value);
+    test.inOrderNonRecursive1(function (value) {
+        console.log('inOrderNonRecursive1: ' + value);
     });
-    test.inOrder_stack2(function (value) {
-        console.log('inOrder_stack2: ' + value);
+    test.inOrderNonRecursive2(function (value) {
+        console.log('inOrderNonRecursive2: ' + value);
     });
-    test.postOrder_stack(function (value) {
-        console.log('postOrder_stack: ' + value);
+    test.postOrderNonRecursive(function (value) {
+        console.log('postOrderNonRecursive: ' + value);
     });
     test.getPreSequence(5);
     console.log(test.countLeaves());

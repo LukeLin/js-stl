@@ -104,6 +104,6 @@ var sosTree = createSOSTree({
     elems: ['A', 'B', 'C', 'D', 'E'],
     weights: [1, 30, 2, 29, 3]
 });
-sosTree.preOrderTraverse(function (value) {
+sosTree.preOrderRecursive(function (value) {
     console.log('inOrder: ' + value);
 });

@@ -7,7 +7,7 @@ describe('linkedList tests', function(){
     expect(list.head.data).toBe('b');
     expect(list.tail.next).toBe(null);
 
-    list.insertAsFirst('a');
+    list.unshift('a');
     expect(list.head.data).toBe('a');
     expect(list.head.next.data).toBe('b');
 
@@ -17,8 +17,8 @@ describe('linkedList tests', function(){
   });
 
   it('should remove one item', function(){
-    expect(list['delete']('c')).toBe(true);
-    list['delete']('a');
+    expect(list.remove('c')).toBe(true);
+    list.remove('a');
     expect(list.head.data).toBe('b');
   });
 
@@ -26,7 +26,7 @@ describe('linkedList tests', function(){
 
   it('should match the json', function(){
     list2.add('c');
-    list2.insertAsFirst('d');
+    list2.unshift('d');
     list2.insertAfter('d', 'b');
     expect(JSON.stringify(list2)).toBe('{"head":{"data":"d","next":{"data":"b","next":{"data":"c","next":null}}},"tail":{"data":"c","next":null}}');
   });

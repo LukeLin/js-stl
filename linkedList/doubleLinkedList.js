@@ -14,16 +14,16 @@
  */
 
 (function () {
-    function DuLNode(data, prior, next) {
+    function DoubleLinkedList(data, prior, next) {
         this.data = data;
         this.prior = prior || this;
         this.next = next || this;
     }
 
-    module.exports = DuLNode;
-    DuLNode.prototype = {
-        constructor: DuLNode,
-        getElem: function (i) {
+    module.exports = DoubleLinkedList;
+    DoubleLinkedList.prototype = {
+        constructor: DoubleLinkedList,
+        find: function (i) {
             // 初始化，p指向第一个节点，j为计数器
             var p = this.next;
             var j = 1;
@@ -36,20 +36,20 @@
             // 或者取第i个元素
             return (!p || j > i) ? null : p;
         },
-        listInsert: function (i, elem) {
+        add: function (i, elem) {
             var p;
 
-            if (!(p = this.getElem(i))) return false;
+            if (!(p = this.find(i))) return false;
 
-            var s = new DuLNode(elem, p.prior, p);
+            var s = new DoubleLinkedList(elem, p.prior, p);
             p.prior.next = s;
             p.prior = s;
 
             return true;
         },
-        listDelete: function (i) {
+        remove: function (i) {
             var p;
-            if (!(p = this.getElem(i))) return false;
+            if (!(p = this.find(i))) return false;
 
             var e = p.data;
             p.prior.next = p.next;
@@ -61,12 +61,12 @@
         }
     };
 
-    var a = new DuLNode(1);
+    var a = new DoubleLinkedList(1);
 
-    a.listInsert(0, 1);
-    a.listInsert(1, 2);
-    a.listInsert(2, 3);
-    a.listDelete(1);
+    a.add(0, 1);
+    a.add(1, 2);
+    a.add(2, 3);
+    a.remove(1);
     console.log(a);
 
 })();
