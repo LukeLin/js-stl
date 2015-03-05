@@ -3,29 +3,35 @@
  */
 
 (function () {
-    function List(sqList) {
+    function Node(data, next){
+        this.data = data || null;
+        this.next = next || null;
+    }
+
+    function LinkedList(sqList) {
         this.head = null;
         this.tail = null;
 
         if (sqList) {
-            for (var i = 0, len = sqList.length; i < len; ++i) {
+            for (var i = 0, len = sqList.length; i < len; ++i)
                 this.add(sqList[i]);
-            }
         }
     }
 
-    module.exports = List;
+    module.exports = LinkedList;
 
-    List.mergeList = function (a, b, compare) {
+    function compFn(a, b) {
+        return a - b;
+    }
+
+    LinkedList.mergeList = function (a, b, compare) {
         var ha = a.head;
         var hb = b.head;
         var pa = ha;
         var pb = hb;
-        var c = new List();
+        var c = new LinkedList();
         var q;
-        compare = compare || function (data1, data2) {
-            return data1 <= data2;
-        };
+        compare = compare || compFn;
 
         while (pa && pb) {
             var data1 = pa.data;
@@ -33,35 +39,27 @@
 
             if (!compare(data1, data2)) {
                 // delete head node
-                q = a.delFirst();
+                q = a.shift();
                 // append the node to c linkedList
                 c.append(q);
                 pa = a.head;
             } else {
-                q = b.delFirst();
+                q = b.shift();
                 c.append(q);
                 pb = b.head;
             }
         }
 
-        if (pa) {
-            c.append(pa);
-        } else {
-            c.append(pb);
-        }
+        if (pa) c.append(pa);
+        else c.append(pb);
 
         return c;
     };
 
-    List.prototype = {
-        constructor: List,
-        makeNode: function (data, next) {
-            return {
-                data: data != null ? data : null,
-                next: next || null
-            };
-        },
-        delFirst: function () {
+    LinkedList.prototype = {
+        constructor: LinkedList,
+        // delete first element and return it
+        shift: function () {
             var head = this.head;
             this.head = this.head.next;
             head.next = null;
@@ -69,6 +67,7 @@
             if (this.head === null) this.tail = null;
             return head;
         },
+        // append node
         append: function (node) {
             if (this.head !== null) {
                 this.tail.next = node;
@@ -78,18 +77,20 @@
                 this.tail = node;
             }
         },
+        // add data
         add: function (data) {
             if (this.head === null) {
-                this.head = this.makeNode(data);
+                this.head = new Node(data);
                 this.tail = this.head;
             } else {
-                this.tail.next = this.makeNode(data);
+                this.tail.next = new Node(data);
                 this.tail = this.tail.next;
             }
 
             this.tail.data = data;
         },
-        'delete': function (data) {
+        // remove data
+        remove: function (data) {
             var current = this.head;
             var previous = this.head;
             var elem;
@@ -117,8 +118,8 @@
 
             return elem ? elem : false;
         },
-        insertAsFirst: function (data) {
-            var temp = this.makeNode(data);
+        unshift: function (data) {
+            var temp = new Node(data);
             temp.next = this.head;
             this.head = temp;
         },
@@ -126,7 +127,7 @@
             var current = this.head;
             while (current !== null) {
                 if (current.data === target) {
-                    var temp = this.makeNode(data);
+                    var temp = new Node(data);
                     temp.next = current.next;
 
                     if (current === this.tail) this.tail = temp;
@@ -191,7 +192,7 @@
             var current = this.head;
 
             if (current === null) {
-                this.head = this.tail = this.makeNode(data);
+                this.head = this.tail = new Node(data);
                 return;
             }
 
@@ -211,7 +212,7 @@
                     // 因为已经是排序了，所以不需要多余判断了
                 } else {
                     if (this.head === previous && previous === current) {
-                        return this.insertAsFirst(data);
+                        return this.unshift(data);
                     } else {
                         return insertBetween(data, previous, current);
                     }
@@ -219,15 +220,15 @@
             }
 
             // 插入到最后一个结点
-            previous.next = this.makeNode(data);
+            previous.next = new Node(data);
             this.tail = previous.next;
 
             function insertBetween(data, a, b) {
                 if (a == b) {
                     if (a == me.head)
-                        return me.insertAsFirst(data);
+                        return me.unshift(data);
                 } else {
-                    var temp = me.makeNode(data);
+                    var temp = new Node(data);
                     temp.next = b;
                     a.next = temp;
                     return true;
@@ -298,7 +299,7 @@
 
     // 求元素递增排列的线性表A和B的元素的交集并存入C
     function intersect(list, bList) {
-        var cList = new List();
+        var cList = new LinkedList();
 
         var p = list.head;
         var q = bList.head;
@@ -379,9 +380,9 @@
         list.tail = r;
     }
 
-    var list = new List();
+    var list = new LinkedList();
     list.add('b');
-    list.insertAsFirst('a');
+    list.unshift('a');
     list.insertAfter('b', 'c');
     console.log(list.item(2));
     console.log(JSON.stringify(list));
@@ -390,21 +391,21 @@
             console.log('get b in each');
         }
     });
-    list['delete']('c');
-    list['delete']('a');
+    list.remove('c');
+    list.remove('a');
     console.log(list);
 
-    var list2 = new List();
+    var list2 = new LinkedList();
     list2.add('c');
-    list2.insertAsFirst('d');
+    list2.unshift('d');
     list2.insertAfter('d', 'b');
     console.log(JSON.stringify(list2));
 
-    var list3 = List.mergeList(list, list2);
+    var list3 = LinkedList.mergeList(list, list2);
     console.log(list3);
 
 
-    var list = new List();
+    var list = new LinkedList();
 
     list.orderInsert(5);
     list.orderInsert(2);
@@ -430,14 +431,14 @@
     list.reverse();
     console.log(list);
 
-    var a = new List();
+    var a = new LinkedList();
     a.orderInsert(1);
     a.orderInsert(3);
     a.orderInsert(5);
     a.orderInsert(7);
     a.orderInsert(9);
 
-    var b = new List();
+    var b = new LinkedList();
     b.orderInsert(1);
     b.orderInsert(5);
     b.orderInsert(9);
@@ -447,14 +448,14 @@
 
     console.log(intersect_true(a, b));
 
-    a = new List();
+    a = new LinkedList();
     a.orderInsert(1);
     a.orderInsert(3);
     a.orderInsert(5);
     a.orderInsert(7);
     a.orderInsert(9);
 
-    var test = new List();
+    var test = new LinkedList();
     test.orderInsert(1);
     test.orderInsert(2);
     test.orderInsert(3);

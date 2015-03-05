@@ -23,7 +23,7 @@
          * 若找到，则返回它在L中的位序
          * @param data
          */
-        locateElem: function (data) {
+        find: function (data) {
             var i = this[0].cur;
             while (i && this[i].data !== data) {
                 i = this[i].cur;
@@ -34,7 +34,7 @@
          * 将一维数组中各分量链成一个备用链表
          * this[0].cur为头指针
          */
-        initSpace: function (len) {
+        init: function (len) {
             len = len ? len + 1 : this.MAXSIZE;
             for (var i = 0; i < len - 1; ++i) {
                 this[i] = this[i] || {data: null, cur: null};
@@ -64,7 +64,7 @@
 
         create: function(sqList){
             // 初始化备用空间
-            this.initSpace(sqList.length);
+            this.init(sqList.length);
             // 生成s的头结点
             var s = this.malloc();
             // r指向s的当前最后结点
@@ -99,7 +99,7 @@
      */
     function difference(sllist, arr1, arr2){
         // 初始化备用空间
-        sllist.initSpace();
+        sllist.init();
         // 生成s的头结点
         var s = sllist.malloc();
         // r指向s的当前最后结点
