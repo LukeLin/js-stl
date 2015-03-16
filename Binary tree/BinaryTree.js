@@ -128,29 +128,10 @@ BinaryTree.prototype = {
     // 先序遍历二叉树的非递归算法
     preOrderNonRecursive: function (visit) {
         var stack = new Stack();
-        stack.push(this);
-
-        while (stack.length) {
-            var p;
-            // 向左走到尽头
-            while ((p = stack.peek())) {
-                p.data && visit(p.data);
-                stack.push(p.leftChild);
-            }
-
-            stack.pop();
-
-            if (stack.length) {
-                p = stack.pop();
-                stack.push(p.rightChild);
-            }
-        }
-    },
-    preOrderNonRecursive2: function (visit) {
-        var stack = new Stack();
         var p = this;
 
         while (p || stack.length) {
+            // 向左走到尽头
             if (p) {
                 stack.push(p);
                 p.data && visit(p.data);
@@ -161,27 +142,9 @@ BinaryTree.prototype = {
             }
         }
     },
-    inOrderNonRecursive1: function (visit) {
-        var stack = new Stack();
-        stack.push(this);
 
-        while (stack.length) {
-            var p;
-            // 向左走到尽头
-            while ((p = stack.peek())) {
-                stack.push(p.leftChild);
-            }
-
-            stack.pop();
-
-            if (stack.length) {
-                p = stack.pop();
-                p.data && visit(p.data);
-                stack.push(p.rightChild);
-            }
-        }
-    },
-    inOrderNonRecursive2: function (visit) {
+    // 中序非递归遍历
+    inOrderNonRecursive: function (visit) {
         var stack = new Stack();
         var p = this;
 
@@ -494,16 +457,10 @@ void function test() {
         console.log('postOrder: ' + value);
     });
     test.preOrderNonRecursive(function (data) {
-        console.log('preOrderNonRecusive: ' + data);
+        console.log('preOrderNonRecursive: ' + data);
     });
-    test.preOrderNonRecursive2(function (data) {
-        console.log('preOrderNonRecursive2: ' + data);
-    });
-    test.inOrderNonRecursive1(function (value) {
-        console.log('inOrderNonRecursive1: ' + value);
-    });
-    test.inOrderNonRecursive2(function (value) {
-        console.log('inOrderNonRecursive2: ' + value);
+    test.inOrderNonRecursive(function (value) {
+        console.log('inOrderNonRecursive: ' + value);
     });
     test.postOrderNonRecursive(function (value) {
         console.log('postOrderNonRecursive: ' + value);
