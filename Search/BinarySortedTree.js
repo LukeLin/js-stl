@@ -18,7 +18,7 @@
  1  查找思想
  首先将给定的K值与二叉排序树的根结点的关键字进行比较：若相等： 则查找成功；
  ① 给定的K值小于BST的根结点的关键字：继续在该结点的左子树上进行查找；
- ②   给定的K值大于BST的根结点的关键字：继续在该结点的右子树上进行查找。
+ ② 给定的K值大于BST的根结点的关键字：继续在该结点的右子树上进行查找。
 
  在随机情况下，二叉排序树的平均查找长度ASL和㏒(n)(树的深度)是等数量级的。
 
@@ -71,11 +71,11 @@ BSTNode.prototype = {
             if (this.data === key) return this;
             else if (key < this.data) {
                 if (this.leftChild)
-                    return this.search.call(this.leftChild, key);
+                    return this.leftChild.search(key);
             }
             else {
                 if (this.rightChild)
-                    return this.search.call(this.rightChild, key);
+                    return this.rightChild.search(key);
             }
         }
 
@@ -101,10 +101,10 @@ BSTNode.prototype = {
             if (key === this.data) return;
             else if (key < this.data) {
                 if (!this.leftChild) this.leftChild = node;
-                this.insert.call(this.leftChild, key);
+                this.leftChild.insert(key);
             } else {
                 if (!this.rightChild) this.rightChild = node;
-                this.insert.call(this.rightChild, key);
+                this.rightChild.insert(key);
             }
         }
     },
@@ -136,11 +136,11 @@ BSTNode.prototype = {
     /**
      * 利用BST树的插入操作建立一棵BST树
      * @param {Array} arr
-     * @param {Boolean|undefined} usenonRecursive 是否使用非递归
+     * @param {Boolean|undefined} useNonRecursive 是否使用非递归
      */
-    createBST: function (arr, usenonRecursive) {
+    createBST: function (arr, useNonRecursive) {
         var i;
-        if (usenonRecursive) {
+        if (useNonRecursive) {
             for (i = 0; i < arr.length; ++i)
                 this.insertNonRecursive(arr[i]);
         } else {
@@ -264,10 +264,10 @@ BSTNode.prototype = {
         } else {
             if (node.data > this.data) {
                 if (!this.rightChild) this.rightChild = node;
-                else insertNode.call(this.rightChild, node);
+                else this.rightChild.insertNode(node);
             } else if (node.data < this.data) {
                 if (!this.leftChild) this.leftChild = node;
-                else insertNode.call(this.leftChild, node);
+                else this.leftChild.insertNode(node);
             }
         }
 
