@@ -93,8 +93,8 @@ var arr21 = [];
 var arr22 = [];
 
 for (var i = 0, len = 100000; i < len; ++i) {
-    var num = parseInt(Math.random() * 1000, 10);   // random case
-    //var num = len - i;    // the worst case
+    //var num = parseInt(Math.random() * 1000, 10);   // random case
+    var num = len - i;    // the worst case
     //var num = i + Math.random() * 10 | 0;     // almost sorted case
 
     arr.push(num);
