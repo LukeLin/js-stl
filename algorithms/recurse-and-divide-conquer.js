@@ -56,7 +56,7 @@ function randomizedPartition(sqList, low, high){
     var temp;
     var i = low;
     var j = high + 1;
-    var rand = Math.random() * (j - i) | 0 + i;
+    var rand = Math.random() * (high - low) | 0 + low + 1;
 
     temp = sqList[low];
     sqList[low] = sqList[rand];
