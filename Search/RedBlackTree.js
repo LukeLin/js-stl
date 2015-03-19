@@ -1,5 +1,5 @@
 /**
- * Red Black Tree todo
+ * Red Black Tree
  * Created by Luke on 2014/12/30.
  */
 /*
