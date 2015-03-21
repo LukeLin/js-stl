@@ -56,7 +56,7 @@ function randomizedPartition(sqList, low, high){
     var temp;
     var i = low;
     var j = high + 1;
-    var rand = Math.random() * (high - low) | 0 + low + 1;
+    var rand = Math.random() * (j - i) | 0 + i;
 
     temp = sqList[low];
     sqList[low] = sqList[rand];
@@ -82,6 +82,7 @@ function randomizedPartition(sqList, low, high){
 // 线性时间内找到数组第k小的元素
 function randomizedSelect(arr, low, high, k){
     if(low === high) return arr[low];
+    console.log(low, high);
 
     var i = randomizedPartition(arr, low, high);
     var j = i - low + 1;
@@ -128,3 +129,28 @@ function cyclicSchedulingGameTable(k){
 }
 var table = cyclicSchedulingGameTable(3);
 console.log(table);
+
+
+/*
+设a[0..n-1]是已排好序的数组，请改写二分搜索算法，使得当搜索元素x不在数组中时，返回小于x的最大元素位置i和大于x的最小元素位置j。当搜索元素在数组中时，i和j相同，均为x在数组中的位置。
+ */
+
+function specifiedBinarySearch(arr, x){
+    var low = 0;
+    var high = arr.length - 1;
+
+    while(low <= high){
+        var middle = (low + high) >> 1;
+
+        if(arr[middle] === x) return middle;
+        else if(arr[middle] > x) high = middle - 1;
+        else low = middle + 1;
+    }
+
+    return [high, low];
+}
+
+var arr = [1,  3,  5,  7,  9, 10];
+console.log(specifiedBinarySearch(arr, 6));
+console.log(specifiedBinarySearch(arr, 5));
+
