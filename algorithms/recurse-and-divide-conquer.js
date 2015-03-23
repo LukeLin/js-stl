@@ -178,7 +178,7 @@ function mergeForward(arr, k){
     var j = k;
 
     while(i < j && j < n){
-        var p = binarySearch4merge(arr, arr[i], j, n - 1);
+        var p = binarySearch4Merge(arr, arr[i], j, n - 1);
         shiftRight(arr, i, p, p - j + 1);
         console.log(arr + '');
         j = p + 1;
@@ -187,7 +187,7 @@ function mergeForward(arr, k){
 }
 
 // 在数组段a[low..high]中搜索元素x的插入位置
-function binarySearch4merge(arr, x, low, high){
+function binarySearch4Merge(arr, x, low, high){
     while(low <= high){
         var middle = (low + high) >> 1;
         if(x === arr[middle]) return middle;
@@ -203,8 +203,8 @@ function binarySearch4merge(arr, x, low, high){
 function shiftRight(arr, s, t, k){
     for(var i = 0; i < k; ++i){
         var temp = arr[t];
-        for(var j = t; j > s; --j) a[j] = a[j - 1];
-        a[s] = temp;
+        for(var j = t; j > s; --j) arr[j] = arr[j - 1];
+        arr[s] = temp;
     }
 }
 
