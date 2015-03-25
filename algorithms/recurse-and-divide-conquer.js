@@ -171,7 +171,7 @@ notice: 归并排序的算法空间复杂度是O(n)
 向右循环换位合并算法首先用二分搜索算法在数组段a[k..n-1]中搜索a[0]的插入位置，即找到位置p使得a[p]<a[0]<=a[p+1]。数组段a[0..p]向右循环换位p-k个位置，使a[k-1]移动到a[p]的位置。此时，原数组元素a[0]及其左边的所有元素均已排好序。对剩余的数组元素重复上述过程，直至只剩下一个数组段，此时整个数组已排好序。
  */
 
-// 合并a[0..k-1]和a[k..n-1]
+// 向前合并a[0..k-1]和a[k..n-1]
 function mergeForward(arr, k){
     var n = arr.length;
     var i = 0;
@@ -212,7 +212,45 @@ var a = [1, 3, 5, 7, 9, 11,    1, 5, 6, 8, 9, 10];
 mergeForward(a, 6);
 console.log('mergeForward: ' + a);
 
+// 将数组段a[s..t]中元素循环左移k个位置
+function shiftLeft(arr, s, t, k){
+    for(var i = 0; i < k; ++i){
+        var temp = arr[s];
+        for(var j = s + 1; j <= t; ++j) arr[j - 1] = arr[j];
+        arr[t] = temp;
+    }
+}
+
+var arr = [1, 2, 3, 4, 5, 6];
+shiftLeft(arr, 0, 4, 3);
+console.log('shiftLeft: ' + arr);
+
+// 向后合并a[0..k-1]和a[k..n-1]
+// todo
+function mergeBackward(arr, k){
+    var n = arr.length;
+    var i = 0;
+    var j = k;
+
+    while(i < j && j < n){
+        var p = binarySearch4Merge(arr, arr[j], 0, j - 1);
+        shiftLeft(arr, i, p, p - j + 1);
+        console.log(arr + '');
+        j = p + 1;
+        i += p - j + 2;
+    }
+}
+
+var a = [1, 3, 5, 7, 9, 11,    1, 5, 6, 8, 9, 10];
+mergeBackward(a, 6);
+console.log('mergeBackward: ' + a);
+
 
 /*
 上述算法中，数组段a[0:k-1]中元素的移动次数不超过k次，数组段a[k:n-1]中元素最多移动一次。因此，算法的元素移动总次数为:k^2+(n-k)次。算法的比较次数不超过klog(n - k)（这个不明白）。当k <n1/2时，算法的时间复杂度为O(n)；反之，则为O(n*n）。
+ */
+
+// 算法二： 内部缓存算法
+/*
+
  */
