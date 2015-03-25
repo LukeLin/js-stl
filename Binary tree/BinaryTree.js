@@ -102,8 +102,8 @@ BinaryTree.prototype = {
     // 判断两棵树是否相似
     isSimilar: function isSimilar(tree) {
         return tree &&
-            this.leftChild && isSimilar.call(this.leftChild, tree.leftChild) &&
-            this.rightChild && isSimilar.call(this.rightChild, tree.rightChild);
+            this.leftChild && this.leftChild.isSimilar(tree.leftChild) &&
+            this.rightChild && this.rightChild.isSimilar(tree.rightChild);
     },
     createBinaryTree: function (tree) {
         void function preOrderRecursive(node, x, visit) {
@@ -194,13 +194,13 @@ BinaryTree.prototype = {
         if (this.rightChild) this.rightChild.preOrderRecursive(visit);
     },
     inOrderRecursive: function inOrderRecursive(visit) {
-        if (this.leftChild) inOrderRecursive.call(this.leftChild, visit);
+        if (this.leftChild) this.leftChild.inOrderRecursive(visit);
         visit(this.data);
-        if (this.rightChild) inOrderRecursive.call(this.rightChild, visit);
+        if (this.rightChild) this.rightChild.inOrderRecursive(visit);
     },
     postOrderRecursive: function postOrderRecursive(visit) {
-        if (this.leftChild) postOrderRecursive.call(this.leftChild, visit);
-        if (this.rightChild) postOrderRecursive.call(this.rightChild, visit);
+        if (this.leftChild) this.leftChild.postOrderRecursive(visit);
+        if (this.rightChild) this.rightChild.postOrderRecursive(visit);
         visit(this.data);
     },
 
@@ -244,25 +244,22 @@ BinaryTree.prototype = {
         this.leftChild = this.rightChild;
         this.rightChild = temp;
 
-        if (this.leftChild) revoluteBinaryTree.call(this.leftChild);
-        if (this.rightChild) revoluteBinaryTree.call(this.rightChild);
+        if (this.leftChild) this.leftChild.revoluteBinaryTree();
+        if (this.rightChild) this.rightChild.revoluteBinaryTree();
     },
     // 求二叉树中以值为x的结点为根的子树深度
     getSubDepth: function getSubDepth(x) {
         if (this.data === x) {
             console.log('subDepth: ' + this.getDepth());
         } else {
-            if (this.leftChild) getSubDepth.call(this.leftChild, x);
-            if (this.rightChild) getSubDepth.call(this.rightChild, x);
+            if (this.leftChild) this.leftChild.getSubDepth(x);
+            if (this.rightChild) this.rightChild.getSubDepth(x);
         }
     },
     getDepth: function getDepth() {
-        if (this === global) return 0;
-        else {
-            var m = getDepth.call(this.leftChild);
-            var n = getDepth.call(this.rightChild);
-            return (m > n ? m : n) + 1;
-        }
+        var m = this.leftChild && this.leftChild.getDepth() || 0;
+        var n = this.rightChild && this.rightChild.getDepth() || 0;
+        return (m > n ? m : n) + 1;
     },
     // 删除所有以元素x为根的子树
     delSubX: function delSubX(x) {
@@ -270,8 +267,8 @@ BinaryTree.prototype = {
             this.leftChild = null;
             this.rightChild = null;
         } else {
-            if (this.leftChild) delSubX.call(this.leftChild);
-            if (this.rightChild) delSubX.call(this.rightChild);
+            if (this.leftChild) this.leftChild.delSubX(x);
+            if (this.rightChild) this.rightChild.delSubX(x);
         }
     },
     /**
@@ -326,6 +323,7 @@ BinaryTree.prototype = {
         for (var i = 0; pathP[i] == pathQ[i] && pathP[i]; i++);
         return pathP[--i];
     },
+    // todo
     toString: function () {
     },
     // 求一棵二叉树的繁茂度
@@ -362,7 +360,7 @@ BinaryTree.prototype = {
 
         return height * max;
     },
-    // 求深度等于书的高度减一的最靠左的结点
+    // 求深度等于树的高度减一的最靠左的结点
     printPath_maxDepthS1: function () {
         var maxh = this.getDepth();
         var path = [];
@@ -599,7 +597,7 @@ ChildSiblingTree.prototype = {
     print: function print() {
         for (var child = this.firstChild; child; child = child.nextSibling) {
             console.log('%c %c', this.data, child.data);
-            print.call(child);
+            child.print();
         }
     },
     // 求孩子兄弟链表表示的树的叶子数目
@@ -608,7 +606,7 @@ ChildSiblingTree.prototype = {
         else {
             var count = 0;
             for (var child = this.firstChild; child; child = child.nextSibling) {
-                count += leafCount.call(child);
+                count += child.leafCount();
             }
             return count;
         }
@@ -621,7 +619,7 @@ ChildSiblingTree.prototype = {
             for (var p = this.firstChild; p; p = p.nextSibling) degree++;
 
             for (p = this.firstChild; p; p = p.nextSibling) {
-                var d = getDegree.call(p);
+                var d = p.getDegree();
                 if (d > degree) degree = d;
             }
 
@@ -632,7 +630,7 @@ ChildSiblingTree.prototype = {
         if (this === global) return 0;
         else {
             for (var maxd = 0, p = this.firstChild; p; p = p.nextSibling) {
-                var d = getDepth.call(p);
+                var d = p.getDepth();
                 if (d > maxd) maxd = d;
             }
 
