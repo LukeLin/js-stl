@@ -180,7 +180,7 @@ function mergeForward(arr, k){
     while(i < j && j < n){
         var p = binarySearch4Merge(arr, arr[i], j, n - 1);
         shiftRight(arr, i, p, p - j + 1);
-        console.log(arr + '');
+        console.log('p = ' + p + ', i = ' + i + ', j = ' + j + ': ' + arr + '');
         j = p + 1;
         i += p - j + 2;
     }
@@ -229,19 +229,19 @@ console.log('shiftLeft: ' + arr);
 // todo
 function mergeBackward(arr, k){
     var n = arr.length;
-    var i = 0;
-    var j = k;
+    var i = k;
+    var j = 0;
 
-    while(i < j && j < n){
-        var p = binarySearch4Merge(arr, arr[j], 0, j - 1);
-        shiftLeft(arr, i, p, p - j + 1);
-        console.log(arr + '');
+    while(i < n && j < i){
+        var p = binarySearch4Merge(arr, arr[i], j, k - 1);
+        shiftLeft(arr, p, i, j - p + 1);
+        console.log('p = ' + p + ', i = ' + i + ', j = ' + j + ': ' + arr + '');
         j = p + 1;
         i += p - j + 2;
     }
 }
 
-var a = [1, 3, 5, 7, 9, 11,    1, 5, 6, 8, 9, 10];
+var a = [1, 5, 6, 8, 9, 10,         1, 3, 5, 7, 9, 11];
 mergeBackward(a, 6);
 console.log('mergeBackward: ' + a);
 
