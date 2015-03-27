@@ -212,45 +212,54 @@ var a = [1, 3, 5, 7, 9, 11,    1, 5, 6, 8, 9, 10];
 mergeForward(a, 6);
 console.log('mergeForward: ' + a);
 
-// 将数组段a[s..t]中元素循环左移k个位置
-function shiftLeft(arr, s, t, k){
-    for(var i = 0; i < k; ++i){
-        var temp = arr[s];
-        for(var j = s + 1; j <= t; ++j) arr[j - 1] = arr[j];
-        arr[t] = temp;
-    }
-}
-
-var arr = [1, 2, 3, 4, 5, 6];
-shiftLeft(arr, 0, 4, 3);
-console.log('shiftLeft: ' + arr);
-
-// 向后合并a[0..k-1]和a[k..n-1]
-// todo
-function mergeBackward(arr, k){
-    var n = arr.length;
-    var i = k;
-    var j = 0;
-
-    while(i < n && j < i){
-        var p = binarySearch4Merge(arr, arr[i], j, k - 1);
-        shiftLeft(arr, p, i, j - p + 1);
-        console.log('p = ' + p + ', i = ' + i + ', j = ' + j + ': ' + arr + '');
-        j = p + 1;
-        i += p - j + 2;
-    }
-}
-
-var a = [1, 5, 6, 8, 9, 10,         1, 3, 5, 7, 9, 11];
-mergeBackward(a, 6);
-console.log('mergeBackward: ' + a);
-
-
 /*
 上述算法中，数组段a[0:k-1]中元素的移动次数不超过k次，数组段a[k:n-1]中元素最多移动一次。因此，算法的元素移动总次数为:k^2+(n-k)次。算法的比较次数不超过klog(n - k)（这个不明白）。当k <n1/2时，算法的时间复杂度为O(n)；反之，则为O(n*n）。
  */
 
-// 算法二： 内部缓存算法
-/*
 
- */
+// 自然合并排序算法
+
+// 数组的情形
+(function(){
+    function naturalMergeSort(a){
+        var b = [];
+        var n = a.length;
+        while(!mergeRuns(a, b, n) && !mergeRuns(b, a, n));
+    }
+
+    function mergeRuns(a, b, n){
+        var i = 0;
+        var k = 0;
+        var asc = true;
+        var x;
+
+        while(i < n){
+            k = i;
+            do x = a[i++]; while(i < n && x <= a[i]);
+            while(i < n && x >= a[i]) x = a[i++];
+            merge(a, b, k, i - 1, asc);
+            asc = !asc;
+        }
+
+        return k == 0;
+    }
+
+    function merge(a, b, low, high, asc){
+        var k = asc ? low : high;
+        var c = asc ? 1 : -1;
+        var i = low;
+        var j = high;
+
+        while(i <= j){
+            if(a[i] <= a[j]) b[k] = a[i++];
+            else b[k] = a[j--];
+            k += c;
+        }
+        for(i = low, j = high, k = 0; i <= j; ++i, ++k) a[i] = b[k];
+    }
+
+    console.log('\nnatureMergeSort:');
+    var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
+    naturalMergeSort(arr);
+    console.log(arr + '');
+})();

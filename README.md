@@ -90,6 +90,7 @@ directory
                 -- mergeSortRecursive
                 -- mergeSortNonRecursive
                 -- natureMergeSort
+                -- naturalMergeSort
 
         -- distribution sort
                 -- countSort
