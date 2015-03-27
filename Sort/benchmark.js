@@ -52,6 +52,7 @@ var heapSort = selectionSort.heapSort;
 var mergeSortRecursive = mergingSort.mergeSortRecursive;
 var mergeSortNonRecursive = mergingSort.mergeSortNonRecursive;
 var natureMergeSort = mergingSort.natureMergeSort;
+var naturalMergeSort = mergingSort.naturalMergeSort;
 
 var countSort = distributionSort.countSort;
 var radixSort = distributionSort.radixSort;
@@ -85,6 +86,7 @@ var arr15 = [];
 var arr16 = [];
 var arr17 = [];
 var arr18 = [];
+var arr23 = [];
 
 // distribution sort
 var arr19 = [];
@@ -93,8 +95,8 @@ var arr21 = [];
 var arr22 = [];
 
 for (var i = 0, len = 100000; i < len; ++i) {
-    //var num = parseInt(Math.random() * 1000, 10);   // random case
-    var num = len - i;    // the worst case
+    var num = parseInt(Math.random() * 1000, 10);   // random case
+    //var num = len - i;    // the worst case
     //var num = i + Math.random() * 10 | 0;     // almost sorted case
 
     arr.push(num);
@@ -119,6 +121,7 @@ for (var i = 0, len = 100000; i < len; ++i) {
     arr16.push(num);
     arr17.push(num);
     arr18.push(num);
+    arr23.push(num);
 
     arr19.push(num);
     arr20.push(num);
@@ -227,6 +230,10 @@ console.timeEnd('mergeSortNonRecursive');
 console.time('natureMergeSort');
 natureMergeSort(arr18);
 console.timeEnd('natureMergeSort');
+
+console.time('naturalMergeSort');
+naturalMergeSort(arr23);
+console.timeEnd('naturalMergeSort');
 
 console.log('\n');
 

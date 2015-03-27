@@ -178,3 +178,51 @@ console.log(arr + '');
 console.log(recursiveCount);
 console.log(nonRecursiveCount);
 console.log(nCount);
+
+var naturalMergeSort = (function(){
+    return naturalMergeSort;
+
+    function naturalMergeSort(a){
+        var b = [];
+        var n = a.length;
+        while(!mergeRuns(a, b, n) && !mergeRuns(b, a, n));
+    }
+
+    function mergeRuns(a, b, n){
+        var i = 0;
+        var k = 0;
+        var asc = true;
+        var x;
+
+        while(i < n){
+            k = i;
+            do x = a[i++]; while(i < n && x <= a[i]);
+            while(i < n && x >= a[i]) x = a[i++];
+            merge(a, b, k, i - 1, asc);
+            asc = !asc;
+        }
+
+        return k == 0;
+    }
+
+    function merge(a, b, low, high, asc){
+        var k = asc ? low : high;
+        var c = asc ? 1 : -1;
+        var i = low;
+        var j = high;
+
+        while(i <= j){
+            if(a[i] <= a[j]) b[k] = a[i++];
+            else b[k] = a[j--];
+            k += c;
+        }
+        for(i = low, j = high, k = 0; i <= j; ++i, ++k) a[i] = b[k];
+    }
+})();
+
+exports.naturalMergeSort = naturalMergeSort;
+
+console.log('\nnaturalMergeSort:');
+var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
+naturalMergeSort(arr);
+console.log(arr + '');
