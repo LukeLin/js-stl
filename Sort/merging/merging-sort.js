@@ -189,7 +189,7 @@ var naturalMergeSort = (function(){
     function naturalMergeSort(a){
         var b = [];
         var n = a.length;
-        while(!mergeRuns(a, b, n) && !mergeRuns(b, a, n));
+        while(!mergeRuns(a, b, n)/* && !mergeRuns(b, a, n)*/);
     }
 
     function mergeRuns(a, b, n){
