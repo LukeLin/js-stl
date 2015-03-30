@@ -234,3 +234,74 @@ console.log('\nnaturalMergeSort:');
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 naturalMergeSort(arr);
 console.log(arr + '');
+
+var LinkedList = require('../../linkedList/LinkedList');
+var Queue = require('../../Queue/Queue').Queue;
+
+// 链表存储结构的自然合并排序
+var linkedListNaturalMergeSort = (function(){
+    return mergeSort;
+
+    function mergeSort(linkedlist, needReplace){
+        if(!linkedlist) return linkedlist;
+
+        var queue = new Queue();
+        var list = linkedlist.head;
+
+        if(!list || !list.next) return linkedlist;
+
+        needReplace = needReplace == null ? true : needReplace;
+        var u = list;
+        var t = list;
+        var v;
+        for(; t; t = u){
+            while(u && u.next && u.data <= u.next.data)
+                u = u.next;
+            v = u;
+            u = u.next;
+            v.next = null;
+            queue.enQueue(t);
+        }
+
+        t = queue.deQueue();
+        while(queue.size){
+            queue.enQueue(t);
+            var a = queue.deQueue();
+            var b = queue.deQueue();
+            t = merge(a, b);
+        }
+
+        if(needReplace) linkedlist.head = t;
+
+        return t;
+    }
+
+    function merge(a, b){
+        var c = new LinkedList();
+        var head = {data: null, next: null};
+        c.head = head;
+        c = c.head;
+
+        while(a && b){
+            if(a.data < b.data) {
+                c.next = a;
+                c = a;
+                a = a.next;
+            } else {
+                c.next = b;
+                c = b;
+                b = b.next;
+            }
+        }
+
+        c.next = a ? a : b;
+
+        return head.next;
+    }
+})();
+exports.linkedListNaturalMergeSort = linkedListNaturalMergeSort;
+
+var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
+var linkedList = new LinkedList(arr);
+linkedListNaturalMergeSort(linkedList);
+console.log(linkedList + '');
