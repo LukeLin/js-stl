@@ -235,13 +235,17 @@ console.log('mergeForward: ' + a);
 
         while(i < n){
             k = i;
+            // 找到最后一个递增序列元素
             do x = a[i++]; while(i < n && x <= a[i]);
+            // 找到最后一个递减序列元素
             while(i < n && x >= a[i]) x = a[i++];
+            // 归并递增序列和递减序列，结果可能递增或递减
             merge(a, b, k, i - 1, asc);
             asc = !asc;
         }
 
-        return k == 0;
+        // 当k等于0时代表a已经排好序了
+        return k === 0;
     }
 
     function merge(a, b, low, high, asc){
@@ -255,7 +259,7 @@ console.log('mergeForward: ' + a);
             else b[k] = a[j--];
             k += c;
         }
-        for(i = low, j = high, k = 0; i <= j; ++i, ++k) a[i] = b[k];
+        for(i = k = low, j = high; i <= j; ++i, ++k) a[i] = b[k];
     }
 
     console.log('\nnatureMergeSort:');

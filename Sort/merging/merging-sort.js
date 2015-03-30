@@ -179,6 +179,10 @@ console.log(recursiveCount);
 console.log(nonRecursiveCount);
 console.log(nCount);
 
+// 双向自然合并排序算法
+/*
+双向自然合并排序是根据欲排序数据局部不是升序就是降序的自然有序特点,先线性扫描出自然有序的子数组段,再进行合并排序.扫描时的有序数段长度越长,段数越少,对应合并树的层数就会越少,算法的效率越高.
+ */
 var naturalMergeSort = (function(){
     return naturalMergeSort;
 
@@ -196,13 +200,17 @@ var naturalMergeSort = (function(){
 
         while(i < n){
             k = i;
+            // 找到最后一个递增序列元素
             do x = a[i++]; while(i < n && x <= a[i]);
+            // 找到最后一个递减序列元素
             while(i < n && x >= a[i]) x = a[i++];
+            // 归并递增序列和递减序列，结果可能递增或递减
             merge(a, b, k, i - 1, asc);
             asc = !asc;
         }
 
-        return k == 0;
+        // 当k等于0时代表a已经排好序了
+        return k === 0;
     }
 
     function merge(a, b, low, high, asc){
@@ -216,7 +224,7 @@ var naturalMergeSort = (function(){
             else b[k] = a[j--];
             k += c;
         }
-        for(i = low, j = high, k = 0; i <= j; ++i, ++k) a[i] = b[k];
+        for(i = k = low, j = high; i <= j; ++i, ++k) a[i] = b[k];
     }
 })();
 
