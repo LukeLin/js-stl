@@ -254,6 +254,7 @@ var linkedListNaturalMergeSort = (function(){
         var u = list;
         var t = list;
         var v;
+        // 将递增的结点放入到队列中（会被切断）
         for(; t; t = u){
             while(u && u.next && u.data <= u.next.data)
                 u = u.next;
@@ -264,6 +265,7 @@ var linkedListNaturalMergeSort = (function(){
         }
 
         t = queue.deQueue();
+        // 合并结点
         while(queue.size){
             queue.enQueue(t);
             var a = queue.deQueue();
