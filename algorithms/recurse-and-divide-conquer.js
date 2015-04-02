@@ -368,12 +368,12 @@ function getMINandMAXElem(arr){
     var n = arr.length - 1;
     var min, max;
     // k为中间数
-    var k = (n / 2) | 0;
+    var k = (arr.length / 2) | 0;
 
     // 在偶数对的情况下，依次比较arr[i..k]和arr[k+i..2*k]，
     // 将较大的数交换到arr[i..k]中，较小的放到arr[k+i..2*k]中，
     // 所以在arr[i..k]中可以找到最大值，arr[k+i..2*k]中找到最小值
-    for(i = 0; i <= k; ++i){
+    for(i = 0; i < k; ++i){
         if(arr[i] < arr[k + i]) {
             swap(arr, i, k + i);
         }
@@ -383,7 +383,7 @@ function getMINandMAXElem(arr){
     min = getMin(arr, k + 1, 2 * k);
 
     // 如果为奇数对，再做两次比较
-    if(2 * k < n) {
+    if(2 * k < n + 1) {
         if(arr[n] > arr[max]) max = n;
         if(arr[n] < arr[min]) min = n;
     }
@@ -395,6 +395,9 @@ function getMINandMAXElem(arr){
 }
 
 var arr = [1, 3, 5, 17, 9, 8, 6, 4, -2, 0];
+console.log(getMINandMAXElem(arr));
+
+var arr = [1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3];
 console.log(getMINandMAXElem(arr));
 
 /*
