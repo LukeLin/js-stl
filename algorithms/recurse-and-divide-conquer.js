@@ -398,5 +398,5 @@ var arr = [1, 3, 5, 17, 9, 8, 6, 4, -2, 0];
 console.log(getMINandMAXElem(arr));
 
 /*
-用对手论证法计算时间下届
+用对手论证法计算时间下界(比较次数)为2n-Math.ceil(n/2)-2
  */
