@@ -339,3 +339,64 @@ var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 var linkedList = new LinkedList(arr);
 linkedListNaturalMergeSort(linkedList);
 console.log(linkedList + '');
+
+
+
+/*
+最大值和最小值问题的最优算法
+
+给定数组a[0..n-1]，求在最坏情况下用Math.ceil(3n/2-2)次比较找出a[0..n-1]中元素的最大值和最小值。
+ */
+
+function getMax(arr, i, j){
+    var m = i;
+    for(var k = i + 1; k <= j; ++k)
+        if(arr[m] < arr[k]) m = k;
+
+    return m;
+}
+
+function getMin(arr, i, j){
+    var m = i;
+    for(var k = i + 1; k <= j; ++k)
+        if(arr[m] > arr[k]) m = k;
+
+    return m;
+}
+
+function getMINandMAXElem(arr){
+    var n = arr.length - 1;
+    var min, max;
+    // k为中间数
+    var k = (n / 2) | 0;
+
+    // 在偶数对的情况下，依次比较arr[i..k]和arr[k+i..2*k]，
+    // 将较大的数交换到arr[i..k]中，较小的放到arr[k+i..2*k]中，
+    // 所以在arr[i..k]中可以找到最大值，arr[k+i..2*k]中找到最小值
+    for(i = 0; i <= k; ++i){
+        if(arr[i] < arr[k + i]) {
+            swap(arr, i, k + i);
+        }
+    }
+
+    max = getMax(arr, 0, k);
+    min = getMin(arr, k + 1, 2 * k);
+
+    // 如果为奇数对，再做两次比较
+    if(2 * k < n) {
+        if(arr[n] > arr[max]) max = n;
+        if(arr[n] < arr[min]) min = n;
+    }
+
+    return {
+        min: arr[min],
+        max: arr[max]
+    };
+}
+
+var arr = [1, 3, 5, 17, 9, 8, 6, 4, -2, 0];
+console.log(getMINandMAXElem(arr));
+
+/*
+用对手论证法计算时间下届
+ */
