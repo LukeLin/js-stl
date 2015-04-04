@@ -404,7 +404,7 @@ console.log(getMINandMAXElem(arr));
 
 // 求最大数和次大数的最优算法
 // 比较次数：T(n) = n + Math.ceil(logn) - 2;
-function getTwoMaxElem(arr, s, n) {
+function getTwoMaxElems(arr, s, n) {
     // 返回最大的两个元素
     if (n - s === 1) return arr.slice(s, n);
     // 如果是三个元素，做比较，选做出最大两个
@@ -426,8 +426,8 @@ function getTwoMaxElem(arr, s, n) {
     }
 
     // 递归求解
-    return getTwoMaxElem(arr, k, n);
+    return getTwoMaxElems(arr, k, n);
 }
 
-console.log(getTwoMaxElem([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3], 0, 10));
-console.log(getTwoMaxElem([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3, 11], 0, 11));
+console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3], 0, 10));
+console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3, 11], 0, 11));
