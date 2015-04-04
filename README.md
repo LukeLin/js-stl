@@ -78,6 +78,7 @@ directory
                 -- cockTailSort
                 -- cockTailSort2
                 -- quickSortRecursive
+                -- quickSortRecursive2
                 -- quickSortNonRecursive
                 -- quickSort
                 -- oddEvenSort
