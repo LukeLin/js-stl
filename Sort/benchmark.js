@@ -40,7 +40,7 @@ var shellSort = insertionSort.shellSort;
 var bubbleSort = exchangeSort.bubbleSort;
 var bubbleSort2 = exchangeSort.bubbleSort2;
 var cockTailSort = exchangeSort.cockTailSort;
-var cockTailSort2 = exchangeSort.cockTailSort2;
+var quickSortRecursive2 = exchangeSort.quickSortRecursive2;
 var quickSortRecursive = exchangeSort.quickSortRecursive;
 var quickSortNonRecursive = exchangeSort.quickSortNonRecursive;
 var quickSort = exchangeSort.quickSort;
@@ -192,6 +192,11 @@ console.log('\n');
 console.time('quickSortRecursive');
 quickSortRecursive(arr10);
 console.timeEnd('quickSortRecursive');
+
+console.time('quickSortRecursive2');
+quickSortRecursive2(arr8);
+console.timeEnd('quickSortRecursive2');
+
 
 console.time('quickSortNonRecursive');
 quickSortNonRecursive(arr11);

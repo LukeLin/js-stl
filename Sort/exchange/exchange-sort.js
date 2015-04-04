@@ -306,6 +306,35 @@ quickSortRecursive(arr);
 console.log('quickSortRecursive:\n' + arr + '');
 
 
+/*
+快排递归算法优化，在最坏情况下堆栈深度为O(logn)
+ */
+function quickSortRecursive2(sqList, low, high){
+    if(low == null) low = 0;
+    if(high == null) high = sqList.length - 1;
+
+    while(low < high){
+        var k = partition(sqList, low, high);
+
+        // 对两个子数组中较小的一个子数组进行递归调用。
+        // 较小子数组的大小最多为原数组大小一半，
+        // 由于每次递归调用的数组大小至少减少一半，所以递归调用的次数
+        // 最多为O(logn)
+        if(k - low + 1 < high - k) {
+            quickSortRecursive2(sqList, low, k - 1);
+            low = k + 1;
+        } else {
+            quickSortRecursive2(sqList, k + 1, high);
+            high = k - 1;
+        }
+    }
+}
+exports.quickSortRecursive2 = quickSortRecursive2;
+var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
+quickSortRecursive2(arr);
+console.log('quickSortRecursive2:\n' + arr + '');
+
+
 function quickSortNonRecursive(sqList, low, high){
     if(low == null) low = 0;
     if(high == null) high = sqList.length - 1;
