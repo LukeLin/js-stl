@@ -235,7 +235,7 @@ function partition1(sqList, low, high){
 function partition2(sqList, low, high){
     var temp;
     var n = high - low + 1;
-    var rand = Math.random() * n | 0 + low;
+    var rand = Math.floor(Math.random() * n) + low;
 
     //var rand = (low + high) >> 1;
     temp = sqList[high];
@@ -265,7 +265,7 @@ function partition(sqList, low, high){
     var temp;
     var i = low;
     var j = high + 1;
-    var rand = Math.random() * (high - low) | 0 + low + 1;
+    var rand = Math.floor(Math.random() * (high - low)) + low + 1;
     //var rand = (low + high) >> 1;
 
     temp = sqList[low];
