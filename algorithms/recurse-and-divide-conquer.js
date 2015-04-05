@@ -51,6 +51,7 @@ console.log(intDivide(6, 6));
 // Divide and conquer
 
 // the same as the randomizedPartition of quickSort
+// todo: bug exists
 function randomizedPartition(sqList, low, high) {
     var temp;
     var i = low;
@@ -431,3 +432,27 @@ function getTwoMaxElems(arr, s, n) {
 
 console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3], 0, 10));
 console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3, 11], 0, 11));
+
+
+/*
+给定一个由n个互不相同的数组成的集合S，以及一个正整数k,k<=n,试设计一个O(n)时间算法找出S中最接近S的中位数的k个数。
+
+算法思想：
+1.找出S的中位数median
+2.计算T={|x - median||x∈S}
+3.找出T的第k小元素y
+4.根据y找出所要的解{x∈S||x - median| <= y}
+ */
+function k_median(s, k){
+    var n = s.length - 1;
+    var median = randomizedSelect(s, 0, n, n >> 1);
+    for(var i = 0; i <= n; ++i){
+        s[i] = Math.abs(s[i] - median);
+    }
+    var y = randomizedSelect(s, 0, n, k);
+    for(i = 0; i <= n; ++i){
+        if(s[i] <= y) console.log(i, s[i]);
+    }
+}
+
+k_median([1, 3, 5, 7, 9, 8, 6, 4, 2, 0], 3);
