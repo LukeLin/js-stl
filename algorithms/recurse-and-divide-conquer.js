@@ -51,7 +51,7 @@ console.log(intDivide(6, 6));
 // Divide and conquer
 
 // the same as the randomizedPartition of quickSort
-function randomizedPartition(sqList, low, high) {
+function randomizedPartition(sqList, low, high, comp) {
     var temp;
     var i = low;
     var j = high + 1;
@@ -64,8 +64,8 @@ function randomizedPartition(sqList, low, high) {
     var x = sqList[low];
 
     while (1) {
-        while (sqList[++i] < x && i < high);
-        while (sqList[--j] > x);
+        while (comp(sqList[++i], x) < 0 && i < high);
+        while (comp(sqList[--j], x) > 0);
         if (i >= j) break;
         temp = sqList[i];
         sqList[i] = sqList[j];
@@ -78,20 +78,26 @@ function randomizedPartition(sqList, low, high) {
     return j;
 }
 
-// 线性时间内找到数组第k小的元素
-function randomizedSelect(arr, low, high, k) {
-    if (low === high) return arr[low];
-    //console.log(low, high);
+function defaultComparation(a, b){
+    return a - b;
+}
 
-    var i = randomizedPartition(arr, low, high);
+// 线性时间内找到数组第k小的元素
+function randomizedSelect(arr, low, high, k, comp) {
+    if(!comp) comp = defaultComparation;
+    if (comp(low, high) === 0) return arr[low];
+
+    var i = randomizedPartition(arr, low, high, comp);
+    // 计算arr[low..i]的元素数量
     var j = i - low + 1;
 
-    if (k <= j) return randomizedSelect(arr, low, i, k);
-    else return randomizedSelect(arr, i + 1, high, k - j);
+    if(k === j) return arr[i];
+    else if (k < j) return randomizedSelect(arr, low, i - 1, k, comp);
+    else return randomizedSelect(arr, i + 1, high, k - j, comp);
 }
 
 var arr = [9, 8, 5, 2, 3, 6, 1, 7, 4];
-console.log(randomizedSelect(arr, 0, arr.length - 1, 5));
+console.log('expect 5: ' + randomizedSelect(arr, 0, arr.length - 1, 5));
 console.log(arr + '');
 
 
@@ -444,17 +450,21 @@ console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3, 11], 0, 11));
  */
 function k_median(s, k){
     var n = s.length - 1;
-    // todo add comparation function callback
+    var t = [];
     var median = randomizedSelect(s, 0, n, (n >> 1) + 1);
+
     for(var i = 0; i <= n; ++i){
-        s[i] = {
+        t[i] = {
             orig: s[i],
             delta: Math.abs(s[i] - median)
         };
     }
-    var y = randomizedSelect(s, 0, n, k);
+
+    var y = randomizedSelect(t, 0, n, k, function(a, b){
+        return a.delta - b.delta;
+    });
     for(i = 0; i <= n; ++i){
-        if(s[i] <= y) console.log(i, s[i]);
+        if(t[i].delta <= y.delta) console.log(i, t[i].orig);
     }
 }
 
