@@ -51,12 +51,11 @@ console.log(intDivide(6, 6));
 // Divide and conquer
 
 // the same as the randomizedPartition of quickSort
-// todo: bug exists
 function randomizedPartition(sqList, low, high) {
     var temp;
     var i = low;
     var j = high + 1;
-    var rand = Math.random() * (j - i) | 0 + i;
+    var rand = Math.floor(Math.random() * (j - i)) + i;
 
     temp = sqList[low];
     sqList[low] = sqList[rand];
@@ -82,7 +81,7 @@ function randomizedPartition(sqList, low, high) {
 // 线性时间内找到数组第k小的元素
 function randomizedSelect(arr, low, high, k) {
     if (low === high) return arr[low];
-    console.log(low, high);
+    //console.log(low, high);
 
     var i = randomizedPartition(arr, low, high);
     var j = i - low + 1;
@@ -445,9 +444,13 @@ console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3, 11], 0, 11));
  */
 function k_median(s, k){
     var n = s.length - 1;
-    var median = randomizedSelect(s, 0, n, n >> 1);
+    // todo add comparation function callback
+    var median = randomizedSelect(s, 0, n, (n >> 1) + 1);
     for(var i = 0; i <= n; ++i){
-        s[i] = Math.abs(s[i] - median);
+        s[i] = {
+            orig: s[i],
+            delta: Math.abs(s[i] - median)
+        };
     }
     var y = randomizedSelect(s, 0, n, k);
     for(i = 0; i <= n; ++i){
