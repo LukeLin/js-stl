@@ -100,6 +100,8 @@ var arr = [9, 8, 5, 2, 3, 6, 1, 7, 4];
 console.log('expect 5: ' + randomizedSelect(arr, 0, arr.length - 1, 5));
 console.log(arr + '');
 
+// 另一种算法实现： http://m.blog.csdn.net/blog/chenglinhust/7916703
+
 
 // 循环日程赛问题
 /**
