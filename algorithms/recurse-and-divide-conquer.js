@@ -1,6 +1,8 @@
 /**
  * Created by Luke on 2015/2/26.
  */
+var quickSort = require('../Sort/exchange/exchange-sort').quickSort;
+
 
 // Recurse
 
@@ -477,3 +479,38 @@ k_median([1, 3, 5, 7, 9, 8, 6, 4, 2, 0], 3);
 众数问题
  */
 
+// O(nlogn)解法
+
+function multitude(arr){
+    // 先排序
+    quickSort(arr);
+
+    // count保存目前出现最多的元素次数
+    var count = 1;
+    // m保存着上一个元素的出现次数
+    var m = 1;
+    // mult保存着出现最多次数的元素
+    var mult = arr[0];
+
+    // 线性扫描
+    for(var i = 1; i < arr.length; ++i){
+        if(arr[i] === arr[i - 1]) ++m;
+        else {
+            if(m > count) {
+                count = m;
+                mult = arr[i - 1];
+            }
+
+            m = 1;
+        }
+    }
+
+    if(m > count) {
+        count = m;
+        mult = arr[i - 1];
+    }
+
+    return mult;
+}
+var arr = [1, 3, 3, 3, 1, 0];
+console.log(multitude(arr));
