@@ -80,20 +80,20 @@ function randomizedPartition(sqList, low, high, comp) {
     return j;
 }
 
-function defaultComparation(a, b){
+function defaultComparation(a, b) {
     return a - b;
 }
 
 // 线性时间内找到数组第k小的元素
 function randomizedSelect(arr, low, high, k, comp) {
-    if(!comp) comp = defaultComparation;
+    if (!comp) comp = defaultComparation;
     if (comp(low, high) === 0) return arr[low];
 
     var i = randomizedPartition(arr, low, high, comp);
     // 计算arr[low..i]的元素数量
     var j = i - low + 1;
 
-    if(k === j) return arr[i];
+    if (k === j) return arr[i];
     else if (k < j) return randomizedSelect(arr, low, i - 1, k, comp);
     else return randomizedSelect(arr, i + 1, high, k - j, comp);
 }
@@ -380,7 +380,7 @@ function getMINandMAXElem(arr) {
     // 在偶数对的情况下，依次比较arr[i..k]和arr[k+i..2*k]，
     // 将较大的数交换到arr[i..k]中，较小的放到arr[k+i..2*k]中，
     // 所以在arr[i..k]中可以找到最大值，arr[k+i..2*k]中找到最小值
-    for (i = 0; i < k; ++i) {
+    for (var i = 0; i < k; ++i) {
         if (arr[i] < arr[k + i]) {
             swap(arr, i, k + i);
         }
@@ -418,11 +418,11 @@ function getTwoMaxElems(arr, s, n) {
     // 返回最大的两个元素
     if (n - s === 1) return arr.slice(s, n);
     // 如果是三个元素，做比较，选做出最大两个
-    else if(n - s === 2) {
+    else if (n - s === 2) {
         if (arr[s] > arr[s + 1])
             swap(arr, s, s + 1);
 
-        if(arr[s] < arr[n])
+        if (arr[s] < arr[n])
             arr[s] = arr[n];
 
         return arr.slice(s, n)
@@ -444,31 +444,31 @@ console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3, 11], 0, 11));
 
 
 /*
-给定一个由n个互不相同的数组成的集合S，以及一个正整数k,k<=n,试设计一个O(n)时间算法找出S中最接近S的中位数的k个数。
+ 给定一个由n个互不相同的数组成的集合S，以及一个正整数k,k<=n,试设计一个O(n)时间算法找出S中最接近S的中位数的k个数。
 
-算法思想：
-1.找出S的中位数median
-2.计算T={|x - median||x∈S}
-3.找出T的第k小元素y
-4.根据y找出所要的解{x∈S||x - median| <= y}
+ 算法思想：
+ 1.找出S的中位数median
+ 2.计算T={|x - median||x∈S}
+ 3.找出T的第k小元素y
+ 4.根据y找出所要的解{x∈S||x - median| <= y}
  */
-function k_median(s, k){
+function k_median(s, k) {
     var n = s.length - 1;
     var t = [];
     var median = randomizedSelect(s, 0, n, (n >> 1) + 1);
 
-    for(var i = 0; i <= n; ++i){
+    for (var i = 0; i <= n; ++i) {
         t[i] = {
             orig: s[i],
             delta: Math.abs(s[i] - median)
         };
     }
 
-    var y = randomizedSelect(t, 0, n, k, function(a, b){
+    var y = randomizedSelect(t, 0, n, k, function (a, b) {
         return a.delta - b.delta;
     });
-    for(i = 0; i <= n; ++i){
-        if(t[i].delta <= y.delta) console.log(i, t[i].orig);
+    for (i = 0; i <= n; ++i) {
+        if (t[i].delta <= y.delta) console.log(i, t[i].orig);
     }
 }
 
@@ -476,12 +476,12 @@ k_median([1, 3, 5, 7, 9, 8, 6, 4, 2, 0], 3);
 
 
 /*
-众数问题
+ 众数问题
  */
 
 // O(nlogn)解法
 
-function multitude(arr){
+function multitude(arr) {
     // 先排序
     quickSort(arr);
 
@@ -493,10 +493,10 @@ function multitude(arr){
     var mult = arr[0];
 
     // 线性扫描
-    for(var i = 1; i < arr.length; ++i){
-        if(arr[i] === arr[i - 1]) ++m;
+    for (var i = 1; i < arr.length; ++i) {
+        if (arr[i] === arr[i - 1]) ++m;
         else {
-            if(m > count) {
+            if (m > count) {
                 count = m;
                 mult = arr[i - 1];
             }
@@ -505,7 +505,7 @@ function multitude(arr){
         }
     }
 
-    if(m > count) {
+    if (m > count) {
         count = m;
         mult = arr[i - 1];
     }
@@ -516,11 +516,11 @@ var arr = [1, 3, 3, 3, 1, 0];
 console.log(multitude(arr));
 
 // O(n)时间算法解，使用计数排序的思想
-function multitude2(arr){
+function multitude2(arr) {
     var b = [];
     var c = [];
 
-    for(var i = 0; i < arr.length; ++i){
+    for (var i = 0; i < arr.length; ++i) {
         c[arr[i]] = c[arr[i]] ? c[arr[i]] : 0;
         c[arr[i]] += 1;
         b[arr[i]] = i;
@@ -528,9 +528,10 @@ function multitude2(arr){
 
     var count = 0;
     var j = 0;
-    for(i in c){
-        if(!c.hasOwnProperty(i)) continue;
-        if(c[i] > count) {
+    for (i in c) {
+        if (!c.hasOwnProperty(i)) continue;
+        if (c[i] > count) {
+
             count = c[i];
             j = i;
         }
@@ -541,3 +542,5 @@ function multitude2(arr){
 
 var arr = [1, 3, 3, 3, 1, 9];
 console.log(multitude2(arr));
+
+
