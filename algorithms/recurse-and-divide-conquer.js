@@ -514,3 +514,30 @@ function multitude(arr){
 }
 var arr = [1, 3, 3, 3, 1, 0];
 console.log(multitude(arr));
+
+// O(n)时间算法解，使用计数排序的思想
+function multitude2(arr){
+    var b = [];
+    var c = [];
+
+    for(var i = 0; i < arr.length; ++i){
+        c[arr[i]] = c[arr[i]] ? c[arr[i]] : 0;
+        c[arr[i]] += 1;
+        b[arr[i]] = i;
+    }
+
+    var count = 0;
+    var j = 0;
+    for(i in c){
+        if(!c.hasOwnProperty(i)) continue;
+        if(c[i] > count) {
+            count = c[i];
+            j = i;
+        }
+    }
+
+    return arr[b[j]];
+}
+
+var arr = [1, 3, 3, 3, 1, 9];
+console.log(multitude2(arr));
