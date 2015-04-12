@@ -94,18 +94,19 @@ BSTNode.prototype = {
      * @param {*} key
      */
     insert: function (key) {
-        var node = new BSTNode(key, null, null);
+        if (this.data == null) {
+            this.data = key;
+            return;
+        }
+        if (key === this.data) return;
 
-        if (this.data == null) this.data = key;
-        else {
-            if (key === this.data) return;
-            else if (key < this.data) {
-                if (!this.leftChild) this.leftChild = node;
-                this.leftChild.insert(key);
-            } else {
-                if (!this.rightChild) this.rightChild = node;
-                this.rightChild.insert(key);
-            }
+        var node = new BSTNode(key, null, null);
+        if (key < this.data) {
+            if (!this.leftChild) this.leftChild = node;
+            this.leftChild.insert(key);
+        } else {
+            if (!this.rightChild) this.rightChild = node;
+            this.rightChild.insert(key);
         }
     },
 
@@ -114,23 +115,24 @@ BSTNode.prototype = {
      * @param {*} key
      */
     insertNonRecursive: function (key) {
-        var node = new BSTNode(key);
-
-        if (this.data == null) this.data = key;
-        else {
-            var p = this;
-            var q;
-            while (p) {
-                if (p.data === key) return;
-                // q作为p的父节点
-                q = p;
-                if (key < p.data) p = p.leftChild;
-                else p = p.rightChild;
-            }
-
-            if (key < q.data) q.leftChild = node;
-            else q.rightChild = node;
+        if (this.data == null) {
+            this.data = key;
+            return;
         }
+
+        var p = this;
+        var q;
+        while (p) {
+            if (p.data === key) return;
+            // q作为p的父节点
+            q = p;
+            if (key < p.data) p = p.leftChild;
+            else p = p.rightChild;
+        }
+
+        var node = new BSTNode(key);
+        if (key < q.data) q.leftChild = node;
+        else q.rightChild = node;
     },
 
     /**
@@ -160,17 +162,16 @@ BSTNode.prototype = {
     remove: function deleteBST(key, parent) {
         // 空结点的情况
         if (this.data == null) return false;
+
+        // 找到关键字
+        if (this.data === key) return deleteNode(this, parent);
+        // 查找左子树，如果有的话
+        else if (key < this.data) {
+            if (this.leftChild) return this.leftChild.remove(key, this);
+        }
+        // 查找右子树，如果有的话
         else {
-            // 找到关键字
-            if (this.data === key) return deleteNode(this, parent);
-            // 查找左子树，如果有的话
-            else if (key < this.data) {
-                if (this.leftChild) return this.leftChild.remove(key, this);
-            }
-            // 查找右子树，如果有的话
-            else {
-                if (this.rightChild) return this.rightChild.remove(key, this);
-            }
+            if (this.rightChild) return this.rightChild.remove(key, this);
         }
 
         // 未找到
