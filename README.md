@@ -110,4 +110,6 @@ directory
 最优二叉树与回溯法   http://www.html-js.com/article/2178<br>
 图的概念和存储结构   http://www.html-js.com/article/2378<br>
 图的遍历    http://www.html-js.com/article/2423<br>
+查找/检索 之 静态查找    http://www.html-js.com/article/2714<br>
+动态查找（一） -- 二叉排序树    http://www.html-js.com/article/2761
 todo ..
