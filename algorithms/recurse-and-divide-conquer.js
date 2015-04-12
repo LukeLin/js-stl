@@ -544,3 +544,96 @@ var arr = [1, 3, 3, 3, 1, 9];
 console.log(multitude2(arr));
 
 
+/*
+ 带权中位数
+ http://baike.baidu.com/link?url=kYT-Bur8O-OtQyBf2LzpT-RSGCSK5KIGmzv7KhvGDbxnzdUFRFB8h-WyKluw9ZoJlf93uB4ArZHAGpjny3eraq
+
+ 带权中位数，就是给定的N个数都有一个权值，或者说相当于个数。此时的中位数就不再是第N/2个数了，而是第∑DI/2个数。
+  */
+
+// O(nlogn)时间解
+function weightedMedian(arr){
+    quickSort(arr, function(a, b){
+        return a.elem - b.elem;
+    });
+
+    var c = arr[0].weight;
+    var i = 1;
+    var n = arr.length;
+
+    while(i < n && c < 0.5){
+        c += arr[i].weight;
+        ++i;
+    }
+
+    if(c < 0.5) return 0;
+    else return arr[i].elem;
+}
+var arr  = [
+    {elem: 5, weight: 0.2},
+    {elem: 4, weight: 0.3},
+    {elem: 3, weight: 0.2},
+    {elem: 2, weight: 0.2},
+    {elem: 1, weight: 0.1}
+];
+console.log('weightedMedian');
+console.log(weightedMedian(arr));
+
+// O(n)时间解
+function weightedMedian2(arr, i, j, sum1, sum2){
+    var m = Math.floor((j - i + 1) / 2);
+    var c = randomizedSelect(arr, i, j, m, compare);
+    m = partition(arr, i, j, m, compare);
+
+    var c1 = 0;
+    for(var k = i; k < m - 1; ++k)
+        c1 += arr[k].weight;
+    var c2 = sum1 + sum2 - c1 - arr[m].weight;
+    if(c1 > sum1)
+        return weightedMedian2(arr, i, m - 1, sum1, sum2 - c2 - arr[m].weight);
+    if(c2 > sum2)
+        return weightedMedian2(arr, m + 1, j, sum1 - c1 - arr[m].weight, sum2);
+
+    return c;
+}
+
+function compare(a, b){
+    return a.elem - b.elem;
+}
+
+function partition(sqList, low, high, index, comp){
+    var temp;
+    var i = low;
+    var j = high + 1;
+
+    temp = sqList[low];
+    sqList[low] = sqList[index];
+    sqList[index] = temp;
+
+    var x = sqList[low];
+
+    while(1){
+        while(comp(sqList[++i], x) < 0 && i < high);
+        while(comp(sqList[--j], x) > 0);
+        if(i >= j) break;
+        temp = sqList[i];
+        sqList[i] = sqList[j];
+        sqList[j] = temp;
+    }
+
+    sqList[low] = sqList[j];
+    sqList[j] = x;
+
+    return j;
+}
+
+var arr  = [
+    {elem: 5, weight: 0.2},
+    {elem: 4, weight: 0.3},
+    {elem: 3, weight: 0.2},
+    {elem: 2, weight: 0.2},
+    {elem: 1, weight: 0.1}
+];
+console.log('weightedMedian2');
+// todo bug exists
+console.log(weightedMedian2(arr, 0, arr.length - 1, 0.5, 0.5));
