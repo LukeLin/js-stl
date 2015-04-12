@@ -3,6 +3,7 @@
  */
 
 var StaticLinkedList = require('../../linkedList/StaticLinkedList');
+var defaultCompare = require('../defaultComparision');
 
 /*
  插入排序
@@ -37,13 +38,14 @@ var StaticLinkedList = require('../../linkedList/StaticLinkedList');
 
  */
 
-function straightInsertSort(sqList) {
+function straightInsertSort(sqList, comp) {
+    if (comp == null) comp = defaultCompare;
     for (var i = 1, len = sqList.length; i < len; ++i) {
         // 设置哨兵, 当设置sqList[-1] = sqList[i]时，经测试效率更慢
         // 因为js里面的变量作用域在函数内的
         var temp = sqList[i];
         // 查找插入位置，并将记录后移
-        for(var j = i - 1; j >= 0 && temp < sqList[j]; --j)
+        for(var j = i - 1; j >= 0 && comp(temp, sqList[j]) < 0; --j)
             sqList[j + 1] = sqList[j];
 
         // 插入到正确位置
@@ -68,7 +70,8 @@ console.log(a + '');
 
  */
 
-function binaryInsertSort(sqList) {
+function binaryInsertSort(sqList, comp) {
+    if (comp == null) comp = defaultCompare;
     for (var i = 1, len = sqList.length; i < len; ++i) {
         var temp = sqList[i];
         var low = 0;
@@ -77,7 +80,7 @@ function binaryInsertSort(sqList) {
         while (low <= high) {
             var mid = (low + high) >> 1;
 
-            if (temp < sqList[mid]) high = mid - 1;
+            if (comp(temp, sqList[mid]) < 0) high = mid - 1;
             else low = mid + 1;
         }
 
@@ -108,7 +111,8 @@ console.log(b + '');
  在2-路插入排序中，移动记录的次数约为n2/8 。但当L[1]是待排序记录中关键字最大或最小的记录时，2-路插入排序就完全失去了优越性。
  */
 
-function path2InsertSort(sqList) {
+function path2InsertSort(sqList, comp) {
+    if (comp == null) comp = defaultCompare;
     var d = [sqList[0]];
     // first、final分别指示d中排好序的记录的第1个和最后1个记录的位置。
     var first = 0;
@@ -118,19 +122,19 @@ function path2InsertSort(sqList) {
         var item = sqList[i];
 
         // 待插入记录小于d中最小值，插入到d[first]之前（不需移动d数组的元素）。
-        if (item < d[first]) {
+        if (comp(item, d[first]) < 0) {
             first = (first - 1) % len;
             d[first] = item;
         }
         // 待插入记录大于d中最小值，插入到d[final]之后（不需移动d数组的元素）。
-        else if (item > d[final]) {
+        else if (comp(item, d[final]) > 0) {
             d[++final] = item;
         }
         // 待插入记录大于d中最小值，小于d中最大值，插入到d的中间（需要移动d数组的元素）。
         else {
             // 移动d尾部元素以便按序插入记录。
             var j = final++;
-            while (item < d[j]) {
+            while (comp(item, d[j]) < 0) {
                 d[(j + 1) % len] = d[j];
                 j = (j - 1) % len;
             }
@@ -173,7 +177,8 @@ console.log(c + '');
 
 
 // 表插入排序
-function staticLinkedListInsertSort(sllist) {
+function staticLinkedListInsertSort(sllist, comp) {
+    if (comp == null) comp = defaultCompare;
     // 构成循环链表
     sllist[0].cur = 1;
     sllist[1].cur = 0;
@@ -183,7 +188,7 @@ function staticLinkedListInsertSort(sllist) {
         p = 0;
         var x = sllist[i].data;
 
-        while (sllist[p].cur && sllist[sllist[p].cur].data < x)
+        while (sllist[p].cur && comp(sllist[sllist[p].cur].data, x) < 0)
             p = sllist[p].cur;
 
         // 当遇到大于当前关键字的下标时，插入到其前驱和后继的中间
@@ -261,11 +266,11 @@ console.log(d);
 相关资料： http://wenku.baidu.com/link?url=q7kzOxXqc0BLaGUVDY43FQOh2aX1UqBHkkYd3VMwJhJo6rv4SiU686RW3kQCSqGEKytl12S8fBOpwhq-runhX_pbZcg6BeD-miYMPgDhXxK
  */
 
-function shellInsert(sqList, dk) {
+function shellInsert(sqList, dk, comp) {
     for (var i = dk, len = sqList.length; i < len; ++i) {
         var temp = sqList[i];
-        if (temp < sqList[i - dk]) {
-            for (var j = i - dk; j >= 0 && temp < sqList[j]; j -= dk)
+        if (comp(temp, sqList[i - dk]) < 0) {
+            for (var j = i - dk; j >= 0 && comp(temp, sqList[j]) < 0; j -= dk)
                 sqList[j + dk] = sqList[j];
 
             sqList[j + dk] = temp;
@@ -273,11 +278,12 @@ function shellInsert(sqList, dk) {
     }
 }
 
-function shellSort(sqList) {
+function shellSort(sqList, comp) {
+    if (comp == null) comp = defaultCompare;
     var delta = createDelta(sqList.length);
     //console.log(delta);
     for (var k = 0, t = delta.length; k < t; ++k) {
-        shellInsert(sqList, delta[k]);
+        shellInsert(sqList, delta[k], comp);
     }
 }
 exports.shellSort = shellSort;

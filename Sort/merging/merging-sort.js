@@ -2,6 +2,8 @@
  * Created by ldp on 2015/2/7.
  */
 
+var defaultCompare = require('../defaultComparision');
+
 /*
  归并排序
 
@@ -60,14 +62,14 @@ var recursiveCount = 0;
  * @param e1
  * @param e2
  */
-function merge(sr, s1, e1, e2){
+function merge(sr, s1, e1, e2, comp){
     var temp = [];
     var i = s1;
     var j = e1 + 1;
     var k = 0;
 
     while(i <= e1 && j <= e2){
-        if(sr[i] < sr[j]) temp[k++] = sr[i++];
+        if(comp(sr[i], sr[j]) < 0) temp[k++] = sr[i++];
         else temp[k++] = sr[j++];
     }
     while(i <= e1) temp[k++] = sr[i++];
@@ -83,7 +85,8 @@ function merge(sr, s1, e1, e2){
  * @param {Number} s
  * @param {Number} t
  */
-function mergeSortRecursive(sr, s, t){
+function mergeSortRecursive(sr, s, t, comp){
+    if (comp == null) comp = defaultCompare;
     if(s == null) s = 0;
     if(t == null) t = sr.length - 1;
 
@@ -92,11 +95,11 @@ function mergeSortRecursive(sr, s, t){
     // 将sr[s..t]平分为sr[s..m]和sr[m+1..t]
     var m = (s + t) >> 1;
     // 递归地将sr[s..m]归并为有序的sr[s..m]
-    mergeSortRecursive(sr, s, m);
+    mergeSortRecursive(sr, s, m, comp);
     // 递归地将sr[m+1..t]归并为有序的sr[m+1..t]
-    mergeSortRecursive(sr, m + 1, t);
+    mergeSortRecursive(sr, m + 1, t, comp);
     // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
-    merge(sr, s, m, t);
+    merge(sr, s, m, t, comp);
 }
 exports.mergeSortRecursive = mergeSortRecursive;
 
@@ -108,7 +111,8 @@ console.log(arr + '');
 
 
 
-function mergeSortNonRecursive(sr){
+function mergeSortNonRecursive(sr, comp){
+    if (comp == null) comp = defaultCompare;
     var j, k;
     for(var d = 1, n = sr.length - 1; d < n; d *= 2) {
         // 一趟归并排序算法
@@ -116,14 +120,14 @@ function mergeSortNonRecursive(sr){
 
         // 子序列两两归并
         while((k = (j + 2 * d - 1)) < n){
-            merge(sr, j,  j + d - 1, k);
+            merge(sr, j,  j + d - 1, k, comp);
             j = k + 1;
         }
 
         // 剩余元素个数超过一个子序列长度
-        if(j + d - 1 < n) merge(sr, j, j + d - 1, n);
+        if(j + d - 1 < n) merge(sr, j, j + d - 1, n, comp);
         // 剩余子序列复制
-        else merge(sr, j, n, n);
+        else merge(sr, j, n, n, comp);
     }
 }
 exports.mergeSortNonRecursive = mergeSortNonRecursive;
@@ -143,26 +147,27 @@ console.log(arr + '');
 
 
 // 扫描得到子串的函数
-function pass(sqList, rec){
+function pass(sqList, rec, comp){
     var num = 0;
     rec[num++] = 0;
 
     for(var i = 1, len = sqList.length; i < len; ++i){
-        if(sqList[i] > sqList[i + 1]) rec[num++] = i + 1;
+        if(comp(sqList[i], sqList[i + 1]) > 0) rec[num++] = i + 1;
     }
     rec[num++] = len;
 
     return num;
 }
 
-function natureMergeSort(sqList){
+function natureMergeSort(sqList, comp){
+    if (comp == null) comp = defaultCompare;
     var rec = [];
 
     //num=2说明已经排好序了
     //每循环一次，进行一次pass()操作
-    for(var num = pass(sqList, rec); num !== 2; num = pass(sqList, rec)){
+    for(var num = pass(sqList, rec, comp); num !== 2; num = pass(sqList, rec, comp)){
         for(var i = 0; i + 2 < num; i += 2) {
-            merge(sqList, rec[i], rec[i + 1] - 1, rec[i + 2] - 1);
+            merge(sqList, rec[i], rec[i + 1] - 1, rec[i + 2] - 1, comp);
         }
     }
 }
@@ -186,13 +191,14 @@ console.log(nCount);
 var naturalMergeSort = (function(){
     return naturalMergeSort;
 
-    function naturalMergeSort(a){
+    function naturalMergeSort(a, comp){
+        if (comp == null) comp = defaultCompare;
         var b = [];
         var n = a.length;
-        while(!mergeRuns(a, b, n)/* && !mergeRuns(b, a, n)*/);
+        while(!mergeRuns(a, b, n, comp)/* && !mergeRuns(b, a, n)*/);
     }
 
-    function mergeRuns(a, b, n){
+    function mergeRuns(a, b, n, comp){
         var i = 0;
         var k = 0;
         var asc = true;
@@ -201,11 +207,11 @@ var naturalMergeSort = (function(){
         while(i < n){
             k = i;
             // 找到最后一个递增序列元素
-            do x = a[i++]; while(i < n && x <= a[i]);
+            do x = a[i++]; while(i < n && comp(x, a[i]) <= 0);
             // 找到最后一个递减序列元素
-            while(i < n && x >= a[i]) x = a[i++];
+            while(i < n && comp(x, a[i]) >= 0) x = a[i++];
             // 归并递增序列和递减序列，结果可能递增或递减
-            merge(a, b, k, i - 1, asc);
+            merge(a, b, k, i - 1, asc, comp);
             asc = !asc;
         }
 
@@ -213,14 +219,14 @@ var naturalMergeSort = (function(){
         return k === 0;
     }
 
-    function merge(a, b, low, high, asc){
+    function merge(a, b, low, high, asc, comp){
         var k = asc ? low : high;
         var c = asc ? 1 : -1;
         var i = low;
         var j = high;
 
         while(i <= j){
-            if(a[i] <= a[j]) b[k] = a[i++];
+            if(comp(a[i], a[j]) <= 0) b[k] = a[i++];
             else b[k] = a[j--];
             k += c;
         }
@@ -242,7 +248,8 @@ var Queue = require('../../Queue/Queue').Queue;
 var linkedListNaturalMergeSort = (function(){
     return mergeSort;
 
-    function mergeSort(linkedlist, needReplace){
+    function mergeSort(linkedlist, needReplace, comp){
+        if (comp == null) comp = defaultCompare;
         if(!linkedlist) return linkedlist;
 
         var queue = new Queue();
@@ -256,7 +263,7 @@ var linkedListNaturalMergeSort = (function(){
         var v;
         // 将递增的结点放入到队列中（会被切断）
         for(; t; t = u){
-            while(u && u.next && u.data <= u.next.data)
+            while(u && u.next && comp(u.data, u.next.data) <= 0)
                 u = u.next;
             v = u;
             u = u.next;
@@ -270,7 +277,7 @@ var linkedListNaturalMergeSort = (function(){
             queue.enQueue(t);
             var a = queue.deQueue();
             var b = queue.deQueue();
-            t = merge(a, b);
+            t = merge(a, b, comp);
         }
 
         if(needReplace) linkedlist.head = t;
@@ -278,14 +285,14 @@ var linkedListNaturalMergeSort = (function(){
         return t;
     }
 
-    function merge(a, b){
+    function merge(a, b, comp){
         var c = new LinkedList();
         var head = {data: null, next: null};
         c.head = head;
         c = c.head;
 
         while(a && b){
-            if(a.data < b.data) {
+            if(comp(a.data, b.data) < 0) {
                 c.next = a;
                 c = a;
                 a = a.next;
