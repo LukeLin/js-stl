@@ -301,6 +301,6 @@ function createDelta(n) {
 
 
 console.log('\n\nShell Sort:');
-var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 04];
+var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 shellSort(arr);
 console.log(arr + '');
