@@ -232,7 +232,7 @@ console.log('mergeForward: ' + a);
     function naturalMergeSort(a) {
         var b = [];
         var n = a.length;
-        while (!mergeRuns(a, b, n) && !mergeRuns(b, a, n));
+        while (!mergeRuns(a, b, n));
     }
 
     function mergeRuns(a, b, n) {

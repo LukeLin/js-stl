@@ -195,7 +195,7 @@ var naturalMergeSort = (function(){
         if (comp == null) comp = defaultCompare;
         var b = [];
         var n = a.length;
-        while(!mergeRuns(a, b, n, comp)/* && !mergeRuns(b, a, n)*/);
+        while(!mergeRuns(a, b, n, comp));
     }
 
     function mergeRuns(a, b, n, comp){
