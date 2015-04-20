@@ -180,7 +180,34 @@ console.log(arr + '');
     // 条件三改为：
     // 当n为偶数时，比赛一共进行n - 1天；
     // 当n为奇数时，比赛一共进行n天。
+    function tournament(n){
+        var table = [];
+        for (var i = 0; i < n; ++i) table[i] = [];
 
+        void function tourna(n){
+            if(n === 1) {
+                table[0][0] = 1;
+                return;
+            }
+            if(isOdd(n)) return tourna(n + 1);
+            tourna(Math.floor(n / 2));
+            makeCopy(table, n);
+        }(n);
+    }
+
+    function isOdd(num){
+        return num & 1;
+    }
+
+    function makeCopy(table, n){
+        var k = Math.floor(n);
+        if(k > 1 && isOdd(k)) copyOdd(table, n);
+        else copy(table, n);
+    }
+
+    function copyOdd(table, n){
+
+    }
 
 })();
 
