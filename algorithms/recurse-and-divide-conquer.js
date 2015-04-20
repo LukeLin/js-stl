@@ -567,7 +567,7 @@ function weightedMedian(arr){
     }
 
     if(c < 0.5) return 0;
-    else return arr[i].elem;
+    else return arr[i];
 }
 var arr  = [
     {elem: 5, weight: 0.2},
