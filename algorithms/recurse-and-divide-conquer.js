@@ -113,31 +113,76 @@ console.log(arr + '');
  * 3），比赛一共进行n - 1天
  * @param k
  */
-function cyclicSchedulingGameTable(k) {
-    var table = [];
-    var n = 1;
+(function(){
 
-    for (var i = 0; i < k; ++i) n *= 2;
-    for (i = 0; i < n; ++i) table[i] = [];
-    for (i = 0; i < n; ++i) table[0][i] = i + 1;
+    function cyclicSchedulingGameTable(k) {
+        var table = [];
+        var n = 1;
 
-    var m = 1;
-    for (var s = 0; s < k; ++s) {
-        n /= 2;
-        for (var t = 1; t <= n; ++t)
-            for (i = m; i < 2 * m; ++i)
-                for (var j = m; j < 2 * m; ++j) {
-                    var p = j + (t - 1) * m * 2;
-                    table[i][p] = table[i - m][p - m];
-                    table[i][p - m] = table[i - m][p];
-                }
-        m *= 2;
+        for (var i = 0; i < k; ++i) n *= 2;
+        for (i = 0; i < n; ++i) table[i] = [];
+        for (i = 0; i < n; ++i) table[0][i] = i + 1;
+
+        var m = 1;
+        for (var s = 0; s < k; ++s) {
+            n /= 2;
+            for (var t = 1; t <= n; ++t)
+                for (i = m; i < 2 * m; ++i)
+                    for (var j = m; j < 2 * m; ++j) {
+                        var p = j + (t - 1) * m * 2;
+                        table[i][p] = table[i - m][p - m];
+                        table[i][p - m] = table[i - m][p];
+                    }
+            m *= 2;
+        }
+
+        return table;
+    }
+    var table = cyclicSchedulingGameTable(3);
+    console.log(table);
+
+
+    // 递归算法
+    function cyclicSchedulingGameTable2(k){
+        var table = [];
+        var n = 1;
+
+        for (var i = 0; i < k; ++i) n *= 2;
+        for (i = 0; i < n; ++i) table[i] = [];
+
+        void function tourna(n){
+            if(n === 1) {
+                table[0][0] = 1;
+                return;
+            }
+            tourna(Math.floor(n / 2));
+            copy(table, n);
+        }(n);
+
+        return table;
     }
 
-    return table;
-}
-var table = cyclicSchedulingGameTable(3);
-console.log(table);
+    function copy(table, n){
+        var m = Math.floor(n / 2);
+        for(var i = 0; i < m; ++i){
+            for(var j = 0; j < m; ++j){
+                table[i][j + m] = table[i][j] + m;
+                table[i + m][j] = table[i][j + m];
+                table[i + m][j + m] = table[i][j];
+            }
+        }
+    }
+
+    var table = cyclicSchedulingGameTable2(3);
+    console.log(table);
+
+
+    // 条件三改为：
+    // 当n为偶数时，比赛一共进行n - 1天；
+    // 当n为奇数时，比赛一共进行n天。
+
+
+})();
 
 
 /*
@@ -531,7 +576,6 @@ function multitude2(arr) {
     for (i in c) {
         if (!c.hasOwnProperty(i)) continue;
         if (c[i] > count) {
-
             count = c[i];
             j = i;
         }
