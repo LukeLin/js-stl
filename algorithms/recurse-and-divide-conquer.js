@@ -113,7 +113,7 @@ console.log(arr + '');
  * 3），比赛一共进行n - 1天
  * @param k
  */
-(function(){
+(function () {
 
     function cyclicSchedulingGameTable(k) {
         var table = [];
@@ -138,20 +138,21 @@ console.log(arr + '');
 
         return table;
     }
+
     var table = cyclicSchedulingGameTable(3);
     console.log(table);
 
 
     // 递归算法
-    function cyclicSchedulingGameTable2(k){
+    function cyclicSchedulingGameTable2(k) {
         var table = [];
         var n = 1;
 
         for (var i = 0; i < k; ++i) n *= 2;
         for (i = 0; i < n; ++i) table[i] = [];
 
-        void function tourna(n){
-            if(n === 1) {
+        void function tourna(n) {
+            if (n === 1) {
                 table[0][0] = 1;
                 return;
             }
@@ -160,15 +161,15 @@ console.log(arr + '');
         }(n);
 
         return table;
-    }
 
-    function copy(table, n){
-        var m = Math.floor(n / 2);
-        for(var i = 0; i < m; ++i){
-            for(var j = 0; j < m; ++j){
-                table[i][j + m] = table[i][j] + m;
-                table[i + m][j] = table[i][j + m];
-                table[i + m][j + m] = table[i][j];
+        function copy(table, n) {
+            var m = Math.floor(n / 2);
+            for (var i = 0; i < m; ++i) {
+                for (var j = 0; j < m; ++j) {
+                    table[i][j + m] = table[i][j] + m;
+                    table[i + m][j] = table[i][j + m];
+                    table[i + m][j + m] = table[i][j];
+                }
             }
         }
     }
@@ -180,34 +181,72 @@ console.log(arr + '');
     // 条件三改为：
     // 当n为偶数时，比赛一共进行n - 1天；
     // 当n为奇数时，比赛一共进行n天。
-    function tournament(n){
+    // related: http://wenku.baidu.com/link?url=8XdZXjjxHE5iYRSBCl1YiQIJejYxtGByWQwCkkd5hZ5jPeMJOOifvkyN6R7KTobKK9QIoa7RpHTFQuU-VMYGdIlDNXfT5pEZ9cBYJEe4fpi
+    function tournament(n) {
         var table = [];
-        for (var i = 0; i < n; ++i) table[i] = [];
+        for (var i = 1; i <= n; ++i) table[i] = [];
 
-        void function tourna(n){
-            if(n === 1) {
-                table[0][0] = 1;
+        void function tourna(n) {
+            if (n === 1) {
+                table[1][1] = 1;
                 return;
             }
-            if(isOdd(n)) return tourna(n + 1);
+            if (isOdd(n)) return tourna(n + 1);
             tourna(Math.floor(n / 2));
             makeCopy(table, n);
         }(n);
+
+        return table;
+
+        function isOdd(num) {
+            return num & 1;
+        }
+
+        function makeCopy(table, n) {
+            var k = Math.floor(n / 2);
+            if (k > 1 && isOdd(k)) copyOdd(table, n);
+            else copy(table, n);
+        }
+
+        function copy(table, n) {
+            var m = Math.floor(n / 2);
+            for (var i = 1; i <= m; ++i) {
+                for (var j = 1; j <= m; ++j) {
+                    table[i][j + m] = table[i][j] + m;
+                    table[i + m][j] = table[i][j + m];
+                    table[i + m][j + m] = table[i][j];
+                }
+            }
+        }
+
+        function copyOdd(table, n) {
+            var b = [];
+            var m = Math.floor(n / 2);
+
+            for (var i = 1; i <= m; ++i) {
+                b[i] = m + i;
+                b[m + i] = b[i];
+            }
+
+            for (i = 1; i <= m; ++i) {
+                for (var j = 1; j <= m + 1; ++j) {
+                    if (table[i][j] > m) {
+                        table[i][j] = b[i];
+                        table[m + i][j] = (b[i] + m) % n;
+                    } else {
+                        table[m + i][j] = table[i][j] + m;
+                    }
+                }
+
+                for (j = 2; j <= m; ++j) {
+                    table[i][m + j] = b[i + j - 1];
+                    table[b[i + j - 1]][m + j] = i;
+                }
+            }
+        }
     }
 
-    function isOdd(num){
-        return num & 1;
-    }
-
-    function makeCopy(table, n){
-        var k = Math.floor(n);
-        if(k > 1 && isOdd(k)) copyOdd(table, n);
-        else copy(table, n);
-    }
-
-    function copyOdd(table, n){
-
-    }
+    console.log(tournament(10));
 
 })();
 
@@ -736,13 +775,13 @@ console.log(gray(1));
 console.log(gray(2));
 console.log(gray(3));
 
-function printGray(arr, n){
+function printGray(arr, n) {
     var m = 1 << n;
     var str = '';
-    for(var i = 0; i < m; ++i){
+    for (var i = 0; i < m; ++i) {
         str = arr[i].toString(2);
         var s = str.length;
-        for(var j = 0; j < n - s; ++j){
+        for (var j = 0; j < n - s; ++j) {
             str = '0' + str;
         }
         console.log(str);
