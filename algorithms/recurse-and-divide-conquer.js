@@ -198,10 +198,6 @@ console.log(arr + '');
 
         return table;
 
-        function isOdd(num) {
-            return num & 1;
-        }
-
         function makeCopy(table, n) {
             var k = Math.floor(n / 2);
             if (k > 1 && isOdd(k)) copyOdd(table, n);
@@ -244,6 +240,10 @@ console.log(arr + '');
                 }
             }
         }
+    }
+
+    function isOdd(num) {
+        return num & 1;
     }
 
     console.log(tournament(10));
