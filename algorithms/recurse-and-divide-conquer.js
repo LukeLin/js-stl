@@ -248,6 +248,39 @@ console.log(arr + '');
 
     console.log(tournament(10));
 
+
+    // 多边形旋转方法
+    function tournament2(n) {
+        var table = [];
+        var b = [];
+        for (var i = 1; i <= n; ++i) table[i] = [];
+
+        if (n === 1) return;
+        var m = isOdd(n) ? n : n - 1;
+        table[n][1] = n;
+
+        for (i = 1; i <= m; ++i) {
+            table[i][1] = i;
+            b[i] = i + 1;
+            b[m + i] = b[i];
+        }
+
+        for (i = 1; i <= m; ++i) {
+            table[1][i + 1] = b[i];
+            table[b[i]][i + 1] = 1;
+            for (var j = 1; j <= m / 2; ++j) {
+                var k = b[i + j];
+                var r = b[i + m - j];
+                table[k][i + 1] = r;
+                table[r][i + 1] = k;
+            }
+        }
+
+        return table;
+    }
+
+    console.log(tournament2(10));
+
 })();
 
 
