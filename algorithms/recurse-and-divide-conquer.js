@@ -323,174 +323,178 @@ console.log(specifiedBinarySearch(arr, 5));
  向右循环换位合并算法首先用二分搜索算法在数组段a[k..n-1]中搜索a[0]的插入位置，即找到位置p使得a[p]<a[0]<=a[p+1]。数组段a[0..p]向右循环换位p-k个位置，使a[k-1]移动到a[p]的位置。此时，原数组元素a[0]及其左边的所有元素均已排好序。对剩余的数组元素重复上述过程，直至只剩下一个数组段，此时整个数组已排好序。
  */
 
-// 向前合并a[0..k-1]和a[k..n-1]
-function mergeForward(arr, k) {
-    var n = arr.length;
-    var i = 0;
-    var j = k;
+(function(){
+    // 向前合并a[0..k-1]和a[k..n-1]
+    function mergeForward(arr, k) {
+        var n = arr.length;
+        var i = 0;
+        var j = k;
 
-    while (i < j && j < n) {
-        var p = binarySearch4Merge(arr, arr[i], j, n - 1);
-        shiftRight(arr, i, p, p - j + 1);
-        console.log('p = ' + p + ', i = ' + i + ', j = ' + j + ': ' + arr + '');
-        j = p + 1;
-        i += p - j + 2;
-    }
-}
-
-// 在数组段a[low..high]中搜索元素x的插入位置
-function binarySearch4Merge(arr, x, low, high) {
-    while (low <= high) {
-        var middle = (low + high) >> 1;
-        if (x === arr[middle]) return middle;
-        else if (x < arr[middle]) high = middle - 1;
-        else low = middle + 1;
+        while (i < j && j < n) {
+            var p = binarySearch4Merge(arr, arr[i], j, n - 1);
+            shiftRight(arr, i, p, p - j + 1);
+            console.log('p = ' + p + ', i = ' + i + ', j = ' + j + ': ' + arr + '');
+            j = p + 1;
+            i += p - j + 2;
+        }
     }
 
-    if (x > arr[middle]) return middle;
-    else return middle - 1;
-}
+    // 在数组段a[low..high]中搜索元素x的插入位置
+    function binarySearch4Merge(arr, x, low, high) {
+        while (low <= high) {
+            var middle = (low + high) >> 1;
+            if (x === arr[middle]) return middle;
+            else if (x < arr[middle]) high = middle - 1;
+            else low = middle + 1;
+        }
 
-// 将数组段a[s..t]中元素循环右移k个位置
-function shiftRight(arr, s, t, k) {
-    for (var i = 0; i < k; ++i) {
-        var temp = arr[t];
-        for (var j = t; j > s; --j) arr[j] = arr[j - 1];
-        arr[s] = temp;
+        if (x > arr[middle]) return middle;
+        else return middle - 1;
     }
-}
 
-var a = [1, 3, 5, 7, 9, 11, 1, 5, 6, 8, 9, 10];
-mergeForward(a, 6);
-console.log('mergeForward: ' + a);
+    // 将数组段a[s..t]中元素循环右移k个位置
+    function shiftRight(arr, s, t, k) {
+        for (var i = 0; i < k; ++i) {
+            var temp = arr[t];
+            for (var j = t; j > s; --j) arr[j] = arr[j - 1];
+            arr[s] = temp;
+        }
+    }
 
-/*
+    var a = [1, 3, 5, 7, 9, 11, 1, 5, 6, 8, 9, 10];
+    mergeForward(a, 6);
+    console.log('mergeForward: ' + a);
+
+    /*
  上述算法中，数组段a[0:k-1]中元素的移动次数不超过k次，数组段a[k:n-1]中元素最多移动一次。因此，算法的元素移动总次数为:k^2+(n-k)次。算法的比较次数不超过klog(n - k)（这个不明白）。当k <n1/2时，算法的时间复杂度为O(n)；反之，则为O(n*n）。
  */
+})();
 
 
 // 自然合并排序算法
 
-// 数组的情形
-(function () {
-    function naturalMergeSort(a) {
-        var b = [];
-        var n = a.length;
-        while (!mergeRuns(a, b, n));
-    }
-
-    function mergeRuns(a, b, n) {
-        var i = 0;
-        var k = 0;
-        var asc = true;
-        var x;
-
-        while (i < n) {
-            k = i;
-            // 找到最后一个递增序列元素
-            do x = a[i++]; while (i < n && x <= a[i]);
-            // 找到最后一个递减序列元素
-            while (i < n && x >= a[i]) x = a[i++];
-            // 归并递增序列和递减序列，结果可能递增或递减
-            merge(a, b, k, i - 1, asc);
-            asc = !asc;
+(function(){
+    // 数组的情形
+    (function () {
+        function naturalMergeSort(a) {
+            var b = [];
+            var n = a.length;
+            while (!mergeRuns(a, b, n));
         }
 
-        // 当k等于0时代表a已经排好序了
-        return k === 0;
-    }
+        function mergeRuns(a, b, n) {
+            var i = 0;
+            var k = 0;
+            var asc = true;
+            var x;
 
-    function merge(a, b, low, high, asc) {
-        var k = asc ? low : high;
-        var c = asc ? 1 : -1;
-        var i = low;
-        var j = high;
-
-        while (i <= j) {
-            if (a[i] <= a[j]) b[k] = a[i++];
-            else b[k] = a[j--];
-            k += c;
-        }
-        for (i = k = low, j = high; i <= j; ++i, ++k) a[i] = b[k];
-    }
-
-    console.log('\nnatureMergeSort:');
-    var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
-    naturalMergeSort(arr);
-    console.log(arr + '');
-})();
-
-// 链表存储结构的自然合并排序
-var LinkedList = require('../linkedList/LinkedList');
-var Queue = require('../Queue/Queue').Queue;
-
-// 链表存储结构的自然合并排序
-var linkedListNaturalMergeSort = (function () {
-    return mergeSort;
-
-    function mergeSort(linkedlist, needReplace) {
-        if (!linkedlist) return linkedlist;
-
-        var queue = new Queue();
-        var list = linkedlist.head;
-
-        if (!list || !list.next) return linkedlist;
-
-        needReplace = needReplace == null ? true : needReplace;
-        var u = list;
-        var t = list;
-        var v;
-        for (; t; t = u) {
-            while (u && u.next && u.data <= u.next.data)
-                u = u.next;
-            v = u;
-            u = u.next;
-            v.next = null;
-            queue.enQueue(t);
-        }
-
-        t = queue.deQueue();
-        while (queue.size) {
-            queue.enQueue(t);
-            var a = queue.deQueue();
-            var b = queue.deQueue();
-            t = merge(a, b);
-        }
-
-        if (needReplace) linkedlist.head = t;
-
-        return t;
-    }
-
-    function merge(a, b) {
-        var c = new LinkedList();
-        var head = {data: null, next: null};
-        c.head = head;
-        c = c.head;
-
-        while (a && b) {
-            if (a.data < b.data) {
-                c.next = a;
-                c = a;
-                a = a.next;
-            } else {
-                c.next = b;
-                c = b;
-                b = b.next;
+            while (i < n) {
+                k = i;
+                // 找到最后一个递增序列元素
+                do x = a[i++]; while (i < n && x <= a[i]);
+                // 找到最后一个递减序列元素
+                while (i < n && x >= a[i]) x = a[i++];
+                // 归并递增序列和递减序列，结果可能递增或递减
+                merge(a, b, k, i - 1, asc);
+                asc = !asc;
             }
+
+            // 当k等于0时代表a已经排好序了
+            return k === 0;
         }
 
-        c.next = a ? a : b;
+        function merge(a, b, low, high, asc) {
+            var k = asc ? low : high;
+            var c = asc ? 1 : -1;
+            var i = low;
+            var j = high;
 
-        return head.next;
-    }
+            while (i <= j) {
+                if (a[i] <= a[j]) b[k] = a[i++];
+                else b[k] = a[j--];
+                k += c;
+            }
+            for (i = k = low, j = high; i <= j; ++i, ++k) a[i] = b[k];
+        }
+
+        console.log('\nnatureMergeSort:');
+        var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
+        naturalMergeSort(arr);
+        console.log(arr + '');
+    })();
+
+    // 链表存储结构的自然合并排序
+    var LinkedList = require('../linkedList/LinkedList');
+    var Queue = require('../Queue/Queue').Queue;
+
+    // 链表存储结构的自然合并排序
+    var linkedListNaturalMergeSort = (function () {
+        return mergeSort;
+
+        function mergeSort(linkedlist, needReplace) {
+            if (!linkedlist) return linkedlist;
+
+            var queue = new Queue();
+            var list = linkedlist.head;
+
+            if (!list || !list.next) return linkedlist;
+
+            needReplace = needReplace == null ? true : needReplace;
+            var u = list;
+            var t = list;
+            var v;
+            for (; t; t = u) {
+                while (u && u.next && u.data <= u.next.data)
+                    u = u.next;
+                v = u;
+                u = u.next;
+                v.next = null;
+                queue.enQueue(t);
+            }
+
+            t = queue.deQueue();
+            while (queue.size) {
+                queue.enQueue(t);
+                var a = queue.deQueue();
+                var b = queue.deQueue();
+                t = merge(a, b);
+            }
+
+            if (needReplace) linkedlist.head = t;
+
+            return t;
+        }
+
+        function merge(a, b) {
+            var c = new LinkedList();
+            var head = {data: null, next: null};
+            c.head = head;
+            c = c.head;
+
+            while (a && b) {
+                if (a.data < b.data) {
+                    c.next = a;
+                    c = a;
+                    a = a.next;
+                } else {
+                    c.next = b;
+                    c = b;
+                    b = b.next;
+                }
+            }
+
+            c.next = a ? a : b;
+
+            return head.next;
+        }
+    })();
+    exports.linkedListNaturalMergeSort = linkedListNaturalMergeSort;
+
+    var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
+    var linkedList = new LinkedList(arr);
+    linkedListNaturalMergeSort(linkedList);
+    console.log(linkedList + '');
 })();
-exports.linkedListNaturalMergeSort = linkedListNaturalMergeSort;
-
-var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
-var linkedList = new LinkedList(arr);
-linkedListNaturalMergeSort(linkedList);
-console.log(linkedList + '');
 
 
 /*
@@ -499,92 +503,94 @@ console.log(linkedList + '');
  给定数组a[0..n-1]，求在最坏情况下用Math.ceil(3n/2-2)次比较找出a[0..n-1]中元素的最大值和最小值。
  */
 
-function getMax(arr, i, j) {
-    var m = i;
-    for (var k = i + 1; k <= j; ++k)
-        if (arr[m] < arr[k]) m = k;
+(function(){
+    function getMax(arr, i, j) {
+        var m = i;
+        for (var k = i + 1; k <= j; ++k)
+            if (arr[m] < arr[k]) m = k;
 
-    return m;
-}
+        return m;
+    }
 
-function getMin(arr, i, j) {
-    var m = i;
-    for (var k = i + 1; k <= j; ++k)
-        if (arr[m] > arr[k]) m = k;
+    function getMin(arr, i, j) {
+        var m = i;
+        for (var k = i + 1; k <= j; ++k)
+            if (arr[m] > arr[k]) m = k;
 
-    return m;
-}
+        return m;
+    }
 
-function getMINandMAXElem(arr) {
-    var n = arr.length - 1;
-    var min, max;
-    // k为中间数
-    var k = (arr.length / 2) | 0;
+    function getMINandMAXElem(arr) {
+        var n = arr.length - 1;
+        var min, max;
+        // k为中间数
+        var k = (arr.length / 2) | 0;
 
-    // 在偶数对的情况下，依次比较arr[i..k]和arr[k+i..2*k]，
-    // 将较大的数交换到arr[i..k]中，较小的放到arr[k+i..2*k]中，
-    // 所以在arr[i..k]中可以找到最大值，arr[k+i..2*k]中找到最小值
-    for (var i = 0; i < k; ++i) {
-        if (arr[i] < arr[k + i]) {
-            swap(arr, i, k + i);
+        // 在偶数对的情况下，依次比较arr[i..k]和arr[k+i..2*k]，
+        // 将较大的数交换到arr[i..k]中，较小的放到arr[k+i..2*k]中，
+        // 所以在arr[i..k]中可以找到最大值，arr[k+i..2*k]中找到最小值
+        for (var i = 0; i < k; ++i) {
+            if (arr[i] < arr[k + i]) {
+                swap(arr, i, k + i);
+            }
         }
+
+        max = getMax(arr, 0, k);
+        min = getMin(arr, k + 1, 2 * k);
+
+        // 如果为奇数对，再做两次比较
+        if (2 * k < n + 1) {
+            if (arr[n] > arr[max]) max = n;
+            if (arr[n] < arr[min]) min = n;
+        }
+
+        return {
+            min: arr[min],
+            max: arr[max]
+        };
     }
 
-    max = getMax(arr, 0, k);
-    min = getMin(arr, k + 1, 2 * k);
+    var arr = [1, 3, 5, 17, 9, 8, 6, 4, -2, 0];
+    console.log(getMINandMAXElem(arr));
 
-    // 如果为奇数对，再做两次比较
-    if (2 * k < n + 1) {
-        if (arr[n] > arr[max]) max = n;
-        if (arr[n] < arr[min]) min = n;
+    var arr = [1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3];
+    console.log(getMINandMAXElem(arr));
+
+    /*
+     用对手论证法计算时间下界(比较次数)为2n-Math.ceil(n/2)-2
+     */
+
+
+    // 求最大数和次大数的最优算法
+    // 比较次数：T(n) = n + Math.ceil(logn) - 2;
+    function getTwoMaxElems(arr, s, n) {
+        // 返回最大的两个元素
+        if (n - s === 1) return arr.slice(s, n);
+        // 如果是三个元素，做比较，选做出最大两个
+        else if (n - s === 2) {
+            if (arr[s] > arr[s + 1])
+                swap(arr, s, s + 1);
+
+            if (arr[s] < arr[n])
+                arr[s] = arr[n];
+
+            return arr.slice(s, n)
+        }
+
+        // 将较大的元素交换到arr[k..n]中
+        var k = (n + 1 + s) / 2 | 0;
+        for (var i = s; i < k; ++i) {
+            if (arr[i] > arr[i + k])
+                swap(arr, i, i + k);
+        }
+
+        // 递归求解
+        return getTwoMaxElems(arr, k, n);
     }
 
-    return {
-        min: arr[min],
-        max: arr[max]
-    };
-}
-
-var arr = [1, 3, 5, 17, 9, 8, 6, 4, -2, 0];
-console.log(getMINandMAXElem(arr));
-
-var arr = [1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3];
-console.log(getMINandMAXElem(arr));
-
-/*
- 用对手论证法计算时间下界(比较次数)为2n-Math.ceil(n/2)-2
- */
-
-
-// 求最大数和次大数的最优算法
-// 比较次数：T(n) = n + Math.ceil(logn) - 2;
-function getTwoMaxElems(arr, s, n) {
-    // 返回最大的两个元素
-    if (n - s === 1) return arr.slice(s, n);
-    // 如果是三个元素，做比较，选做出最大两个
-    else if (n - s === 2) {
-        if (arr[s] > arr[s + 1])
-            swap(arr, s, s + 1);
-
-        if (arr[s] < arr[n])
-            arr[s] = arr[n];
-
-        return arr.slice(s, n)
-    }
-
-    // 将较大的元素交换到arr[k..n]中
-    var k = (n + 1 + s) / 2 | 0;
-    for (var i = s; i < k; ++i) {
-        if (arr[i] > arr[i + k])
-            swap(arr, i, i + k);
-    }
-
-    // 递归求解
-    return getTwoMaxElems(arr, k, n);
-}
-
-console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3], 0, 10));
-console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3, 11], 0, 11));
+    console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3], 0, 10));
+    console.log(getTwoMaxElems([1, 3, 5, 10, 9, 8, 6, 4, -2, 0, -3, 11], 0, 11));
+})();
 
 
 /*
@@ -694,129 +700,134 @@ console.log(multitude2(arr));
  带权中位数，就是给定的N个数都有一个权值，或者说相当于个数。此时的中位数就不再是第N/2个数了，而是第∑DI/2个数。
  */
 
-// O(nlogn)时间解
-function weightedMedian(arr) {
-    quickSort(arr, function (a, b) {
+(function(){
+    // O(nlogn)时间解
+    function weightedMedian(arr) {
+        quickSort(arr, function (a, b) {
+            return a.elem - b.elem;
+        });
+
+        var c = arr[0].weight;
+        var i = 1;
+        var n = arr.length;
+
+        while (i < n && c < 0.5) {
+            c += arr[i].weight;
+            ++i;
+        }
+
+        if (c < 0.5) return 0;
+        else return arr[i];
+    }
+    var arr = [
+        {elem: 5, weight: 0.2},
+        {elem: 4, weight: 0.3},
+        {elem: 3, weight: 0.2},
+        {elem: 2, weight: 0.2},
+        {elem: 1, weight: 0.1}
+    ];
+    console.log('weightedMedian');
+    console.log(weightedMedian(arr));
+
+    // O(n)时间解
+    function weightedMedian2(arr, i, j, sum1, sum2) {
+        var m = Math.floor((j - i) / 2) + 1;
+        // todo 此处不该使用随机版本
+        var c = randomizedSelect(arr, i, j, m, compare);
+        m = partition(arr, i, j, m, compare);
+
+        var c1 = 0;
+        for (var k = i; k < m - 1; ++k)
+            c1 += arr[k].weight;
+        var c2 = sum1 + sum2 - c1 - arr[m].weight;
+        if (c1 > sum1)
+            return weightedMedian2(arr, i, m - 1, sum1, sum2 - c2 - arr[m].weight);
+        if (c2 > sum2)
+            return weightedMedian2(arr, m + 1, j, sum1 - c1 - arr[m].weight, sum2);
+
+        return c;
+    }
+
+    function compare(a, b) {
         return a.elem - b.elem;
-    });
-
-    var c = arr[0].weight;
-    var i = 1;
-    var n = arr.length;
-
-    while (i < n && c < 0.5) {
-        c += arr[i].weight;
-        ++i;
     }
 
-    if (c < 0.5) return 0;
-    else return arr[i];
-}
-var arr = [
-    {elem: 5, weight: 0.2},
-    {elem: 4, weight: 0.3},
-    {elem: 3, weight: 0.2},
-    {elem: 2, weight: 0.2},
-    {elem: 1, weight: 0.1}
-];
-console.log('weightedMedian');
-console.log(weightedMedian(arr));
+    function partition(sqList, low, high, index, comp) {
+        var temp;
+        var i = low;
+        var j = high + 1;
 
-// O(n)时间解
-function weightedMedian2(arr, i, j, sum1, sum2) {
-    var m = Math.floor((j - i) / 2) + 1;
-    // todo 此处不该使用随机版本
-    var c = randomizedSelect(arr, i, j, m, compare);
-    m = partition(arr, i, j, m, compare);
+        temp = sqList[low];
+        sqList[low] = sqList[index];
+        sqList[index] = temp;
 
-    var c1 = 0;
-    for (var k = i; k < m - 1; ++k)
-        c1 += arr[k].weight;
-    var c2 = sum1 + sum2 - c1 - arr[m].weight;
-    if (c1 > sum1)
-        return weightedMedian2(arr, i, m - 1, sum1, sum2 - c2 - arr[m].weight);
-    if (c2 > sum2)
-        return weightedMedian2(arr, m + 1, j, sum1 - c1 - arr[m].weight, sum2);
+        var x = sqList[low];
 
-    return c;
-}
+        while (1) {
+            while (comp(sqList[++i], x) < 0 && i < high);
+            while (comp(sqList[--j], x) > 0);
+            if (i >= j) break;
+            temp = sqList[i];
+            sqList[i] = sqList[j];
+            sqList[j] = temp;
+        }
 
-function compare(a, b) {
-    return a.elem - b.elem;
-}
+        sqList[low] = sqList[j];
+        sqList[j] = x;
 
-function partition(sqList, low, high, index, comp) {
-    var temp;
-    var i = low;
-    var j = high + 1;
-
-    temp = sqList[low];
-    sqList[low] = sqList[index];
-    sqList[index] = temp;
-
-    var x = sqList[low];
-
-    while (1) {
-        while (comp(sqList[++i], x) < 0 && i < high);
-        while (comp(sqList[--j], x) > 0);
-        if (i >= j) break;
-        temp = sqList[i];
-        sqList[i] = sqList[j];
-        sqList[j] = temp;
+        return j;
     }
 
-    sqList[low] = sqList[j];
-    sqList[j] = x;
-
-    return j;
-}
-
-var arr = [
-    {elem: 5, weight: 0.2},
-    {elem: 4, weight: 0.3},
-    {elem: 3, weight: 0.2},
-    {elem: 2, weight: 0.2},
-    {elem: 1, weight: 0.1}
-];
-console.log('weightedMedian2');
-console.log(weightedMedian2(arr, 0, arr.length - 1, 0.5, 0.5));
+    var arr = [
+        {elem: 5, weight: 0.2},
+        {elem: 4, weight: 0.3},
+        {elem: 3, weight: 0.2},
+        {elem: 2, weight: 0.2},
+        {elem: 1, weight: 0.1}
+    ];
+    console.log('weightedMedian2');
+    console.log(weightedMedian2(arr, 0, arr.length - 1, 0.5, 0.5));
+})();
 
 
 // 构造Gray码的分治算法
 // http://baike.baidu.com/view/358724.htm
-function gray(n) {
-    var arr = [];
+(function(){
+    function gray(n) {
+        var arr = [];
 
-    void function recurse(n) {
-        if (n === 1) {
-            arr[0] = 0;
-            arr[1] = 1;
-            return;
-        }
+        void function recurse(n) {
+            if (n === 1) {
+                arr[0] = 0;
+                arr[1] = 1;
+                return;
+            }
 
-        recurse(n - 1);
+            recurse(n - 1);
 
-        for (var k = 1 << (n - 1), i = k; i > 0; --i) {
-            arr[2 * k - i] = arr[i - 1] + k;
-        }
-    }(n);
+            for (var k = 1 << (n - 1), i = k; i > 0; --i) {
+                arr[2 * k - i] = arr[i - 1] + k;
+            }
+        }(n);
 
-    printGray(arr, n);
-    return arr;
-}
-console.log(gray(1));
-console.log(gray(2));
-console.log(gray(3));
-
-function printGray(arr, n) {
-    var m = 1 << n;
-    var str = '';
-    for (var i = 0; i < m; ++i) {
-        str = arr[i].toString(2);
-        var s = str.length;
-        for (var j = 0; j < n - s; ++j) {
-            str = '0' + str;
-        }
-        console.log(str);
+        printGray(arr, n);
+        return arr;
     }
-}
+    console.log(gray(1));
+    console.log(gray(2));
+    console.log(gray(3));
+
+    function printGray(arr, n) {
+        var m = 1 << n;
+        var str = '';
+        for (var i = 0; i < m; ++i) {
+            str = arr[i].toString(2);
+            var s = str.length;
+            for (var j = 0; j < n - s; ++j) {
+                str = '0' + str;
+            }
+            console.log(str);
+        }
+    }
+
+})();
