@@ -323,7 +323,7 @@ console.log(specifiedBinarySearch(arr, 5));
  向右循环换位合并算法首先用二分搜索算法在数组段a[k..n-1]中搜索a[0]的插入位置，即找到位置p使得a[p]<a[0]<=a[p+1]。数组段a[0..p]向右循环换位p-k个位置，使a[k-1]移动到a[p]的位置。此时，原数组元素a[0]及其左边的所有元素均已排好序。对剩余的数组元素重复上述过程，直至只剩下一个数组段，此时整个数组已排好序。
  */
 
-(function(){
+(function () {
     // 向前合并a[0..k-1]和a[k..n-1]
     function mergeForward(arr, k) {
         var n = arr.length;
@@ -373,7 +373,7 @@ console.log(specifiedBinarySearch(arr, 5));
 
 // 自然合并排序算法
 
-(function(){
+(function () {
     // 数组的情形
     (function () {
         function naturalMergeSort(a) {
@@ -503,7 +503,7 @@ console.log(specifiedBinarySearch(arr, 5));
  给定数组a[0..n-1]，求在最坏情况下用Math.ceil(3n/2-2)次比较找出a[0..n-1]中元素的最大值和最小值。
  */
 
-(function(){
+(function () {
     function getMax(arr, i, j) {
         var m = i;
         for (var k = i + 1; k <= j; ++k)
@@ -700,7 +700,7 @@ console.log(multitude2(arr));
  带权中位数，就是给定的N个数都有一个权值，或者说相当于个数。此时的中位数就不再是第N/2个数了，而是第∑DI/2个数。
  */
 
-(function(){
+(function () {
     // O(nlogn)时间解
     function weightedMedian(arr) {
         quickSort(arr, function (a, b) {
@@ -719,6 +719,7 @@ console.log(multitude2(arr));
         if (c < 0.5) return 0;
         else return arr[i];
     }
+
     var arr = [
         {elem: 5, weight: 0.2},
         {elem: 4, weight: 0.3},
@@ -792,7 +793,7 @@ console.log(multitude2(arr));
 
 // 构造Gray码的分治算法
 // http://baike.baidu.com/view/358724.htm
-(function(){
+(function () {
     function gray(n) {
         var arr = [];
 
@@ -813,6 +814,7 @@ console.log(multitude2(arr));
         printGray(arr, n);
         return arr;
     }
+
     console.log(gray(1));
     console.log(gray(2));
     console.log(gray(3));
@@ -831,3 +833,50 @@ console.log(multitude2(arr));
     }
 
 })();
+
+
+// 给定中序和后序，确定前序序列
+// 后序序列的最后一个元素肯定是根元素，
+// 中序序列的根元素的左边都是左子树，右边为右子树
+function preOrder(inOrderStr, postOrderStr) {
+    var pre = '';
+
+    void function recurse(a, b) {
+        if (b.length === 1) pre += b;
+        else {
+            var k = a.indexOf(b[b.length - 1]);
+            pre += a[k];
+            if (k > 0)
+                recurse(a.substr(0, k), b.substr(0, k));
+            if (k < a.length - 1)
+                recurse(a.substr(k + 1, a.length - k - 1), b.substr(k, b.length - k - 1));
+        }
+    }(inOrderStr, postOrderStr);
+
+    return pre;
+}
+
+console.log(preOrder('dbeafc', 'debfca')); // 'abdecf'
+
+
+// 根据前序和中序确定后序序列
+// todo bug exists
+function postOrder(preOrderStr, inOrderStr){
+    var post = '';
+
+    void function recurse(a, b){
+        if(b.length === 1) post += b;
+        else {
+            var k = a.indexOf(b[0]);
+            if(k > 0)
+                recurse(a.substr(0, k), b.substr(1, k));
+            if(k < a.length - 1)
+                recurse(a.substr(k + 1, a.length - k - 1), b.substr(k + 1, b.length - k - 1));
+            post += a[k];
+        }
+    }(preOrderStr, inOrderStr);
+
+    return post;
+}
+
+console.log(preOrder('abdecf', 'dbeafc')); // 'debfca'
