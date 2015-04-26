@@ -860,8 +860,7 @@ console.log(preOrder('dbeafc', 'debfca')); // 'abdecf'
 
 
 // 根据前序和中序确定后序序列
-// todo bug exists
-function postOrder(preOrderStr, inOrderStr){
+function postOrder(inOrderStr, preOrderStr){
     var post = '';
 
     void function recurse(a, b){
@@ -874,9 +873,9 @@ function postOrder(preOrderStr, inOrderStr){
                 recurse(a.substr(k + 1, a.length - k - 1), b.substr(k + 1, b.length - k - 1));
             post += a[k];
         }
-    }(preOrderStr, inOrderStr);
+    }(inOrderStr, preOrderStr);
 
     return post;
 }
 
-console.log(preOrder('abdecf', 'dbeafc')); // 'debfca'
+console.log(postOrder('dbeafc', 'abdecf')); // 'debfca'
