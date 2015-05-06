@@ -879,3 +879,44 @@ function postOrder(inOrderStr, preOrderStr){
 }
 
 console.log(postOrder('dbeafc', 'abdecf')); // 'debfca'
+
+
+/*
+半数集问题
+
+ 问题描述：
+ 给定一个自然数n，由n 开始可以依次产生半数集set(n)中的数如下。
+ (1) n∈set(n)；
+ (2) 在n 的左边加上一个自然数，但该自然数不能超过最近添加的数的一半；
+ (3) 按此规则进行处理，直到不能再添加自然数为止。
+ 例如，set(6)={6,16,26,126,36,136}。半数集set(6)中有6 个元素。
+ 注意半数集是多重集。
+ 算法设计：
+ 对于给定的自然数n，计算半数集set(n)中的元素个数
+ */
+
+function comp(n){
+    var count = 1;
+    if(n > 1) {
+        for(var i = 1; i <= n / 2; ++i)
+            count += comp(i);
+    }
+    return count;
+}
+console.log(comp(6));
+
+
+// 动态规划法
+function comp2(n){
+    var arr = [];
+    for(var i = 1; i <= n; ++i) arr[i] = 0;
+
+    return function recurse(n){
+        var count = 1;
+        if(arr[n] > 0) return arr[n];
+        for(var i = 1; i <= n / 2; ++i)
+            count += recurse(i);
+        return (arr[n] = count);
+    }(n);
+}
+console.log(comp2(6));
