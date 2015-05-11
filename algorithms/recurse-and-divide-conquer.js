@@ -366,8 +366,8 @@ console.log(specifiedBinarySearch(arr, 5));
     console.log('mergeForward: ' + a);
 
     /*
- 上述算法中，数组段a[0:k-1]中元素的移动次数不超过k次，数组段a[k:n-1]中元素最多移动一次。因此，算法的元素移动总次数为:k^2+(n-k)次。算法的比较次数不超过klog(n - k)（这个不明白）。当k <n1/2时，算法的时间复杂度为O(n)；反之，则为O(n*n）。
- */
+     上述算法中，数组段a[0:k-1]中元素的移动次数不超过k次，数组段a[k:n-1]中元素最多移动一次。因此，算法的元素移动总次数为:k^2+(n-k)次。算法的比较次数不超过klog(n - k)（这个不明白）。当k <n1/2时，算法的时间复杂度为O(n)；反之，则为O(n*n）。
+     */
 })();
 
 
@@ -860,16 +860,16 @@ console.log(preOrder('dbeafc', 'debfca')); // 'abdecf'
 
 
 // 根据前序和中序确定后序序列
-function postOrder(inOrderStr, preOrderStr){
+function postOrder(inOrderStr, preOrderStr) {
     var post = '';
 
-    void function recurse(a, b){
-        if(b.length === 1) post += b;
+    void function recurse(a, b) {
+        if (b.length === 1) post += b;
         else {
             var k = a.indexOf(b[0]);
-            if(k > 0)
+            if (k > 0)
                 recurse(a.substr(0, k), b.substr(1, k));
-            if(k < a.length - 1)
+            if (k < a.length - 1)
                 recurse(a.substr(k + 1, a.length - k - 1), b.substr(k + 1, b.length - k - 1));
             post += a[k];
         }
@@ -882,7 +882,7 @@ console.log(postOrder('dbeafc', 'abdecf')); // 'debfca'
 
 
 /*
-半数集问题
+ 半数集问题
 
  问题描述：
  给定一个自然数n，由n 开始可以依次产生半数集set(n)中的数如下。
@@ -895,10 +895,10 @@ console.log(postOrder('dbeafc', 'abdecf')); // 'debfca'
  对于给定的自然数n，计算半数集set(n)中的元素个数
  */
 
-function comp(n){
+function comp(n) {
     var count = 1;
-    if(n > 1) {
-        for(var i = 1; i <= n / 2; ++i)
+    if (n > 1) {
+        for (var i = 1; i <= n / 2; ++i)
             count += comp(i);
     }
     return count;
@@ -907,16 +907,42 @@ console.log(comp(6));
 
 
 // 动态规划法
-function comp2(n){
+function comp2(n) {
     var arr = [];
-    for(var i = 1; i <= n; ++i) arr[i] = 0;
+    for (var i = 1; i <= n; ++i) arr[i] = 0;
 
-    return function recurse(n){
+    return function recurse(n) {
         var count = 1;
-        if(arr[n] > 0) return arr[n];
-        for(var i = 1; i <= n / 2; ++i)
+        if (arr[n] > 0) return arr[n];
+        for (var i = 1; i <= n / 2; ++i)
             count += recurse(i);
         return (arr[n] = count);
     }(n);
 }
 console.log(comp2(6));
+
+// 半数单集问题
+// 不允许重复元素，且0 < n < 201
+/*
+因为题中的条件，在计算时可能产生重复的元素是两位数。一个两位数x重复产生的条件是，在1位数y=x%10的半数集中已产生x,因此x/10<=y/2,也就是，2*(x/10)<=x%10
+
+此题还可用散列表和数字查找树来实现
+ */
+function uniqueComp(n) {
+    var arr = [];
+    for (var i = 1; i <= n; ++i) arr[i] = 0;
+
+    return function recurse(n) {
+        var count = 1;
+        if (arr[n] > 0) return arr[n];
+
+        for (var i = 1; i <= n / 2; ++i) {
+            count += comp(i);
+            if (i > 10 && 2 * i / 10 <= i % 10)
+                count -= arr[Math.floor(i / 10)];
+        }
+
+        return (arr[n] = count);
+    }(n);
+}
+console.log(uniqueComp(6));
