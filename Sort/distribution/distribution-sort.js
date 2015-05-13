@@ -117,14 +117,14 @@ function radixSort(arr, d){
             count[j] = 0;
         // 统计每个桶中的记录数
         for(j = 0; j < n; ++j){
-            var k = (arr[j] / radix | 0) % 10;
+            var k = Math.floor(arr[j] / radix) % 10;
             ++count[k];
         }
         for(j = 1; j < 10; ++j)
             count[j] += count[j - 1];
         // 将所有桶中记录依次收集到tmp中
         for(j = n - 1; j >= 0; --j){
-            k = (arr[j] / radix | 0) % 10;
+            k = Math.floor(arr[j] / radix) % 10;
             temp[--count[k]] = arr[j];
         }
         //将临时数组的内容复制到arr中
@@ -190,7 +190,7 @@ function bucketSort(sqList){
     for(i = 0; i < n; ++i){
         var data = sqList[i];
         // noto: 这里的映射函数是针对1-100之间的实数
-        var bucket = data / BUCKETSNUM | 0;
+        var bucket = Math.floor(data / BUCKETSNUM);
         b[bucket][bucketA[bucket]] = data;
         ++bucketA[bucket];
     }
