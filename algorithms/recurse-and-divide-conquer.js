@@ -16,6 +16,7 @@ function perm(list, k, m) {
         console.log(s);
     } else {
         for (i = k; i <= m; ++i) {
+            // 此处可判断重复
             swap(list, k, i);
             perm(list, k + 1, m);
             swap(list, k, i);
@@ -924,9 +925,9 @@ console.log(comp2(6));
 // 半数单集问题
 // 不允许重复元素，且0 < n < 201
 /*
-因为题中的条件，在计算时可能产生重复的元素是两位数。一个两位数x重复产生的条件是，在1位数y=x%10的半数集中已产生x,因此x/10<=y/2,也就是，2*(x/10)<=x%10
+ 因为题中的条件，在计算时可能产生重复的元素是两位数。一个两位数x重复产生的条件是，在1位数y=x%10的半数集中已产生x,因此x/10<=y/2,也就是，2*(x/10)<=x%10
 
-此题还可用散列表和数字查找树来实现
+ 此题还可用散列表和数字查找树来实现
  */
 function uniqueComp(n) {
     var arr = [];
@@ -946,3 +947,27 @@ function uniqueComp(n) {
     }(n);
 }
 console.log(uniqueComp(6));
+
+
+/*
+整数因子分解问题
+
+对于给定的正整数n，计算n共有多少种不同的分解式
+ */
+
+function decompose(n){
+    var total = 0;
+
+    void function recurse(n){
+        if(n === 1) total++;
+        else {
+            for(var i = 2; i <= n; ++i)
+                if(n % i === 0) recurse(n / i);
+        }
+    }(n);
+
+    return total;
+}
+
+console.log('factor decompose: ');
+console.log(decompose(12));
