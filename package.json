@@ -1,0 +1,33 @@
+{
+  "name": "data-structure-with-js",
+  "version": "0.0.1",
+  "description": "data structure",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LukeLin/data-structure-with-js.git"
+  },
+  "keywords": [
+    "data-structure",
+    "algorithms"
+  ],
+  "author": "LukeLin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LukeLin/data-structure-with-js/issues"
+  },
+  "homepage": "https://github.com/LukeLin/data-structure-with-js#readme",
+  "devDependencies": {
+    "gulp": "*",
+    "karma": "*",
+    "gulp-browserify": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-babel": "*",
+    "gulp-concat": "*",
+    "del": "*",
+    "gulp-livereload": "*"
+  }
+}

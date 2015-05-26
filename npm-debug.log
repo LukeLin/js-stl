@@ -1,0 +1,85 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install' ]
+2 info using npm@2.9.1
+3 info using node@v0.12.3
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 verbose readDependencies loading dependencies from E:\test\data-structure-with-js\package.json
+6 verbose install where, deps [ 'E:\\test\\data-structure-with-js', [ 'gulp', 'karma' ] ]
+7 verbose install where, peers [ 'E:\\test\\data-structure-with-js', [] ]
+8 verbose installManyTop reading for lifecycle E:\test\data-structure-with-js\package.json
+9 info preinstall data-structure-with-js@0.0.1
+10 verbose readDependencies loading dependencies from E:\test\data-structure-with-js\package.json
+11 silly cache add args [ 'gulp@*', null ]
+12 verbose cache add spec gulp@*
+13 silly cache add args [ 'karma@*', null ]
+14 verbose cache add spec karma@*
+15 silly cache add parsed spec { raw: 'gulp@*',
+15 silly cache add   scope: null,
+15 silly cache add   name: 'gulp',
+15 silly cache add   rawSpec: '*',
+15 silly cache add   spec: '*',
+15 silly cache add   type: 'range' }
+16 silly addNamed gulp@*
+17 verbose addNamed "*" is a valid semver range for gulp
+18 silly addNameRange { name: 'gulp', range: '*', hasData: false }
+19 silly mapToRegistry name gulp
+20 silly mapToRegistry using default registry
+21 silly mapToRegistry registry https://registry.npmjs.org/
+22 silly mapToRegistry uri https://registry.npmjs.org/gulp
+23 verbose addNameRange registry:https://registry.npmjs.org/gulp not in flight; fetching
+24 silly cache add parsed spec { raw: 'karma@*',
+24 silly cache add   scope: null,
+24 silly cache add   name: 'karma',
+24 silly cache add   rawSpec: '*',
+24 silly cache add   spec: '*',
+24 silly cache add   type: 'range' }
+25 silly addNamed karma@*
+26 verbose addNamed "*" is a valid semver range for karma
+27 silly addNameRange { name: 'karma', range: '*', hasData: false }
+28 silly mapToRegistry name karma
+29 silly mapToRegistry using default registry
+30 silly mapToRegistry registry https://registry.npmjs.org/
+31 silly mapToRegistry uri https://registry.npmjs.org/karma
+32 verbose addNameRange registry:https://registry.npmjs.org/karma not in flight; fetching
+33 verbose request uri https://registry.npmjs.org/gulp
+34 verbose request no auth needed
+35 info attempt registry request try #1 at 16:55:56
+36 verbose request id 5f66be8d8a946b78
+37 http request GET https://registry.npmjs.org/gulp
+38 verbose request uri https://registry.npmjs.org/karma
+39 verbose request no auth needed
+40 info attempt registry request try #1 at 16:55:56
+41 http request GET https://registry.npmjs.org/karma
+42 info retry will retry, error on last attempt: Error: connect ETIMEDOUT
+43 info retry will retry, error on last attempt: Error: connect ETIMEDOUT
+44 info attempt registry request try #2 at 16:56:32
+45 http request GET https://registry.npmjs.org/gulp
+46 info attempt registry request try #2 at 16:56:32
+47 http request GET https://registry.npmjs.org/karma
+48 info retry will retry, error on last attempt: Error: connect ETIMEDOUT
+49 info retry will retry, error on last attempt: Error: connect ETIMEDOUT
+50 info attempt registry request try #3 at 16:57:53
+51 http request GET https://registry.npmjs.org/gulp
+52 info attempt registry request try #3 at 16:57:53
+53 http request GET https://registry.npmjs.org/karma
+54 verbose stack Error: connect ETIMEDOUT
+54 verbose stack     at exports._errnoException (util.js:746:11)
+54 verbose stack     at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1010:19)
+55 verbose cwd E:\test\data-structure-with-js
+56 error Windows_NT 6.1.7601
+57 error argv "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
+58 error node v0.12.3
+59 error npm  v2.9.1
+60 error code ETIMEDOUT
+61 error errno ETIMEDOUT
+62 error syscall connect
+63 error network connect ETIMEDOUT
+63 error network This is most likely not a problem with npm itself
+63 error network and is related to network connectivity.
+63 error network In most cases you are behind a proxy or have bad network settings.
+63 error network
+63 error network If you are behind a proxy, please make sure that the
+63 error network 'proxy' config is set properly.  See: 'npm help config'
+64 verbose exit [ 1, true ]
