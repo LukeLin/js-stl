@@ -24,6 +24,65 @@
  子问题重叠性质。子问题重叠性质是指在用递归算法自顶向下对问题进行求解时，每次产生的子问题并不总是新问题，有些子问题会被重复计算多次。动态规划算法正是利用了这种子问题的重叠性质，对每一个子问题只计算一次，然后将其计算结果保存在一个表格中，当再次需要计算已经计算过的子问题时，只是在表格中简单地查看一下结果，从而获得较高的效率。
  */
 
+(function(){
+    // 从n个物件里取出m个的组合数（0 <= m <= n）
+
+    // 分治法 时间复杂度为O(C(n, m))
+    /*
+    递归式：
+        C(n, m) = C(n - 1, m) + C(n - 1, m - 1)
+     */
+    function divide_comb(n, m){
+        if(m === 0 || n === m) return 1;
+        else return divide_comb(n - 1, m) + divide_comb(n - 1, m - 1);
+    }
+
+    console.log(divide_comb(11, 5));    // 462
+
+    // 动态规划优化1  时间复杂度O(n*m) 空间复杂度O(n*m)
+    function dynamic_comb(n, m){
+        var c = [];
+        for(var i = 0; i <= n; ++i){
+            c[i] = [];
+            c[i][0] = 1;
+        }
+        for(var j = 1; j <= m; ++j)
+            c[0][j] = 0;
+        for(i = 1; i <= n; ++i){
+            for(j = 1; j <= m; ++j){
+                c[i][j] = c[i - 1][j - 1] + c[i - 1][j];
+            }
+        }
+
+        return c[n][m];
+    }
+
+    console.log(dynamic_comb(11, 5));    // 462
+
+
+    // todo bug exists
+    // 动态规划优化1  时间复杂度O(n*m) 空间复杂度O(m)
+    function dynamic_comb2(n, m){
+        if(m === 0) return 1;
+
+        var c = [];
+        if(m > 0) {
+            for(var i = 1; i <= m; ++i) c[i] = 0;
+            for(i = 1; i <= n; ++i){
+                for(var j = m; j >= 2; --j){
+                    c[j] = c[j] + c[j - 1];
+                }
+                ++c[i];
+            }
+        }
+
+        return c[m];
+    }
+
+    console.log(dynamic_comb2(11, 5));    // 462
+
+})();
+
 // unoptimized version
 // 两矩阵相乘
 function matrixMultiply(a, b){
