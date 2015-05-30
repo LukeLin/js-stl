@@ -60,23 +60,22 @@
     console.log(dynamic_comb(11, 5));    // 462
 
 
-    // todo bug exists
     // 动态规划优化1  时间复杂度O(n*m) 空间复杂度O(m)
     function dynamic_comb2(n, m){
         if(m === 0) return 1;
 
-        var c = [];
+        var c = [0];
         if(m > 0) {
-            for(var i = 1; i <= m; ++i) c[i] = 0;
+            for(var i = 1; i <= n; ++i) c[i] = 0;
             for(i = 1; i <= n; ++i){
-                for(var j = m; j >= 2; --j){
-                    c[j] = c[j] + c[j - 1];
+                for(var j = m + 1; j > 1; --j){
+                    c[j] += c[j - 1];
                 }
                 ++c[i];
             }
         }
 
-        return c[m];
+        return c[m + 1];
     }
 
     console.log(dynamic_comb2(11, 5));    // 462
