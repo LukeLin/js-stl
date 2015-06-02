@@ -12,7 +12,7 @@
  */
 
 // 找的链式表示
-export class Stack {
+export default class Stack {
     constructor() {
         this.top = null;
         this.length = 0;

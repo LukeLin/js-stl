@@ -85,7 +85,7 @@
     });
 }());
 
-import {Stack} from '../Stack/Stack';
+import Stack from '../Stack/Stack';
 import {Queue} from '../Queue/Queue';
 
 // 链式存储结构
