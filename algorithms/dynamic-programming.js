@@ -82,6 +82,35 @@
 
 })();
 
+(function(){
+    // 最长单调递增子序列
+
+    // 时间复杂度O(n^2)算法
+    function LISdyna(arr){
+        var n = arr.length;
+        var b = [];
+        b[0] = 0;
+        for(var i = 1; i < n; ++i){
+            var k = 0;
+            for(var j = 0; j < i; ++j){
+                if(arr[j] <= arr[i] && k < b[j])
+                    k = b[j];
+                else k = 0;
+            }
+            b[i] = k + 1;
+        }
+
+        for(i = 0, j = 0; i < n; ++i){
+            if(b[i] > j) j = b[i];
+        }
+
+        return j;
+    }
+
+    console.log('最长单调递增子序列1:');
+    console.log(LISdyna([3,2,4,1,2,7,8,9,10]));
+})();
+
 // unoptimized version
 // 两矩阵相乘
 function matrixMultiply(a, b){
