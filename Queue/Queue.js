@@ -10,7 +10,7 @@ function Queue() {
     this.rear = this.front = null;
     this.size = 0;
 }
-exports.Queue = Queue;
+module.exports = Queue;
 Queue.prototype = {
     isEmpty: function(){
         return this.rear === null;

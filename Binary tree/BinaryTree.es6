@@ -86,7 +86,7 @@
 }());
 
 import Stack from '../Stack/Stack';
-import {Queue} from '../Queue/Queue';
+import Queue from '../Queue/Queue';
 
 // 链式存储结构
 export class BinaryTree {

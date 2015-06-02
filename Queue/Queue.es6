@@ -6,7 +6,7 @@
  */
 
 // 链队列
-export class Queue {
+export default class Queue {
     constructor() {
         this.rear = this.front = null;
         this.size = 0;
