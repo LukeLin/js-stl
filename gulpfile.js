@@ -11,6 +11,7 @@ gulp.task('scripts', function () {
         .pipe(sourcemaps.init())
         .pipe(babel({ optional: ["runtime"] }))
         .pipe(gulp.dest('dist'))
+        // 客户端使用
         //.pipe(concat('all.js'))
         //.pipe(browserify({
         //    insertGlobals : false,
