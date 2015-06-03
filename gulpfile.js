@@ -9,13 +9,13 @@ var livereload = require('gulp-livereload');
 gulp.task('scripts', function () {
     return gulp.src('*/**/*.es6')
         .pipe(sourcemaps.init())
-        .pipe(babel())
+        .pipe(babel({ optional: ["runtime"] }))
         .pipe(gulp.dest('dist'))
         //.pipe(concat('all.js'))
-        .pipe(browserify({
-            insertGlobals : false,
-            debug : !gulp.env.production
-        }))
+        //.pipe(browserify({
+        //    insertGlobals : false,
+        //    debug : !gulp.env.production
+        //}))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('dist'));
 });

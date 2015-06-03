@@ -26,6 +26,7 @@
     "gulp-browserify": "*",
     "gulp-sourcemaps": "*",
     "gulp-babel": "*",
+    "babel-runtime": "*",
     "gulp-concat": "*",
     "del": "*",
     "gulp-livereload": "*"
