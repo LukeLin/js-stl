@@ -62,7 +62,7 @@
         visit(tree[x]);
         if (tree[2 * x + 1]) preOrderRecursive(2 * x + 1, visit);
         if (tree[2 * x + 2]) preOrderRecursive(2 * x + 2, visit);
-    }(0, function (value) {
+    }(0, (value) => {
         console.log(value);
     });
 
@@ -71,7 +71,7 @@
         if (tree[2 * x + 1]) inOrderRecursive(2 * x + 1, visit);
         visit(tree[x]);
         if (tree[2 * x + 2]) inOrderRecursive(2 * x + 2, visit);
-    }(0, function (value) {
+    }(0, (value) => {
         console.log(value);
     });
 
@@ -80,7 +80,7 @@
         if (tree[2 * x + 1]) postOrderRecursive(2 * x + 1, visit);
         if (tree[2 * x + 2]) postOrderRecursive(2 * x + 2, visit);
         visit(tree[x]);
-    }(0, function (value) {
+    }(0, (value) => {
         console.log(value);
     });
 }());
@@ -103,7 +103,8 @@ export class BinaryTree {
             this.leftChild && this.leftChild.isSimilar(tree.leftChild) &&
             this.rightChild && this.rightChild.isSimilar(tree.rightChild);
     }
-    createBinaryTree (tree) {
+
+    createBinaryTree(tree) {
         void function preOrderRecursive(node, x, visit) {
             visit(node, tree[x]);
 
@@ -117,14 +118,14 @@ export class BinaryTree {
                 preOrderRecursive(p, 2 * x + 2, visit);
             }
 
-            if(p) p.parentNode = node;
+            if (p) p.parentNode = node;
         }(this, 0, (node, value) => {
             node.data = value;
         });
     }
 
     // 先序遍历二叉树的非递归算法
-    preOrderNonRecursive (visit) {
+    preOrderNonRecursive(visit) {
         let stack = new Stack();
         let p = this;
 
@@ -142,7 +143,7 @@ export class BinaryTree {
     }
 
     // 中序非递归遍历
-    inOrderNonRecursive (visit) {
+    inOrderNonRecursive(visit) {
         let stack = new Stack();
         let p = this;
 
@@ -157,10 +158,11 @@ export class BinaryTree {
             }
         }
     }
+
     // 为了区分两次过栈的不同处理方式，在堆栈中增加一个mark域，
     // mark=0表示刚刚访问此结点，mark=1表示左子树处理结束返回，
     // mark=2表示右子树处理结束返回。每次根据栈顶的mark域决定做何动作
-    postOrderNonRecursive (visit) {
+    postOrderNonRecursive(visit) {
         let stack = new Stack();
         stack.push([this, 0]);
 
@@ -191,18 +193,20 @@ export class BinaryTree {
         if (this.leftChild) this.leftChild.preOrderRecursive(visit);
         if (this.rightChild) this.rightChild.preOrderRecursive(visit);
     }
+
     inOrderRecursive(visit) {
         if (this.leftChild) this.leftChild.inOrderRecursive(visit);
         visit(this.data);
         if (this.rightChild) this.rightChild.inOrderRecursive(visit);
     }
+
     postOrderRecursive(visit) {
         if (this.leftChild) this.leftChild.postOrderRecursive(visit);
         if (this.rightChild) this.rightChild.postOrderRecursive(visit);
         visit(this.data);
     }
 
-    levelOrderTraverse (visit) {
+    levelOrderTraverse(visit) {
         let queue = new Queue();
         queue.enQueue(this);
 
@@ -213,8 +217,9 @@ export class BinaryTree {
             p.rightChild && queue.enQueue(p.rightChild);
         }
     }
+
     // 求先序序列为k的结点的值
-    getPreSequence (k) {
+    getPreSequence(k) {
         let count = 0;
 
         void function recurse(node) {
@@ -228,14 +233,16 @@ export class BinaryTree {
             }
         }(this);
     }
+
     // 求二叉树中叶子结点的数目
-    countLeaves () {
+    countLeaves() {
         return function recurse(node) {
             if (!node) return 0;
             else if (!node.leftChild && !node.rightChild) return 1;
             else return recurse(node.leftChild) + recurse(node.rightChild);
         }(this);
     }
+
     // 交换所有结点的左右子树
     revoluteBinaryTree() {
         let temp = this.leftChild;
@@ -245,6 +252,7 @@ export class BinaryTree {
         if (this.leftChild) this.leftChild.revoluteBinaryTree();
         if (this.rightChild) this.rightChild.revoluteBinaryTree();
     }
+
     // 求二叉树中以值为x的结点为根的子树深度
     getSubDepth(x) {
         if (this.data === x) {
@@ -254,11 +262,13 @@ export class BinaryTree {
             if (this.rightChild) this.rightChild.getSubDepth(x);
         }
     }
+
     getDepth() {
         let m = this.leftChild && this.leftChild.getDepth() || 0;
         let n = this.rightChild && this.rightChild.getDepth() || 0;
         return (m > n ? m : n) + 1;
     }
+
     // 删除所有以元素x为根的子树
     delSubX(x) {
         if (this.data === x) {
@@ -269,13 +279,13 @@ export class BinaryTree {
             if (this.rightChild) this.rightChild.delSubX(x);
         }
     }
+
     /**
      * 非递归复制二叉树
      * @param {Function} cb 拷贝过程中会执行的回调，可以用来拷贝其它自定义属性
      * @returns {Cstr} 返回新的实例
      */
-    copy (cb) {
-        cb = cb || function(){};
+    copy(cb = function(){}) {
         // 用来存放本体结点的栈
         let stack1 = new Stack();
         // 用来存放新二叉树结点的栈
@@ -313,19 +323,22 @@ export class BinaryTree {
 
         return newTree;
     }
+
     // 求二叉树中结点p和q的最近祖先
-    findNearAncient (pNode, qNode) {
+    findNearAncient(pNode, qNode) {
         let pathP = findPath(this, pNode, 0);
         let pathQ = findPath(this, qNode, 0);
 
         for (var i = 0; pathP[i] == pathQ[i] && pathP[i]; i++);
         return pathP[--i];
     }
+
     // todo
-    toString () {
+    toString() {
     }
+
     // 求一棵二叉树的繁茂度
-    lushDegree () {
+    lushDegree() {
         let countArr = [];
         let queue = new Queue();
         queue.enQueue({
@@ -352,14 +365,16 @@ export class BinaryTree {
 
         // 最后一个队列元素所在层就是树的高度
         let height = r.layer;
-        for (var max = countArr[0], i = 1; countArr[i]; i++)
+        let max = countArr[0];
+        for (let i = 1; countArr[i]; i++)
             // 求层最大结点数
             if (countArr[i] > max) max = countArr[i];
 
         return height * max;
     }
+
     // 求深度等于树的高度减一的最靠左的结点
-    printPath_maxDepthS1 () {
+    printPath_maxDepthS1() {
         let maxh = this.getDepth();
         let path = [];
 
@@ -382,9 +397,10 @@ export class BinaryTree {
             path[h] = null;
         }
     }
+
     // 求树结点的子孙总数填入descNum域中，并返回
-    descNum () {
-        return  function recurse(node) {
+    descNum() {
+        return function recurse(node) {
             let d;
             if (!node) return -1;
             else d = recurse(node.leftChild) + recurse(node.rightChild) + 2;
@@ -417,9 +433,8 @@ export class BinaryTree {
 }
 
 // 求从tree到node结点路径的递归算法
-function findPath(tree, node, i) {
+function findPath(tree, node, i = 0) {
     let path = [];
-    i = i || 0;
     let found = false;
 
     void function recurse(tree, i) {
@@ -443,29 +458,29 @@ void function test() {
     let tree = [1, 2, 3, 4, 5, , 6, , , 7];
     var test = new BinaryTree;
     test.createBinaryTree(tree);
-    test.preOrderRecursive( (value) => {
+    test.preOrderRecursive((value) => {
         console.log('preOrder: ' + value);
     });
-    test.inOrderRecursive( (value) => {
+    test.inOrderRecursive((value) => {
         console.log('inOrder: ' + value);
     });
-    test.postOrderRecursive( (value) => {
+    test.postOrderRecursive((value) => {
         console.log('postOrder: ' + value);
     });
-    test.preOrderNonRecursive( (data) => {
+    test.preOrderNonRecursive((data) => {
         console.log('preOrderNonRecursive: ' + data);
     });
-    test.inOrderNonRecursive( (value) => {
+    test.inOrderNonRecursive((value) => {
         console.log('inOrderNonRecursive: ' + value);
     });
-    test.postOrderNonRecursive( (value) => {
+    test.postOrderNonRecursive((value) => {
         console.log('postOrderNonRecursive: ' + value);
     });
     test.getPreSequence(5);
     console.log(test.countLeaves());
     test.getSubDepth(6);    // 1
     test.getSubDepth(2);    // 3
-    test.levelOrderTraverse( (value) => {
+    test.levelOrderTraverse((value) => {
         console.log('levelOrderTraverse: ' + value);
     });
 
@@ -487,7 +502,6 @@ void function test() {
 }();
 
 
-
 /**
  * 树的3种常用链表结构
  */
@@ -495,13 +509,12 @@ void function test() {
 // 1.双亲表示法
 // 优点：parent(tree, x)操作可以在常量时间内实现
 // 缺点：求结点的孩子时需要遍历整个结构
-function ParentTree() {
-    this.nodes = [];
-}
-exports.ParentTree = ParentTree;
-ParentTree.prototype = {
-    constructor: ParentTree,
-    getDepth: function () {
+export class ParentTree {
+    constructor() {
+        this.nodes = [];
+    }
+
+    getDepth() {
         let maxDepth = 0;
 
         for (let i = 0; i < this.nodes.length; i++) {
@@ -512,13 +525,17 @@ ParentTree.prototype = {
 
         return maxDepth;
     }
-};
-function ParentTreeNode(data, parent) {
-    // type: ParentTree
-    this.data = data || null;
-    // 双亲位置域 {Number}
-    this.parent = parent || 0;
 }
+
+class ParentTreeNode {
+    constructor(data = null, parent = 0) {
+        // type: ParentTree
+        this.data = data;
+        // 双亲位置域 {Number}
+        this.parent = parent;
+    }
+}
+
 let pt = new ParentTree();
 pt.nodes.push(new ParentTreeNode('R', -1));
 pt.nodes.push(new ParentTreeNode('A', 0));
@@ -534,18 +551,18 @@ pt.nodes.push(new ParentTreeNode('I', 6));
 
 // 孩子表示法
 
-function ChildTree() {
-    this.nodes = [];
-}
-exports.ChildTree = ChildTree;
-ChildTree.prototype = {
-    constructor: ChildTree,
-    getDepth: function () {
+export class ChildTree {
+    constructor() {
+        this.nodes = [];
+    }
+
+    getDepth() {
         let self = this;
         return function subDepth(rootIndex) {
             if (!self.nodes[rootIndex]) return 1;
 
-            for (let sd = 1, p = self.nodes[rootIndex]; p; p = p.next) {
+            let sd = 1;
+            for (let p = self.nodes[rootIndex]; p; p = p.next) {
                 let d = subDepth(p.child);
                 if (d > sd) sd = d;
             }
@@ -553,17 +570,20 @@ ChildTree.prototype = {
             return sd + 1;
         }(this.data[0]);
     }
-};
+}
 /**
  *
  * @param {*} data
  * @param {ChildTreeNode} firstChild 孩子链表头指针
  * @constructor
  */
-function ChildTreeBox(data, firstChild) {
-    this.data = data;
-    this.firstChild = firstChild;
+class ChildTreeBox {
+    constructor(data = null, firstChild = null) {
+        this.data = data;
+        this.firstChild = firstChild;
+    }
 }
+
 /**
  * 孩子结点
  *
@@ -571,9 +591,11 @@ function ChildTreeBox(data, firstChild) {
  * @param {ChildTreeNode} next
  * @constructor
  */
-function ChildTreeNode(child, next) {
-    this.child = child;
-    this.next = next;
+class ChildTreeNode {
+    constructor(child = null, next = null) {
+        this.child = child;
+        this.next = next;
+    }
 }
 
 /*
@@ -584,22 +606,23 @@ function ChildTreeNode(child, next) {
 
 // 孩子兄弟表示法(二叉树表示法)
 // 可增设一个parent域实现parent操作
-function ChildSiblingTree(data) {
-    this.data = data || null;
-    this.firstChild = null;
-    this.nextSibling = null;
-}
-exports.ChildSiblingTree = ChildSiblingTree;
-ChildSiblingTree.prototype = {
+export class ChildSiblingTree {
+    constructor(data = null, firstChild = null, nextSibling = null) {
+        this.data = data;
+        this.firstChild = firstChild;
+        this.nextSibling = nextSibling;
+    }
+
     // 输出孩子兄弟链表表示的树的各边
-    print: function print() {
+    print() {
         for (let child = this.firstChild; child; child = child.nextSibling) {
             console.log('%c %c', this.data, child.data);
             child.print();
         }
-    },
+    }
+
     // 求孩子兄弟链表表示的树的叶子数目
-    leafCount: function leafCount() {
+    leafCount() {
         if (!this.firstChild) return 1;
         else {
             let count = 0;
@@ -608,26 +631,29 @@ ChildSiblingTree.prototype = {
             }
             return count;
         }
-    },
+    }
+
     // 求树的度
-    getDegree: function getDegree() {
+    getDegree() {
         if (!this.firstChild) return 0;
         else {
             let degree = 0;
             for (let p = this.firstChild; p; p = p.nextSibling) degree++;
 
-            for (p = this.firstChild; p; p = p.nextSibling) {
+            for (let p = this.firstChild; p; p = p.nextSibling) {
                 let d = p.getDegree();
                 if (d > degree) degree = d;
             }
 
             return degree;
         }
-    },
-    getDepth: function getDepth() {
+    }
+
+    getDepth() {
         if (this === global) return 0;
         else {
-            for (let maxd = 0, p = this.firstChild; p; p = p.nextSibling) {
+            let maxd = 0;
+            for (let p = this.firstChild; p; p = p.nextSibling) {
                 let d = p.getDepth();
                 if (d > maxd) maxd = d;
             }
@@ -635,5 +661,4 @@ ChildSiblingTree.prototype = {
             return maxd + 1;
         }
     }
-};
-
+}
