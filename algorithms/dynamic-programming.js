@@ -144,6 +144,48 @@
     console.log(LISdyna2([3, 2, 4, 1, 2, 7, 8, 9, 10]));
 })();
 
+/*
+ n个单词，长度为l1（字母）、l2、l3…，打印在宽度为m（字母）的纸上，要求除最后一行外每行最后余下的空格数的立方和最小。用动态规划算法实现
+ */
+function printNeatly(words, maxCharsPerLine){
+    var n = words.length;
+    // 安排单词1..j时的最小费用
+    var c = [0];
+    // 记录换行的单词位置
+    var p = [];
+
+    for(var j = 1; j < n; ++j){
+        var i = j;
+        // 将单词i..j安排在一行中时，保存行尾的多余空格数，可能为负值
+        var extras = maxCharsPerLine - words[i].length;
+
+        while(extras >= 0){
+            // 表示将单词i..j打印在一行上的费用
+            var lc = j === n - 1 ? 0 : Math.pow(extras, 3);
+
+            if(c[j] > c[i - 1] + lc) {
+                c[j] = c[i - 1] + lc;
+                p[j] = i - 1;
+            }
+
+            --i;
+            extras = extras - words[i].length - 1;
+        }
+    }
+
+    return p;
+}
+
+var fs = require('fs');
+fs.readFile('./for-examples/printNeatly', { encoding: 'utf-8' }, function(err, data){
+    if(err) throw err;
+
+    console.log(data);
+    var arr = data.split(/\s+/g);
+    console.log(arr);
+    console.log(printNeatly(arr, 80));
+});
+
 // unoptimized version
 // 两矩阵相乘
 function matrixMultiply(a, b) {

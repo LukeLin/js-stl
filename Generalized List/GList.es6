@@ -49,6 +49,10 @@
 const ATOM = 0;
 const LIST = 1;
 
+let global = Function('return this')();
+// 使用链队列
+import Queue from '../Queue/Queue.js';
+
 // 广义表的头尾链表存储表示
 class GLNode {
     constructor(){
@@ -87,6 +91,147 @@ class GLNode {
             }
         }
     }
+
+    // 采用头尾链表存储结构，由广义表的书写形式串创建广义表
+    createGList (string) {
+        string = string.trim();
+
+        // 创建单原子广义表
+        let q;
+        if (isWord(string)) {
+            this.tag = ATOM;
+            this.atom = string;
+        } else {
+            this.tag = LIST;
+            let p = this;
+
+            // 脱外层括号
+            let sub = string.substr(1, string.length - 2);
+
+            do {
+                let hsub;
+                let n = sub.length;
+                let i = 0;
+                let k = 0;
+                let ch;
+
+                do {
+                    ch = sub[i++];
+                    if (ch == '(') ++k;
+                    else if (ch == ')') --k;
+                } while (i < n && (ch != ',' || k != 0));
+
+                // i为第一个逗号分隔索引
+                if (i < n) {
+                    hsub = sub.substr(0, i - 1);
+                    sub = sub.substr(i, n - i);
+
+                    // 最后一组
+                } else {
+                    hsub = sub;
+                    sub = '';
+                }
+
+                if(hsub === '()')
+                    p.ptr.hp = null;
+                else
+                // 创建表头结点
+                    this.createGList.call((p.ptr.hp = new GLNode()), hsub);
+
+                q = p;
+
+                // 创建表尾结点
+                if (sub) {
+                    p = new GLNode();
+                    p.tag = LIST;
+                    q.ptr.tp = p;
+                }
+            } while (sub);
+
+            q.ptr.tp = null;
+        }
+    }
+
+    static equal(gList1, gList2) {
+        // 空表时相等的
+        if (!gList1 && !gList2) return true;
+        if (gList1.tag === ATOM && gList2.tag === ATOM && gList1.atom === gList2.atom) return true;
+
+        if (gList1.tag === LIST && gList2.tag === LIST) {
+            // 表头表尾都相等
+            if (this.equal(gList1.ptr.hp, gList2.ptr.hp) && this.equal(gList1.ptr.tp, gList2.ptr.tp)) return true;
+        }
+
+        return false;
+    }
+
+    // 递归逆转广义表
+    reverse() {
+        let ptr = [];
+        // 当A不为原子且表尾非空时才需逆转
+        if (this.tag === LIST && this.ptr.tp) {
+            let i = 0;
+            for (let p = this; p; p = p.ptr.tp, i++) {
+                // 逆转各子表
+                if (p.ptr.hp) p.ptr.hp.reverse();
+
+                ptr[i] = p.ptr.hp;
+            }
+
+            // 重新按逆序排列各子表的顺序
+            for (let p = this; p; p = p.ptr.tp)
+                p.ptr.hp = ptr[--i];
+        }
+    }
+
+    toString () {
+        let str = '';
+        if (this == global || this == null) str = '()';
+        else if (this.tag === ATOM) str = this.atom;  // 原子
+        else {
+            str += '(';
+
+            for (let p = this; p; p = p.ptr.tp) {
+                str += this.toString.call(p.ptr.hp);
+                if (p.ptr.tp) str += ', ';
+            }
+            str += ')';
+        }
+
+        return str;
+    }
+
+    // 按层序输出广义表
+    // 层序遍历的问题，一般都是借助队列来完成的，每次从队头
+    // 取出一个元素的同时把它下一层的孩子插入队尾，这是层序遍历的基本思想
+    orderPrint (){
+        let queue = [];
+        for(let p = this; p; p = p.ptr.tp) queue.push(p);
+
+        while(queue.length){
+            let r = queue.shift();
+            if(r.tag === ATOM) console.log(r.atom);
+            else {
+                for(r = r.ptr.hp; r; r = r.ptr.tp)
+                    queue.push(r);
+            }
+        }
+    }
+
+    orderPrint2 (){
+        let queue = new Queue();
+
+        for(let p = this; p; p = p.ptr.tp) queue.enQueue(p);
+
+        while(queue.size){
+            let r = queue.deQueue();
+            if(r.tag === ATOM) console.log(r.atom);
+            else {
+                for(r = r.ptr.hp; r; r = r.ptr.tp)
+                    queue.enQueue(r);
+            }
+        }
+    }
 }
 
 // 广义表的扩展线性链表存储表示
@@ -109,8 +254,8 @@ function getDepth(gList) {
     if (!gList) return 1;
     else if (gList.tag === ATOM) return 0;
 
-    var m = getDepth(gList.ptr.hp) + 1;
-    var n = getDepth(gList.ptr.tp);
+    let m = getDepth(gList.ptr.hp) + 1;
+    let n = getDepth(gList.ptr.tp);
 
     return m > n ? m : n;
 }
@@ -119,158 +264,15 @@ function isWord(str){
     return /^[\w-]+$/.test(str);
 }
 
-// 采用头尾链表存储结构，由广义表的书写形式串创建广义表
-GLNode.prototype.createGList = function (string) {
-    string = string.trim();
-
-    // 创建单原子广义表
-    var q;
-    if (isWord(string)) {
-        this.tag = ATOM;
-        this.atom = string;
-    } else {
-        this.tag = LIST;
-        var p = this;
-
-        // 脱外层括号
-        var sub = string.substr(1, string.length - 2);
-
-        do {
-            var hsub;
-            var n = sub.length;
-            var i = 0;
-            var k = 0;
-            var ch;
-
-            do {
-                ch = sub[i++];
-                if (ch == '(') ++k;
-                else if (ch == ')') --k;
-            } while (i < n && (ch != ',' || k != 0));
-
-            // i为第一个逗号分隔索引
-            if (i < n) {
-                hsub = sub.substr(0, i - 1);
-                sub = sub.substr(i, n - i);
-
-                // 最后一组
-            } else {
-                hsub = sub;
-                sub = '';
-            }
-
-            if(hsub === '()')
-                p.ptr.hp = null;
-            else
-            // 创建表头结点
-                this.createGList.call((), hsub);
-
-            q = p;
-
-            // 创建表尾结点
-            if (sub) {
-                p = new GLNode();
-                p.tag = LIST;
-                q.ptr.tp = p;
-            }
-        } while (sub);
-
-        q.ptr.tp = null;
-    }
-};
-
-var node = new GLNode();
+let node = new GLNode();
 node.createGList('((), (ea), (sa, (bd, ce, dh)))');
 console.log(node.depth());
-
-GLNode.equal = function equal(gList1, gList2) {
-    // 空表时相等的
-    if (!gList1 && !gList2) return true;
-    if (gList1.tag === ATOM && gList2.tag === ATOM && gList1.atom === gList2.atom) return true;
-
-    if (gList1.tag === LIST && gList2.tag === LIST) {
-        // 表头表尾都相等
-        if (equal(gList1.ptr.hp, gList2.ptr.hp) && equal(gList1.ptr.tp, gList2.ptr.tp)) return true;
-    }
-
-    return false;
-};
-
-// 递归逆转广义表
-GLNode.prototype.reverse = function reverse() {
-    var ptr = [];
-    // 当A不为原子且表尾非空时才需逆转
-    if (this.tag === LIST && this.ptr.tp) {
-        for (var i = 0, p = this; p; p = p.ptr.tp, i++) {
-            // 逆转各子表
-            if (p.ptr.hp) reverse.call(p.ptr.hp);
-
-            ptr[i] = p.ptr.hp;
-        }
-
-        // 重新按逆序排列各子表的顺序
-        for (p = this; p; p = p.ptr.tp)
-            p.ptr.hp = ptr[--i];
-    }
-};
-
-var global = Function('return this')();
-GLNode.prototype.toString = function () {
-    var str = '';
-    if (this == global) str = '()';
-    else if (this.tag === ATOM) str = this.atom;  // 原子
-    else {
-        str += '(';
-
-        for (var p = this; p; p = p.ptr.tp) {
-            str += this.toString.call(p.ptr.hp);
-            if (p.ptr.tp) str += ', ';
-        }
-        str += ')';
-    }
-
-    return str;
-};
-
-// 按层序输出广义表
-// 层序遍历的问题，一般都是借助队列来完成的，每次从队头
-// 取出一个元素的同时把它下一层的孩子插入队尾，这是层序遍历的基本思想
-GLNode.prototype.orderPrint = function(){
-    var queue = [];
-    for(var p = this; p; p = p.ptr.tp) queue.push(p);
-
-    while(queue.length){
-        var r = queue.shift();
-        if(r.tag === ATOM) console.log(r.atom);
-        else {
-            for(r = r.ptr.hp; r; r = r.ptr.tp)
-                queue.push(r);
-        }
-    }
-};
-
-// 使用链队列
-var Queue = require('../Queue/Queue.js').Queue;
-GLNode.prototype.orderPrint2 = function(){
-    var queue = new Queue();
-
-    for(var p = this; p; p = p.ptr.tp) queue.enQueue(p);
-
-    while(queue.size){
-        var r = queue.deQueue();
-        if(r.tag === ATOM) console.log(r.atom);
-        else {
-            for(r = r.ptr.hp; r; r = r.ptr.tp)
-                queue.enQueue(r);
-        }
-    }
-};
 
 console.log(node + '');
 node.reverse();
 console.log(node + '');
 
-var node2 = new GLNode();
+let node2 = new GLNode();
 node.copyList(node2);
 console.log(GLNode.equal(node, node2));
 
@@ -283,7 +285,7 @@ console.log('------------------------------------');
 console.time('B');
 node.orderPrint2();
 console.timeEnd('B');
-var test = '100 400 325 981 2101 022';
+let test = '100 400 325 981 2101 022';
 /*
  m元多项式表示
 

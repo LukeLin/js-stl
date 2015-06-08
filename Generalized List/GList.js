@@ -247,7 +247,7 @@ GLNode.prototype.orderPrint = function(){
 };
 
 // 使用链队列
-var Queue = require('../Queue/Queue.js').Queue;
+var Queue = require('../Queue/Queue.js');
 GLNode.prototype.orderPrint2 = function(){
     var queue = new Queue();
 
