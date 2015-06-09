@@ -11,8 +11,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'String/HString.js',
-      'String/HString-test.js'
+      'dist/Generalized List/GList.js',
+      'Generalized List/GList-spec.js'
     ],
 
     // list of files / patterns to exclude

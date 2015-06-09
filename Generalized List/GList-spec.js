@@ -1,6 +1,6 @@
 describe('GList specs', function(){
 
-    let node = new GLNode();
+    var node = new GLNode();
 
     it('createGList', function(){
         node.createGList('((), (ea), (sa, (bd, ce, dh)))');
@@ -21,7 +21,7 @@ describe('GList specs', function(){
     });
 
     it('copyList', function(){
-        let node2 = new GLNode();
+        var node2 = new GLNode();
         node.copyList(node2);
         console.log(GLNode.equal(node, node2));
     });
