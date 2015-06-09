@@ -132,11 +132,12 @@ class GLNode {
                     sub = '';
                 }
 
-                if(hsub === '()')
-                    p.ptr.hp = null;
-                else
+                if(hsub === '()') p.ptr.hp = null;
                 // 创建表头结点
-                    this.createGList.call((p.ptr.hp = new GLNode()), hsub);
+                else {
+                    p.ptr.hp = new GLNode();
+                    p.ptr.hp.createGList(hsub);
+                }
 
                 q = p;
 
@@ -264,28 +265,7 @@ function isWord(str){
     return /^[\w-]+$/.test(str);
 }
 
-let node = new GLNode();
-node.createGList('((), (ea), (sa, (bd, ce, dh)))');
-console.log(node.depth());
 
-console.log(node + '');
-node.reverse();
-console.log(node + '');
-
-let node2 = new GLNode();
-node.copyList(node2);
-console.log(GLNode.equal(node, node2));
-
-console.log(node + '');
-console.time('A');
-node.orderPrint();
-console.timeEnd('A');
-
-console.log('------------------------------------');
-console.time('B');
-node.orderPrint2();
-console.timeEnd('B');
-let test = '100 400 325 981 2101 022';
 /*
  m元多项式表示
 
