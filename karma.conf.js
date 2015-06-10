@@ -16,7 +16,7 @@ module.exports = function (config) {
         ],
 
         preprocessors: {
-            '**/**/*.js': ['commonjs', 'coverage']
+            'dist/**/*.js': ['commonjs', 'coverage']
         },
 
         // list of files / patterns to exclude
