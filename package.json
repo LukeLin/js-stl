@@ -23,6 +23,10 @@
   "devDependencies": {
     "gulp": "*",
     "karma": "*",
+    "karma-jasmine": "*",
+    "karma-coverage": "*",
+    "karma-commonjs": "*",
+    "karma-chrome-launcher": "*",
     "gulp-browserify": "*",
     "gulp-sourcemaps": "*",
     "gulp-babel": "*",
