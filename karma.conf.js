@@ -4,7 +4,7 @@
 module.exports = function (config) {
     config.set({
         // base path, that will be used to resolve files and exclude
-        basePath: './',
+        basePath: '',
 
         // testing framework to use (jasmine/mocha/qunit/...)
         frameworks: ['jasmine', 'commonjs'],
@@ -16,7 +16,12 @@ module.exports = function (config) {
         ],
 
         preprocessors: {
-            'dist/**/*.js': ['commonjs', 'coverage']
+            'dist/**/*.js': ['commonjs', 'coverage'],
+            'Generalized List/*.js': ['commonjs']
+        },
+
+        commonjsPreprocessor: {
+            modulesRoot: 'node_modules'
         },
 
         // list of files / patterns to exclude
