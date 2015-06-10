@@ -9,9 +9,11 @@ var livereload = require('gulp-livereload');
 gulp.task('scripts', function () {
     return gulp.src('*/**/*.es6')
         .pipe(sourcemaps.init())
-        .pipe(babel({ optional: ["runtime"] }))
+        .pipe(babel({
+            /* optional: ["runtime"]  // if running test, disable this option */
+        }))
         .pipe(gulp.dest('dist'))
-        // 客户端使用
+        // for client browser environment
         //.pipe(concat('all.js'))
         //.pipe(browserify({
         //    insertGlobals : false,

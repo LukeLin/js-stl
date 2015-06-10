@@ -1,3 +1,5 @@
+var GLNode = require('../dist/Generalized List/GList');
+
 describe('GList specs', function(){
 
     var node = new GLNode();

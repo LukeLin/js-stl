@@ -54,7 +54,7 @@ let global = Function('return this')();
 import Queue from '../Queue/Queue.js';
 
 // 广义表的头尾链表存储表示
-class GLNode {
+export default class GLNode {
     constructor(){
         // 公共部分，用于区分原子结点和表结点
         this.tag = undefined;

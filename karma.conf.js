@@ -4,20 +4,22 @@
 module.exports = function (config) {
     config.set({
         // base path, that will be used to resolve files and exclude
-        basePath: '',
+        basePath: './',
 
         // testing framework to use (jasmine/mocha/qunit/...)
         frameworks: ['jasmine', 'commonjs'],
 
         // list of files / patterns to load in the browser
         files: [
-            'dist/Generalized List/GList.js',
+            'dist/**/*.js',
+            //'dist/Generalized List/GList.js',
             'Generalized List/GList-spec.js'
         ],
 
         preprocessors: {
             'dist/**/*.js': ['commonjs', 'coverage'],
-            'Generalized List/*.js': ['commonjs']
+            'Generalized List/*.js': ['commonjs'],
+            //'dist/Queue/*.js': ['commonjs']
         },
 
         commonjsPreprocessor: {
