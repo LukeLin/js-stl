@@ -101,9 +101,9 @@ BinaryTree.prototype = {
     constructor: BinaryTree,
     // 判断两棵树是否相似
     isSimilar: function isSimilar(tree) {
-        return tree &&
-            this.leftChild && this.leftChild.isSimilar(tree.leftChild) &&
-            this.rightChild && this.rightChild.isSimilar(tree.rightChild);
+        return !!(tree &&
+        ((this.leftChild && this.leftChild.isSimilar(tree.leftChild)) || (!this.leftChild && !tree.leftChild)) &&
+        ((this.rightChild && this.rightChild.isSimilar(tree.rightChild)) || (!this.rightChild && !tree.rightChild)));
     },
     createBinaryTree: function (tree) {
         void function preOrderRecursive(node, x, visit) {
