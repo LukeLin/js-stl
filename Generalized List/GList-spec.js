@@ -13,31 +13,27 @@ describe('GList specs', function(){
     });
 
     it('depth', function(){
-        expect(node.depth()).toBe();
+        expect(node.depth()).toBe(3);
     });
 
     it('reverse', function(){
-        console.log(node + '');
+        expect(node + '').toBe('((), (ea), (sa, (bd, ce, dh)))');
         node.reverse();
-        console.log(node + '');
+        expect(node + '').toBe('(((dh, ce, bd), sa), (ea), ())');
     });
 
     it('copyList', function(){
         var node2 = new GLNode();
         node.copyList(node2);
-        console.log(GLNode.equal(node, node2));
+        expect(GLNode.equal(node, node2)).toBe(true)
     });
 
     it('orderPrint', function(){
         console.log(node + '');
-        console.time('A');
         node.orderPrint();
-        console.timeEnd('A');
     });
 
     it('orderPrint2', function(){
-        console.time('B');
         node.orderPrint2();
-        console.timeEnd('B');
     });
 });

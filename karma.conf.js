@@ -11,14 +11,18 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'dist/**/*.js',
+            'dist/Binary tree/*.js',
+            'dist/Queue/*.js',
+            'dist/Stack/*.js',
             //'dist/Generalized List/GList.js',
-            'Generalized List/GList-spec.js'
+            'Binary tree/BinaryTree-spec.js'
         ],
 
         preprocessors: {
-            'dist/**/*.js': ['commonjs', 'coverage'],
-            'Generalized List/*.js': ['commonjs'],
+            'dist/Binary tree/*.js': ['commonjs', 'coverage'],
+            'dist/Queue/*.js': ['commonjs', 'coverage'],
+            'dist/Stack/*.js': ['commonjs', 'coverage'],
+            'Binary tree/*.js': ['commonjs'],
             //'dist/Queue/*.js': ['commonjs']
         },
 
