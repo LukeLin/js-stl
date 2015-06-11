@@ -247,6 +247,20 @@ BinaryTree.prototype = {
         if (this.leftChild) this.leftChild.revoluteBinaryTree();
         if (this.rightChild) this.rightChild.revoluteBinaryTree();
     },
+    revoluteNonRecursive: function (){
+        var stack = [];
+        stack.push(this);
+
+        while(stack.length){
+            var node = stack.pop();
+            var temp = node.leftChild;
+            node.leftChild =  node.rightChild;
+            node.rightChild = temp;
+
+            if(node.leftChild) stack.push(node.leftChild);
+            if(node.rightChild) stack.push(node.rightChild);
+        }
+    },
     // 求二叉树中以值为x的结点为根的子树深度
     getSubDepth: function getSubDepth(x) {
         if (this.data === x) {

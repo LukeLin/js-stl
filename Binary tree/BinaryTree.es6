@@ -253,6 +253,21 @@ export class BinaryTree {
         if (this.rightChild) this.rightChild.revoluteBinaryTree();
     }
 
+    revoluteNonRecursive(){
+        var stack = [];
+        stack.push(this);
+
+        while(stack.length){
+            var node = stack.pop();
+            var temp = node.leftChild;
+            node.leftChild =  node.rightChild;
+            node.rightChild = temp;
+
+            if(node.leftChild) stack.push(node.leftChild);
+            if(node.rightChild) stack.push(node.rightChild);
+        }
+    }
+
     // 求二叉树中以值为x的结点为根的子树深度
     getSubDepth(x) {
         if (this.data === x) {
@@ -499,6 +514,17 @@ void function test() {
 
     test.printPath_maxDepthS1();
     console.log(test.descNum());
+
+    var tree2 =  [1, 2, 3, 4, 5];
+    var test2 = new BinaryTree();
+    test2.createBinaryTree(tree2);
+
+    test2.revoluteNonRecursive();
+    var arr = [];
+    test2.levelOrderTraverse(function(data){
+        arr.push(data);
+    });
+    console.log(arr);
 }();
 
 

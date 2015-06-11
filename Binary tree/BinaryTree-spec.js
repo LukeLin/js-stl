@@ -45,58 +45,73 @@ describe('BinaryTree spec', function(){
         expect(arr).toEqual([1, 3, 2, 5, 4]);
         console.log(arr);
     });
-    it('isSimilar', function(){
+
+    it('revoluteNonRecursive', function(){
+        var tree2 =  [1, 2, 3, 4, 5];
+        var test2 = new BinaryTree();
+        test2.createBinaryTree(tree2);
+
+        test2.revoluteNonRecursive();
+        var arr = [];
+        test2.levelOrderTraverse(function(data){
+            arr.push(data);
+        });
+        expect(arr).toEqual([1, 3, 2, 5, 4]);
+        console.log(arr);
+    });
+
+    it('preOrderNonRecursive', function(){
 
     });
-    it('isSimilar', function(){
+    it('inOrderNonRecursive', function(){
 
     });
-    it('isSimilar', function(){
+    it('postOrderNonRecursive', function(){
 
     });
-    it('isSimilar', function(){
+    it('preOrderRecursive', function(){
 
     });
-    it('isSimilar', function(){
+    it('inOrderRecursive', function(){
 
     });
-    it('isSimilar', function(){
+    it('postOrderRecursive', function(){
 
     });
-    it('isSimilar', function(){
+    it('levelOrderTraverse', function(){
 
     });
-    it('isSimilar', function(){
+    it('getPreSequence', function(){
 
     });
-    it('isSimilar', function(){
+    it('countLeaves', function(){
 
     });
-    it('isSimilar', function(){
+    it('getSubDepth', function(){
 
     });
-    it('isSimilar', function(){
+    it('getDepth', function(){
 
     });
-    it('isSimilar', function(){
+    it('delSubX', function(){
 
     });
-    it('isSimilar', function(){
+    it('copy', function(){
 
     });
-    it('isSimilar', function(){
+    it('findNearAncient', function(){
 
     });
-    it('isSimilar', function(){
+    it('lushDegree', function(){
 
     });
-    it('isSimilar', function(){
+    it('printPath_maxDepthS1', function(){
 
     });
-    it('isSimilar', function(){
+    it('descNum', function(){
 
     });
-    it('isSimilar', function(){
+    it('static isFullBinaryTree', function(){
 
     });
 
