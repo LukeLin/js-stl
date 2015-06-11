@@ -32,8 +32,18 @@ describe('BinaryTree spec', function(){
         expect(test.isSimilar(test2)).toBe(true);
         expect(test.isSimilar(test3)).toBe(false);
     });
-    it('isSimilar', function(){
+    it('revoluteBinaryTree', function(){
+        var tree2 =  [1, 2, 3, 4, 5];
+        var test2 = new BinaryTree();
+        test2.createBinaryTree(tree2);
 
+        test2.revoluteBinaryTree();
+        var arr = [];
+        test2.levelOrderTraverse(function(data){
+            arr.push(data);
+        });
+        expect(arr).toEqual([1, 3, 2, 5, 4]);
+        console.log(arr);
     });
     it('isSimilar', function(){
 
