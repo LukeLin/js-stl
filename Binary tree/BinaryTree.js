@@ -219,11 +219,11 @@ BinaryTree.prototype = {
     getPreSequence: function (k) {
         var count = 0;
 
-        void function recurse(node) {
+        return function recurse(node) {
             if (node) {
-                if (++count === k) {
-                    console.log('Value is: ' + node.data);
-                } else {
+                if (++count === k)
+                    return node.data;
+                else {
                     recurse(node.leftChild);
                     recurse(node.rightChild);
                 }

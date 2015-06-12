@@ -221,17 +221,20 @@ export class BinaryTree {
     // 求先序序列为k的结点的值
     getPreSequence(k) {
         let count = 0;
+        let data = null;
 
         void function recurse(node) {
             if (node) {
-                if (++count === k) {
-                    console.log('Value is: ' + node.data);
-                } else {
+                if (++count === k)
+                    data =  node.data;
+                else {
                     recurse(node.leftChild);
                     recurse(node.rightChild);
                 }
             }
         }(this);
+
+        return data;
     }
 
     // 求二叉树中叶子结点的数目
@@ -245,9 +248,7 @@ export class BinaryTree {
 
     // 交换所有结点的左右子树
     revoluteBinaryTree() {
-        let temp = this.leftChild;
-        this.leftChild = this.rightChild;
-        this.rightChild = temp;
+        [this.leftChild, this.rightChild] = [this.rightChild, this.leftChild];
 
         if (this.leftChild) this.leftChild.revoluteBinaryTree();
         if (this.rightChild) this.rightChild.revoluteBinaryTree();
@@ -270,12 +271,19 @@ export class BinaryTree {
 
     // 求二叉树中以值为x的结点为根的子树深度
     getSubDepth(x) {
-        if (this.data === x) {
-            console.log('subDepth: ' + this.getDepth());
-        } else {
-            if (this.leftChild) this.leftChild.getSubDepth(x);
-            if (this.rightChild) this.rightChild.getSubDepth(x);
-        }
+        let count = 0;
+
+        void function(node){
+            if (node.data === x)
+                return node.getDepth();
+            else
+                if (node.leftChild) node.leftChild.getSubDepth(x);
+                if (node.rightChild) node.rightChild.getSubDepth(x);
+        }(this);
+
+        if(count === 0) throw new Error('Not ' + x + ' found');
+
+        return count;
     }
 
     getDepth() {

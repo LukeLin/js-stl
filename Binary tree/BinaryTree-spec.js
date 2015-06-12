@@ -4,9 +4,9 @@ describe('BinaryTree spec', function(){
 
     var tree = [1, 2, 3, 4, 5, , 6, , , 7];
     var test = new BinaryTree();
+    test.createBinaryTree(tree);
 
     it('createBinaryTree', function(){
-        test.createBinaryTree(tree);
         expect(test.data).toBe(1);
         expect(test.leftChild.data).toBe(2);
         expect(test.rightChild.data).toBe(3);
@@ -61,34 +61,67 @@ describe('BinaryTree spec', function(){
     });
 
     it('preOrderNonRecursive', function(){
-
+        var arr = [];
+        test.preOrderNonRecursive(function(data){
+            arr.push(data);
+        })
+        expect(arr).toEqual([1, 2, 4, 5, 7, 3, 6 ]);
     });
     it('inOrderNonRecursive', function(){
-
+        var arr = [];
+        test.inOrderNonRecursive(function(data){
+            arr.push(data);
+        })
+        expect(arr).toEqual([4, 2, 7, 5, 1, 3, 6]);
     });
     it('postOrderNonRecursive', function(){
-
+        var arr = [];
+        test.postOrderNonRecursive(function(data){
+            arr.push(data);
+        })
+        expect(arr).toEqual([4, 7, 5, 2, 6, 3, 1]);
     });
     it('preOrderRecursive', function(){
-
+        var arr = [];
+        test.preOrderRecursive(function(data){
+            arr.push(data);
+        })
+        expect(arr).toEqual([1, 2, 4, 5, 7, 3, 6 ]);
     });
     it('inOrderRecursive', function(){
-
+        var arr = [];
+        test.inOrderRecursive(function(data){
+            arr.push(data);
+        })
+        expect(arr).toEqual([4, 2, 7, 5, 1, 3, 6]);
     });
     it('postOrderRecursive', function(){
-
+        var arr = [];
+        test.postOrderRecursive(function(data){
+            arr.push(data);
+        })
+        expect(arr).toEqual([4, 7, 5, 2, 6, 3, 1]);
     });
     it('levelOrderTraverse', function(){
+        var tree2 =  [1, 2, 3, 4, 5];
+        var test2 = new BinaryTree();
+        test2.createBinaryTree(tree2);
 
+        var arr = [];
+        test2.levelOrderTraverse(function(data){
+            arr.push(data);
+        });
+        expect(arr).toEqual(tree2);
     });
     it('getPreSequence', function(){
-
+        expect(test.getPreSequence(5)).toBe(7);
     });
     it('countLeaves', function(){
-
+        expect(test.countLeaves()).toBe(3);
     });
     it('getSubDepth', function(){
-
+        expect(test.getSubDepth(6)).toBe(1);
+        expect(test.getSubDepth(2)).toBe(3);
     });
     it('getDepth', function(){
 
