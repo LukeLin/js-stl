@@ -272,16 +272,20 @@ export class BinaryTree {
     // 求二叉树中以值为x的结点为根的子树深度
     getSubDepth(x) {
         let count = 0;
+        let stack = new Stack();
+        stack.push(this);
 
-        void function getSubDepth(node){
-            if (node.data === x) {
+        while(stack.length){
+            let node = stack.pop();
+
+            if(node.data === x) {
                 count = node.getDepth();
-                return;
+                break;
             } else {
-                if (node.leftChild) getSubDepth(node.leftChild);
-                if (node.rightChild) getSubDepth(node.rightChild);
+                if(node.leftChild) stack.push(node.leftChild);
+                if(node.rightChild) stack.push(node.rightChild);
             }
-        }(this);
+        }
 
         return count;
     }
