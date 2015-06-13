@@ -273,15 +273,15 @@ export class BinaryTree {
     getSubDepth(x) {
         let count = 0;
 
-        void function(node){
-            if (node.data === x)
-                return node.getDepth();
-            else
-                if (node.leftChild) node.leftChild.getSubDepth(x);
-                if (node.rightChild) node.rightChild.getSubDepth(x);
+        void function getSubDepth(node){
+            if (node.data === x) {
+                count = node.getDepth();
+                return;
+            } else {
+                if (node.leftChild) getSubDepth(node.leftChild);
+                if (node.rightChild) getSubDepth(node.rightChild);
+            }
         }(this);
-
-        if(count === 0) throw new Error('Not ' + x + ' found');
 
         return count;
     }
