@@ -1,6 +1,31 @@
 // Karma configuration
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
+var PATHS = {
+    gList: [
+        'dist/Generalized List/GList.js'
+    ],
+    binaryTree: [
+        'dist/Binary tree/*.js',
+        'dist/Queue/*.js',
+        'dist/Stack/*.js',
+        'Binary tree/BinaryTree-spec.js'
+    ]
+};
+
+function preprocessors(files){
+    var obj = {};
+
+    files.forEach(function(file){
+        if(file.indexOf('dist/') === 0)
+            obj[file] = ['commonjs', 'coverage']
+        else
+            obj[file] = ['commonjs'];
+    });
+
+    return obj;
+}
+
 module.exports = function (config) {
     config.set({
         // base path, that will be used to resolve files and exclude
@@ -10,21 +35,9 @@ module.exports = function (config) {
         frameworks: ['jasmine', 'commonjs'],
 
         // list of files / patterns to load in the browser
-        files: [
-            'dist/Binary tree/*.js',
-            'dist/Queue/*.js',
-            'dist/Stack/*.js',
-            //'dist/Generalized List/GList.js',
-            'Binary tree/BinaryTree-spec.js'
-        ],
+        files: PATHS['binaryTree'],
 
-        preprocessors: {
-            'dist/Binary tree/*.js': ['commonjs', 'coverage'],
-            'dist/Queue/*.js': ['commonjs', 'coverage'],
-            'dist/Stack/*.js': ['commonjs', 'coverage'],
-            'Binary tree/*.js': ['commonjs'],
-            //'dist/Queue/*.js': ['commonjs']
-        },
+        preprocessors: preprocessors(PATHS['binaryTree']),
 
         commonjsPreprocessor: {
             modulesRoot: 'node_modules'
