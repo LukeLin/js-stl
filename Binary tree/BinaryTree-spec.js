@@ -124,28 +124,52 @@ describe('BinaryTree spec', function(){
         expect(test.getSubDepth(2)).toBe(3);
     });
     it('getDepth', function(){
-
+        expect(test.getDepth()).toBe(4);
+        expect(test.leftChild.getDepth()).toBe(3);
     });
     it('delSubX', function(){
-
+        var tree2 =  [1, 2, 3, 4, 5];
+        var test2 = new BinaryTree();
+        test2.createBinaryTree(tree2);
+        expect(test2.getDepth()).toBe(3);
+        test2.delSubX(2);
+        expect(test2.getDepth()).toBe(2);
     });
     it('copy', function(){
+        var test2 = test.copy();
 
+        var arr = [];
+        test2.preOrderNonRecursive(function(data){
+            arr.push(data);
+        })
+        expect(arr).toEqual([1, 2, 4, 5, 7, 3, 6 ]);
     });
     it('findNearAncient', function(){
+        var tree2 =  [1, 2, 3, 4, 5];
+        var test2 = new BinaryTree();
+        test2.createBinaryTree(tree2);
 
+        var node1 = test2.leftChild.leftChild;
+        var node2 = test2.leftChild.rightChild;
+        expect(test2.findNearAncient(node1, node2)).toBe(test2.leftChild);
+
+        node3 = test2.rightChild;
+        expect(test2.findNearAncient(node1, node3)).toBe(test2);
     });
     it('lushDegree', function(){
-
-    });
-    it('printPath_maxDepthS1', function(){
-
+        expect(test.lushDegree()).toBe(9);
     });
     it('descNum', function(){
-
+        test.descNum();
+        expect(test.descNum).toBe(6);
+        expect(test.leftChild.descNum).toBe(3);
     });
     it('static isFullBinaryTree', function(){
-
+        var newTree = test.copy();
+        newTree.rightChild.leftChild = new BinaryTree(7);
+        newTree.leftChild.rightChild.leftChild = null;
+        expect(BinaryTree.isFullBinaryTree(test)).toBe(false);
+        expect(BinaryTree.isFullBinaryTree(newTree)).toBe(true);
     });
 
 });

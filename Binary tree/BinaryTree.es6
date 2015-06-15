@@ -400,31 +400,6 @@ export class BinaryTree {
         return height * max;
     }
 
-    // 求深度等于树的高度减一的最靠左的结点
-    printPath_maxDepthS1() {
-        let maxh = this.getDepth();
-        let path = [];
-
-        if (maxh < 2) return false;
-        find_h(this, 1);
-
-        function find_h(tree, h) {
-            path[h] = tree;
-
-            if (h == maxh - 1) {
-                let s = ' ';
-                for (let i = 1; path[i]; i++) s += path[i].data + (path[i + 1] ? ' -> ' : '');
-                console.log(s);
-                return;
-            } else {
-                if (tree.leftChild) find_h(tree.leftChild, h + 1);
-                if (tree.rightChild) find_h(tree.rightChild, h + 1);
-            }
-
-            path[h] = null;
-        }
-    }
-
     // 求树结点的子孙总数填入descNum域中，并返回
     descNum() {
         return function recurse(node) {
@@ -481,63 +456,30 @@ function findPath(tree, node, i = 0) {
 
 let global = Function('return this;')();
 
-void function test() {
-    let tree = [1, 2, 3, 4, 5, , 6, , , 7];
-    var test = new BinaryTree;
-    test.createBinaryTree(tree);
-    test.preOrderRecursive((value) => {
-        console.log('preOrder: ' + value);
-    });
-    test.inOrderRecursive((value) => {
-        console.log('inOrder: ' + value);
-    });
-    test.postOrderRecursive((value) => {
-        console.log('postOrder: ' + value);
-    });
-    test.preOrderNonRecursive((data) => {
-        console.log('preOrderNonRecursive: ' + data);
-    });
-    test.inOrderNonRecursive((value) => {
-        console.log('inOrderNonRecursive: ' + value);
-    });
-    test.postOrderNonRecursive((value) => {
-        console.log('postOrderNonRecursive: ' + value);
-    });
-    test.getPreSequence(5);
-    console.log(test.countLeaves());
-    test.getSubDepth(6);    // 1
-    test.getSubDepth(2);    // 3
-    test.levelOrderTraverse((value) => {
-        console.log('levelOrderTraverse: ' + value);
-    });
+// 求深度等于树的高度减一的最靠左的结点
+function printPath_maxDepthS1(tree){
+    let maxh = tree.getDepth();
+    let path = [];
 
-    let newTree = test.copy();
+    if (maxh < 2) return false;
+    find_h(tree, 1);
 
-    let node1 = test.leftChild.leftChild;   // 4
-    let node2 = test.leftChild.rightChild.leftChild;    // 7
-    let ancient = test.findNearAncient(node1, node2);
-    console.log(ancient);
+    function find_h(tree, h) {
+        path[h] = tree;
 
-    console.log('expect false: ' + BinaryTree.isFullBinaryTree(test));
-    newTree.rightChild.leftChild = new BinaryTree(7);
-    newTree.leftChild.rightChild.leftChild = null;
-    console.log('expect true: ' + BinaryTree.isFullBinaryTree(newTree));
-    console.log('lush degree: ' + test.lushDegree());
+        if (h == maxh - 1) {
+            let s = ' ';
+            for (let i = 1; path[i]; i++) s += path[i].data + (path[i + 1] ? ' -> ' : '');
+            console.log(s);
+            return;
+        } else {
+            if (tree.leftChild) find_h(tree.leftChild, h + 1);
+            if (tree.rightChild) find_h(tree.rightChild, h + 1);
+        }
 
-    test.printPath_maxDepthS1();
-    console.log(test.descNum());
-
-    var tree2 =  [1, 2, 3, 4, 5];
-    var test2 = new BinaryTree();
-    test2.createBinaryTree(tree2);
-
-    test2.revoluteNonRecursive();
-    var arr = [];
-    test2.levelOrderTraverse(function(data){
-        arr.push(data);
-    });
-    console.log(arr);
-}();
+        path[h] = null;
+    }
+}
 
 
 /**
