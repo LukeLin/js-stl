@@ -169,7 +169,7 @@ export default class LinkedList {
     toString () {
         let str = '';
 
-        this.each(function (node) {
+        this.each((node) => {
             str += node.data + (node.next ? ',' : '');
         });
 
@@ -177,7 +177,7 @@ export default class LinkedList {
     }
 
     orderInsert (data, cmp) {
-        cmp = typeof cmp === 'function' ? cmp : function (a, b) {
+        cmp = typeof cmp === 'function' ? cmp : (a, b) => {
             if (a > b)
                 return 1;
             else if (a === b)
@@ -208,11 +208,10 @@ export default class LinkedList {
                 // 如果小于则插入到前节点和当前节点中
                 // 因为已经是排序了，所以不需要多余判断了
             } else {
-                if (this.head === previous && previous === current) {
+                if (this.head === previous && previous === current)
                     return this.unshift(data);
-                } else {
+                else
                     return insertBetween(data, previous, current);
-                }
             }
         }
 
