@@ -259,10 +259,8 @@ export class BinaryTree {
         stack.push(this);
 
         while(stack.length){
-            var node = stack.pop();
-            var temp = node.leftChild;
-            node.leftChild =  node.rightChild;
-            node.rightChild = temp;
+            let node = stack.pop();
+            [node.leftChild, node.rightChild] = [node.rightChild, node.leftChild];
 
             if(node.leftChild) stack.push(node.leftChild);
             if(node.rightChild) stack.push(node.rightChild);
