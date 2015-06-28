@@ -145,6 +145,29 @@
 })();
 
 
+(function(){
+
+    function ackermann1(m, n){
+        if(m === 0) return n + 1;
+        if(n === 0) return ackermann1(m - 1, 1);
+        else return ackermann1(m - 1, ackermann1(m, n - 1));
+    }
+
+    // 备忘录算法
+    function ackermann2(m, n){
+        var cache = [];
+        for(var i = 0; i <= m; ++i) cache[m] = [];
+
+        void function ack(m, n){
+            if(cache[m][n]) return cache[m][n];
+            if(m === 0) return (cache[0][n] = n + 1);
+            if(n === 0) return (cache[m][0] = ack(m - 1, 1));
+            return (cache[m][n] = ack(m - 1, ack(m, n - 1)));
+        }(m, n);
+    }
+
+})();
+
 // unoptimized version
 // 两矩阵相乘
 function matrixMultiply(a, b) {
