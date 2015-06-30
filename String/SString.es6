@@ -1,18 +1,18 @@
 /**
- * ����string�������ַ�����������������ַ���ɵ��������С������ַ�����Ŀ��Ϊ���ĳ��ȡ�����ַ��Ĵ���Ϊ�մ���null string�������ĳ���Ϊ�㡣
- * ����������������ַ���ɵ������г�Ϊ�ô����Ӵ��������Ӵ��Ĵ���Ӧ�س�Ϊ������ͨ�����ַ��������е����Ϊ���ַ��ڴ��е�λ�á��Ӵ��������е�λ�������Ӵ��ĵ�һ���ַ��������е�λ������ʾ��
- * ֻ�е��������ĳ�����ȣ����Ҹ�����Ӧλ�õ��ַ������ʱ����ȡ�
+ * 串（string）（或字符串）是由零个或多个字符组成的有限序列。串中字符的数目称为串的长度。零个字符的串称为空串（null string），它的长度为零。
+ * 串中任意个连续的字符组成的子序列称为该串的子串。包含子串的串相应地称为主串。通常称字符在序列中的序号为该字符在串中的位置。子串在主串中的位置则以子串的第一个字符在主串中的位置来表示。
+ * 只有当两个串的长度相等，并且各个对应位置的字符都相等时才相等。
  *
- * ����3�ֻ��ڱ�ʾ������
- * 1.����˳��洢��ʾ
- * 2.�ѷ���洢��ʾ
- * 3.���Ŀ����洢��ʾ
+ * 串有3种机内表示方法：
+ * 1.定长顺序存储表示
+ * 2.堆分配存储表示
+ * 3.串的块链存储表示
  */
 
 /**
- * ����˳��洢��ʾ
- * ���������Ա���˳��洢�ṹ����һ���ַ�����Ĵ洢��Ԫ�洢��ֵ���ַ����С��ڴ��Ķ���˳��洢�ṹ�У�����Ԥ����Ĵ�С��Ϊÿ������Ĵ���������һ���̶����ȵĴ洢��������ö���������������
- * ���±�Ϊ0�����������Ŵ���ʵ�ʳ��ȡ�
+ * 定长顺序存储表示
+ * 类似于线性表的顺序存储结构，用一组地址连续的存储单元存储串值得字符序列。在串的定长顺序存储结构中，按照预定义的大小，为每个定义的串变量分配一个固定长度的存储区，则可用定长数组来描述。
+ * 以下标为0的数组分量存放串的实际长度。
  */
 
 export default class SString {
@@ -26,22 +26,22 @@ export default class SString {
         }
     }
 
-    // ������s1��s2���Ӷ��ɵ��´�
+    // 返回由s1和s2连接而成的新串
     concat (s2) {
         let t = new SString();
-        // δ�ض�
+        // 未截断
         if (this[0] + s2[0] <= this.MAXSTRLEN) {
             copyStr2T(this);
             copyStr2T(s2, this[0]);
             t[0] = this[0] + s2[0];
 
-            // �ض�
+            // 截断
         } else if (this[0] < this.MAXSTRLEN) {
             copyStr2T(this);
             copyStr2T(s2, this[0], this.MAXSTRLEN - this[0]);
             t[0] = this.MAXSTRLEN;
 
-            // �ضϣ���ȡs1��
+            // 截断（仅取s1）
         } else {
             copyStr2T(this, 0, this.MAXSTRLEN);
             t[0] = this[0] = this.MAXSTRLEN;
@@ -71,24 +71,24 @@ export default class SString {
     }
 
     /**
-     * ����s�е��Ӵ�t�滻Ϊv�������滻����
+     * 将串s中的子串t替换为v，返回替换次数
      * todo to be tested
      * @param {SString} t
      * @param {SString} v
-     * @returns {number} �滻����
+     * @returns {number} 替换次数
      */
     replace (t, v) {
         for (let n = 0, i = 1; i <= this[0] - t[0] + 1; i++) {
             for (let j = i, k = 1; t[k] && this[j] === t[k]; ++j, ++k);
 
-            // �ҵ�����tƥ����ִ����������������
+            // 找到了与t匹配的字串：分三种情况处理
             if (k > t[0]) {
                 let l;
-                // ���ִ��ĳ�����ԭ�Ӵ���ͬʱ��ֱ���滻
+                // 新字串的长度与原子串相同时，直接替换
                 if (t[0] === v[0]) {
                     for (l = 1; l <= t[0]; ++l) this[i + l - 1] = v[l];
                 }
-                // ���Ӵ����ȴ���ԭ�Ӵ�ʱ���Ƚ�������
+                // 新子串长度大于原子串时，先将后部右移
                 else if (t[0] < v[0]) {
                     for (l = this[0]; l >= i + t[0]; --l)
                         this[l + v[0] - t[0]] = this[l];
@@ -97,7 +97,7 @@ export default class SString {
                         this[i + l - 1] = v[l];
 
                 }
-                // ���Ӵ�����С��ԭ�Ӵ�ʱ���Ƚ�������
+                // 新子串长度小于原子串时，先将后部左移
                 else {
                     for (l = i + v[0]; l <= this[0] + v[0] - t[0]; ++l)
                         this[l] = this[l - v[0] + t[0]];
@@ -123,7 +123,7 @@ export default class SString {
         }
         return str;
     }
-    // �����Ӵ�sstring�������еĵ�position���ַ�֮���λ��
+    // 返回子串sstring在主串中的第position个字符之后的位置
     index (sstring, position) {
         let i = position || 1;
         let j = 1;
@@ -157,17 +157,17 @@ export default class SString {
         return j > sstring[0] ? i - sstring[0] : -1;
     }
 
-    // ��������ַ����ж�strû�е��ַ���
+    // 求包含在字符串中而str没有的字符串
     subtract (str) {
         let r = new SString();
         r[0] = 0;
 
         for (let i = 1; i <= this[0]; ++i) {
             let c = this[i];
-            // �жϵ�ǰ�ַ�c�Ƿ��һ�γ���
+            // 判断当前字符c是否第一次出现
             for (let j = 1; j < i && this[j] !== c; ++j);
             if (i === j) {
-                // �жϵ�ǰ�ַ��Ƿ������str��
+                // 判断当前字符是否包含在str中
                 for (let k = 1; k <= str[0] && str[k] !== c; ++k);
                 if (k > str[0]) r[++r[0]] = c;
             }
@@ -238,6 +238,6 @@ console.log(a.delete_substring(b) + '');
 console.log(a + '');
 
 /*
- ��˳��洢�ṹ�У�ʵ�ִ�������ԭ����Ϊ���ַ������еĸ��ơ�������ʱ�临�ӶȻ��ڸ��Ƶ��ַ������еĳ��ȡ�
- ��һ�����ص��ǣ�����ڲ����г��ִ�ֵ���еĳ��ȳ���MAXSTRLENʱ��Լ���ý�β��������������������������Ӵ�ʱ���ܷ������ڴ������������У�����룬�û���Ҳ���ܷ������˷�����ײ�Ψ�в��޶���������󳤶ȣ�����̬���䴮ֵ�Ĵ洢�ռ䡣
+ 在顺序存储结构中，实现串操作的原操作为“字符串序列的复制”，操作时间复杂度基于复制的字符串序列的长度。
+ 另一操作特点是，如果在操作中出现串值序列的长度超过MAXSTRLEN时，约定用截尾法处理，这种情况不仅在求连接串时可能发生，在串的其他操作中，如插入，置换等也可能发生，克服这个弊病唯有不限定串长的最大长度，即动态分配串值的存储空间。
  */

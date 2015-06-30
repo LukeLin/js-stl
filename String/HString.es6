@@ -1,7 +1,7 @@
 /**
- * �ѷ���洢��ʾ
+ * 堆分配存储表示
  *
- * ���ִ洢��ʾ���ص��ǣ�����һ���ַ�����Ĵ洢��Ԫ��Ŵ�ֵ�ַ����У������ǵĴ洢�ռ����ڳ���ִ�й����ж�̬������á���c�����У�����һ����֮Ϊ���ѡ������ɴ洢��������c���ԵĶ�̬���亯��malloc()��free()�����������ú���malloc()Ϊÿ���²����Ĵ�����һ��ʵ�ʴ�������Ĵ洢�ռ䡣
+ * 这种存储表示的特点是，仍以一组地址连续的存储单元存放串值字符序列，但它们的存储空间是在程序执行过程中动态分配而得。在c语言中，存在一个称之为“堆”的自由存储区，并由c语言的动态分配函数malloc()和free()来管理。利用函数malloc()为每个新产生的串分配一块实际串长所需的存储空间。
  */
 
 export default class HString {
@@ -10,13 +10,13 @@ export default class HString {
         this.length = 0;
     }
 
-    // 1 <= position <= this.length.�ڴ��ĵ�position���ַ�֮ǰ���봮tHString
+    // 1 <= position <= this.length.在串的第position个字符之前插入串tHString
     strInsert (position, tHString) {
         if (position < 1 || position > this.length + 1)
             throw new Error('unexpected position');
 
         if (tHString.length) {
-            // Ϊ����t���ڳ�λ��
+            // 为插入t而腾出位置
             let i = this.length - 1;
             for (let len = position - 1; i >= len; --i)
                 this.ch[i + tHString.length] = this.ch[i];
