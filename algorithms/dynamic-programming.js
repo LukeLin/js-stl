@@ -145,28 +145,85 @@
 })();
 
 
-(function(){
+(function () {
 
-    function ackermann1(m, n){
-        if(m === 0) return n + 1;
-        if(n === 0) return ackermann1(m - 1, 1);
+    function ackermann1(m, n) {
+        if (m === 0) return n + 1;
+        if (n === 0) return ackermann1(m - 1, 1);
         else return ackermann1(m - 1, ackermann1(m, n - 1));
     }
 
     // 备忘录算法
-    function ackermann2(m, n){
+    function ackermann2(m, n) {
         var cache = [];
-        for(var i = 0; i <= m; ++i) cache[m] = [];
+        for (var i = 0; i <= m; ++i) cache[m] = [];
 
-        void function ack(m, n){
-            if(cache[m][n]) return cache[m][n];
-            if(m === 0) return (cache[0][n] = n + 1);
-            if(n === 0) return (cache[m][0] = ack(m - 1, 1));
+        void function ack(m, n) {
+            if (cache[m][n]) return cache[m][n];
+            if (m === 0) return (cache[0][n] = n + 1);
+            if (n === 0) return (cache[m][0] = ack(m - 1, 1));
             return (cache[m][n] = ack(m - 1, ack(m, n - 1)));
         }(m, n);
     }
 
 })();
+
+// 最长公共子序列
+/*
+ https://zh.wikipedia.org/wiki/%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E5%BA%8F%E5%88%97
+ */
+
+// todo bug exists
+function LCSLength(x, y) {
+    var m = x.length;
+    var n = y.length;
+    // c[i][j]存储xi和yj的最长公共子序列的长度
+    var b = [];
+    // b[i][j]记录c[i
+    // ][j]的值是由哪一个子问题的解得到的
+    var c = [];
+    var i, j;
+
+    for (i = 0; i < m; ++i) {
+        c[i] = [];
+        b[i] = [];
+        c[i][0] = 0;
+    }
+    for (i = 0; i < n; ++i) c[0][i] = 0;
+
+    for (i = 1; i < m; ++i) {
+        for (j = 1; j < n; ++j) {
+            if (x[i] === y[j]) {
+                c[i][j] = c[i - 1][j - 1] + 1;
+                b[i][j] = 1;
+            } else if (c[i - 1][j] >= c[i][j - 1]) {
+                c[i][j] = c[i - 1][j];
+                b[i][j] = 2;
+            } else {
+                c[i][j] = c[i][j - 1];
+                b[i][j] = 3;
+            }
+        }
+    }
+
+    printLCS(m - 1, n - 1, x, b);
+}
+
+function printLCS(i, j, x, b) {
+    if (i === 0 || j === 0) return;
+    if (b[i][j] === 1) {
+        printLCS(i - 1, j - 1, x, b);
+        console.log(x[i]);
+    } else if (b[i][j] === 2) {
+        printLCS(i - 1, j, x, b);
+    } else {
+        printLCS(i, j - 1, x, b);
+    }
+}
+
+console.log('\n最长公共子序列：');
+LCSLength('ABCBDAB', 'BDCABA');
+
 
 // unoptimized version
 // 两矩阵相乘
