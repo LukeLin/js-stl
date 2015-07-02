@@ -146,25 +146,72 @@
 
 
 (function () {
+    console.log('ackermann:');
 
     function ackermann1(m, n) {
         if (m === 0) return n + 1;
         if (n === 0) return ackermann1(m - 1, 1);
         else return ackermann1(m - 1, ackermann1(m, n - 1));
     }
+    console.log(ackermann1(3, 2));
 
     // 备忘录算法
     function ackermann2(m, n) {
         var cache = [];
-        for (var i = 0; i <= m; ++i) cache[m] = [];
+        for (var i = 0; i <= m; ++i) cache[i] = [];
 
-        void function ack(m, n) {
+        return function ack(m, n) {
             if (cache[m][n]) return cache[m][n];
             if (m === 0) return (cache[0][n] = n + 1);
             if (n === 0) return (cache[m][0] = ack(m - 1, 1));
             return (cache[m][n] = ack(m - 1, ack(m, n - 1)));
         }(m, n);
     }
+    console.log(ackermann2(3, 2));
+
+
+    // 非递归
+    function ackm_nonRecursive(m, n){
+        var top = 1;
+        var cache = [];
+        for (var i = 0; i <= m; ++i) cache[i] = [];
+        cache[1][1] = m;
+        cache[1][2] = n;
+
+        while(top){
+            m = cache[top][1];
+            n = cache[top][2];
+            --top;
+            if(top === 0 && m === 0) return n + 1;
+            if(m === 0) cache[top][2] = n + 1;
+            else if(n === 0) {
+                ++top;
+                cache[top] = cache[top] || [];
+                cache[top][1] = m - 1;
+                cache[top][2] = 1;
+            } else {
+                ++top;
+                cache[top] = cache[top] || [];
+                cache[top][1] = m - 1;
+                ++top;
+                cache[top] = cache[top] || [];
+                cache[top][1] = m;
+                cache[top][2] = n - 1;
+            }
+        }
+
+        return cache[0][1];
+    }
+    console.log(ackm_nonRecursive(3, 2));
+
+    function ack4(m, n){
+        for(var i = m; i > 0; --i){
+            if(n === 0) n = 1;
+            else n = ack4(i, n - 1);
+        }
+        return n + 1;
+    }
+    console.log(ack4(3, 2));
 
 })();
 
