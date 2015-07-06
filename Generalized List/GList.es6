@@ -46,8 +46,8 @@
  归纳项：    DEPTH(LS) = 1 + MAX{DEPTH(ai)}  1 <= i <= n
  */
 
-const ATOM = 0;
-const LIST = 1;
+const ATOM = Symbol();
+const LIST = Symbol();
 
 let global = Function('return this')();
 // 使用链队列

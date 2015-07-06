@@ -1,16 +1,16 @@
 /**
- * ѭ��������circular linked list��
- * ����һ����ʽ����ʽ�洢�ṹ�������ص��Ǳ������һ������ָ����ָ��ͷ��㣬�������γ�һ������
- * ѭ�������Ĳ�����������������һ�£�����ϸ΢���
+ * 循环链表（circular linked list）
+ * 是另一种形式的链式存储结构。它的特点是表中最后一个结点的指针域指向头结点，整个表形成一个环。
+ * 循环链表的操作和线性链表基本一致，仅有细微差别。
  */
 
 /**
- * ˫������
+ * 双向链表
  *
- * ˫��������Ϊ�˿˷����������ֵ����Ե�ȱ�㡣
- * ˫�������Ľ����������ָ������һָ��ֱ�Ӻ�̣���һָ��ֱ��ǰ����
+ * 双向链表是为了克服单链表这种单向性的缺点。
+ * 双向链表的结点中有两个指针域，其一指向直接后继，另一指向直接前趋。
  *
- * ˫������Ҳ������ѭ������
+ * 双向链表也可以有循环表。
  */
 
 export default class DoubleLinkedList {
@@ -21,16 +21,16 @@ export default class DoubleLinkedList {
     }
 
     find (i) {
-        // ��ʼ����pָ���һ���ڵ㣬jΪ������
+        // 初始化，p指向第一个节点，j为计数器
         let p = this.next;
         let j = 1;
-        // ˳ָ�������ң�֪��pָ���i��Ԫ�ػ�pΪ��
+        // 顺指针向后查找，知道p指向第i个元素或p为空
         while (p && j < i) {
             p = p.next;
             ++j;
         }
-        // ��i��Ԫ�ز�����
-        // ����ȡ��i��Ԫ��
+        // 第i个元素不存在
+        // 或者取第i个元素
         return (!p || j > i) ? null : p;
     }
     add (i, elem) {
