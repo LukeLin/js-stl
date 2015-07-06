@@ -218,9 +218,16 @@
 // 最长公共子序列
 /*
  https://zh.wikipedia.org/wiki/%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E5%BA%8F%E5%88%97
+
+ http://blog.csdn.net/v_JULY_v/article/details/6110269
+
+ 用c[i][j]记录序列Xi和Yj的最长公共子序列的长度。
+ 递归关系：
+                0                                       (i = 0, j = 0)
+     c[i][j] =  c[i - 1][j - 1] + 1                     (i,j > 0; xi = yj)
+                max(c[i][j - 1], c[i - 1][j])           (i,j>0;xi != yj)
  */
 
-// todo bug exists
 function LCSLength(x, y) {
     var m = x.length;
     var n = y.length;
@@ -231,15 +238,15 @@ function LCSLength(x, y) {
     var c = [];
     var i, j;
 
-    for (i = 0; i < m; ++i) {
+    for (i = -1; i < m; ++i) {
         c[i] = [];
         b[i] = [];
-        c[i][0] = 0;
+        c[i][-1] = 0;
     }
-    for (i = 0; i < n; ++i) c[0][i] = 0;
+    for (i = -1; i < n; ++i) c[-1][i] = 0;
 
-    for (i = 1; i < m; ++i) {
-        for (j = 1; j < n; ++j) {
+    for (i = 0; i < m; ++i) {
+        for (j = 0; j < n; ++j) {
             if (x[i] === y[j]) {
                 c[i][j] = c[i - 1][j - 1] + 1;
                 b[i][j] = 1;
@@ -253,11 +260,13 @@ function LCSLength(x, y) {
         }
     }
 
+    console.log(c);
+
     printLCS(m - 1, n - 1, x, b);
 }
 
 function printLCS(i, j, x, b) {
-    if (i === 0 || j === 0) return;
+    if (i === -1 || j === -1) return;
     if (b[i][j] === 1) {
         printLCS(i - 1, j - 1, x, b);
         console.log(x[i]);
