@@ -140,7 +140,7 @@
  */
 
 var Stack = require('../Stack/stack');
-var Queue = require('../Queue/Queue').Queue;
+var Queue = require('../Queue/Queue');
 var ChildSiblingTree = require('../Binary tree/BinaryTree').ChildSiblingTree;
 
 // 图的数组（邻接矩阵）存储表示

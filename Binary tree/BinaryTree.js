@@ -86,7 +86,7 @@
 }());
 
 var Stack = require('../Stack/stack');
-var Queue = require('../Queue/Queue').Queue;
+var Queue = require('../Queue/Queue');
 var Util = require('util');
 
 // 链式存储结构
@@ -263,17 +263,21 @@ BinaryTree.prototype = {
     },
     // 求二叉树中以值为x的结点为根的子树深度
     getSubDepth: function getSubDepth(x) {
-        let count = 0;
+        var count = 0;
+        var stack = new Stack();
+        stack.push(this);
 
-        void function(node){
-            if (node.data === x)
-                return node.getDepth();
-            else
-            if (node.leftChild) node.leftChild.getSubDepth(x);
-            if (node.rightChild) node.rightChild.getSubDepth(x);
-        }(this);
+        while(stack.length){
+            var node = stack.pop();
 
-        if(count === 0) throw new Error('Not ' + x + ' found');
+            if(node.data === x) {
+                count = node.getDepth();
+                break;
+            } else {
+                if(node.leftChild) stack.push(node.leftChild);
+                if(node.rightChild) stack.push(node.rightChild);
+            }
+        }
 
         return count;
     },
