@@ -213,6 +213,37 @@
     }
     console.log(ack4(3, 2));
 
+    // 自底向上的动态规划算法
+    function ack5(m, n){
+        if(m === 0) return n + 1;
+        var val = [];
+        var ind = [];
+        var i = 1;
+        for(; i <= m; ++i){
+            val[i] = -1;
+            ind[i] = -2;
+        }
+        val[0] = 1;
+        ind[0] = 0;
+
+        while(ind[m] < n){
+            ++val[0];
+            ++ind[0];
+            for(i = 0; i < m; ++i){
+                if(ind[i] === 1 && ind[i + 1] < 0) {
+                    val[i + 1] = val[0];
+                    ind[i + 1] = 0;
+                }
+                if(val[i + 1] === ind[i]) {
+                    val[i + 1] = val[0];
+                    ++ind[i + 1];
+                }
+            }
+        }
+
+        return val[m];
+    }
+    console.log(ack5(3, 2));
 })();
 
 // 最长公共子序列
