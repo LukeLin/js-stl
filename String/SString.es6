@@ -228,8 +228,8 @@ let c = new SString('abaabc');
 console.log('index: ' + d.index(c));
 console.log('kmpIndex: ' + d.kmpIndex(c));
 
-let a = new SString('abcdefg');
-let b = new SString('asdfg');
+a = new SString('abcdefg');
+b = new SString('asdfg');
 console.log(a.subtract(b) + '');
 
 a = new SString('abcdefgh');

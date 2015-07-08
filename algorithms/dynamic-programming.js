@@ -312,6 +312,33 @@ console.log('\n最长公共子序列：');
 LCSLength('ABCBDAB', 'BDCABA');
 
 
+(function(){
+    console.log('最大子段和:');
+
+    // 最大子段和
+    function maxSubSum(arr, n){
+        var sum = 0;
+        var besti, bestj;
+
+        for(var i = 0; i < n; ++i){
+            for(var j = i; i < n; ++j){
+                var thisSum = 0;
+                for(var k = i; k <= j; ++k) thisSum += arr[k];
+                if(sum < thisSum) {
+                    sum = thisSum;
+                    besti = i;
+                    bestj = j;
+                }
+            }
+        }
+
+        return sum;
+    }
+
+    console.log(maxSubSum([-2, 11, -4, 13, -5, -2], 2));
+})();
+
+
 // unoptimized version
 // 两矩阵相乘
 function matrixMultiply(a, b) {

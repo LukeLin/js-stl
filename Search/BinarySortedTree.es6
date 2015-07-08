@@ -51,7 +51,7 @@
 
 import BinaryTree from '../Binary tree/BinaryTree';
 
-export default class BSTNode {
+export default class BSTNode extends BinaryTree {
     constructor(...arg) {
         super(...arg);
     }
