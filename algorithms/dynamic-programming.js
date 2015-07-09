@@ -315,13 +315,13 @@ LCSLength('ABCBDAB', 'BDCABA');
 (function(){
     console.log('最大子段和:');
 
-    // 最大子段和
+    // 最大子段和，时间复杂度O(n^3)
     function maxSubSum(arr, n){
         var sum = 0;
         var besti, bestj;
 
         for(var i = 0; i < n; ++i){
-            for(var j = i; i < n; ++j){
+            for(var j = i; j < n; ++j){
                 var thisSum = 0;
                 for(var k = i; k <= j; ++k) thisSum += arr[k];
                 if(sum < thisSum) {
@@ -335,7 +335,79 @@ LCSLength('ABCBDAB', 'BDCABA');
         return sum;
     }
 
-    console.log(maxSubSum([-2, 11, -4, 13, -5, -2], 2));
+    console.log(maxSubSum([-2, 11, -4, 13, -5, -2], 4));
+
+    // 时间复杂度O(n^2)
+    function maxSubSum2(arr, n){
+        var sum = 0;
+        var besti, bestj;
+
+        for(var i = 0; i < n; ++i){
+            var thisSum = 0;
+            for(var j = i; j < n; ++j){
+                thisSum += arr[j];
+                if(thisSum > sum) {
+                    sum = thisSum;
+                    besti = i;
+                    bestj = j;
+                }
+            }
+        }
+
+        return sum;
+    }
+
+    console.log(maxSubSum2([-2, 11, -4, 13, -5, -2], 4));
+
+    // 分支算法，时间复杂度O(nlogn)
+    function maxSubSum3(arr, n){
+        return function maxSubSum(arr , left, right){
+            var sum = 0;
+            if(left === right) sum = arr[left] > 0 ? arr[left] : 0;
+            else {
+                var center = Math.floor((left + right) / 2);
+                var leftSum = maxSubSum(arr, left ,center);
+                var rightSum = maxSubSum(arr, center + 1 ,right);
+
+                var s1 = 0;
+                var lefts = 0;
+                for(var i = center; i >= left; --i){
+                    lefts += arr[i];
+                    if(lefts > s1) s1 = lefts;
+                }
+
+                var s2 = 0;
+                var rights = 0;
+                for(var i = center + 1; i <= right; ++i){
+                    rights += arr[i];
+                    if(rights > s2) s2 = rights;
+                }
+
+                sum = s1 + s2;
+                if(sum < leftSum) sum = leftSum;
+                if(sum < rightSum) sum = rightSum;
+            }
+
+            return sum;
+        }(arr, 0, n - 1);
+    }
+
+    console.log(maxSubSum3([-2, 11, -4, 13, -5, -2], 4));
+
+    // 动态规划算法，时间复杂度O(n)
+    function maxSubSum4(arr, n){
+        var sum = 0;
+        var b = 0;
+        for(var i = 0; i < n; ++i){
+            if(b > 0) b += arr[i];
+            else b = arr[i];
+            if(b > sum) sum = b;
+        }
+
+        return sum;
+    }
+
+    console.log(maxSubSum4([-2, 11, -4, 13, -5, -2], 4));
 })();
 
 
