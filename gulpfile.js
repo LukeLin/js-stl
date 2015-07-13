@@ -10,7 +10,7 @@ gulp.task('scripts', function () {
     return gulp.src('*/**/*.es6')
         .pipe(sourcemaps.init())
         .pipe(babel({
-            /* optional: ["runtime"]  // if running test, disable this option */
+             optional: ["runtime"]  // if running test, disable this option
         }))
         .pipe(gulp.dest('dist'))
         // for client browser environment

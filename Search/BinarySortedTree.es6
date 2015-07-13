@@ -299,26 +299,26 @@ export default class BSTNode extends BinaryTree {
 
         return [a, b];
     }
+
+    /**
+     * 判断tree是否是二叉排序树
+     * @param tree
+     */
+    static isBSTTree(tree) {
+        let last = typeof tree.data === 'number' ? -Infinity : 'a';
+        let flag = true;
+
+        void function isBSTTree(tree) {
+            if (tree.leftChild && flag) isBSTTree(tree.leftChild);
+            if (tree.data < last) flag = false;
+            last = tree.data;
+            if (tree.rightChild && flag) isBSTTree(tree.rightChild);
+
+        }(tree);
+
+        return flag;
+    }
 }
-
-/**
- * 判断tree是否是二叉排序树
- * @param tree
- */
-BSTNode.isBSTTree = function (tree) {
-    let last = typeof tree.data === 'number' ? -Infinity : 'a';
-    let flag = true;
-
-    void function isBSTTree(tree) {
-        if (tree.leftChild && flag) isBSTTree(tree.leftChild);
-        if (tree.data < last) flag = false;
-        last = tree.data;
-        if (tree.rightChild && flag) isBSTTree(tree.rightChild);
-
-    }(tree);
-
-    return flag;
-};
 
 /**
  * 删除结点

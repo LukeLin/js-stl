@@ -124,6 +124,13 @@ export class BinaryTree {
         });
     }
 
+    /** Prefix iteration */
+    * [Symbol.iterator]() {
+        yield this.data;
+        if(this.leftChild) yield* this.leftChild;
+        if(this.rightChild) yield* this.rightChild;
+    }
+
     // 先序遍历二叉树的非递归算法
     preOrderNonRecursive(visit) {
         let stack = new Stack();
@@ -477,6 +484,15 @@ function printPath_maxDepthS1(tree){
 
         path[h] = null;
     }
+}
+
+var tree = [1, 2, 3, 4, 5, , 6, , , 7];
+var test = new BinaryTree();
+test.createBinaryTree(tree);
+
+console.log('iterator: ');
+for(let x of test){
+    console.log(x);
 }
 
 
