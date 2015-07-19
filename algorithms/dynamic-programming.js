@@ -411,6 +411,57 @@ LCSLength('ABCBDAB', 'BDCABA');
 })();
 
 
+/*
+ 独立任务最优调度问题
+
+ 时间复杂度 O(m^2 * n^3)
+
+给定的2台处理机A和B处理n个作业，找出一个最优调度方案，使2台处理器处理完这n个作业的时间最短。
+ */
+function taskScheduling(n, tasks1, tasks2){
+    var m = Math.max.apply(null, tasks1.concat(tasks2));
+    var mn = m * n;
+    var p = [];
+
+    for(var i = 0; i <= mn; ++i){
+        p[i] = [];
+        for(var j = 0; j <= mn; ++j){
+            p[i][j] = [];
+        }
+    }
+
+    for(var i = 0; i <= mn; ++i){
+        for(var j = 0; j <= mn; ++j){
+            p[i][j][0] = true;
+            for(var k = 1; k <= n; ++k) p[i][j][k] = false;
+        }
+    }
+
+    for(var k = 1; k <= n; ++k){
+        for(var i = 0; i <= mn; ++i){
+            for(var j = 0; j <= mn; ++j){
+                if(i >= tasks1[k - 1]) p[i][j][k] = p[i - tasks1[k - 1]][j][k - 1];
+                if(j >= tasks2[k - 1]) p[i][j][k] = p[i][j][k] || p[i][j - tasks2[k - 1]][k - 1];
+            }
+        }
+    }
+
+    var opt = mn
+    for(var i = 0; i <= mn; ++i){
+        for(var j = 0; j <= mn; ++j){
+            if(p[i][j][n]) {
+                var tmp = i > j ? i : j;
+                if(tmp < opt) opt = tmp;
+            }
+        }
+    }
+
+    return opt;
+}
+console.log('taskScheduling: ' + taskScheduling
+(6, [2, 5, 7, 10, 5, 2], [3, 8, 4,11, 3, 4]));
+
+
 // unoptimized version
 // 两矩阵相乘
 function matrixMultiply(a, b) {
