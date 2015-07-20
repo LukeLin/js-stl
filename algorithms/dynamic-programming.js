@@ -437,6 +437,7 @@ function taskScheduling(n, tasks1, tasks2){
         }
     }
 
+    // 设布尔值p(i,j,k)表示前k个作业可以在处理机A用时不超过i时间且在处理机B用时不超过j时间内完成
     for(var k = 1; k <= n; ++k){
         for(var i = 0; i <= mn; ++i){
             for(var j = 0; j <= mn; ++j){
@@ -446,7 +447,7 @@ function taskScheduling(n, tasks1, tasks2){
         }
     }
 
-    var opt = mn
+    var opt = mn;
     for(var i = 0; i <= mn; ++i){
         for(var j = 0; j <= mn; ++j){
             if(p[i][j][n]) {
