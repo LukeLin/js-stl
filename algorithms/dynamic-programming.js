@@ -153,6 +153,7 @@
         if (n === 0) return ackermann1(m - 1, 1);
         else return ackermann1(m - 1, ackermann1(m, n - 1));
     }
+
     console.log(ackermann1(3, 2));
 
     // 备忘录算法
@@ -167,24 +168,25 @@
             return (cache[m][n] = ack(m - 1, ack(m, n - 1)));
         }(m, n);
     }
+
     console.log(ackermann2(3, 2));
 
 
     // 非递归
-    function ackm_nonRecursive(m, n){
+    function ackm_nonRecursive(m, n) {
         var top = 1;
         var cache = [];
         for (var i = 0; i <= m; ++i) cache[i] = [];
         cache[1][1] = m;
         cache[1][2] = n;
 
-        while(top){
+        while (top) {
             m = cache[top][1];
             n = cache[top][2];
             --top;
-            if(top === 0 && m === 0) return n + 1;
-            if(m === 0) cache[top][2] = n + 1;
-            else if(n === 0) {
+            if (top === 0 && m === 0) return n + 1;
+            if (m === 0) cache[top][2] = n + 1;
+            else if (n === 0) {
                 ++top;
                 cache[top] = cache[top] || [];
                 cache[top][1] = m - 1;
@@ -202,39 +204,41 @@
 
         return cache[0][1];
     }
+
     console.log(ackm_nonRecursive(3, 2));
 
-    function ack4(m, n){
-        for(var i = m; i > 0; --i){
-            if(n === 0) n = 1;
+    function ack4(m, n) {
+        for (var i = m; i > 0; --i) {
+            if (n === 0) n = 1;
             else n = ack4(i, n - 1);
         }
         return n + 1;
     }
+
     console.log(ack4(3, 2));
 
     // 自底向上的动态规划算法
-    function ack5(m, n){
-        if(m === 0) return n + 1;
+    function ack5(m, n) {
+        if (m === 0) return n + 1;
         var val = [];
         var ind = [];
         var i = 1;
-        for(; i <= m; ++i){
+        for (; i <= m; ++i) {
             val[i] = -1;
             ind[i] = -2;
         }
         val[0] = 1;
         ind[0] = 0;
 
-        while(ind[m] < n){
+        while (ind[m] < n) {
             ++val[0];
             ++ind[0];
-            for(i = 0; i < m; ++i){
-                if(ind[i] === 1 && ind[i + 1] < 0) {
+            for (i = 0; i < m; ++i) {
+                if (ind[i] === 1 && ind[i + 1] < 0) {
                     val[i + 1] = val[0];
                     ind[i + 1] = 0;
                 }
-                if(val[i + 1] === ind[i]) {
+                if (val[i + 1] === ind[i]) {
                     val[i + 1] = val[0];
                     ++ind[i + 1];
                 }
@@ -243,6 +247,7 @@
 
         return val[m];
     }
+
     console.log(ack5(3, 2));
 })();
 
@@ -254,9 +259,9 @@
 
  用c[i][j]记录序列Xi和Yj的最长公共子序列的长度。
  递归关系：
-                0                                       (i = 0, j = 0)
-     c[i][j] =  c[i - 1][j - 1] + 1                     (i,j > 0; xi = yj)
-                max(c[i][j - 1], c[i - 1][j])           (i,j>0;xi != yj)
+ 0                                       (i = 0, j = 0)
+ c[i][j] =  c[i - 1][j - 1] + 1                     (i,j > 0; xi = yj)
+ max(c[i][j - 1], c[i - 1][j])           (i,j>0;xi != yj)
  */
 
 function LCSLength(x, y) {
@@ -312,19 +317,19 @@ console.log('\n最长公共子序列：');
 LCSLength('ABCBDAB', 'BDCABA');
 
 
-(function(){
+(function () {
     console.log('最大子段和:');
 
     // 最大子段和，时间复杂度O(n^3)
-    function maxSubSum(arr, n){
+    function maxSubSum(arr, n) {
         var sum = 0;
         var besti, bestj;
 
-        for(var i = 0; i < n; ++i){
-            for(var j = i; j < n; ++j){
+        for (var i = 0; i < n; ++i) {
+            for (var j = i; j < n; ++j) {
                 var thisSum = 0;
-                for(var k = i; k <= j; ++k) thisSum += arr[k];
-                if(sum < thisSum) {
+                for (var k = i; k <= j; ++k) thisSum += arr[k];
+                if (sum < thisSum) {
                     sum = thisSum;
                     besti = i;
                     bestj = j;
@@ -338,15 +343,15 @@ LCSLength('ABCBDAB', 'BDCABA');
     console.log(maxSubSum([-2, 11, -4, 13, -5, -2], 4));
 
     // 时间复杂度O(n^2)
-    function maxSubSum2(arr, n){
+    function maxSubSum2(arr, n) {
         var sum = 0;
         var besti, bestj;
 
-        for(var i = 0; i < n; ++i){
+        for (var i = 0; i < n; ++i) {
             var thisSum = 0;
-            for(var j = i; j < n; ++j){
+            for (var j = i; j < n; ++j) {
                 thisSum += arr[j];
-                if(thisSum > sum) {
+                if (thisSum > sum) {
                     sum = thisSum;
                     besti = i;
                     bestj = j;
@@ -360,32 +365,32 @@ LCSLength('ABCBDAB', 'BDCABA');
     console.log(maxSubSum2([-2, 11, -4, 13, -5, -2], 4));
 
     // 分支算法，时间复杂度O(nlogn)
-    function maxSubSum3(arr, n){
-        return function maxSubSum(arr , left, right){
+    function maxSubSum3(arr, n) {
+        return function maxSubSum(arr, left, right) {
             var sum = 0;
-            if(left === right) sum = arr[left] > 0 ? arr[left] : 0;
+            if (left === right) sum = arr[left] > 0 ? arr[left] : 0;
             else {
                 var center = Math.floor((left + right) / 2);
-                var leftSum = maxSubSum(arr, left ,center);
-                var rightSum = maxSubSum(arr, center + 1 ,right);
+                var leftSum = maxSubSum(arr, left, center);
+                var rightSum = maxSubSum(arr, center + 1, right);
 
                 var s1 = 0;
                 var lefts = 0;
-                for(var i = center; i >= left; --i){
+                for (var i = center; i >= left; --i) {
                     lefts += arr[i];
-                    if(lefts > s1) s1 = lefts;
+                    if (lefts > s1) s1 = lefts;
                 }
 
                 var s2 = 0;
                 var rights = 0;
-                for(var i = center + 1; i <= right; ++i){
+                for (var i = center + 1; i <= right; ++i) {
                     rights += arr[i];
-                    if(rights > s2) s2 = rights;
+                    if (rights > s2) s2 = rights;
                 }
 
                 sum = s1 + s2;
-                if(sum < leftSum) sum = leftSum;
-                if(sum < rightSum) sum = rightSum;
+                if (sum < leftSum) sum = leftSum;
+                if (sum < rightSum) sum = rightSum;
             }
 
             return sum;
@@ -395,13 +400,13 @@ LCSLength('ABCBDAB', 'BDCABA');
     console.log(maxSubSum3([-2, 11, -4, 13, -5, -2], 4));
 
     // 动态规划算法，时间复杂度O(n)
-    function maxSubSum4(arr, n){
+    function maxSubSum4(arr, n) {
         var sum = 0;
         var b = 0;
-        for(var i = 0; i < n; ++i){
-            if(b > 0) b += arr[i];
+        for (var i = 0; i < n; ++i) {
+            if (b > 0) b += arr[i];
             else b = arr[i];
-            if(b > sum) sum = b;
+            if (b > sum) sum = b;
         }
 
         return sum;
@@ -416,43 +421,43 @@ LCSLength('ABCBDAB', 'BDCABA');
 
  时间复杂度 O(m^2 * n^3)
 
-给定的2台处理机A和B处理n个作业，找出一个最优调度方案，使2台处理器处理完这n个作业的时间最短。
+ 给定的2台处理机A和B处理n个作业，找出一个最优调度方案，使2台处理器处理完这n个作业的时间最短。
  */
-function taskScheduling(n, tasks1, tasks2){
+function taskScheduling(n, tasks1, tasks2) {
     var m = Math.max.apply(null, tasks1.concat(tasks2));
     var mn = m * n;
     var p = [];
 
-    for(var i = 0; i <= mn; ++i){
+    for (var i = 0; i <= mn; ++i) {
         p[i] = [];
-        for(var j = 0; j <= mn; ++j){
+        for (var j = 0; j <= mn; ++j) {
             p[i][j] = [];
         }
     }
 
-    for(var i = 0; i <= mn; ++i){
-        for(var j = 0; j <= mn; ++j){
+    for (var i = 0; i <= mn; ++i) {
+        for (var j = 0; j <= mn; ++j) {
             p[i][j][0] = true;
-            for(var k = 1; k <= n; ++k) p[i][j][k] = false;
+            for (var k = 1; k <= n; ++k) p[i][j][k] = false;
         }
     }
 
     // 设布尔值p(i,j,k)表示前k个作业可以在处理机A用时不超过i时间且在处理机B用时不超过j时间内完成
-    for(var k = 1; k <= n; ++k){
-        for(var i = 0; i <= mn; ++i){
-            for(var j = 0; j <= mn; ++j){
-                if(i >= tasks1[k - 1]) p[i][j][k] = p[i - tasks1[k - 1]][j][k - 1];
-                if(j >= tasks2[k - 1]) p[i][j][k] = p[i][j][k] || p[i][j - tasks2[k - 1]][k - 1];
+    for (var k = 1; k <= n; ++k) {
+        for (var i = 0; i <= mn; ++i) {
+            for (var j = 0; j <= mn; ++j) {
+                if (i >= tasks1[k - 1]) p[i][j][k] = p[i - tasks1[k - 1]][j][k - 1];
+                if (j >= tasks2[k - 1]) p[i][j][k] = p[i][j][k] || p[i][j - tasks2[k - 1]][k - 1];
             }
         }
     }
 
     var opt = mn;
-    for(var i = 0; i <= mn; ++i){
-        for(var j = 0; j <= mn; ++j){
-            if(p[i][j][n]) {
+    for (var i = 0; i <= mn; ++i) {
+        for (var j = 0; j <= mn; ++j) {
+            if (p[i][j][n]) {
                 var tmp = i > j ? i : j;
-                if(tmp < opt) opt = tmp;
+                if (tmp < opt) opt = tmp;
             }
         }
     }
@@ -460,7 +465,63 @@ function taskScheduling(n, tasks1, tasks2){
     return opt;
 }
 console.log('taskScheduling: ' + taskScheduling
-(6, [2, 5, 7, 10, 5, 2], [3, 8, 4,11, 3, 4]));
+    (6, [2, 5, 7, 10, 5, 2], [3, 8, 4, 11, 3, 4]));
+
+(function () {
+    /*
+     电路布线
+
+     http://blog.csdn.net/liufeng_king/article/details/8671407
+     */
+    // todo
+    function maximumDisjointSubsets(arr) {
+        var size = [];
+        var n = arr.length - 1;
+        for (var j = 0; j < arr[1]; ++j) {
+            size[1] = [];
+            size[1][j] = 0;
+        }
+        for (var j = arr[1]; j <= n; ++j) size[1][j] = 1;
+
+        for (var i = 2; i < n; ++i) {
+            size[i] = [];
+            for (var j = 0; j < arr[i]; ++j) size[i][j] = size[i - 1][j] || 0;
+            for (var j = arr[i]; j <= n; ++j)
+                size[i][j] = Math.max(size[i - 1][j], size[i - 1][arr[i] - 1] + 1) || 0;
+        }
+        size[n] = [];
+        size[n][n] = Math.max(size[n - 1][n], size[n - 1][arr[n] - 1] + 1) || 0;
+
+        console.log('电路布线最大不相交连线数目为：' + size[n][n]);
+
+        var net = traceBack(arr, size);
+        console.log(net);
+
+        console.log('最大不相交连线分别为：');
+        for (var i = net.length - 1; i >= 0; --i) {
+            console.log('(' + net[i] + ', ' + arr[net[i]] + ')');
+        }
+    }
+
+    function traceBack(arr, size) {
+        var n = arr.length - 1;
+        var j = n;
+        var net = [];
+        for (var i = n; i > 1; --i) {
+            if (size[i][j] !== size[i - 1][j]) {
+                net[net.length] = i;
+                j = arr[i] - 1;
+            }
+        }
+        if (j >= arr[1]) net[net.length] = 1;
+        return net;
+    }
+
+    var c = [0, 8, 7, 4, 2, 5, 1, 9, 3, 10, 6];
+    console.log('maximumDisjointSubsets: ');
+    maximumDisjointSubsets(c);
+
+})();
 
 
 // unoptimized version
