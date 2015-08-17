@@ -507,7 +507,7 @@ console.log('taskScheduling: ' + taskScheduling
         var n = arr.length - 1;
         var j = n;
         var net = [];
-        for (var i = n; i > 1; --i) {
+        for (var i = n; i > 2; --i) {
             if (size[i][j] !== size[i - 1][j]) {
                 net[net.length] = i;
                 j = arr[i] - 1;
