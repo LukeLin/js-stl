@@ -523,6 +523,50 @@ console.log('taskScheduling: ' + taskScheduling
 
 })();
 
+/*
+流水作业调度问题
+
+ http://blog.csdn.net/liufeng_king/article/details/8678316
+ */
+function flowShop(a, b){
+    var n = a.length;
+    var c = [];
+    var d = [];
+
+    for(var i = 0; i < n; ++i){
+        d[i] = {
+            key: a[i] > b[i] ? b[i] : a[i],
+            job: a[i] <= b[i],
+            index: i
+        };
+    }
+
+    d.sort(function(item1, item2){
+        return item1.key > item2.key;
+    });
+
+    var j = 0;
+    var k = n - 1;
+    for(var i = 0; i < n; ++i){
+        if(d[i].job) c[j++] = d[i].index;
+        else c[k--] = d[i].index;
+    }
+
+    j = a[c[0]];
+    k = j + b[c[0]];
+
+    for(var i = 1; i < n; ++i){
+        j += a[c[i]];
+        k = j < k ? k + b[c[i]] : j + b[c[i]];
+    }
+
+    console.log(c);
+
+    return k;
+}
+
+console.log('流水作业调度: ' + flowShop([2, 4, 3, 6, 1], [5, 2, 3, 1, 7]));
+
 
 // unoptimized version
 // 两矩阵相乘
