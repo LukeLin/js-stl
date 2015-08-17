@@ -528,6 +528,10 @@ console.log('taskScheduling: ' + taskScheduling
 
  http://blog.csdn.net/liufeng_king/article/details/8678316
  */
+
+/*
+最坏时间复杂度为: O(nlogn)
+ */
 function flowShop(a, b){
     var n = a.length;
     var c = [];
