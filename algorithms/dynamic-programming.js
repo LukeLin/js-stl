@@ -473,7 +473,6 @@ console.log('taskScheduling: ' + taskScheduling
 
      http://blog.csdn.net/liufeng_king/article/details/8671407
      */
-    // todo
     function maximumDisjointSubsets(arr) {
         var size = [];
         var n = arr.length - 1;
