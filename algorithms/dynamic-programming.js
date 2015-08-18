@@ -524,6 +524,7 @@ console.log('taskScheduling: ' + taskScheduling
 
 /*
 流水作业调度问题
+Johnson法则的调度
 
  http://blog.csdn.net/liufeng_king/article/details/8678316
  */
