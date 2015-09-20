@@ -1,3 +1,7 @@
+/**
+ * Created by Luke on 2015/1/11.
+ */
+
 /*
 
  如果一个关键字可以表示成字符的序号，即字符串，那么可以用键树（keyword tree），又称数字搜索树（digital search tree）或字符树，也叫字典树，来表示这样的字符串的集合。
@@ -71,3 +75,415 @@
  http://blog.csdn.net/v_july_v/article/details/6897097
  http://www.raychase.net/1783
  */
+
+const LEAF = 'leaf';
+const BRANCH = 'branch';
+const TERMINAL = new String('$');
+
+export class DoubleLinkedTree {
+    constructor(symbol = 'root', kind = BRANCH, info = null) {
+        this.symbol = symbol;
+        this.next = null;
+        this.kind = kind;
+        this.info = info;
+        this.first = null;
+    }
+
+    synoSearch (key) {
+        let p = this.first;
+
+        for (let i = 0; p && i < key.length; ++i) {
+            if (p && p.kind === LEAF) break;
+            while (p && p.symbol < key[i]) p = p.next;
+
+            if (p && p.symbol === key[i])
+                p = p.first;
+            else p = null;
+        }
+
+        return p && p.kind === LEAF ? p.info : null;
+    }
+
+    search (key) {
+        let p = this.first;
+
+        for (let i = 0; p && i < key.length; ++i) {
+            while (p && p.symbol < key[i]) p = p.next;
+
+            if (p && p.symbol === key[i])
+                p = p.first;
+            else p = null;
+        }
+
+        return p && p.kind === LEAF ? p.info : null;
+    }
+
+    insert(key, value) {
+        key += '';
+        let cur = this;
+
+        for (let i = 0; i < key.length; ++i) {
+            let c = key[i];
+            let p = cur;
+            cur = cur.first;
+            let node = new DoubleLinkedTree(c, BRANCH);
+
+            // 如果没有子结点则将新结点作为子结点
+            if (!cur) {
+                p.first = node;
+                node.parent = p;
+                cur = node;
+            } else {
+                // 在兄弟结点中找到对应结点
+                if(c < cur.symbol) {
+                    node.parent = cur.parent;
+                    node.next = cur;
+                    node.parent.first = node;
+                    cur = node;
+                } else if(c > cur.symbol) {
+                    let b;
+                    while (cur) {
+                        // 如果相等，退出该循环查找下一字符
+                        if (c === cur.symbol) break;
+                        // 如果小于当前字符，则插入到当前结点前面
+                        else if(c < cur.symbol) {
+                            node.parent = cur.parent;
+                            node.next = cur;
+                            b.next = node;
+                            cur = node;
+                            break;
+                        } else {
+                            b = cur;
+                            cur = cur.next;
+                        }
+                    }
+
+                    // 如果没有兄弟结点则插入到兄弟结点
+                    if(!cur) {
+                        b.next = node;
+                        node.parent = b.parent;
+                        cur = node;
+                    }
+                }
+            }
+        }
+
+        // 生成叶子结点
+        let success = false;
+        if (cur.kind === BRANCH) {
+            let child = cur.first;
+
+            // 如果不存在关键字则说明插入成功，否则插入失败
+            if(!(child && child.symbol === TERMINAL)) {
+                cur.first = new DoubleLinkedTree(TERMINAL, LEAF, value != null ? value : key);
+                cur.first.parent = cur;
+                cur.first.next = child;
+                success = true;
+            }
+        }
+
+        return success;
+    }
+
+    remove (key) {
+        let p = this.first;
+        let i = 0;
+
+        while (p && i < key.length) {
+            while (p && p.symbol < key[i]) p = p.next;
+
+            if (p && p.symbol === key[i]) {
+                p = p.first;
+                ++i;
+            } else return false;
+        }
+
+        let data = p.info;
+        while (!p.next && p.parent) p = p.parent;
+        let top = p;
+
+        if (top == this) {
+            this.first = null;
+            return data;
+        }
+
+        p = top.parent;
+        if (p) {
+            p = p.first;
+            while (p) {
+                let pre;
+                if (p == top) {
+                    // 删除在first域上的子树结点
+                    if (!pre) top.parent.first = top.parent.first.next;
+                    // 删除在next域的兄弟结点
+                    else pre.next = pre.next.next;
+
+                    return data;
+                } else {
+                    pre = p;
+                    p = p.next;
+                }
+            }
+        }
+
+        return false;
+    }
+}
+
+var test = new DoubleLinkedTree();
+test.insert('CAI');
+test.insert('LAN');
+test.insert('CAO');
+test.insert('CHA');
+test.insert('CHANG');
+test.insert('CHAO');
+test.insert('CHEN');
+test.insert('LI');
+test.insert('LIU');
+test.insert('ZHAO');
+test.insert('ZHAO');
+
+console.log('\nsearch: ');
+console.log(test.search('CAI'));
+console.log(test.search('CHA'));
+console.log(test.search('CHANG'));
+console.log(test.search('ZHAOx'));
+
+console.log('\nremove:');
+console.log(test.remove('CAI'));
+console.log(test.remove('CAI'));
+console.log(test.remove('LAN'));
+console.log(test.remove('CAO'));
+console.log(test.remove('CHA'));
+console.log(test.remove('CHANG'));
+console.log(test.remove('CHAO'));
+console.log(test.remove('CHEN'));
+console.log(test.remove('LI'));
+console.log(test.remove('LIU'));
+console.log(test.remove('ZHAO'));
+
+
+/*
+ 多重链表表示
+
+ 若以树的多重链表表示键树，则树的每个结点中应含有d个指针域，此时的键树又称Trie树。
+ （Trie是从检索retrieve中取中间四个字符的，读音同try）。
+ 若从键树中某个结点到叶子结点的路径上每个结点都只有一个孩子，则可将该路径上所有结点压缩成一个“叶子结点”，且在该叶子结点中存储关键字及指向记录的指针等信息。
+ 在Trie树中有两种结点：
+ 分支结点：含有d个指针域和一个指示该结点中非空指针域的个数的整数域。在分支结点中不设数据域，每个分支结点所表示的字符均有其父结点中指向该结点的指针所在位置决定。
+ 叶子结点：含有关键字域和指向记录的指针域。
+
+
+ 在Trie树上进行查找
+
+ 从根结点出发，沿和给定值相应的指针逐层向下，直至叶子结点，若叶子结点中的关键字和给定值相等，则查找成功，若分支结点中和给定值相应的指针为空，或叶子结点中的关键字和给定值不相等，则查找不成功。
+
+
+ 优化Trie树的深度
+
+ 我们可对关键字集选择一种合适的分割。先按首字符不通分成多个子集之后，然后按最后一个字符不同分割每个子集，再按第二个字符。。。前后交叉分割。一缩减Trie树的深度
+ */
+// 求字符在字母表中的序号
+function order(c) {
+    return c ? c.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0) + 1 : 0;
+}
+
+// 通过回溯法清理Trie树的函数
+function removeNode(trieNode, order, clear) {
+    trieNode.branch.nodes[order] = null;
+    --trieNode.branch.num;
+
+    if (!clear) return;
+
+    let nodes = trieNode.branch.nodes;
+    let parent = trieNode.parent;
+    let pre = trieNode;
+
+    while (parent) {
+        for (let i in nodes) {
+            if (nodes.hasOwnProperty(i) && nodes[i]) return;
+        }
+
+        let index;
+        let parentNodes = parent.branch.nodes;
+        for (let i in parentNodes) {
+            if (parentNodes.hasOwnProperty(i) && parentNodes[i] && parentNodes[i] == pre)
+                index = i;
+        }
+        parent.branch.nodes[index] = null;
+        --parent.branch.num;
+
+        pre = parent;
+        nodes = parent.branch.nodes;
+        parent = parent.parent;
+    }
+}
+
+export class TrieTree {
+    constructor(kind) {
+        this.kind = kind || BRANCH;
+        this.parent = null;
+
+        if (kind === LEAF) {
+            this.leaf = {
+                key: null,
+                info: null
+            };
+        } else {
+            this.branch = {
+                // “$”为第一个字符，后续为26个字母
+                nodes: new Array(27),
+                num: 0
+            };
+        }
+    }
+
+    search (key) {
+        let p = this, i = 0;
+        for (;
+             p && p.kind === BRANCH && i < key.length;
+             p = p.branch.nodes[order(key[i])], ++i);
+
+        if (p) {
+            if (p.kind === LEAF && p.leaf.key === key) return p.leaf.info;
+            // 同义词
+            else if (p.kind === BRANCH) {
+                p = p.branch.nodes[0];
+                if (p && p.leaf.key === key) return p.leaf.info;
+            }
+        }
+
+        return null;
+    }
+
+    insert (key, value) {
+        // 建叶子结点
+        let q = new TrieTree(LEAF);
+        q.leaf.key = key;
+        q.leaf.info = value;
+
+        // 自上而下查找
+        let last;
+        let p = this, i = 0;
+        for (;
+             p && p.kind === BRANCH && i < key.length && p.branch.nodes[order(key[i])];
+             p = p.branch.nodes[order(key[i])], ++i) last = p;
+
+        // 如果最后落到分支结点（无同义词）
+        // 直接连上叶子
+        if (p.kind === BRANCH) {
+            p.branch.nodes[order(key[i])] = q;
+            q.parent = p;
+            ++p.branch.num;
+        }
+        // 如果最后落到叶子结点（有同义词）
+        else {
+            if (p.leaf.key === key) return false;
+
+            // 建立新的分支结点
+            let r = new TrieTree(BRANCH);
+            // 用新的分支结点取代老叶子结点和上一层的联系
+            last.branch.nodes[order(key[i - 1])] = r;
+            r.parent = last;
+            r.branch.num = 2;
+            r.branch.nodes[order(key[i])] = q;
+            q.parent = r;
+            // 新分支结点与新老两个叶子结点相连
+            r.branch.nodes[order(p.leaf.key[i])] = p;
+            p.parent = r;
+        }
+
+        return true;
+    }
+
+    /**
+     *
+     * @param key
+     * @param {Boolean} clear 是否需要清理结点
+     * @returns {*} 如果删除成功返回info数据否则返回false
+     */
+    remove (key, clear) {
+        let last;
+        let p = this, i = 0;
+        // 查找待删除元素
+        for (;
+             p && p.kind === BRANCH && i < key.length;
+             p = p.branch.nodes[order(key[i])], ++i) last = p;
+
+        if (!p) return false;
+
+        clear = typeof clear !== 'undefined' ? clear : true;
+        let data = null;
+
+        if (p.kind === LEAF && p.leaf.key === key) {
+            data = p.leaf.info;
+            removeNode(last, order(key[i - 1]), clear);
+            return data;
+        } else if (p.kind === BRANCH) {
+            p = p.branch.nodes[0];
+            if (p && p.leaf.key === key) {
+                data = p.leaf.info;
+                removeNode(p.parent, 0, clear);
+                return data;
+            }
+        }
+
+        return false;
+    }
+}
+
+var test = new TrieTree();
+
+test.insert('CHA');
+test.insert('CHA');
+test.insert('CHANG');
+test.insert('CAI');
+test.insert('CHEN');
+test.insert('CAO');
+test.insert('CHAO');
+test.insert('LONG');
+test.insert('LI');
+test.insert('LAN');
+test.insert('LIU');
+test.insert('WANG');
+test.insert('WEN');
+test.insert('WU');
+test.insert('YANG');
+test.insert('YUN');
+test.insert('ZHAO');
+
+console.log('\nsearch: ');
+console.log(test.search('YUN'));
+console.log(test.search('ZHAO'));
+console.log(test.search('CHA'));
+
+test.remove('LAN');
+test.remove('LIU');
+test.remove('WANG');
+test.remove('WEN');
+test.remove('WU');
+test.remove('YANG');
+test.remove('YUN');
+test.remove('ZHAO');
+test.remove('CHA');
+test.remove('CHANG');
+test.remove('CAI');
+test.remove('CHEN');
+test.remove('CAO');
+test.remove('CHAO');
+test.remove('LONG');
+test.remove('LI');
+
+test.insert('LI');
+test.insert('LAN');
+test.insert('LIU');
+
+
+/*
+ 关于字典树的优化的数据结构有Patricia Tree，Suffix Tree
+ todo 有空再实现
+
+ 相关资料：
+ http://blog.csdn.net/ljsspace/article/details/6571414
+ */
+
