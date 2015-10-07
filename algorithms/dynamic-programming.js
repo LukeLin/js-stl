@@ -571,6 +571,34 @@ function flowShop(a, b){
 
 console.log('流水作业调度: ' + flowShop([2, 4, 3, 6, 1], [5, 2, 3, 1, 7]));
 
+(function(){
+    // 最少硬币找钱问题
+    /*
+    设有n种不同面值的硬币，各硬币的面值存于数组T[0..n-1]中。现要用这些面值的硬币来找钱。可以使用的各种面值的硬币个数不限。
+    1.当只用面值为T[0],T[1]...,T[i - 1]的硬币时，可找出钱数j的最少硬币个数计为cij. 0 <= i <= n - 1, 1 <= j <= L;
+     */
+
+    function makingChange(t, l){
+        var n = t.length;
+        var c = [0];
+
+        for(var j = 1; j <= l; ++j){
+            if(j % t[0] === 0) c[j] = j / t[0];
+            else c[j] = Inifity;
+        }
+
+        for(var i = 1; i < n; ++i){
+            for(var j = t[i]; j <= l; ++j){
+                if(c[i] > 1 + c[j - t[i]]) c[j] = 1 + c[j - t[i]];
+            }
+        }
+
+        console.log(c);
+    }
+
+    makingChange([1, 2, 5, 10, 20, 50, 100], 500);
+})();
+
 
 // unoptimized version
 // 两矩阵相乘
