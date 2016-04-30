@@ -2,9 +2,10 @@ data-structure-with-js
 ======================
 classic data structures implemented in javascript.
 
-1. npm install -g gulp
+1. npm install -g webpack
 2. npm install
-3. gulp
+3. npm run build     // for production build
+   npm run build:dev // for development build
 
 
 directory
