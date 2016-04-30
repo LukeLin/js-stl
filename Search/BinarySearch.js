@@ -16,28 +16,31 @@
 
  2  算法分析
  ①  查找时每经过一次比较，查找范围就缩小一半，该过程可用一棵二叉树表示：
-     ◆ 根结点就是第一次进行比较的中间位置的记录；
-     ◆ 排在中间位置前面的作为左子树的结点；
-     ◆ 排在中间位置后面的作为右子树的结点；
-     对各子树来说都是相同的。这样所得到的二叉树称为判定树(Decision Tree)。
+ ◆ 根结点就是第一次进行比较的中间位置的记录；
+ ◆ 排在中间位置前面的作为左子树的结点；
+ ◆ 排在中间位置后面的作为右子树的结点；
+ 对各子树来说都是相同的。这样所得到的二叉树称为判定树(Decision Tree)。
  ②  将二叉判定树的第Math.floor(Math.log(2, n))+1层上的结点补齐就成为一棵满二叉树，深度不变，h= Math.floor(Math.log(2, n + 1)) 。
  ③  由满二叉树性质知，第i 层上的结点数为Math.pow(2, i-1)(i<=h) ，设表中每个记录的查找概率相等，即Pi=1/n，查找成功时的平均查找长度ASL：
  (n+1)/n*Math.log(2,n+1)-1
  当n很大 (n>50)时， ASL≈ Math.log(2,n+1)-1。
+
+
+ 时间复杂度O(logn)
  */
 
 // 非递归式
 function binarySearch(sTable, key) {
-    var low = 0;
-    var high = sTable.length - 1;
+    let low = 0;
+    let high = sTable.length - 1;
 
-    while (low <= high) {
-        var mid = (low + high) >> 1;
-        var elem = sTable[mid];
+    while(low <= high){
+        let  mid = (low + high) >> 1;
+        let elem = sTable[mid];
 
-        if (key === elem) return mid;
-        else if (key < elem) high = mid - 1;
-        else low = mid + 1;
+        if(elem === key) return mid;
+        else if(elem < key) low = mid + 1;
+        else high = mid - 1;
     }
 
     return -1;
@@ -47,19 +50,15 @@ console.log('binarySearch: ');
 console.log(binarySearch([1, 2, 3, 4, 5], 1));  // 0
 
 // 递归式
-function binarySearchRecursive(sTable, key, low, high) {
-    if(low == null) low = 0;
-    if(high == null) high = sTable.length - 1;
-    if (low > high) return -1;
+function binarySearchRecursive(sTable, key, low = 0, high = sTable.length - 1) {
+    if(low > high) return -1;
 
-    var mid = (low + high) >> 1;
+    let mid = (low + high) >> 1;
+    let elem = sTable[mid];
 
-    if (sTable[mid] === key)
-        return mid;
-    else if (sTable[mid] > key)
-        return binarySearchRecursive(sTable, key, low, mid - 1);
-    else
-        return binarySearchRecursive(sTable, mid + 1, high);
+    if(elem === key) return mid;
+    else if(elem < key) return binarySearchRecursive(sTable, mid + 1, high);
+    else return binarySearchRecursive(sTable, low, mid - 1);
 }
 
 console.log('binarySearchRecursive: ');

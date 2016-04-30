@@ -25,11 +25,11 @@
 则可以在排序结束后，再按辅助表所规定的次序重排各记录，完成这种重排的时间是O(n)。
  */
 
-var insertionSort = require('./insertion/insertion-sort');
-var exchangeSort = require('./exchange/exchange-sort');
-var selectionSort = require('./selection/selection-sort');
-var mergingSort = require('./merging/merging-sort');
-var distributionSort = require('./distribution/distribution-sort');
+var insertionSort = require('./insertion/index');
+var exchangeSort = require('./exchange/index');
+var selectionSort = require('./selection/index');
+var mergingSort = require('./merging/index');
+var distributionSort = require('./distribution/index');
 
 var straightInsertSort = insertionSort.straightInsertSort;
 var binaryInsertSort = insertionSort.binaryInsertSort;

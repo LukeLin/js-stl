@@ -1,4 +1,4 @@
-var List = require('../linkedList/complete-LinkedList');
+var List = require('./complete-LinkedList');
 var Queue = require('./Queue').Queue;
 
 

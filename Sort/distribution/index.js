@@ -170,7 +170,7 @@ console.log(arr + '');
  */
 
 var BUCKETSNUM = 10;
-var quickSort = require('../exchange/exchange-sort').quickSort;
+var quickSort = require('../exchange/index').quickSort;
 
 function bucketSort(sqList){
     var  n = sqList.length;

@@ -250,7 +250,7 @@ RecNode *linkhash[m]，其中RecNode是结点类型，每个分量的初值为�
 
  */
 
-var LinkedList = require('../linkedList/LinkedList');
+var LinkedList = require('../LinkedList/LinkedList');
 
 function HashTable(){
     this.data = [];

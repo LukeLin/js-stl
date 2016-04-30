@@ -1,7 +1,7 @@
 /**
  * Created by Luke on 2015/2/26.
  */
-var quickSort = require('../Sort/exchange/exchange-sort').quickSort;
+var quickSort = require('../Sort/exchange/index').quickSort;
 
 /*
  递归与分治法
@@ -436,7 +436,7 @@ console.log(specifiedBinarySearch(arr, 5));
     })();
 
     // 链表存储结构的自然合并排序
-    var LinkedList = require('../linkedList/LinkedList');
+    var LinkedList = require('../LinkedList/LinkedList');
     var Queue = require('../Queue/Queue').Queue;
 
     // 链表存储结构的自然合并排序

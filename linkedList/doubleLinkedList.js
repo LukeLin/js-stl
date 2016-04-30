@@ -13,60 +13,56 @@
  * 双向链表也可以有循环表。
  */
 
-(function () {
-    function DoubleLinkedList(data, prior, next) {
+export default class DoubleLinkedList {
+    constructor(data = null, prior = this, next = this) {
         this.data = data;
-        this.prior = prior || this;
-        this.next = next || this;
+        this.prior = prior;
+        this.next = next;
     }
 
-    module.exports = DoubleLinkedList;
-    DoubleLinkedList.prototype = {
-        constructor: DoubleLinkedList,
-        find: function (i) {
-            // 初始化，p指向第一个节点，j为计数器
-            var p = this.next;
-            var j = 1;
-            // 顺指针向后查找，知道p指向第i个元素或p为空
-            while (p && j < i) {
-                p = p.next;
-                ++j;
-            }
-            // 第i个元素不存在
-            // 或者取第i个元素
-            return (!p || j > i) ? null : p;
-        },
-        add: function (i, elem) {
-            var p;
-
-            if (!(p = this.find(i))) return false;
-
-            var s = new DoubleLinkedList(elem, p.prior, p);
-            p.prior.next = s;
-            p.prior = s;
-
-            return true;
-        },
-        remove: function (i) {
-            var p;
-            if (!(p = this.find(i))) return false;
-
-            var e = p.data;
-            p.prior.next = p.next;
-            p.next.prior = p.prior;
-
-            p = null;
-
-            return e;
+    find (i) {
+        // 初始化，p指向第一个节点，j为计数器
+        let p = this.next;
+        let j = 1;
+        // 顺指针向后查找，知道p指向第i个元素或p为空
+        while (p && j < i) {
+            p = p.next;
+            ++j;
         }
-    };
+        // 第i个元素不存在
+        // 或者取第i个元素
+        return (!p || j > i) ? null : p;
+    }
+    add (i, elem) {
+        let p;
 
-    var a = new DoubleLinkedList(1);
+        if (!(p = this.find(i))) return false;
 
-    a.add(0, 1);
-    a.add(1, 2);
-    a.add(2, 3);
-    a.remove(1);
-    console.log(a);
+        let s = new DoubleLinkedList(elem, p.prior, p);
+        p.prior.next = s;
+        p.prior = s;
 
-})();
+        return true;
+    }
+    remove (i) {
+        let p;
+        if (!(p = this.find(i))) return false;
+
+        let e = p.data;
+        p.prior.next = p.next;
+        p.next.prior = p.prior;
+
+        p = null;
+
+        return e;
+    }
+}
+
+
+let a = new DoubleLinkedList(1);
+
+a.add(0, 1);
+a.add(1, 2);
+a.add(2, 3);
+a.remove(1);
+console.log(a);

@@ -48,25 +48,20 @@
  ◆ 用p的直接后继结点代替p。即从p的右子树中选择值最小的结点s放在p的位置(用结点s的内容替换结点p内容)，然后删除结点s。s是p的右子树中的最左边的结点且没有左子树，对s的删除同②。
 
  */
-var BinaryTree = require('../Binary tree/BinaryTree').BinaryTree;
 
+import BinaryTree from '../BinaryTree/BinaryTree';
 
-function BSTNode(data, leftChild, rightChild) {
-    BinaryTree.apply(this, arguments);
-}
-
-exports.BSTNode = BSTNode;
-
-BSTNode.prototype = {
-    constructor: BSTNode,
-    __proto__: BinaryTree.prototype,
+export default class BSTNode extends BinaryTree {
+    constructor(...arg) {
+        super(...arg);
+    }
 
     /**
      * BST树的查找（递归）
      * @param {*} key
      * @returns {*}
      */
-    search: function (key) {
+    search(key) {
         if (this.data != null) {
             if (this.data === key) return this;
             else if (key < this.data) {
@@ -80,27 +75,38 @@ BSTNode.prototype = {
         }
 
         return null;
-    },
+    }
 
     /**
      * BST树的查找（非递归）
      * @param {*} key
      * @returns {*}
      */
-    searchNonRecursive: searchNonRecursive,
+    searchNonRecursive(key) {
+        if (this.data == null) return null;
+
+        let p = this;
+        while (p && p.data !== key) {
+            if (key < p.data) p = p.leftChild;
+            else p = p.rightChild;
+        }
+
+        if (!p || key !== p.data) return null;
+        else return p;
+    }
 
     /**
      * BST树的插入（递归）
      * @param {*} key
      */
-    insert: function (key) {
+    insert(key) {
         if (this.data == null) {
             this.data = key;
             return;
         }
         if (key === this.data) return;
 
-        var node = new BSTNode(key, null, null);
+        let node = new BSTNode(key);
         if (key < this.data) {
             if (!this.leftChild) this.leftChild = node;
             this.leftChild.insert(key);
@@ -108,20 +114,20 @@ BSTNode.prototype = {
             if (!this.rightChild) this.rightChild = node;
             this.rightChild.insert(key);
         }
-    },
+    }
 
     /**
      * BST树的插入（非递归）
      * @param {*} key
      */
-    insertNonRecursive: function (key) {
+    insertNonRecursive(key) {
         if (this.data == null) {
             this.data = key;
             return;
         }
 
-        var p = this;
-        var q;
+        let p = this;
+        let q;
         while (p) {
             if (p.data === key) return;
             // q作为p的父节点
@@ -130,18 +136,18 @@ BSTNode.prototype = {
             else p = p.rightChild;
         }
 
-        var node = new BSTNode(key);
+        let node = new BSTNode(key);
         if (key < q.data) q.leftChild = node;
         else q.rightChild = node;
-    },
+    }
 
     /**
      * 利用BST树的插入操作建立一棵BST树
      * @param {Array} arr
      * @param {Boolean|undefined} useNonRecursive 是否使用非递归
      */
-    createBST: function (arr, useNonRecursive) {
-        var i;
+    createBST(arr, useNonRecursive) {
+        let i;
         if (useNonRecursive) {
             for (i = 0; i < arr.length; ++i)
                 this.insertNonRecursive(arr[i]);
@@ -151,7 +157,7 @@ BSTNode.prototype = {
         }
 
         return this;
-    },
+    }
 
     /**
      * 使用递归的方法删除与关键字符合的结点
@@ -159,7 +165,7 @@ BSTNode.prototype = {
      * @param {BSTNode} parent 父节点，内部调用需要用到
      * @returns {Boolean}
      */
-    remove: function deleteBST(key, parent) {
+    remove(key, parent) {
         // 空结点的情况
         if (this.data == null) return false;
 
@@ -176,16 +182,16 @@ BSTNode.prototype = {
 
         // 未找到
         return false;
-    },
+    }
 
     /**
      * 非递归删除与关键字符合的结点
      * @param {*} key 需要查找的关键字
      * @returns {boolean}
      */
-    removeNonRecursive: function (key) {
-        var p = this;
-        var f;
+    removeNonRecursive(key) {
+        let p = this;
+        let f;
 
         while (p && p.data !== key) {
             f = p;
@@ -197,8 +203,8 @@ BSTNode.prototype = {
         if (!p) return false;
 
         // 找到了要删除的结点p
-        var s = p;
-        var q;
+        let s = p;
+        let q;
         // 如果有左右子树
         if (p.leftChild && p.rightChild) {
             f = p;
@@ -223,16 +229,16 @@ BSTNode.prototype = {
         else f.rightChild = q;
 
         return true;
-    },
+    }
 
     /**
      * 找到小于x的最大元素和大于x的最小元素
      * @param {String|Number} x
      * @returns {Array} [min, max]
      */
-    findNeighborElem: function (x) {
-        var last = typeof this.data === 'number' ? -Infinity : 'a';
-        var ret = [];
+    findNeighborElem(x) {
+        let last = typeof this.data === 'number' ? -Infinity : 'a';
+        let ret = [];
 
         void function recurse(tree, x) {
             if (tree.leftChild) recurse(tree.leftChild, x);
@@ -243,23 +249,23 @@ BSTNode.prototype = {
         }(this, x);
 
         return ret;
-    },
+    }
 
     /**
      * 把二叉排序树bst合并到该树中
      * @param {BSTNode} bst
      */
-    merge: function (bst) {
+    merge(bst) {
         if (bst.leftChild) this.merge(bst.leftChild);
         if (bst.rightChild) this.merge(bst.rightChild);
         this.insert(bst.data);
-    },
+    }
 
     /**
      * 把结点插入到合适位置
      * @param {BSTNode} node 待插入的结点
      */
-    insertNode: function insertNode(node) {
+    insertNode(node) {
         if (this.data == null) {
             this.data = node.data;
         } else {
@@ -273,16 +279,16 @@ BSTNode.prototype = {
         }
 
         node.leftChild = node.rightChild = null;
-    },
+    }
 
     /**
      * 分裂为两棵二叉排序树
      * @param {*} x
      * @returns {BSTNode[a, b]} a的元素全部小于等于x，b的元素全部大于x
      */
-    split: function (x) {
-        var a = new BSTNode();
-        var b = new BSTNode();
+    split(x) {
+        let a = new BSTNode();
+        let b = new BSTNode();
 
         void function split(tree, x) {
             if (tree.leftChild) split(tree.leftChild, x);
@@ -293,39 +299,26 @@ BSTNode.prototype = {
 
         return [a, b];
     }
-};
 
-function searchNonRecursive(key) {
-    if (this.data == null) return null;
+    /**
+     * 判断tree是否是二叉排序树
+     * @param tree
+     */
+    static isBSTTree(tree) {
+        let last = typeof tree.data === 'number' ? -Infinity : 'a';
+        let flag = true;
 
-    var p = this;
-    while (p && p.data !== key) {
-        if (key < p.data) p = p.leftChild;
-        else p = p.rightChild;
+        void function isBSTTree(tree) {
+            if (tree.leftChild && flag) isBSTTree(tree.leftChild);
+            if (tree.data < last) flag = false;
+            last = tree.data;
+            if (tree.rightChild && flag) isBSTTree(tree.rightChild);
+
+        }(tree);
+
+        return flag;
     }
-
-    if (!p || key !== p.data) return null;
-    else return p;
 }
-
-/**
- * 判断tree是否是二叉排序树
- * @param tree
- */
-BSTNode.isBSTTree = function (tree) {
-    var last = typeof tree.data === 'number' ? -Infinity : 'a';
-    var flag = true;
-
-    void function isBSTTree(tree) {
-        if (tree.leftChild && flag) isBSTTree(tree.leftChild);
-        if (tree.data < last) flag = false;
-        last = tree.data;
-        if (tree.rightChild && flag) isBSTTree(tree.rightChild);
-
-    }(tree);
-
-    return flag;
-};
 
 /**
  * 删除结点
@@ -337,7 +330,7 @@ function deleteNode(p, parent) {
     // 叶子结点或只有一个结点
     if (!p.leftChild && !p.rightChild) {
         // 当前结点是其父结点的左子树还是右子树
-        var pos = parent && parent.leftChild == p ? 'leftChild' : 'rightChild';
+        let pos = parent && parent.leftChild == p ? 'leftChild' : 'rightChild';
         if (parent) parent[pos] = null;
         // 只有一个结点的情况
         else  p.data = null;
@@ -354,9 +347,9 @@ function deleteNode(p, parent) {
     }
     // 左右子树都有
     else {
-        var s = p.leftChild;
+        let s = p.leftChild;
         // q为父结点
-        var q = p;
+        let q = p;
         // 找到左子树的最大右子树，即仅小于左子树的值的结点
         while (s.rightChild) {
             q = s;
@@ -371,12 +364,12 @@ function deleteNode(p, parent) {
     return true;
 }
 
-var bst = new BSTNode();
+let bst = new BSTNode();
 bst.createBST([45, 24, 53, 12, 24, 90]);
 console.log(bst.search(12));
 console.log(bst.search(13));
 
-var bst2 = new BSTNode();
+let bst2 = new BSTNode();
 bst2.createBST([45, 24, 53, 12, 24, 90], true);
 console.log(bst2.searchNonRecursive(12));
 console.log(bst2.searchNonRecursive(13));
@@ -427,8 +420,8 @@ printNotLessThan(bst2, 12);
 
 bst.merge(bst2);
 
-var a1 = new BSTNode(5);
-var a2 = new BSTNode(91);
+let a1 = new BSTNode(5);
+let a2 = new BSTNode(91);
 bst2.insertNode(a1);
 bst2.insertNode(a2);
 

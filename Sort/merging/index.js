@@ -241,7 +241,7 @@ var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 naturalMergeSort(arr);
 console.log(arr + '');
 
-var LinkedList = require('../../linkedList/LinkedList');
+var LinkedList = require('../../LinkedList/LinkedList');
 var Queue = require('../../Queue/Queue').Queue;
 
 // 链表存储结构的自然合并排序

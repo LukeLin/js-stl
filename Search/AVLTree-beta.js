@@ -129,8 +129,8 @@ var LH = 1;     // 左高
 var EH = 0;     // 等高
 var RH = -1;    // 右高
 
-var BinaryTree = require('../Binary tree/BinaryTree').BinaryTree;
-var Stack = require('../Stack/stack');
+var BinaryTree = require('../BinaryTree/BinaryTree').BinaryTree;
+var Stack = require('../Stack/index');
 
 
 /**

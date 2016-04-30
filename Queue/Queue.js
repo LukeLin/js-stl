@@ -5,36 +5,35 @@
  * 允许插入的一端叫队尾（rear），允许删除的一端叫队头（front）。
  */
 
-    // 链队列
-function Queue() {
-    this.rear = this.front = null;
-    this.size = 0;
-}
-module.exports = Queue;
-Queue.prototype = {
-    isEmpty: function(){
-        return this.rear === null;
-    },
-    clear: function () {
+// 链队列
+export default class Queue {
+    constructor() {
         this.rear = this.front = null;
         this.size = 0;
-    },
-    getHead: function () {
+    }
+    isEmpty(){
+        return this.rear === null;
+    }
+    clear () {
+        this.rear = this.front = null;
+        this.size = 0;
+    }
+    getHead () {
         return this.front ? this.front.data : null;
-    },
-    enQueue: function (elem) {
+    }
+    enQueue (elem) {
         if (this.front === null) {
             this.rear = this.front = {data: elem, next: null};
         } else {
-            var p = {data: elem, next: null};
+            let p = {data: elem, next: null};
             this.rear.next = p;
             this.rear = p;
         }
         this.size++;
-    },
-    deQueue: function () {
+    }
+    deQueue () {
         if (this.front) {
-            var elem = this.front.data;
+            let elem = this.front.data;
             this.front = this.front.next;
             if (this.front === null) {
                 this.rear = null;
@@ -44,45 +43,43 @@ Queue.prototype = {
         } else {
             return null;
         }
-    },
-    queueTraverse: function (iterator) {
-        var current = this.front;
+    }
+    queueTraverse (iterator) {
+        let current = this.front;
         while (current) {
             if (iterator(current.data)) break;
             current = current.next;
         }
-    },
-    peekAt: function (index) {
-        index = index || 0;
-
+    }
+    peekAt (index = 0) {
         if (index < this.size) {
-            var current = this.front;
-            for (var i = 0; i < index; i++) {
+            let current = this.front;
+            for (let i = 0; i < index; i++) {
                 current = current.next;
             }
             return current.data;
         }
 
         return null;
-    },
-    toString: function () {
+    }
+    toString () {
         if (this.front === null) {
             return null;
         }
 
-        var arr = [];
-        var current = this.front;
+        let arr = [];
+        let current = this.front;
 
-        for (var i = 0, len = this.size; i < len; i++) {
+        for (let i = 0, len = this.size; i < len; i++) {
             arr[i] = current.data;
             current = current.next;
         }
 
         return arr;
     }
-};
+}
 
-var queue = new Queue();
+let queue = new Queue();
 queue.enQueue(1);
 queue.deQueue();
 queue.enQueue(2);
@@ -97,17 +94,17 @@ console.log(queue.toString().join());
 
 // 类似广度优先遍历
 function repaintColor(matrix, i, j, color){
-    var old = matrix[i][j];
-    var queue = new Queue();
-    var m = matrix.length - 1;
-    var n = matrix[0].length - 1;
+    let old = matrix[i][j];
+    let queue = new Queue();
+    let m = matrix.length - 1;
+    let n = matrix[0].length - 1;
 
     queue.enQueue({x: i, y: j});
 
     while(queue.rear){
-        var a = queue.deQueue();
-        var x = a.x;
-        var y = a.y;
+        let a = queue.deQueue();
+        let x = a.x;
+        let y = a.y;
 
         if(x >= 1) setColor(x - 1, y);
         if(y >= 1) setColor(x, y - 1);
@@ -123,11 +120,11 @@ function repaintColor(matrix, i, j, color){
     }
 }
 
-var matrix = [];
+let matrix = [];
 
-for(var i = 0; i < 8; i++){
+for(let i = 0; i < 8; i++){
     matrix[i] = [];
-    for(var j = 0; j < 8; j++){
+    for(let j = 0; j < 8; j++){
         matrix[i][j] = 0;
     }
 }

@@ -139,9 +139,9 @@
 
  */
 
-var Stack = require('../Stack/stack');
+var Stack = require('../Stack/index');
 var Queue = require('../Queue/Queue');
-var ChildSiblingTree = require('../Binary tree/BinaryTree').ChildSiblingTree;
+var ChildSiblingTree = require('../BinaryTree/BinaryTree').ChildSiblingTree;
 
 // 图的数组（邻接矩阵）存储表示
 var DG = 1;     // 有向图

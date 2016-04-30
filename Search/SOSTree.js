@@ -19,7 +19,7 @@
  Δpi =   ∑wj - ∑wj   最小，即 Δpi = Min {Δpj }
  再分别对 {rl,rl+1,…,ri-1} 和 {ri+1,ri+2,…,rh} 分别构造次优查找树
  */
-var BinaryTree = require('../Binary tree/BinaryTree').BinaryTree;
+var BinaryTree = require('../BinaryTree/BinaryTree').BinaryTree;
 
 /**
  * 由有序表sTable[low..high]及其累计权值表weights递归构造次优查找树
