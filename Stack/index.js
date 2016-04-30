@@ -11,7 +11,7 @@
  *
  */
 
-// 找的链式表示
+// 栈的链式表示
 export default class Stack {
     constructor() {
         this.top = null;
