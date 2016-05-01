@@ -3,7 +3,7 @@ let webpack = require('webpack');
 let fs = require('fs');
 let ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
-let DEBUG = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development' || 'production';
+let DEBUG = (process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development') || false;
 
 let plugins = [
     new webpack.optimize.OccurenceOrderPlugin(),

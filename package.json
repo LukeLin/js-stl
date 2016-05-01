@@ -45,7 +45,6 @@
     "karma-commonjs": "0.0.13",
     "karma-coverage": "^0.5.5",
     "karma-jasmine": "^0.3.8",
-    "progress-bar-webpack-plugin": "^1.2.0",
     "webpack": "^1.13.0"
   },
   "dependencies": {
