@@ -53,7 +53,7 @@ module.exports = {
         DigitalSearchTree: require('./Search/DigitalSearchTree'),
         fibonacciSearch: require('./Search/fibonacciSearch'),
         HashTable: require('./Search/HashTable'),
-        // RedBlackTree: require('./Search/RedBlackTree'),
+        RedBlackTree: require('./Search/RedBlackTree'),
         sequentialSearch: require('./Search/sequentialSearch'),
         SOSTree: require('./Search/SOSTree')
     },
