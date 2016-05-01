@@ -1,12 +1,11 @@
 
-var webpack = require('webpack');
-var path = require('path');
-var fs = require('fs');
-var ProgressBarPlugin = require('progress-bar-webpack-plugin');
+let webpack = require('webpack');
+let fs = require('fs');
+let ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
-var DEBUG = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development' || 'production';
+let DEBUG = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development' || 'production';
 
-var plugins = [
+let plugins = [
     new webpack.optimize.OccurenceOrderPlugin(),
     new ProgressBarPlugin({
         format: '  build [:bar] :percent (:elapsed seconds)',
@@ -30,7 +29,7 @@ if (DEBUG) {
         }),
         function () {
             this.plugin("done", function (stats) {
-                var jsonStats = stats.toJson({
+                let jsonStats = stats.toJson({
                     chunkModules: true
                 });
                 fs.writeFileSync(
@@ -49,7 +48,7 @@ if (DEBUG) {
     );
 }
 
-var appEntry = [
+let appEntry = [
     //'babel-polyfill',
     './index.js'
 ];
@@ -108,12 +107,9 @@ module.exports = {
     resolve: {
         modulesDirectories: [
             "node_modules",
-
-            // https://github.com/webpack/webpack-dev-server/issues/60
             "web_modules"
         ],
 
-        // Allow to omit extensions when requiring these files
         extensions: ["", ".js", ".jsx", ".es6", '.json'],
 
         alias: {
