@@ -1,7 +1,7 @@
 /* Create By Luke */
 
-var Stack = require('../Stack/index');
-var Queue = require('../Queue/Queue');
+import Stack from '../Stack/index';
+import Queue from '../Queue/Queue';
 var ChildSiblingTree = require('../BinaryTree/BinaryTree').ChildSiblingTree;
 
 // 图的数组（邻接矩阵）存储表示

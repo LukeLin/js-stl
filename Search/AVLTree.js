@@ -575,7 +575,7 @@ test.remove(25);
 test.remove(44);
 
 
-str = 'cknobfjtlpqaegrmdhs';
+let str = 'cknobfjtlpqaegrmdhs';
 //var str = 'ckbfjlaegmdh';
 
 

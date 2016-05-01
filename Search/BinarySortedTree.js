@@ -49,7 +49,7 @@
 
  */
 
-import BinaryTree from '../BinaryTree/BinaryTree';
+import { BinaryTree } from '../BinaryTree/BinaryTree';
 
 export default class BSTNode extends BinaryTree {
     constructor(...arg) {

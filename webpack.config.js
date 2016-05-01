@@ -67,7 +67,7 @@ module.exports = {
     },
     output: {
         path: './dist/',
-        filename: DEBUG ? "./[name]-debug.js" : "./[name]-miin.js",
+        filename: DEBUG ? "./[name]-debug.js" : "./[name]-min.js",
         chunkFilename: DEBUG ? "./[name]-debug.js" : "./[name]-min.js",
         publicPath: '',
         pathinfo: false

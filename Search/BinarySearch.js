@@ -57,8 +57,8 @@ function binarySearchRecursive(sTable, key, low = 0, high = sTable.length - 1) {
     let elem = sTable[mid];
 
     if(elem === key) return mid;
-    else if(elem < key) return binarySearchRecursive(sTable, mid + 1, high);
-    else return binarySearchRecursive(sTable, low, mid - 1);
+    else if(elem < key) return binarySearchRecursive(sTable, key, mid + 1, high);
+    else return binarySearchRecursive(sTable, key, low, mid - 1);
 }
 
 console.log('binarySearchRecursive: ');

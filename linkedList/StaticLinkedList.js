@@ -121,7 +121,7 @@ function difference(sllist, arr1, arr2) {
 
     // 依次输入B的元素，若不在当前表中，则插入，
     // 否则删除
-    for (j = 0; j < n; ++j) {
+    for (let j = 0; j < n; ++j) {
         let b = arr2[j];
         let p = s;
         // k指向集合中的第一个结点
@@ -133,7 +133,7 @@ function difference(sllist, arr1, arr2) {
         }
         // 当前表中不存在该元素，插入在r所指结点之后，且r的位置不变
         if (k === sllist[r].cur) {
-            i = sllist.malloc();
+            let i = sllist.malloc();
             sllist[i].data = b;
             sllist[i].cur = sllist[r].cur;
             sllist[r].cur = i;
