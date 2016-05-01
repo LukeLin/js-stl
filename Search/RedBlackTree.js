@@ -90,7 +90,7 @@ const RED = 'red';
 const BLACK = 'black';
 
 class RedBlackNode extends BSTNode {
-    constructor(data) {
+    constructor(data = null) {
         super(data);
 
         this.leftChild = null;
@@ -98,7 +98,7 @@ class RedBlackNode extends BSTNode {
         this.parent = null;
 
         this.color = RED;
-        this.data = data || null;
+        this.data = data;
     }
 
 }
@@ -119,12 +119,12 @@ class RedBlackTree {
     }
 
 
-    _rotateLeft() {
-        rotate('left')
+    _rotateLeft(node) {
+        rotate('left').call(this, node);
     }
 
-    _rotateRight() {
-        rotate('right')
+    _rotateRight(node) {
+        rotate('right').call(this, node);
     }
 
     /**

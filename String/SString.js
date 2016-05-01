@@ -165,10 +165,12 @@ export default class SString {
         for (let i = 1; i <= this[0]; ++i) {
             let c = this[i];
             // 判断当前字符c是否第一次出现
-            for (let j = 1; j < i && this[j] !== c; ++j);
+            let j = 1;
+            for (; j < i && this[j] !== c; ++j);
             if (i === j) {
                 // 判断当前字符是否包含在str中
-                for (let k = 1; k <= str[0] && str[k] !== c; ++k);
+                let k = 1
+                for (; k <= str[0] && str[k] !== c; ++k);
                 if (k > str[0]) r[++r[0]] = c;
             }
         }
@@ -178,8 +180,10 @@ export default class SString {
 
     // todo bug exists
     delete_substring (str) {
-        for (let n = 0, i = 1; i <= this[0] - str[0] + 1; ++i) {
-            for (let j = 1; j <= str[0] && this[i + j - 1] === str[j]; ++j);
+        let n = 0;
+        for (let i = 1; i <= this[0] - str[0] + 1; ++i) {
+            let j = 1;
+            for (; j <= str[0] && this[i + j - 1] === str[j]; ++j);
             if (j > str[0] - 1) {
                 for (let k = i; k <= this[0] - str[0]; ++k) this[k] = this[k + str[0]];
                 this[0] -= str[0];

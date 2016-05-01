@@ -2,7 +2,7 @@
  * Created by Luke on 2015/2/2.
  */
 
-var StaticLinkedList = require('../../LinkedList/StaticLinkedList');
+import StaticLinkedList from '../../LinkedList/StaticLinkedList';
 var defaultCompare = require('../defaultComparision');
 
 /*

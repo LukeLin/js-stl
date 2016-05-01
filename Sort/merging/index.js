@@ -1,7 +1,8 @@
 /**
  * Created by ldp on 2015/2/7.
  */
-
+import LinkedList from '../../LinkedList/LinkedList';
+import Queue from '../../Queue/Queue';
 var defaultCompare = require('../defaultComparision');
 
 /*
@@ -241,8 +242,6 @@ var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 naturalMergeSort(arr);
 console.log(arr + '');
 
-var LinkedList = require('../../LinkedList/LinkedList');
-var Queue = require('../../Queue/Queue').Queue;
 
 // 链表存储结构的自然合并排序
 var linkedListNaturalMergeSort = (function(){
