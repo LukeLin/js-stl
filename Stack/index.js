@@ -42,6 +42,7 @@ export default class Stack {
         this.top = this.top.next;
 
         if (this.length > 0) this.length--;
+        
 
         return out.data;
     }
