@@ -3,3 +3,4 @@ node_modules/
 projectFilesBackup/
 dist/
 webpack-assets.json
+.vscode
