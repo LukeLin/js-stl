@@ -6,7 +6,7 @@ let ProgressBarPlugin = require('progress-bar-webpack-plugin');
 let DEBUG = (process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development') || false;
 
 let plugins = [
-    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new ProgressBarPlugin({
         format: '  build [:bar] :percent (:elapsed seconds)',
         clear: false
