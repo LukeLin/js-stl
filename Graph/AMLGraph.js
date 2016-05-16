@@ -20,63 +20,66 @@
 
  */
 
-var UNVISITED = 0;
-var VISITED = 1;
+const UNVISITED = 0;
+const VISITED = 1;
 
-/**
- * 边的结点表示
- * @param {Number} mark 访问标记 0 -- 未访问  1 == 已访问
- * @param {Number} ivex 该边依附的两个顶点的位置
- * @param {Number} jvex 该边依附的两个顶点的位置
- * @param {EBox} ilink 分别指向依附这两个顶点的下一条边
- * @param {EBox} jlink 分别指向依附这两个顶点的下一条边
- * @param {*} info 该边信息
- * @constructor
- */
-function EBox(mark, ivex, jvex, ilink, jlink, info) {
-    this.mark = mark || UNVISITED;
-    this.ivex = ivex || 0;
-    this.jvex = jvex || 0;
-    this.ilink = ilink || null;
-    this.jlink = jlink || null;
-    this.info = info || null;
+
+class EBox {
+    /**
+     * 边的结点表示
+     * @param {Number} mark 访问标记 0 -- 未访问  1 == 已访问
+     * @param {Number} ivex 该边依附的两个顶点的位置
+     * @param {Number} jvex 该边依附的两个顶点的位置
+     * @param {EBox} ilink 分别指向依附这两个顶点的下一条边
+     * @param {EBox} jlink 分别指向依附这两个顶点的下一条边
+     * @param {*} info 该边信息
+     * @constructor
+     */
+    constructor(mark, ivex, jvex, ilink, jlink, info){
+        this.mark = mark || UNVISITED;
+        this.ivex = ivex || 0;
+        this.jvex = jvex || 0;
+        this.ilink = ilink || null;
+        this.jlink = jlink || null;
+        this.info = info || null;
+    }
 }
 
-/**
- * 顶点的结点表示
- * @param {*} data
- * @param {EBox} firstEdge 指向第一条依附该顶点的边
- * @constructor
- */
-function AMLVexBox(data, firstEdge) {
-    this.data = data || null;
-    this.firstEdge = firstEdge || null;
+class AMLVexBox {
+    /**
+     * 顶点的结点表示
+     * @param {*} data
+     * @param {EBox} firstEdge 指向第一条依附该顶点的边
+     * @constructor
+     */
+    constructor(data, firstEdge){
+        this.data = data || null;
+        this.firstEdge = firstEdge || null;
+    }
 }
 
-/**
- *
- * @param {Array | AMLVexBox} adjMulist
- * @param {Number} vexnum
- * @param {Number} edgenum
- * @constructor
- */
-function AMLGraph(adjMulist, vexnum, edgenum) {
-    this.adjMulist = adjMulist || [];
-    this.vexnum = vexnum || 0;
-    this.edgenum = edgenum || 0;
-}
-exports.AMLGraph = AMLGraph;
-AMLGraph.prototype = {
-    constructor: AMLGraph,
+export default class AMLGraph {
+    /**
+     *
+     * @param {Array | AMLVexBox} adjMulist
+     * @param {Number} vexnum
+     * @param {Number} edgenum
+     * @constructor
+     */
+    constructor(adjMulist, vexnum, edgenum){
+        this.adjMulist = adjMulist || [];
+        this.vexnum = vexnum || 0;
+        this.edgenum = edgenum || 0;
+    }
 
-    locateVex: function (v) {
+    locateVex (v) {
         for (var i = 0; i < this.vexnum; ++i) {
             if (this.adjMulist[i].data === v) return i;
         }
         return -1;
-    },
+    }
 
-    deleteArc: function (v, w) {
+    deleteArc(v, w) {
         var i = this.locateVex(v);
         var j = this.locateVex(w);
 
@@ -103,9 +106,9 @@ AMLGraph.prototype = {
 
         this.edgenum--;
         return true;
-    },
+    }
 
-    createGraph: function () {
+    createGraph() {
         var vexnum = +prompt('vexnum: ');
         this.vexnum = vexnum;
         var edgenum = +prompt('edgenum: ');
@@ -159,7 +162,7 @@ AMLGraph.prototype = {
             }
         }
     }
-};
+}
 
 //var g = new AMLGraph();
 //g.createGraph();

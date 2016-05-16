@@ -1,14 +1,13 @@
 // 有双亲指针域的二叉树结点类型
-function PBTNode() {
-    this.data = null;
-    this.leftChild = null;
-    this.rightChild = null;
-    this.parent = null;
-}
-exports.PBTNode = PBTNode;
-PBTNode.prototype = {
-    constructor: PBTNode,
-    inOrder_nonrecursive_nonstack: function (visit) {
+export class PBTNode {
+    constructor(){
+        this.data = null;
+        this.leftChild = null;
+        this.rightChild = null;
+        this.parent = null;
+    }
+
+    inOrder_nonrecursive_nonstack(visit) {
         var p = this;
         while (p.leftChild) p = p.leftChild;
 
@@ -30,4 +29,4 @@ PBTNode.prototype = {
             }
         }
     }
-};
+}

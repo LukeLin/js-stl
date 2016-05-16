@@ -33,19 +33,61 @@
  *
  * 若在某程序中所用二叉树需经常遍历或查找结点在遍历所得线性序列中的前驱和后继，则应采用线索链表作存储结构。
  */
-var LINK = 0;
-var THREAD = 1;
+const LINK = 0;
+const THREAD = 1;
 
-function BinaryThreadTree_inOrder(data, leftChild, rightChild) {
-    this.data = data;
-    this.leftChild = leftChild || null;
-    this.rightChild = rightChild || null;
-    // 左右标记
-    this.leftTag = this.rightTag = undefined;
-}
-BinaryThreadTree_inOrder.prototype = {
-    constructor: BinaryThreadTree_inOrder,
-    inOrderTraverse_thread: function (visit) {
+export class BinaryThreadTree_inOrder {
+    // 二叉树中序线索化
+    static inOrderThreading(tree) {
+        var threadTree = new this.constructor();
+        threadTree.leftTag = LINK;
+        threadTree.rightTag = THREAD;
+        // 右指针回指
+        threadTree.rightChild = threadTree;
+
+        var pre;
+        // 若二叉树为空，左指针回指
+        if (!tree) threadTree.leftChild = threadTree;
+        else {
+            threadTree.leftChild = tree;
+            pre = threadTree;
+            inThreading(tree);  // 中序遍历进行中序线索化
+            // 最后一个结点线索化
+            pre.rightChild = threadTree;
+            pre.rightTag = THREAD;
+            threadTree.rightChild = pre;
+        }
+
+        return threadTree;
+
+        function inThreading(p) {
+            if (!p) return;
+
+            inThreading(p.leftChild);   // 左子树线索化
+            // 前驱线索
+            if (!p.leftChild) {
+                p.leftTag = THREAD;
+                p.leftChild = pre;
+            }
+            // 后继线索
+            if (!pre.rightChild) {
+                pre.rightTag = THREAD;
+                pre.rightChild = p;
+            }
+            pre = p;
+            inThreading(p.rightChild);  // 右子树线索化
+        }
+    }
+    
+    constructor(data, leftChild = null, rightChild = null){
+        this.data = data;
+        this.leftChild = leftChild;
+        this.rightChild = rightChild;
+        // 左右标记
+        this.leftTag = this.rightTag = undefined;
+    }
+
+    inOrderTraverse_thread(visit) {
         var p = this.leftChild;
 
         while (p != this) {
@@ -59,12 +101,12 @@ BinaryThreadTree_inOrder.prototype = {
             }
             p = p.rightChild;
         }
-    },
-    inOrderThreading: function () {
-        return inOrderThreading(this);
-    },
+    }
+    inOrderThreading() {
+        return this.constructor.inOrderThreading(this);
+    }
     // 在当前结点插入子树x，p代表当前结点
-    insertSubTree: function (xTree) {
+    insertSubTree(xTree) {
         var s, q;
         // x作为p的左子树
         if (this.leftTag === THREAD) {
@@ -114,48 +156,6 @@ BinaryThreadTree_inOrder.prototype = {
             // 找到子树中的最左结点，并修改其前驱指向u
             q.leftChild = u;
         }
-    }
-};
-
-// 二叉树中序线索化
-function inOrderThreading(tree) {
-    var threadTree = new BinaryThreadTree();
-    threadTree.leftTag = LINK;
-    threadTree.rightTag = THREAD;
-    // 右指针回指
-    threadTree.rightChild = threadTree;
-
-    var pre;
-    // 若二叉树为空，左指针回指
-    if (!tree) threadTree.leftChild = threadTree;
-    else {
-        threadTree.leftChild = tree;
-        pre = threadTree;
-        inThreading(tree);  // 中序遍历进行中序线索化
-        // 最后一个结点线索化
-        pre.rightChild = threadTree;
-        pre.rightTag = THREAD;
-        threadTree.rightChild = pre;
-    }
-
-    return threadTree;
-
-    function inThreading(p) {
-        if (!p) return;
-
-        inThreading(p.leftChild);   // 左子树线索化
-        // 前驱线索
-        if (!p.leftChild) {
-            p.leftTag = THREAD;
-            p.leftChild = pre;
-        }
-        // 后继线索
-        if (!pre.rightChild) {
-            pre.rightTag = THREAD;
-            pre.rightChild = p;
-        }
-        pre = p;
-        inThreading(p.rightChild);  // 右子树线索化
     }
 }
 

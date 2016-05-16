@@ -141,51 +141,55 @@
 
 import Stack from '../Stack/index';
 import Queue from '../Queue/Queue';
-var ChildSiblingTree = require('../BinaryTree/BinaryTree').ChildSiblingTree;
+import { ChildSiblingTree } from '../BinaryTree/BinaryTree';
 
 // 图的数组（邻接矩阵）存储表示
-var DG = 1;     // 有向图
-var DN = 2;     // 有向网
-var UDG = 3;    // 无向图
-var UDN = 4;    // 无向网
+const DG = 1;     // 有向图
+const DN = 2;     // 有向网
+const UDG = 3;    // 无向图
+const UDN = 4;    // 无向网
 
-/**
- *
- * @param {Number} adj
- * @param {*} info
- * @constructor
- */
-function ArcCell(adj, info) {
-    // 顶点类型。对于无权图，用1或0表示相邻否；对带权图，则为权值类型
-    this.adj = typeof adj === 'number' ? adj : Infinity;
-    // 该弧相关信息
-    this.info = info || null;
+
+class ArcCell {
+    /**
+     *
+     * @param {Number} adj
+     * @param {*} info
+     * @constructor
+     */
+    constructor(adj, info){
+        // 顶点类型。对于无权图，用1或0表示相邻否；对带权图，则为权值类型
+        this.adj = typeof adj === 'number' ? adj : Infinity;
+        // 该弧相关信息
+        this.info = info || null;
+    }
 }
 
-/**
- *
- * @param {Array} vexs 顶点向量
- * @param {Array | ArcCell} arcs 邻接矩阵
- * @param {Number} vexnum
- * @param {Number} arcnum
- * @param {Number} kind
- * @constructor
- */
-function AdjacencyMatrixGraph(vexs, arcs, vexnum, arcnum, kind) {
-    // 顶点向量
-    this.vexs = vexs || [];
-    // 邻接矩阵
-    this.arcs = arcs || [];
-    // 图的当前顶点数
-    this.vexnum = vexnum || 0;
-    // 图的当前弧数
-    this.arcnum = arcnum || 0;
-    // 图的种类标志
-    this.kind = kind || DG;
-}
-exports.AdjacencyMatrixGraph = AdjacencyMatrixGraph;
-AdjacencyMatrixGraph.prototype = {
-    createGraph: function () {
+
+export default class AdjacencyMatrixGraph {
+    /**
+     *
+     * @param {Array} vexs 顶点向量
+     * @param {Array | ArcCell} arcs 邻接矩阵
+     * @param {Number} vexnum
+     * @param {Number} arcnum
+     * @param {Number} kind
+     * @constructor
+     */
+    constructor(vexs, arcs, vexnum, arcnum, kind){
+        // 顶点向量
+        this.vexs = vexs || [];
+        // 邻接矩阵
+        this.arcs = arcs || [];
+        // 图的当前顶点数
+        this.vexnum = vexnum || 0;
+        // 图的当前弧数
+        this.arcnum = arcnum || 0;
+        // 图的种类标志
+        this.kind = kind || DG;
+    }
+
+    createGraph() {
         switch (this.kind) {
             case DG:
                 return createDG(this);     // 构造有向图
@@ -198,26 +202,26 @@ AdjacencyMatrixGraph.prototype = {
             default:
                 throw new Error('非有效的图类型');
         }
-    },
+    }
 
     /**
      * 查找顶点
      * @param {*} vp 顶点向量
      * @returns {number}
      */
-    locateVex: function (vp) {
+    locateVex (vp) {
         for (var i = 0; i < this.vexnum; ++i) {
             if (this.vexs[i] === vp) return i;
         }
 
         return -1;
-    },
+    }
 
     /**
      * 向图中增加顶点
      * @param {*} vp 顶点向量
      */
-    addVertex: function (vp) {
+    addVertex(vp) {
         if (this.locateVex(vp) !== -1)
             throw new Error('Vertex has existed!');
 
@@ -233,7 +237,7 @@ AdjacencyMatrixGraph.prototype = {
             this.arcs[k][j] = this.arcs[k][j] || new ArcCell();
             this.arcs[j][k].adj = this.arcs[k][j].adj = value;
         }
-    },
+    }
 
     /**
      * 向图中增加一条弧
@@ -242,7 +246,7 @@ AdjacencyMatrixGraph.prototype = {
      * @param {ArcCell} arc
      * @returns {boolean}
      */
-    addArc: function (vex1, vex2, arc) {
+    addArc(vex1, vex2, arc) {
         arc = arc || new ArcCell(this.kind === DG || this.kind === UDG ? 1 : 'weight');
         var k = this.locateVex(vex1);
         var j = this.locateVex(vex2);
@@ -261,13 +265,13 @@ AdjacencyMatrixGraph.prototype = {
         ++this.arcnum;
 
         return true;
-    },
+    }
 
     /**
      * 删除顶点
      * @param {String} vex 要删除的顶点
      */
-    deleteVex: function (vex) {
+    deleteVex(vex) {
         var n = this.vexnum - 1;
         var m = this.locateVex(vex);
 
@@ -287,7 +291,7 @@ AdjacencyMatrixGraph.prototype = {
         this.arcs[m][m].adj = 0;
         this.vexs.length = --this.vexnum;
         return true;
-    },
+    }
 
     /**
      * 删除边(v, w)
@@ -295,7 +299,7 @@ AdjacencyMatrixGraph.prototype = {
      * @param {String} w
      * @returns {boolean}
      */
-    deleteArc: function (v, w) {
+    deleteArc(v, w) {
         var i = this.locateVex(v);
         var j = this.locateVex(w);
 
@@ -307,10 +311,10 @@ AdjacencyMatrixGraph.prototype = {
         }
 
         return true;
-    },
+    }
 
     // 判断一个邻接矩阵存储的有向图是否可传递
-    isPass: function () {
+    isPass() {
         if (this.kind !== DG) throw new Error('graph kind should be DG');
 
         for (var x = 0; x < this.vexnum; ++x) {
@@ -324,24 +328,292 @@ AdjacencyMatrixGraph.prototype = {
         }
 
         return true;
-    },
+    }
 
-    firstAdjVex: function (v) {
+    firstAdjVex(v) {
         for (var i = 0; i < this.vexnum; ++i) {
             if (this.arcs[v][i].adj !== 0 && this.arcs[v][i].adj !== Infinity) return i;
         }
 
         return -1;
-    },
+    }
 
-    nextAdjVex: function (v, w) {
+    nextAdjVex(v, w) {
         for (var i = w + 1; i < this.vexnum; ++i) {
             if (this.arcs[v][i].adj !== 0 && this.arcs[v][i].adj !== Infinity) return i;
         }
 
         return -1;
     }
-};
+
+    // 对邻接矩阵图作递归式深度优先遍历
+    DFSTraverse(visitFn) {
+        var visited = [];
+        // 访问标志数组初始化
+        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+        for (i = 0; i < this.vexnum; ++i) {
+            if (!visited[i]) dfs(this, i);
+        }
+
+        function dfs(graph, vertex) {
+            visited[vertex] = true;
+            visitFn.call(graph, vertex);
+
+            for (var j = 0; j < graph.vexnum; ++j) {
+                if (graph.arcs[vertex][j].adj !== 0 && graph.arcs[vertex][j].adj !== Infinity
+                    && !visited[j]) dfs(graph, j);
+            }
+        }
+    }
+
+    // 非递归
+    DFSTraverse_NonRecurse(visitFn) {
+        var visited = [];
+        var stack = new Stack();
+        var me = this;
+        // 访问标志数组初始化
+        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+
+        for (i = 0; i < this.vexnum; ++i) {
+            if (!visited[i]) {
+                stack.push(i);
+                visited[i] = true;
+                visitFn.call(me, i);
+
+                var vertex;
+                while ((vertex = stack.peek()) != null) {
+                    for (var j = 0; j < this.vexnum; ++j) {
+                        if (this.arcs[vertex][j].adj !== 0 && this.arcs[vertex][j].adj !== Infinity
+                            && !visited[j]) {
+                            visitFn.call(me, j);
+                            visited[j] = true;
+                            stack.push(j);
+                        } else stack.pop();
+                    }
+                }
+            }
+        }
+    }
+
+    // 对邻接矩阵图作广度优先遍历
+    BFSTraverse(visitFn) {
+        var visited = [];
+        var queue = new Queue();
+
+        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+
+        for (i = 0; i < this.vexnum; ++i) {
+            if (!visited[i]) {
+                visited[i] = true;
+                visitFn.call(this, i);
+                queue.enQueue(i);
+
+                while (queue.rear) {
+                    var u = queue.deQueue();
+
+                    for (var j = 0; j < this.vexnum; ++j) {
+                        if (this.arcs[u][j].adj !== 0 && this.arcs[u][j].adj !== Infinity
+                            && !visited[j]) {
+                            visited[j] = true;
+                            visitFn.call(this, j);
+                            queue.enQueue(j);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    minSpanTree_PRIM(u) {
+        var closedge = [];
+
+        // 初始化
+        for (var j = 0; j < this.vexnum; ++j) {
+            closedge[j] = {adjvex: u, lowcost: +this.arcs[j][u].adj};
+        }
+        closedge[u].lowcost = 0;
+
+        var te = [];
+        // 选择其余this.vexnum - 1个顶点
+        for (j = 0; j < this.vexnum - 1; ++j) {
+            var min = Infinity;
+            var k;
+            for (var v = 0; v < this.vexnum; ++v) {
+                if (closedge[v].lowcost !== 0 && closedge[v].lowcost < min) {
+                    min = closedge[v].lowcost;
+                    k = v;
+                }
+            }
+
+            te[j] = {
+                vex1: closedge[k].adjvex,
+                vex2: k,
+                weight: closedge[k].lowcost
+            };
+            closedge[k].lowcost = 0;
+            for (v = 0; v < this.vexnum; ++v) {
+                if (this.arcs[v][k].adj < closedge[v].lowcost) {
+                    closedge[v].lowcost = this.arcs[v][k].adj;
+                    closedge[v].adjvex = k;
+                }
+            }
+        }
+
+        return te;
+    }
+
+    minSpanTree_Kruskal() {
+        var set = [];
+        var te = [];
+
+        for(var i = 0; i < this.vexnum; ++i) set[i] = i;
+
+        var k = 0;
+        var min = Infinity;
+        var a = 0;
+        var b = 0;
+        while(k < this.vexnum - 1){
+            for(i = 0; i < this.vexnum; ++i){
+                for(var j = i + 1; j < this.vexnum; ++j){
+                    if(this.arcs[i][j].adj < min) {
+                        min = this.arcs[i][j].adj;
+                        a = i;
+                        b = j;
+                    }
+                }
+            }
+
+            if(set[a] !== set[b]){
+                te[k++] = {
+                    vex1: a,
+                    vex2: b,
+                    weight: this.arcs[a][b].adj
+                };
+
+                for(i = 0; i < this.vexnum; ++i){
+                    if(set[i] === set[b] && i !== b)
+                        set[i] = set[a];
+                }
+                set[b] = set[a];
+            }
+
+            min = this.arcs[a][b].adj = Infinity;
+        }
+
+        return te;
+    }
+
+    /**
+     * 用Dijkstra算法求有向网的v0顶点到其余顶点v的最短路径pre[v]及其带权长度dist[v]。
+     * 若pre[v][w]为true，则w是从v0到v当前求得最短路径上的顶点。
+     * final[v]为true当且仅当v∈S，即已经求得v0到v的最短路径
+     * @param v0
+     */
+    shortestPath_Dijkstra(v0) {
+        var pre = [];
+        var dist = [];
+        var final = [];
+        var w;
+
+        for (var v = 0; v < this.vexnum; ++v) {
+            final[v] = false;
+            dist[v] = this.arcs[v0][v].adj;
+            pre[v] = pre[v] || [];
+            // 设空路径
+            for (w = 0; w < this.vexnum; ++w) pre[v][w] = false;
+            if (dist[v] < Infinity) {
+                pre[v][v0] = true;
+                pre[v][v] = true;
+            }
+        }
+
+        // 初始化，v0顶点属于S集
+        dist[v0] = 0;
+        final[v0] = true;
+
+        // 开始主循环，每次求得v0到某个v顶点的最短路径，并加v到S集
+
+        // 其余的顶点
+        for (var i = 1; i < this.vexnum; ++i) {
+            var min = Infinity;
+            // 当前所指离v0顶点的最近距离
+            for (w = 0; w < this.vexnum; ++w) {
+                // w顶点在V - S中
+                // 且w顶点离v0顶点更近
+                if (!final[w] && dist[w] < min) {
+                    v = w;
+                    min = dist[w];
+                }
+            }
+
+            // 离v0顶点最近的v加入S集
+            final[v] = true;
+            // 更新当前最短路径及距离
+            for (w = 0; w < this.vexnum; ++w) {
+                if (!final[w] && min + this.arcs[v][w].adj < dist[w]) {
+                    dist[w] = min + this.arcs[v][w].adj;
+                    pre[w] = pre[v];
+                    pre[w][w] = true;
+                }
+            }
+        }
+
+        console.log(final);
+        console.log(pre);
+        console.log(dist);
+
+        return {
+            final: final,
+            pre: pre,
+            dist: dist
+        };
+    }
+
+    shortestPath_FLOYD() {
+        var a = [];
+        var path = [];
+
+        for (var j = 0; j < this.vexnum; ++j) {
+            a[j] = a[j] || [];
+            path[j] = path[j] || [];
+            for (var k = 0; k < this.vexnum; ++k) {
+                if(j === k) a[j][k] = 0;
+                else a[j][k] = this.arcs[j][k].adj;
+                path[j][k] = -1;
+            }
+        }
+
+        for (var m = 0; m < this.vexnum; ++m) {
+            for (j = 0; j < this.vexnum; ++j) {
+                for (k = 0; k < this.vexnum; ++k) {
+                    if (a[j][m] + a[m][k] < a[j][k]) {
+                        a[j][k] = a[j][m] + a[m][k];
+                        path[j][k] = m;
+                    }
+                }
+            }
+        }
+
+        for (j = 0; j < this.vexnum; ++j) {
+            for (k = 0; k < this.vexnum; ++k) {
+                if (j !== k) {
+                    console.log('%d到%d的最短路径为：', j, k);
+                    console.log('%d ', j); prn_pass(j, k);
+                    console.log('%d ', k);
+                    console.log('最短路径长度为： %d', a[j][k]);
+                }
+            }
+        }
+
+        function prn_pass(j, k) {
+            if (path[j][k] !== -1) {
+                prn_pass(j, path[j][k]);
+                console.log(', %d', path[j][k]);
+                prn_pass(path[j][k], k);
+            }
+        }
+    }
+}
 
 var createDG = createGraph(DG);
 var createDN = createGraph(DN);
@@ -518,25 +790,7 @@ console.log(dn);
  用广度优先搜索算法遍历图与深度优先搜索算法遍历图的唯一区别是邻接点搜索次序不同.
  */
 
-// 对邻接矩阵图作递归式深度优先遍历
-AdjacencyMatrixGraph.prototype.DFSTraverse = function (visitFn) {
-    var visited = [];
-    // 访问标志数组初始化
-    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
-    for (i = 0; i < this.vexnum; ++i) {
-        if (!visited[i]) dfs(this, i);
-    }
 
-    function dfs(graph, vertex) {
-        visited[vertex] = true;
-        visitFn.call(graph, vertex);
-
-        for (var j = 0; j < graph.vexnum; ++j) {
-            if (graph.arcs[vertex][j].adj !== 0 && graph.arcs[vertex][j].adj !== Infinity
-                && !visited[j]) dfs(graph, j);
-        }
-    }
-};
 
 console.log('DFSTraverse: udn');
 
@@ -558,68 +812,14 @@ g1.DFSTraverse(function (v) {
 });
 
 
-// 非递归
-AdjacencyMatrixGraph.prototype.DFSTraverse_NonRecurse = function (visitFn) {
-    var visited = [];
-    var stack = new Stack();
-    var me = this;
-    // 访问标志数组初始化
-    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-    for (i = 0; i < this.vexnum; ++i) {
-        if (!visited[i]) {
-            stack.push(i);
-            visited[i] = true;
-            visitFn.call(me, i);
-
-            var vertex;
-            while ((vertex = stack.peek()) != null) {
-                for (var j = 0; j < this.vexnum; ++j) {
-                    if (this.arcs[vertex][j].adj !== 0 && this.arcs[vertex][j].adj !== Infinity
-                        && !visited[j]) {
-                        visitFn.call(me, j);
-                        visited[j] = true;
-                        stack.push(j);
-                    } else stack.pop();
-                }
-            }
-        }
-    }
-};
 
 console.log('DFSTraverse_NonRecurse: udn');
 g1.DFSTraverse_NonRecurse(function (v) {
     console.log(this.vexs[v]);
 });
 
-// 对邻接矩阵图作广度优先遍历
-AdjacencyMatrixGraph.prototype.BFSTraverse = function (visitFn) {
-    var visited = [];
-    var queue = new Queue();
 
-    for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
-
-    for (i = 0; i < this.vexnum; ++i) {
-        if (!visited[i]) {
-            visited[i] = true;
-            visitFn.call(this, i);
-            queue.enQueue(i);
-
-            while (queue.rear) {
-                var u = queue.deQueue();
-
-                for (var j = 0; j < this.vexnum; ++j) {
-                    if (this.arcs[u][j].adj !== 0 && this.arcs[u][j].adj !== Infinity
-                        && !visited[j]) {
-                        visited[j] = true;
-                        visitFn.call(this, j);
-                        queue.enQueue(j);
-                    }
-                }
-            }
-        }
-    }
-};
 
 
 console.log('BFSTraverse: ');
@@ -700,44 +900,6 @@ bsfG.BFSTraverse(function (v) {
 
  */
 
-AdjacencyMatrixGraph.prototype.minSpanTree_PRIM = function (u) {
-    var closedge = [];
-
-    // 初始化
-    for (var j = 0; j < this.vexnum; ++j) {
-        closedge[j] = {adjvex: u, lowcost: +this.arcs[j][u].adj};
-    }
-    closedge[u].lowcost = 0;
-
-    var te = [];
-    // 选择其余this.vexnum - 1个顶点
-    for (j = 0; j < this.vexnum - 1; ++j) {
-        var min = Infinity;
-        var k;
-        for (var v = 0; v < this.vexnum; ++v) {
-            if (closedge[v].lowcost !== 0 && closedge[v].lowcost < min) {
-                min = closedge[v].lowcost;
-                k = v;
-            }
-        }
-
-        te[j] = {
-            vex1: closedge[k].adjvex,
-            vex2: k,
-            weight: closedge[k].lowcost
-        };
-        closedge[k].lowcost = 0;
-        for (v = 0; v < this.vexnum; ++v) {
-            if (this.arcs[v][k].adj < closedge[v].lowcost) {
-                closedge[v].lowcost = this.arcs[v][k].adj;
-                closedge[v].adjvex = k;
-            }
-        }
-    }
-
-    return te;
-};
-
 udn = new AdjacencyMatrixGraph([], [], 0, 0, 4);
 udn.addVertex('v1');
 udn.addVertex('v2');
@@ -784,47 +946,6 @@ console.log(udn.minSpanTree_PRIM(0));
  ◆ 加入一条新边后，将两个不同的连通分量合并：将一个连通分量的编号换成另一个连通分量的编号。
 
  */
-
-AdjacencyMatrixGraph.prototype.minSpanTree_Kruskal = function () {
-    var set = [];
-    var te = [];
-
-    for(var i = 0; i < this.vexnum; ++i) set[i] = i;
-
-    var k = 0;
-    var min = Infinity;
-    var a = 0;
-    var b = 0;
-    while(k < this.vexnum - 1){
-        for(i = 0; i < this.vexnum; ++i){
-            for(var j = i + 1; j < this.vexnum; ++j){
-                if(this.arcs[i][j].adj < min) {
-                    min = this.arcs[i][j].adj;
-                    a = i;
-                    b = j;
-                }
-            }
-        }
-
-        if(set[a] !== set[b]){
-            te[k++] = {
-                vex1: a,
-                vex2: b,
-                weight: this.arcs[a][b].adj
-            };
-
-            for(i = 0; i < this.vexnum; ++i){
-                if(set[i] === set[b] && i !== b)
-                    set[i] = set[a];
-            }
-            set[b] = set[a];
-        }
-
-        min = this.arcs[a][b].adj = Infinity;
-    }
-
-    return te;
-};
 
 console.log('minSpanTree_Kruskal: ');
 console.log(udn.minSpanTree_Kruskal());
@@ -886,72 +1007,6 @@ console.log(udn.minSpanTree_Kruskal());
 
  */
 
-/**
- * 用Dijkstra算法求有向网的v0顶点到其余顶点v的最短路径pre[v]及其带权长度dist[v]。
- * 若pre[v][w]为true，则w是从v0到v当前求得最短路径上的顶点。
- * final[v]为true当且仅当v∈S，即已经求得v0到v的最短路径
- * @param v0
- */
-AdjacencyMatrixGraph.prototype.shortestPath_Dijkstra = function (v0) {
-    var pre = [];
-    var dist = [];
-    var final = [];
-    var w;
-
-    for (var v = 0; v < this.vexnum; ++v) {
-        final[v] = false;
-        dist[v] = this.arcs[v0][v].adj;
-        pre[v] = pre[v] || [];
-        // 设空路径
-        for (w = 0; w < this.vexnum; ++w) pre[v][w] = false;
-        if (dist[v] < Infinity) {
-            pre[v][v0] = true;
-            pre[v][v] = true;
-        }
-    }
-
-    // 初始化，v0顶点属于S集
-    dist[v0] = 0;
-    final[v0] = true;
-
-    // 开始主循环，每次求得v0到某个v顶点的最短路径，并加v到S集
-
-    // 其余的顶点
-    for (var i = 1; i < this.vexnum; ++i) {
-        var min = Infinity;
-        // 当前所指离v0顶点的最近距离
-        for (w = 0; w < this.vexnum; ++w) {
-            // w顶点在V - S中
-            // 且w顶点离v0顶点更近
-            if (!final[w] && dist[w] < min) {
-                v = w;
-                min = dist[w];
-            }
-        }
-
-        // 离v0顶点最近的v加入S集
-        final[v] = true;
-        // 更新当前最短路径及距离
-        for (w = 0; w < this.vexnum; ++w) {
-            if (!final[w] && min + this.arcs[v][w].adj < dist[w]) {
-                dist[w] = min + this.arcs[v][w].adj;
-                pre[w] = pre[v];
-                pre[w][w] = true;
-            }
-        }
-    }
-
-    console.log(final);
-    console.log(pre);
-    console.log(dist);
-
-    return {
-        final: final,
-        pre: pre,
-        dist: dist
-    };
-};
-
 var dijTest = new AdjacencyMatrixGraph([], [], 0, 0, DN);
 
 dijTest.addVertex('0');
@@ -1005,51 +1060,6 @@ dijTest.shortestPath_Dijkstra(0);
 
 
  */
-
-AdjacencyMatrixGraph.prototype.shortestPath_FLOYD = function () {
-    var a = [];
-    var path = [];
-
-    for (var j = 0; j < this.vexnum; ++j) {
-        a[j] = a[j] || [];
-        path[j] = path[j] || [];
-        for (var k = 0; k < this.vexnum; ++k) {
-            if(j === k) a[j][k] = 0;
-            else a[j][k] = this.arcs[j][k].adj;
-            path[j][k] = -1;
-        }
-    }
-
-    for (var m = 0; m < this.vexnum; ++m) {
-        for (j = 0; j < this.vexnum; ++j) {
-            for (k = 0; k < this.vexnum; ++k) {
-                if (a[j][m] + a[m][k] < a[j][k]) {
-                    a[j][k] = a[j][m] + a[m][k];
-                    path[j][k] = m;
-                }
-            }
-        }
-    }
-
-    for (j = 0; j < this.vexnum; ++j) {
-        for (k = 0; k < this.vexnum; ++k) {
-            if (j !== k) {
-                console.log('%d到%d的最短路径为：', j, k);
-                console.log('%d ', j); prn_pass(j, k);
-                console.log('%d ', k);
-                console.log('最短路径长度为： %d', a[j][k]);
-            }
-        }
-    }
-
-    function prn_pass(j, k) {
-        if (path[j][k] !== -1) {
-            prn_pass(j, path[j][k]);
-            console.log(', %d', path[j][k]);
-            prn_pass(path[j][k], k);
-        }
-    }
-};
 
 var floyd = new AdjacencyMatrixGraph([], [], 0, 0, DN);
 floyd.addVertex('v0');

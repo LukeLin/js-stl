@@ -30,38 +30,37 @@ function HuffmanNode(weight, parent, leftChild, rightChild) {
     this.leftChild = leftChild || 0;
     this.rightChild = rightChild || 0;
 }
-function huffManCoding(weights) {
-    var n = weights.length;
+export function huffManCoding(weights) {
+    let n = weights.length;
     if (n < 1) return;
 
-    var huffmanTree = buildHuffmanTree(weights, n);
+    let huffmanTree = buildHuffmanTree(weights, n);
 
     // 从叶子到根逆向求每个字符的赫夫曼编码
-    var hc = calcHuffmanCode(huffmanTree, n);
+    let hc = calcHuffmanCode(huffmanTree, n);
 
     return [huffmanTree, hc];
 }
-exports.huffManCoding = huffManCoding;
 
 function huffManCoding2(weights) {
-    var n = weights.length;
+    let n = weights.length;
     if (n < 1) return;
 
-    var huffmanTree = buildHuffmanTree(weights, n);
+    let huffmanTree = buildHuffmanTree(weights, n);
 
     // 从叶子到根逆向求每个字符的赫夫曼编码
-    var hc = calcHuffmanCode2(huffmanTree, n);
+    let hc = calcHuffmanCode2(huffmanTree, n);
 
     return [huffmanTree, hc];
 }
 
 function calcHuffmanCode(huffmanTree, n) {
     // 从叶子到根逆向求每个字符的赫夫曼编码
-    var hc = [];
-    var cd = [];
-    for (var i = 0; i < n; i++) {
-        var start = n - 1;
-        for (var c = i, f = huffmanTree[i].parent; f != 0; c = f, f = huffmanTree[f].parent) {
+    let hc = [];
+    let cd = [];
+    for (let i = 0; i < n; i++) {
+        let start = n - 1;
+        for (let c = i, f = huffmanTree[i].parent; f != 0; c = f, f = huffmanTree[f].parent) {
             if (huffmanTree[f].leftChild == c) cd[--start] = '0';
             else cd[--start] = '1';
         }
@@ -75,13 +74,13 @@ function calcHuffmanCode(huffmanTree, n) {
 // 无栈非递归遍历赫夫曼树
 // todo 该算法有问题
 function calcHuffmanCode2(huffmanTree, n) {
-    var p = 2 * n - 2;
-    var hc = [];
-    var cd = [];
-    var cdLen = 0;
+    let p = 2 * n - 2;
+    let hc = [];
+    let cd = [];
+    let cdLen = 0;
 
     // 遍历赫夫曼树时用作结点状态标识
-    for (var i = 0; i <= p; i++) huffmanTree[i].weight = 0;
+    for (let i = 0; i <= p; i++) huffmanTree[i].weight = 0;
 
     while (p) {
         // 向左
@@ -119,20 +118,20 @@ function calcHuffmanCode2(huffmanTree, n) {
 // 创建一棵叶子结点数为n的Huffman树
 function buildHuffmanTree(weights, n) {
     n = n || weights.length;
-    var m = 2 * n - 1;
-    var huffmanTree = [];
+    let m = 2 * n - 1;
+    let huffmanTree = [];
 
     // 初始化
-    for (var i = 0; i < n; i++)
+    for (let i = 0; i < n; i++)
         huffmanTree[i] = new HuffmanNode(weights[i], 0, 0, 0);
     for (; i < m; i++)
         huffmanTree[i] = new HuffmanNode(0, 0, 0, 0);
 
     for (i = n; i < m; i++) {
         // 在HT[1..i-1]选择parent为0且weight最小的两个结点，返回其序号为[s1, s2]
-        var ret = select(huffmanTree, i);
-        var s1 = ret[0];
-        var s2 = ret[1];
+        let ret = select(huffmanTree, i);
+        let s1 = ret[0];
+        let s2 = ret[1];
         huffmanTree[s1].parent = i;
         huffmanTree[s2].parent = i;
         huffmanTree[i].leftChild = s1;
@@ -144,7 +143,7 @@ function buildHuffmanTree(weights, n) {
 }
 
 function strCopy(str, start) {
-    var s = '';
+    let s = '';
     for (; str[start]; start++) {
         s += str[start];
     }
@@ -152,15 +151,15 @@ function strCopy(str, start) {
 }
 
 function select(huffmanTree, len) {
-    var ret = [];
-    for (var i = 0; i < len; i++) {
-        var node = huffmanTree[i];
+    let ret = [];
+    for (let i = 0; i < len; i++) {
+        let node = huffmanTree[i];
         if (node.parent !== 0) continue;
 
         if (ret.length < 2) {
             ret.push(i);
         } else {
-            var index = huffmanTree[ret[0]].weight > huffmanTree[ret[1]].weight
+            let index = huffmanTree[ret[0]].weight > huffmanTree[ret[1]].weight
                 ? 0 : 1;
 
             if (node.weight < huffmanTree[ret[index]].weight)
@@ -169,7 +168,7 @@ function select(huffmanTree, len) {
     }
 
     if (ret[0] > ret[1]) {
-        var temp = ret[0];
+        let temp = ret[0];
         ret[0] = ret[1];
         ret[1] = temp;
     }
