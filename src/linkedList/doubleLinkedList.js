@@ -13,56 +13,197 @@
  * 双向链表也可以有循环表。
  */
 
-export default class DoubleLinkedList {
-    constructor(data = null, prior = null, next = null) {
+class Node {
+    constructor(data, prev = null, next = null){
         this.data = data;
-        this.prior = prior || this;
-        this.next = next || this;
+        this.prev = prev;
+        this.next = next;
     }
+}
 
-    find (i) {
-        // 初始化，p指向第一个节点，j为计数器
-        let p = this.next;
-        let j = 1;
-        // 顺指针向后查找，知道p指向第i个元素或p为空
-        while (p && j < i) {
-            p = p.next;
-            ++j;
+function defaultCompare(a, b){
+    return a - b;
+}
+
+export default class DoubleLinkedList {
+    constructor(sqList, compare = defaultCompare) {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+        this.compare = compare;
+
+        for(let i = 0; i < sqList.length; ++i){
+            this.push(sqList[i]);
         }
-        // 第i个元素不存在
-        // 或者取第i个元素
-        return (!p || j > i) ? null : p;
     }
-    add (i, elem) {
-        let p;
 
-        if (!(p = this.find(i))) return false;
+    push(data){
+        if(typeof data === 'undefined') throw new Error('data argument required');
 
-        let s = new DoubleLinkedList(elem, p.prior, p);
-        p.prior.next = s;
-        p.prior = s;
+        ++this.size;
 
-        return true;
+        if(!this.head) {
+            this.head = this.tail = new Node(data);
+            this.head.next = this.tail;
+            this.tail.prev = this.head;
+        } else {
+            let node = new Node(data, this.tail, null);
+            this.tail.next = node;
+            this.tail = node;
+        }
+
+        return data;
     }
-    remove (i) {
-        let p;
-        if (!(p = this.find(i))) return false;
 
-        let e = p.data;
-        p.prior.next = p.next;
-        p.next.prior = p.prior;
+    unshift(data){
+        if(typeof data === 'undefined') throw new Error('data argument required');
 
-        p = null;
+        ++this.size;
 
-        return e;
+        if(!this.head) {
+            this.head = this.tail = new Node(data);
+            this.head.next = this.tail;
+            this.tail.prev = this.head;
+        } else {
+            let node = new Node(data, null, this.head);
+            this.head.prev = node;
+            this.head = node;
+        }
+
+        return data;
+    }
+
+    pop(){
+        if(!this.tail) {
+            this.head = this.tail = null;
+            return;
+        }
+
+        --this.size;
+
+        this.tail.prev.next = null;
+        this.tail = this.tail.prev
+    }
+
+    shift(){
+        if(!this.head){
+            this.head = this.tail = null;
+            return;
+        }
+
+        --this.size;
+
+        this.head.next.prev = null;
+        this.head = this.head.next;
+    }
+
+    remove(data){
+        if(typeof data === 'function') throw new Error('data argument required');
+        
+        let current = this.head;
+
+        do {
+            if(this.compare(data, current.data) === 0){
+                --this.size;
+
+                if(current === this.head){
+                    this.head = this.head.next;
+
+                    if(this.head){
+                        this.head.prev = null;
+                    } else {
+                        this.head = this.tail = null;
+                    }
+                    
+                } else if(current = this.tail){
+                    this.tail = this.tail.prev;
+
+                    if(this.tail){
+                        this.tail.prev.next = null;
+                    } else {
+                        this.head = this.tail = null;
+                    }
+                    
+                } else {
+                    current.prev.next = current.next;
+                    current.next.prev = current.prev;
+                }
+
+                return current.data;
+            }
+
+            current = current.next;
+
+        } while(current && current !== this.tail);
+
+        return false;
+    }
+
+    indexOf(data){
+        let current = this.head;
+        let index = -1;
+
+        do {
+            ++index;
+            if(this.compare(data, current.data) === 0) break;
+
+            current = current.next;
+        } while(current && current !== this.tail);
+
+        return index;
+    }
+
+    findByIndex(index = 0){
+        let current = this.head;
+        let j = 0;
+
+        do {
+            if(j++ === index) break;
+
+            current = current.next;
+        } while(current && current !== this.tail);
+
+        return current.data;
+    }
+
+    forEach(cb = null){
+        if(typeof cb !== 'function') throw new Error('argument should be a function');
+
+        let current = this.head;
+
+        do {
+            cb(current.data);
+
+            current = current.next;
+        } while(current && current !== this.tail);
+    }
+
+    toJSON(){
+        let list = [];
+        let current = this.head;
+
+        do {
+            list.push(current.data);
+
+            current = current.next;
+        } while(current && current !== this.tail);
+
+        return list;
+    }
+
+    toString(){
+        return JSON.stringify(this.toJSON());
     }
 }
 
 
-let a = new DoubleLinkedList(1);
-
-a.add(0, 1);
-a.add(1, 2);
-a.add(2, 3);
-a.remove(1);
-console.log(a);
+let a = new DoubleLinkedList([2, 3]);
+a.unshift(1);
+a.push(4);
+a.indexOf(3);
+console.log(a.findByIndex(2));
+a.pop();
+a.shift();
+a.remove(2);
+a.remove(32);
+a.remove(3);
