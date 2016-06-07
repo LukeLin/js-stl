@@ -115,6 +115,21 @@ export default class LinkedList {
         return elem ? elem : false;
     }
 
+    indexOf(data){
+        let current = this.head;
+        let index = -1;
+        while (current !== null) {
+            ++index;
+            if (current.data === data) {
+                return index;
+            }
+
+            current = current.next;
+        }
+
+        return index;
+    }
+
     unshift (data) {
         let temp = new Node(data);
         temp.next = this.head;

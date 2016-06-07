@@ -14,10 +14,10 @@
  */
 
 export default class DoubleLinkedList {
-    constructor(data = null, prior = this, next = this) {
+    constructor(data = null, prior = null, next = null) {
         this.data = data;
-        this.prior = prior;
-        this.next = next;
+        this.prior = prior || this;
+        this.next = next || this;
     }
 
     find (i) {
