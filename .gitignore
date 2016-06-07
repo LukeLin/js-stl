@@ -1,6 +1,5 @@
 node_modules/
 .idea/
 projectFilesBackup/
-dist/
 webpack-assets.json
 .vscode
