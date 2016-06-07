@@ -46,7 +46,7 @@ module.exports = {
     
     Search: {
         AVLTree: require('./Search/AVLTree'),
-        binarySearch: require('./Search/binarySearch'),
+        binarySearch: require('./Search/BinarySearch'),
         BinarySortedTree: require('./Search/BinarySortedTree'),
         BPlusTree: require('./Search/BPlusTree'),
         BTree: require('./Search/BTree'),

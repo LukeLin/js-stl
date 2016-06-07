@@ -1,16 +1,11 @@
 
 let webpack = require('webpack');
 let fs = require('fs');
-let ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
 let DEBUG = (process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development') || false;
 
 let plugins = [
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new ProgressBarPlugin({
-        format: '  build [:bar] :percent (:elapsed seconds)',
-        clear: false
-    })
+    new webpack.optimize.OccurrenceOrderPlugin()
 ];
 if (DEBUG) {
     plugins.push(
@@ -50,7 +45,7 @@ if (DEBUG) {
 
 let appEntry = [
     //'babel-polyfill',
-    './index.js'
+    './src/index.js'
 ];
 if(DEBUG) {
     appEntry.push(

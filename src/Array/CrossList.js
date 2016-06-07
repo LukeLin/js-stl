@@ -10,10 +10,10 @@
 
 // 稀疏矩阵的十字链表存储表示
 class OLNode {
-    constructor(i, j, e) {
+    constructor(i = 0, j = 0, e) {
         // 该非零元的行和列下标
-        this.i = i || 0;
-        this.j = j || 0;
+        this.i = i;
+        this.j = j;
         this.e = e;
         // 该非零元所在行表和列表的后继链域
         this.right = null;  // type: OLNode
@@ -21,7 +21,7 @@ class OLNode {
     }
 }
 
-class CrossList {
+export default class CrossList {
     constructor() {
         // 行和列链表头指针向量基址由CreateSMatrix分配
         this.rhead = [];

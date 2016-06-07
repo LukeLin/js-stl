@@ -36,7 +36,7 @@
 const LINK = 0;
 const THREAD = 1;
 
-export class BinaryThreadTree_inOrder {
+export default class BinaryThreadTree_inOrder {
     // 二叉树中序线索化
     static inOrderThreading(tree) {
         var threadTree = new this.constructor();

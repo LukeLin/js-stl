@@ -11,7 +11,7 @@ class Triple {
     }
 }
 
-class TSMatrix {
+export class TSMatrix {
     constructor(mu, nu) {
         // 非零元三元组表
         this.data = [];
@@ -124,7 +124,7 @@ console.log(matrix.fastTransposeSMatrix());
  * 为此可将快速转置矩阵的算法中创建的，指示“行”信息的辅助数组cpot固定在稀疏矩阵的存储结构中。
  * 称这种“带行链接信息”的三元组表为行逻辑链接的顺序表
  */
-class RLSMatrix extends TSMatrix {
+export class RLSMatrix extends TSMatrix {
     constructor(){
         super(...arguments);
         this.rpos = [0];

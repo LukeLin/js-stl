@@ -42,17 +42,6 @@ export function huffManCoding(weights) {
     return [huffmanTree, hc];
 }
 
-function huffManCoding2(weights) {
-    let n = weights.length;
-    if (n < 1) return;
-
-    let huffmanTree = buildHuffmanTree(weights, n);
-
-    // 从叶子到根逆向求每个字符的赫夫曼编码
-    let hc = calcHuffmanCode2(huffmanTree, n);
-
-    return [huffmanTree, hc];
-}
 
 function calcHuffmanCode(huffmanTree, n) {
     // 从叶子到根逆向求每个字符的赫夫曼编码
@@ -71,50 +60,6 @@ function calcHuffmanCode(huffmanTree, n) {
     return hc;
 }
 
-// 无栈非递归遍历赫夫曼树
-// todo 该算法有问题
-function calcHuffmanCode2(huffmanTree, n) {
-    let p = 2 * n - 2;
-    let hc = [];
-    let cd = [];
-    let cdLen = 0;
-
-    // 遍历赫夫曼树时用作结点状态标识
-    for (let i = 0; i <= p; i++) huffmanTree[i].weight = 0;
-
-    while (p) {
-        // 向左
-        if (huffmanTree[p].weight === 0) {
-            huffmanTree[p].weight = 1;
-            if (huffmanTree[p].leftChild !== 0) {
-                p = huffmanTree[p].leftChild;
-                cd[cdLen++] = '0';
-            }
-            // 登记叶子结点的字符的编码
-            else if (huffmanTree[p].rightChild === 0) {
-                hc[p - 1] = cd.join('');
-            }
-        }
-        // 向右
-        else if (huffmanTree[p].weight === 1) {
-            huffmanTree[p].weight = 2;
-            if (huffmanTree[p].rightChild !== 0) {
-                p = huffmanTree[p].rightChild;
-                cd[cdLen++] = '1';
-            }
-        }
-        // huffmanTree[p].weight == 2，退回
-        // 退到父节点，编码长度减一
-        else {
-            huffmanTree[p].weight = 0;
-            p = huffmanTree[p].parent;
-            --cdLen;
-        }
-    }
-
-    return hc;
-}
-
 // 创建一棵叶子结点数为n的Huffman树
 function buildHuffmanTree(weights, n) {
     n = n || weights.length;
@@ -122,12 +67,13 @@ function buildHuffmanTree(weights, n) {
     let huffmanTree = [];
 
     // 初始化
-    for (let i = 0; i < n; i++)
+    let i;
+    for (i = 0; i < n; i++)
         huffmanTree[i] = new HuffmanNode(weights[i], 0, 0, 0);
     for (; i < m; i++)
         huffmanTree[i] = new HuffmanNode(0, 0, 0, 0);
 
-    for (i = n; i < m; i++) {
+    for (let i = n; i < m; i++) {
         // 在HT[1..i-1]选择parent为0且weight最小的两个结点，返回其序号为[s1, s2]
         let ret = select(huffmanTree, i);
         let s1 = ret[0];
@@ -178,6 +124,3 @@ function select(huffmanTree, len) {
 
 console.log('-------huffman coding 1:------');
 console.log(huffManCoding([5, 29, 7, 8, 14, 23, 3, 11]));
-
-console.log('\n-------huffman coding 2:------');
-console.log(huffManCoding2([5, 29, 7, 8, 14, 23, 3, 11]));

@@ -9,7 +9,7 @@ var PATHS = {
         'dist/Binary tree/*.js',
         'dist/Queue/*.js',
         'dist/Stack/*.js',
-        'Binary tree/BinaryTree-spec.js'
+        './src/BinaryTree/BinaryTree-spec.js'
     ]
 };
 

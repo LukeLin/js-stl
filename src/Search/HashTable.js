@@ -250,7 +250,7 @@ RecNode *linkhash[m]，其中RecNode是结点类型，每个分量的初值为�
 
  */
 
-import LinkedList from '../LinkedList/LinkedList';
+import LinkedList from '../linkedList/LinkedList';
 
 function HashTable(){
     this.data = [];

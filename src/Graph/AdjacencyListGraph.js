@@ -97,7 +97,7 @@ export default class AdjacencyListGraph {
 
     // 查找顶点位置
     locateVex(vp) {
-        for (var i = 0; i < this.vexnum; ++i) {
+        for (let i = 0; i < this.vexnum; ++i) {
             if (this.vertices[i].data === vp) return i;
         }
 
@@ -122,15 +122,15 @@ export default class AdjacencyListGraph {
      * @returns {boolean}
      */
     addArc(arc1, arc2, info) {
-        var k = this.locateVex(arc1);
-        var j = this.locateVex(arc2);
+        let k = this.locateVex(arc1);
+        let j = this.locateVex(arc2);
 
         if (k === -1 || j === -1) throw new Error('Arc\'s Vertex do not existed!');
 
         // 边的起始表结点赋值
-        var p = new ArcNode(k, null, info);
+        let p = new ArcNode(k, null, info);
         // 边的末尾表结点赋值
-        var q = new ArcNode(j, null, info);
+        let q = new ArcNode(j, null, info);
 
         // 是无向图，用头插入法插入到两个单链表
         if (this.kind === UDG || this.kind === UDN) {
@@ -155,18 +155,18 @@ export default class AdjacencyListGraph {
         this.vexnum = +prompt('vexnum: ');
         this.arcnum = +prompt('arcnum: ');
         // incInfo为0则各弧不含其他信息
-        var incInfo = +prompt('incInfo: ');
+        let incInfo = +prompt('incInfo: ');
 
-        for (var m = 0; m < this.vexnum; ++m) {
+        for (let m = 0; m < this.vexnum; ++m) {
             this.vertices[m] = new VexNode();
             this.vertices[m].data = prompt('vertex: ');
         }
 
         for (m = 0; m < this.arcnum; ++m) {
-            var h = prompt('弧头: ');
-            var t = prompt('弧尾: ');
-            var i = this.locateVex(t);
-            var j = this.locateVex(h);
+            let h = prompt('弧头: ');
+            let t = prompt('弧尾: ');
+            let i = this.locateVex(t);
+            let j = this.locateVex(h);
 
             if (i < 0 || j < 0) {
                 alert('顶点为找到，请重新输入！');
@@ -174,11 +174,11 @@ export default class AdjacencyListGraph {
                 continue;
             }
 
-            var p = new ArcNode(j, null, incInfo && prompt('info: '));
+            let p = new ArcNode(j, null, incInfo && prompt('info: '));
 
             if (!this.vertices[i].firstArc) this.vertices[i].firstArc = p;
             else {
-                for (var q = this.vertices[i].firstArc; q.nextArc; q = q.nextArc);
+                for (let q = this.vertices[i].firstArc; q.nextArc; q = q.nextArc);
                 q.nextArc = p;
             }
         }
@@ -188,11 +188,11 @@ export default class AdjacencyListGraph {
     isPass() {
         if (this.kind !== DG) throw new Error('graph kind should be DG');
 
-        for (var x = 0; x < this.vexnum; ++x) {
-            for (var p = this.vertices[x].firstArc; p; p = p.nextArc) {
-                var y = p.adjVex;
-                for (var q = this.vertices[y].firstArc; q; q = q.nextArc) {
-                    var z = q.adjVex;
+        for (let x = 0; x < this.vexnum; ++x) {
+            for (let p = this.vertices[x].firstArc; p; p = p.nextArc) {
+                let y = p.adjVex;
+                for (let q = this.vertices[y].firstArc; q; q = q.nextArc) {
+                    let z = q.adjVex;
                     if (z !== x && this.isAdj(x, z)) return false;
                 }
             }
@@ -203,7 +203,7 @@ export default class AdjacencyListGraph {
 
     // 判断有向图是否存在边(m,n)
     isAdj(m, n) {
-        for (var p = this.vertices[m].firstArc; p; p = p.nextArc) {
+        for (let p = this.vertices[m].firstArc; p; p = p.nextArc) {
             if (p.adjVex === n) return true;
         }
         return false;
@@ -215,7 +215,7 @@ export default class AdjacencyListGraph {
      * @param {String} j
      */
     exist_path_DFS(i, j) {
-        var visited = [];
+        let visited = [];
         i = this.locateVex(i);
         j = this.locateVex(j);
 
@@ -227,8 +227,8 @@ export default class AdjacencyListGraph {
             if (i === j) return true;
 
             visited[i] = true;
-            for (var p = graph.vertices[i].firstArc; p; p = p.nextArc) {
-                var k = p.adjVex;
+            for (let p = graph.vertices[i].firstArc; p; p = p.nextArc) {
+                let k = p.adjVex;
                 if (!visited[k] && exist_path(graph, k, j)) return true;
             }
 
@@ -244,16 +244,16 @@ export default class AdjacencyListGraph {
     exist_path_BFS(i, j) {
         i = this.locateVex(i);
         j = this.locateVex(j);
-        var visited = [];
-        var queue = new Queue();
+        let visited = [];
+        let queue = new Queue();
         queue.enQueue(i);
 
         while (queue.rear) {
-            var u = queue.deQueue();
+            let u = queue.deQueue();
             visited[u] = 1;
 
-            for (var p = this.vertices[i].firstArc; p; p = p.nextArc) {
-                var k = p.adjVex;
+            for (let p = this.vertices[i].firstArc; p; p = p.nextArc) {
+                let k = p.adjVex;
                 if (k === j) return true;
                 if (!visited[k]) queue.enQueue(k);
             }
@@ -271,15 +271,15 @@ export default class AdjacencyListGraph {
     exist_path_len(i, j, k) {
         i = this.locateVex(i);
         j = this.locateVex(j);
-        var visited = [];
+        let visited = [];
 
         return (function recurse(graph, i, j, k) {
             // 找到了一条路径，且长度符合
             if (i === j && k === 0) return true;
             else if (k > 0) {
                 visited[i] = 1;
-                for (var p = graph.vertices[i].firstArc; p; p = p.nextArc) {
-                    var l = p.adjVex;
+                for (let p = graph.vertices[i].firstArc; p; p = p.nextArc) {
+                    let l = p.adjVex;
                     if (!visited[l]) {
                         // 剩余路径长度减一
                         if (recurse(graph, l, j, k - 1)) return true;
@@ -305,8 +305,8 @@ export default class AdjacencyListGraph {
     find_all_path(u, v, k) {
         u = this.locateVex(u);
         v = this.locateVex(v);
-        var path = [];
-        var visited = [];
+        let path = [];
+        let visited = [];
 
         findPath(this, u, v, k);
 
@@ -318,10 +318,10 @@ export default class AdjacencyListGraph {
             // 找到一条简单路径
             if (u === v) {
                 console.log('Found one path!');
-                for (var i = 0; path[i]; ++i) console.log(path[i]);
+                for (let i = 0; path[i]; ++i) console.log(path[i]);
             } else {
-                for (var p = graph.vertices[u].firstArc; p; p = p.nextArc) {
-                    var l = p.adjVex;
+                for (let p = graph.vertices[u].firstArc; p; p = p.nextArc) {
+                    let l = p.adjVex;
                     // 继续寻找
                     if (!visited[l]) findPath(graph, l, v, k + 1);
                 }
@@ -340,15 +340,15 @@ export default class AdjacencyListGraph {
      * @param {Number} len
      */
     getPathNum_len(i, j, len) {
-        var visited = [];
+        let visited = [];
 
         return (function recurse(graph, i, j, len) {
             if (i === j && len === 0) return 1;
             else if (len > 0) {
-                var sum = 0;
+                let sum = 0;
                 visited[i] = 1;
-                for (var p = graph.vertices[i].firstArc; p; p = p.nextArc) {
-                    var l = p.adjVex;
+                for (let p = graph.vertices[i].firstArc; p; p = p.nextArc) {
+                    let l = p.adjVex;
                     if (!visited[l]) sum += recurse(l, j, len - 1);
                 }
                 visited[i] = 0;
@@ -361,15 +361,15 @@ export default class AdjacencyListGraph {
      * 求有向无环图的根
      */
     getRoot(){
-        var visited = [];
+        let visited = [];
 
-        for(var i = 0; i < this.vexnum; ++i) {
+        for(let i = 0; i < this.vexnum; ++i) {
             // 每次都要将访问数组清零
-            for (var w = 0; w < this.vexnum; ++w) visited[w] = false;
+            for (let w = 0; w < this.vexnum; ++w) visited[w] = false;
             // 从顶点i出发进行深度优先遍历
             dfs(this, i);
 
-            var flag = true;
+            let flag = true;
             for(w = 0; w < this.vexnum; ++w){
                 // 如果i是根，则深度优先遍历可以访问到所有结点
                 if(!visited[w]) flag = false;
@@ -381,8 +381,8 @@ export default class AdjacencyListGraph {
         function dfs(graph, v){
             visited[v] = true;
 
-            for(var p = graph.vertices[v].firstArc; p; p = p.nextArc){
-                var w = p.adjVex;
+            for(let p = graph.vertices[v].firstArc; p; p = p.nextArc){
+                let w = p.adjVex;
                 if(!visited[w]) dfs(graph, w);
             }
         }
@@ -392,15 +392,15 @@ export default class AdjacencyListGraph {
      * 求一个有向无环图中最长的路径
      */
     getLongestPath(){
-        var mlp = [];
-        var path = [];
-        var visited = [];
-        var maxLen = 0;
+        let mlp = [];
+        let path = [];
+        let visited = [];
+        let maxLen = 0;
 
         this.countIndegree();
 
-        for(var i = 0; i < this.vexnum; ++i) {
-            for (var j = 0; j < this.vexnum; ++j) visited[j] = false;
+        for(let i = 0; i < this.vexnum; ++i) {
+            for (let j = 0; j < this.vexnum; ++j) visited[j] = false;
             // 从每一个零入度结点开始深度优先遍历
             if (this.vertices[i].indegree === 0) dfs(this, i, 0);
         }
@@ -416,11 +416,11 @@ export default class AdjacencyListGraph {
             // 新的最长路径
             if(len > maxLen && !graph.vertices[i].firstArc) {
                 // 保存下来
-                for(var j = 0; j <= len; ++j) mlp[j] = path[j];
+                for(let j = 0; j <= len; ++j) mlp[j] = path[j];
                 maxLen = len;
             } else {
-                for(var p = graph.vertices[i].firstArc; p; p = p.nextArc){
-                    var w = p.adjVex;
+                for(let p = graph.vertices[i].firstArc; p; p = p.nextArc){
+                    let w = p.adjVex;
                     if(!visited[w]) dfs(graph, w, len + 1);
                 }
             }
@@ -432,10 +432,10 @@ export default class AdjacencyListGraph {
 
     // 邻接表的递归式深度优先遍历
     DFSTraverse(visitFn) {
-        var visited = [];
-        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+        let visited = [];
+        for (let i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-        for (i = 0; i < this.vexnum; ++i) {
+        for (let i = 0; i < this.vexnum; ++i) {
             if (!visited[i]) dfs(this, i);
         }
 
@@ -443,7 +443,7 @@ export default class AdjacencyListGraph {
             visited[v] = true;
             visitFn.call(graph, v);
 
-            var p = graph.vertices[v].firstArc;
+            let p = graph.vertices[v].firstArc;
             while (p) {
                 if (!visited[p.adjVex]) dfs(graph, p.adjVex);
 
@@ -454,19 +454,19 @@ export default class AdjacencyListGraph {
 
     // 邻接表的非递归深度优先搜索
     DFSTraverse_NonRecurse(visitFn) {
-        var visited = [];
-        var stack = new Stack();
-        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+        let visited = [];
+        let stack = new Stack();
+        for (let i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-        for (i = 0; i < this.vexnum; ++i) {
+        for (let i = 0; i < this.vexnum; ++i) {
             if (!visited[i]) {
                 stack.push(i);
                 visited[i] = true;
                 visitFn.call(this, i);
 
-                var v;
+                let v;
                 while ((v = stack.peek()) != null) {
-                    var p = this.vertices[v].firstArc;
+                    let p = this.vertices[v].firstArc;
                     while (p) {
                         if (!visited[p.adjVex]) {
                             visited[p.adjVex] = true;
@@ -484,19 +484,19 @@ export default class AdjacencyListGraph {
 
     // 邻接表的广度优先搜索
     BFSTraverse(visitFn) {
-        var queue = new Queue();
-        var visited = [];
-        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+        let queue = new Queue();
+        let visited = [];
+        for (let i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-        for (i = 0; i < this.vexnum; ++i) {
+        for (let i = 0; i < this.vexnum; ++i) {
             if (!visited[i]) {
                 queue.enQueue(i);
                 visited[i] = true;
                 visitFn.call(this, i);
 
                 while (queue.rear) {
-                    var w = queue.deQueue();
-                    var p = this.vertices[w].firstArc;
+                    let w = queue.deQueue();
+                    let p = this.vertices[w].firstArc;
                     while (p) {
                         if (!visited[p.adjVex]) {
                             visited[p.adjVex] = true;
@@ -513,15 +513,15 @@ export default class AdjacencyListGraph {
 
     // 建立无向图的深度优先生成森林的孩子兄弟链表树
     createDFSForest() {
-        var tree = null;
-        var visited = [];
-        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+        let tree = null;
+        let visited = [];
+        for (let i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-        var q;
-        for (i = 0; i < this.vexnum; ++i) {
+        let q;
+        for (let i = 0; i < this.vexnum; ++i) {
             if (!visited[i]) {
                 // 新的生成树的根结点
-                var p = new ChildSiblingTree(this.vertices[i].data);
+                let p = new ChildSiblingTree(this.vertices[i].data);
 
                 // 第一棵生成树的根
                 if (!tree) tree = p;
@@ -540,14 +540,14 @@ export default class AdjacencyListGraph {
         // 以第v个顶点触发深度优先遍历图，建立以tree为根的生成树
         function DFSTree(graph, v, tree) {
             visited[v] = true;
-            var first = true;
-            var w = graph.vertices[v].firstArc;
-            var q;
+            let first = true;
+            let w = graph.vertices[v].firstArc;
+            let q;
 
             while (w) {
                 if (!visited[w.adjVex]) {
                     visited[w.adjVex] = true;
-                    var p = new ChildSiblingTree(graph.vertices[w.adjVex].data);
+                    let p = new ChildSiblingTree(graph.vertices[w.adjVex].data);
 
                     // w是v的第一个未被访问的邻接结点
                     if (first) {
@@ -568,35 +568,36 @@ export default class AdjacencyListGraph {
     }
 
     createBFSForest() {
-        var tree = null;
-        var visited = [];
-        var queue = new Queue();
-        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+        let tree = null;
+        let visited = [];
+        let queue = new Queue();
+        for (let i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-        var q;
-        for (i = 0; i < this.vexnum; ++i) {
+        let q;
+        for (let i = 0; i < this.vexnum; ++i) {
             if (!visited[i]) {
                 visited[i] = true;
                 queue.enQueue(i);
 
-                var node = new ChildSiblingTree(this.vertices[i].data);
+                let node = new ChildSiblingTree(this.vertices[i].data);
                 if (!tree) tree = node;
                 else q.nextSibling = node;
 
                 q = node;
 
                 while (queue.rear) {
-                    var w = queue.deQueue();
-                    var p = this.vertices[w].firstArc;
-                    var first = true;
+                    let w = queue.deQueue();
+                    let p = this.vertices[w].firstArc;
+                    let first = true;
+                    let pre;
 
                     while (p) {
                         if (!visited[p.adjVex]) {
                             visited[p.adjVex] = true;
                             queue.enQueue(p.adjVex);
 
-                            var node2 = new ChildSiblingTree(this.vertices[p.adjVex].data);
-                            var pre;
+                            let node2 = new ChildSiblingTree(this.vertices[p.adjVex].data);
+
                             if (first) {
                                 node.firstChild = node2;
                                 first = false;
@@ -615,14 +616,14 @@ export default class AdjacencyListGraph {
     }
 
     findArticul() {
-        var visited = [];
-        var count = 1;
-        var low = [];
+        let visited = [];
+        let count = 1;
+        let low = [];
         low[0] = count;
         visited[0] = 1;
-        for (var i = 1; i < this.vexnum; ++i) visited[i] = 0;
-        var p = this.vertices[0].firstArc;
-        var v = p.adjVex;
+        for (let i = 1; i < this.vexnum; ++i) visited[i] = 0;
+        let p = this.vertices[0].firstArc;
+        let v = p.adjVex;
 
         DFSArticul(this, v);
         if (count < this.vexnum) {
@@ -635,9 +636,9 @@ export default class AdjacencyListGraph {
         }
 
         function DFSArticul(graph, v0) {
-            var min = visited[v0] = ++count;
-            for (var p = graph.vertices[v0].firstArc; p; p = p.nextArc) {
-                var w = p.adjVex;
+            let min = visited[v0] = ++count;
+            for (let p = graph.vertices[v0].firstArc; p; p = p.nextArc) {
+                let w = p.adjVex;
                 if (visited[w] === 0) {
                     DFSArticul(graph, w);
                     if (low[w] < min) min = low[w];
@@ -650,32 +651,32 @@ export default class AdjacencyListGraph {
 
     // 统计各顶点入度的函数
     countIndegree() {
-        for (var k = 0; k < this.vexnum; ++k) this.vertices[k].indegree = 0;
+        for (let k = 0; k < this.vexnum; ++k) this.vertices[k].indegree = 0;
 
-        for (k = 0; k < this.vexnum; ++k) {
-            for (var p = this.vertices[k].firstArc; p; p = p.nextArc)
+        for (let k = 0; k < this.vexnum; ++k) {
+            for (let p = this.vertices[k].firstArc; p; p = p.nextArc)
                 ++this.vertices[p.adjVex].indegree;
         }
     }
 
 // 拓扑排序算法
     topologicSort() {
-        var stack = new Stack();
+        let stack = new Stack();
         this.topologicalOrder = [];
         this.countIndegree();
 
-        for (var i = 0; i < this.vexnum; ++i) {
+        for (let i = 0; i < this.vexnum; ++i) {
             if (this.vertices[i].indegree === 0) stack.push(i);
         }
 
-        var count = 0;
+        let count = 0;
         while (stack.length) {
-            i = stack.pop();
+            let i = stack.pop();
             this.topologicalOrder.push(i);
             console.log(this.vertices[i].data);
             ++count;
-            for (var p = this.vertices[i].firstArc; p; p = p.nextArc) {
-                var k = p.adjVex;
+            for (let p = this.vertices[i].firstArc; p; p = p.nextArc) {
+                let k = p.adjVex;
                 if (--this.vertices[k].indegree === 0) stack.push(k);
             }
         }
@@ -687,48 +688,49 @@ export default class AdjacencyListGraph {
     criticalPath() {
         if (!this.topologicSort()) throw new Error('AOE网中存在回路！');
 
-        var ve = [];
+        let ve = [];
         // 事件最早发生时间初始化
-        for (var j = 0; j < this.vexnum; ++j) ve[j] = 0;
+        for (let j = 0; j < this.vexnum; ++j) ve[j] = 0;
         // 计算每个事件的最早发生时间ve值
-        for (var m = 0; m < this.vexnum; ++m) {
-            j = this.topologicalOrder[m];
-            for (var p = this.vertices[j].firstArc; p; p = p.nextArc) {
-                var k = p.adjVex;
+        for (let m = 0; m < this.vexnum; ++m) {
+            let j = this.topologicalOrder[m];
+            for (let p = this.vertices[j].firstArc; p; p = p.nextArc) {
+                let k = p.adjVex;
                 if (ve[j] + p.info > ve[k]) ve[k] = ve[j] + p.info;
             }
         }
-        var vl = [];
+        let vl = [];
         // 事件最晚发生时间初始化
-        for (j = 0; j < this.vexnum; ++j) vl[j] = ve[this.vexnum - 1];
+        for (let j = 0; j < this.vexnum; ++j) vl[j] = ve[this.vexnum - 1];
         // 计算每个事件的最晚发生时间vl的值
-        for (m = this.vexnum - 1; m >= 0; --m) {
-            j = this.topologicalOrder[m];
-            for (p = this.vertices[j].firstArc; p; p = p.nextArc) {
-                k = p.adjVex;
+        for (let m = this.vexnum - 1; m >= 0; --m) {
+            let j = this.topologicalOrder[m];
+            for (let p = this.vertices[j].firstArc; p; p = p.nextArc) {
+                let k = p.adjVex;
                 if (vl[k] - p.info < vl[j]) vl[j] = vl[k] - p.info;
             }
         }
         // 输出所有关键活动
-        for (m = 0; m < this.vexnum; ++m) {
-            for (p = this.vertices[m].firstArc; p; p = p.nextArc) {
-                k = p.adjVex;
+        for (let m = 0; m < this.vexnum; ++m) {
+            for (let p = this.vertices[m].firstArc; p; p = p.nextArc) {
+                let k = p.adjVex;
                 if (ve[m] + p.info === vl[k]) console.log('<%d, %d>', m, k);
             }
         }
     }
 
     shortestPath_Dijkstra(v0) {
-        var dist = [];
-        var pre = [];
-        var final = [];
-        var w;
+        let dist = [];
+        let pre = [];
+        let final = [];
+        let w;
 
-        for (var v = 0; v < this.vexnum; ++v)
+        for (let v = 0; v < this.vexnum; ++v)
             dist[v] = Infinity;
-        for (var p = this.vertices[v0].firstArc; p; p = p.nextArc)
+        for (let p = this.vertices[v0].firstArc; p; p = p.nextArc)
             dist[p.adjVex] = p.info;
 
+        let v;
         for (v = 0; v < this.vexnum; ++v) {
             final[v] = false;
             pre[v] = pre[v] || [];
@@ -743,8 +745,8 @@ export default class AdjacencyListGraph {
         dist[v0] = 0;
         final[v0] = true;
 
-        for (var i = 1; i < this.vexnum; ++i) {
-            var min = Infinity;
+        for (let i = 1; i < this.vexnum; ++i) {
+            let min = Infinity;
             for (w = 0; w < this.vexnum; ++w) {
                 if (!final[w] && dist[w] < min) {
                     v = w;
@@ -754,7 +756,7 @@ export default class AdjacencyListGraph {
 
             final[v] = true;
 
-            for (p = this.vertices[v].firstArc; p; p = p.nextArc) {
+            for (let p = this.vertices[v].firstArc; p; p = p.nextArc) {
                 w = p.adjVex;
                 if (!final[w] && min + p.info < dist[w]) {
                     dist[w] = min + p.info;
@@ -1147,7 +1149,7 @@ dijTest.shortestPath_Dijkstra(0);
      */
     function niBoLan_DAG(graph){
         graph.countIndegree();
-        for(var i = 0; i < graph.vexnum; ++i){
+        for(let i = 0; i < graph.vexnum; ++i){
             // 找到有向无环图的根
             if(graph.vertices[i].indegree === 0) {
                 printNiBoLan(graph, i);
@@ -1159,8 +1161,8 @@ dijTest.shortestPath_Dijkstra(0);
     }
 
     function printNiBoLan(graph, i){
-        var c = graph.vertices[i].data;
-        var p = graph.vertices[i].firstArc;
+        let c = graph.vertices[i].data;
+        let p = graph.vertices[i].firstArc;
 
         // 子表达式
         if(p) {
@@ -1176,7 +1178,7 @@ dijTest.shortestPath_Dijkstra(0);
      */
     function evaluate_DAG(graph){
         graph.countIndegree();
-        for(var i = 0; i < graph.vexnum; ++i){
+        for(let i = 0; i < graph.vexnum; ++i){
             if(!graph.vertices[i].indegree) return evaluate_imp(graph, i);
         }
     }
@@ -1184,9 +1186,9 @@ dijTest.shortestPath_Dijkstra(0);
     function evaluate_imp(g, i){
         if(/^\d+$/.test(g.vertices[i].data)) return g.vertices[i].data;
         else {
-            var p = g.vertices[i].firstArc;
-            var v1 = evaluate_imp(g, p.adjVex);
-            var v2 = evaluate_imp(g, p.nextArc.adjVex);
+            let p = g.vertices[i].firstArc;
+            let v1 = evaluate_imp(g, p.adjVex);
+            let v2 = evaluate_imp(g, p.nextArc.adjVex);
             return calculate(v1, g.vertices[i].data, v2);
         }
     }
@@ -1197,15 +1199,15 @@ dijTest.shortestPath_Dijkstra(0);
     }
 
     // ((1 + 2) * (2 * (3 + 4)) + (3 + 4) * 5) * ((3 + 4) * 5)
-    var dag = new AdjacencyListGraph([], 0, 0, DG);
+    let dag = new AdjacencyListGraph([], 0, 0, DG);
 
-    var a1 = new String('*');
-    var a2 = new String('+');
-    var a3 = new String('*');
-    var a4 = new String('*');
-    var a5 = new String('+');
-    var a6 = new String('*');
-    var a7 = new String('+');
+    let a1 = new String('*');
+    let a2 = new String('+');
+    let a3 = new String('*');
+    let a4 = new String('*');
+    let a5 = new String('+');
+    let a6 = new String('*');
+    let a7 = new String('+');
 
     // 12
     dag.addVertex(a1);

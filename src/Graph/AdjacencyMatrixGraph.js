@@ -157,11 +157,11 @@ class ArcCell {
      * @param {*} info
      * @constructor
      */
-    constructor(adj, info){
+    constructor(adj, info = null){
         // 顶点类型。对于无权图，用1或0表示相邻否；对带权图，则为权值类型
         this.adj = typeof adj === 'number' ? adj : Infinity;
         // 该弧相关信息
-        this.info = info || null;
+        this.info = info;
     }
 }
 
@@ -176,17 +176,17 @@ export default class AdjacencyMatrixGraph {
      * @param {Number} kind
      * @constructor
      */
-    constructor(vexs, arcs, vexnum, arcnum, kind){
+    constructor(vexs = [], arcs = [], vexnum = 0, arcnum = 0, kind = DG){
         // 顶点向量
-        this.vexs = vexs || [];
+        this.vexs = vexs;
         // 邻接矩阵
-        this.arcs = arcs || [];
+        this.arcs = arcs;
         // 图的当前顶点数
-        this.vexnum = vexnum || 0;
+        this.vexnum = vexnum;
         // 图的当前弧数
-        this.arcnum = arcnum || 0;
+        this.arcnum = arcnum;
         // 图的种类标志
-        this.kind = kind || DG;
+        this.kind = kind;
     }
 
     createGraph() {
@@ -210,7 +210,7 @@ export default class AdjacencyMatrixGraph {
      * @returns {number}
      */
     locateVex (vp) {
-        for (var i = 0; i < this.vexnum; ++i) {
+        for (let i = 0; i < this.vexnum; ++i) {
             if (this.vexs[i] === vp) return i;
         }
 
@@ -225,12 +225,12 @@ export default class AdjacencyMatrixGraph {
         if (this.locateVex(vp) !== -1)
             throw new Error('Vertex has existed!');
 
-        var k = this.vexnum;
+        let k = this.vexnum;
         this.vexs[this.vexnum++] = vp;
 
-        var value = this.kind === DG || this.kind === UDG ?
+        let value = this.kind === DG || this.kind === UDG ?
             0 : Infinity;
-        for (var j = 0; j < this.vexnum; ++j) {
+        for (let j = 0; j < this.vexnum; ++j) {
             this.arcs[j] = this.arcs[j] || [];
             this.arcs[k] = this.arcs[k] || [];
             this.arcs[j][k] = this.arcs[j][k] || new ArcCell();
@@ -248,8 +248,8 @@ export default class AdjacencyMatrixGraph {
      */
     addArc(vex1, vex2, arc) {
         arc = arc || new ArcCell(this.kind === DG || this.kind === UDG ? 1 : 'weight');
-        var k = this.locateVex(vex1);
-        var j = this.locateVex(vex2);
+        let k = this.locateVex(vex1);
+        let j = this.locateVex(vex2);
 
         if (k === -1 || j === -1)
             throw new Error('Arc\'s Vertex do not existed!');
@@ -272,18 +272,18 @@ export default class AdjacencyMatrixGraph {
      * @param {String} vex 要删除的顶点
      */
     deleteVex(vex) {
-        var n = this.vexnum - 1;
-        var m = this.locateVex(vex);
+        let n = this.vexnum - 1;
+        let m = this.locateVex(vex);
 
         if (m < 0) return false;
 
         // 将待删除顶点交换到最后一个顶点
-        var temp = this.vexs[m];
+        let temp = this.vexs[m];
         this.vexs[m] = this.vexs[n];
         this.vexs[n] = temp;
 
         // 将边的关系随之交换
-        for (var i = 0; i <= n; ++i) {
+        for (let i = 0; i <= n; ++i) {
             this.arcs[i][m] = this.arcs[i][n];
             this.arcs[m][i] = this.arcs[n][i];
         }
@@ -300,8 +300,8 @@ export default class AdjacencyMatrixGraph {
      * @returns {boolean}
      */
     deleteArc(v, w) {
-        var i = this.locateVex(v);
-        var j = this.locateVex(w);
+        let i = this.locateVex(v);
+        let j = this.locateVex(w);
 
         if (i < 0 || j < 0) return false;
 
@@ -317,10 +317,10 @@ export default class AdjacencyMatrixGraph {
     isPass() {
         if (this.kind !== DG) throw new Error('graph kind should be DG');
 
-        for (var x = 0; x < this.vexnum; ++x) {
-            for (var y = 0; y < this.vexnum; ++y) {
+        for (let x = 0; x < this.vexnum; ++x) {
+            for (let y = 0; y < this.vexnum; ++y) {
                 if (this.arcs[x][y]) {
-                    for (var z = 0; z < this.vexnum; ++z) {
+                    for (let z = 0; z < this.vexnum; ++z) {
                         if (z !== x && this.arcs[y][z] && !this.arcs[x][z]) return false;
                     }
                 }
@@ -331,7 +331,7 @@ export default class AdjacencyMatrixGraph {
     }
 
     firstAdjVex(v) {
-        for (var i = 0; i < this.vexnum; ++i) {
+        for (let i = 0; i < this.vexnum; ++i) {
             if (this.arcs[v][i].adj !== 0 && this.arcs[v][i].adj !== Infinity) return i;
         }
 
@@ -339,7 +339,7 @@ export default class AdjacencyMatrixGraph {
     }
 
     nextAdjVex(v, w) {
-        for (var i = w + 1; i < this.vexnum; ++i) {
+        for (let i = w + 1; i < this.vexnum; ++i) {
             if (this.arcs[v][i].adj !== 0 && this.arcs[v][i].adj !== Infinity) return i;
         }
 
@@ -348,10 +348,10 @@ export default class AdjacencyMatrixGraph {
 
     // 对邻接矩阵图作递归式深度优先遍历
     DFSTraverse(visitFn) {
-        var visited = [];
+        let visited = [];
         // 访问标志数组初始化
-        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
-        for (i = 0; i < this.vexnum; ++i) {
+        for (let i = 0; i < this.vexnum; ++i) visited[i] = false;
+        for (let i = 0; i < this.vexnum; ++i) {
             if (!visited[i]) dfs(this, i);
         }
 
@@ -359,7 +359,7 @@ export default class AdjacencyMatrixGraph {
             visited[vertex] = true;
             visitFn.call(graph, vertex);
 
-            for (var j = 0; j < graph.vexnum; ++j) {
+            for (let j = 0; j < graph.vexnum; ++j) {
                 if (graph.arcs[vertex][j].adj !== 0 && graph.arcs[vertex][j].adj !== Infinity
                     && !visited[j]) dfs(graph, j);
             }
@@ -368,21 +368,21 @@ export default class AdjacencyMatrixGraph {
 
     // 非递归
     DFSTraverse_NonRecurse(visitFn) {
-        var visited = [];
-        var stack = new Stack();
-        var me = this;
+        let visited = [];
+        let stack = new Stack();
+        let me = this;
         // 访问标志数组初始化
-        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+        for (let i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-        for (i = 0; i < this.vexnum; ++i) {
+        for (let i = 0; i < this.vexnum; ++i) {
             if (!visited[i]) {
                 stack.push(i);
                 visited[i] = true;
                 visitFn.call(me, i);
 
-                var vertex;
+                let vertex;
                 while ((vertex = stack.peek()) != null) {
-                    for (var j = 0; j < this.vexnum; ++j) {
+                    for (let j = 0; j < this.vexnum; ++j) {
                         if (this.arcs[vertex][j].adj !== 0 && this.arcs[vertex][j].adj !== Infinity
                             && !visited[j]) {
                             visitFn.call(me, j);
@@ -397,21 +397,21 @@ export default class AdjacencyMatrixGraph {
 
     // 对邻接矩阵图作广度优先遍历
     BFSTraverse(visitFn) {
-        var visited = [];
-        var queue = new Queue();
+        let visited = [];
+        let queue = new Queue();
 
-        for (var i = 0; i < this.vexnum; ++i) visited[i] = false;
+        for (let i = 0; i < this.vexnum; ++i) visited[i] = false;
 
-        for (i = 0; i < this.vexnum; ++i) {
+        for (let i = 0; i < this.vexnum; ++i) {
             if (!visited[i]) {
                 visited[i] = true;
                 visitFn.call(this, i);
                 queue.enQueue(i);
 
                 while (queue.rear) {
-                    var u = queue.deQueue();
+                    let u = queue.deQueue();
 
-                    for (var j = 0; j < this.vexnum; ++j) {
+                    for (let j = 0; j < this.vexnum; ++j) {
                         if (this.arcs[u][j].adj !== 0 && this.arcs[u][j].adj !== Infinity
                             && !visited[j]) {
                             visited[j] = true;
@@ -425,20 +425,20 @@ export default class AdjacencyMatrixGraph {
     }
 
     minSpanTree_PRIM(u) {
-        var closedge = [];
+        let closedge = [];
 
         // 初始化
-        for (var j = 0; j < this.vexnum; ++j) {
+        for (let j = 0; j < this.vexnum; ++j) {
             closedge[j] = {adjvex: u, lowcost: +this.arcs[j][u].adj};
         }
         closedge[u].lowcost = 0;
 
-        var te = [];
+        let te = [];
         // 选择其余this.vexnum - 1个顶点
-        for (j = 0; j < this.vexnum - 1; ++j) {
-            var min = Infinity;
-            var k;
-            for (var v = 0; v < this.vexnum; ++v) {
+        for (let j = 0; j < this.vexnum - 1; ++j) {
+            let min = Infinity;
+            let k;
+            for (let v = 0; v < this.vexnum; ++v) {
                 if (closedge[v].lowcost !== 0 && closedge[v].lowcost < min) {
                     min = closedge[v].lowcost;
                     k = v;
@@ -451,7 +451,7 @@ export default class AdjacencyMatrixGraph {
                 weight: closedge[k].lowcost
             };
             closedge[k].lowcost = 0;
-            for (v = 0; v < this.vexnum; ++v) {
+            for (let v = 0; v < this.vexnum; ++v) {
                 if (this.arcs[v][k].adj < closedge[v].lowcost) {
                     closedge[v].lowcost = this.arcs[v][k].adj;
                     closedge[v].adjvex = k;
@@ -463,18 +463,18 @@ export default class AdjacencyMatrixGraph {
     }
 
     minSpanTree_Kruskal() {
-        var set = [];
-        var te = [];
+        let set = [];
+        let te = [];
 
-        for(var i = 0; i < this.vexnum; ++i) set[i] = i;
+        for(let i = 0; i < this.vexnum; ++i) set[i] = i;
 
-        var k = 0;
-        var min = Infinity;
-        var a = 0;
-        var b = 0;
+        let k = 0;
+        let min = Infinity;
+        let a = 0;
+        let b = 0;
         while(k < this.vexnum - 1){
-            for(i = 0; i < this.vexnum; ++i){
-                for(var j = i + 1; j < this.vexnum; ++j){
+            for(let i = 0; i < this.vexnum; ++i){
+                for(let j = i + 1; j < this.vexnum; ++j){
                     if(this.arcs[i][j].adj < min) {
                         min = this.arcs[i][j].adj;
                         a = i;
@@ -490,7 +490,7 @@ export default class AdjacencyMatrixGraph {
                     weight: this.arcs[a][b].adj
                 };
 
-                for(i = 0; i < this.vexnum; ++i){
+                for(let i = 0; i < this.vexnum; ++i){
                     if(set[i] === set[b] && i !== b)
                         set[i] = set[a];
                 }
@@ -510,12 +510,12 @@ export default class AdjacencyMatrixGraph {
      * @param v0
      */
     shortestPath_Dijkstra(v0) {
-        var pre = [];
-        var dist = [];
-        var final = [];
-        var w;
+        let pre = [];
+        let dist = [];
+        let final = [];
+        let w, v;
 
-        for (var v = 0; v < this.vexnum; ++v) {
+        for (let v = 0; v < this.vexnum; ++v) {
             final[v] = false;
             dist[v] = this.arcs[v0][v].adj;
             pre[v] = pre[v] || [];
@@ -534,8 +534,8 @@ export default class AdjacencyMatrixGraph {
         // 开始主循环，每次求得v0到某个v顶点的最短路径，并加v到S集
 
         // 其余的顶点
-        for (var i = 1; i < this.vexnum; ++i) {
-            var min = Infinity;
+        for (let i = 1; i < this.vexnum; ++i) {
+            let min = Infinity;
             // 当前所指离v0顶点的最近距离
             for (w = 0; w < this.vexnum; ++w) {
                 // w顶点在V - S中
@@ -570,22 +570,22 @@ export default class AdjacencyMatrixGraph {
     }
 
     shortestPath_FLOYD() {
-        var a = [];
-        var path = [];
+        let a = [];
+        let path = [];
 
-        for (var j = 0; j < this.vexnum; ++j) {
+        for (let j = 0; j < this.vexnum; ++j) {
             a[j] = a[j] || [];
             path[j] = path[j] || [];
-            for (var k = 0; k < this.vexnum; ++k) {
+            for (let k = 0; k < this.vexnum; ++k) {
                 if(j === k) a[j][k] = 0;
                 else a[j][k] = this.arcs[j][k].adj;
                 path[j][k] = -1;
             }
         }
 
-        for (var m = 0; m < this.vexnum; ++m) {
-            for (j = 0; j < this.vexnum; ++j) {
-                for (k = 0; k < this.vexnum; ++k) {
+        for (let m = 0; m < this.vexnum; ++m) {
+            for (let j = 0; j < this.vexnum; ++j) {
+                for (let k = 0; k < this.vexnum; ++k) {
                     if (a[j][m] + a[m][k] < a[j][k]) {
                         a[j][k] = a[j][m] + a[m][k];
                         path[j][k] = m;
@@ -594,8 +594,8 @@ export default class AdjacencyMatrixGraph {
             }
         }
 
-        for (j = 0; j < this.vexnum; ++j) {
-            for (k = 0; k < this.vexnum; ++k) {
+        for (let j = 0; j < this.vexnum; ++j) {
+            for (let k = 0; k < this.vexnum; ++k) {
                 if (j !== k) {
                     console.log('%d到%d的最短路径为：', j, k);
                     console.log('%d ', j); prn_pass(j, k);
@@ -615,14 +615,14 @@ export default class AdjacencyMatrixGraph {
     }
 }
 
-var createDG = createGraph(DG);
-var createDN = createGraph(DN);
-var createUDG = createGraph(UDG);
-var createUDN = createGraph(UDN);
+let createDG = createGraph(DG);
+let createDN = createGraph(DN);
+let createUDG = createGraph(UDG);
+let createUDN = createGraph(UDN);
 
 function createGraph(kind) {
-    var adj;
-    var setMatrixValue;
+    let adj;
+    let setMatrixValue;
 
     if (kind === 2 || kind === 4) {
         adj = Infinity;
@@ -640,10 +640,10 @@ function createGraph(kind) {
         AdjacencyMatrixGraph.vexnum = parseInt(prompt('vexnum: '), 10);
         AdjacencyMatrixGraph.arcnum = parseInt(prompt('arcnum: '), 10);
         // incInfo为0则各弧不含其他信息
-        var incInfo = parseInt(prompt('incInfo: '), 10);
+        let incInfo = parseInt(prompt('incInfo: '), 10);
 
         // 构造顶点向量
-        var i, j;
+        let i, j;
         for (i = 0; i < AdjacencyMatrixGraph.vexnum; ++i) AdjacencyMatrixGraph.vexs[i] = prompt('顶点向量vex: ');
 
         // 初始化邻接矩阵
@@ -655,16 +655,16 @@ function createGraph(kind) {
         }
 
         // 构造邻接矩阵
-        for (var k = 0; k < AdjacencyMatrixGraph.arcnum; ++k) {
+        for (let k = 0; k < AdjacencyMatrixGraph.arcnum; ++k) {
             // 输入一条边依附的顶点及权值
-            var v1 = prompt('v1: ');
-            var v2 = prompt('v2: ');
+            let v1 = prompt('v1: ');
+            let v2 = prompt('v2: ');
 
             // 确定v1，v2在G中的位置
             i = AdjacencyMatrixGraph.locateVex(v1);
             j = AdjacencyMatrixGraph.locateVex(v2);
 
-            var w = setMatrixValue();
+            let w = setMatrixValue();
             // 弧<v1, v2>的权值
             AdjacencyMatrixGraph.arcs[i][j].adj = w;
             if (incInfo) AdjacencyMatrixGraph.arcs[i][j].info = prompt('info: ');
@@ -674,8 +674,8 @@ function createGraph(kind) {
 }
 
 // 第一种创建图方法
-var vexs = ['a', 'b', 'c', 'd', 'e'];
-var arcs = [
+let vexs = ['a', 'b', 'c', 'd', 'e'];
+let arcs = [
     [
         {"adj": Infinity, "info": null},
         {"adj": "6", "info": null},
@@ -712,10 +712,10 @@ var arcs = [
         {"adj": Infinity, "info": null}
     ]
 ];
-var udn = new AdjacencyMatrixGraph(vexs, arcs, 5, 7, 4);
+let udn = new AdjacencyMatrixGraph(vexs, arcs, 5, 7, 4);
 
 // 第二种创建图方法
-var dn = new AdjacencyMatrixGraph([], [], 0, 0, 2);
+let dn = new AdjacencyMatrixGraph([], [], 0, 0, 2);
 dn.addVertex('a');
 dn.addVertex('b');
 dn.addVertex('c');
@@ -749,7 +749,7 @@ console.log(dn);
 /*
 
  // 第三种创建图方法
- var g = new AdjacencyMatrixGraph();
+ let g = new AdjacencyMatrixGraph();
  g.kind = DN;
  g.createGraph();
  console.log(g);
@@ -794,7 +794,7 @@ console.log(dn);
 
 console.log('DFSTraverse: udn');
 
-var g1 = new AdjacencyMatrixGraph([], [], 0, 0, UDG);
+let g1 = new AdjacencyMatrixGraph([], [], 0, 0, UDG);
 g1.addVertex('v1');
 g1.addVertex('v3');
 g1.addVertex('v2');
@@ -823,7 +823,7 @@ g1.DFSTraverse_NonRecurse(function (v) {
 
 
 console.log('BFSTraverse: ');
-var bsfG = new AdjacencyMatrixGraph([], [], 0, 0, DG);
+let bsfG = new AdjacencyMatrixGraph([], [], 0, 0, DG);
 bsfG.addVertex('v1');
 bsfG.addVertex('v2');
 bsfG.addVertex('v3');
@@ -1007,7 +1007,7 @@ console.log(udn.minSpanTree_Kruskal());
 
  */
 
-var dijTest = new AdjacencyMatrixGraph([], [], 0, 0, DN);
+let dijTest = new AdjacencyMatrixGraph([], [], 0, 0, DN);
 
 dijTest.addVertex('0');
 dijTest.addVertex('1');
@@ -1061,7 +1061,7 @@ dijTest.shortestPath_Dijkstra(0);
 
  */
 
-var floyd = new AdjacencyMatrixGraph([], [], 0, 0, DN);
+let floyd = new AdjacencyMatrixGraph([], [], 0, 0, DN);
 floyd.addVertex('v0');
 floyd.addVertex('v1');
 floyd.addVertex('v2');
