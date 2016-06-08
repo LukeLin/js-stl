@@ -11,38 +11,38 @@ classic data structures implemented in javascript.
 #### directory
 
 * Array
-    * [CrossList](./src/Array/CrossList.js)
-    * [TSMatrix](./src/Array/TSMatrix.js)
-    * [algorithms](./src/Array/algorithms.js)
+    * [x] [CrossList](./src/Array/CrossList.js)
+    * [x] [TSMatrix](./src/Array/TSMatrix.js)
+    * [x] [algorithms](./src/Array/algorithms.js)
 
 * Binary Tree
-    * [BinaryTree](./src/BinaryTree/BinaryTree.js)
-    * [huffManCoding](./src/BinaryTree/huffManCoding.js)
-    * [backtracking](./src/algorithms/backtracking.js)
+    * [x] [BinaryTree](./src/BinaryTree/BinaryTree.js)
+    * [x] [huffManCoding](./src/BinaryTree/huffManCoding.js)
+    * [x] [backtracking](./src/algorithms/backtracking.js)
 
 * Generalized List
-    * [GList](./src/GeneralizedList/GList.js)
+    * [x] [GList](./src/GeneralizedList/GList.js)
 
 * Graph
-    * [AdjacencyListGraph](./src/Graph/AdjacencyListGraph.js)
-    * [AdjacencyMatrixGraph](./src/Graph/AdjacencyMatrixGraph.js)
-    * [AMLGraph](./src/Graph/AMLGraph.js)
-    * [OLGraph](./src/Graph/OLGraph.js)
+    * [x] [AdjacencyListGraph](./src/Graph/AdjacencyListGraph.js)
+    * [x] [AdjacencyMatrixGraph](./src/Graph/AdjacencyMatrixGraph.js)
+    * [x] [AMLGraph](./src/Graph/AMLGraph.js)
+    * [x] [OLGraph](./src/Graph/OLGraph.js)
 
 * LinkedList
-    * [LinkedList](./src/linkedList/LinkedList.js)
-    * [LinearList](./src/linkedList/LinearList.js)
-    * [DoubleLinkedList](./src/linkedList/doubleLinkedList.js)
+    * [x] [LinkedList](./src/linkedList/LinkedList.js)
+    * [x] [LinearList](./src/linkedList/LinearList.js)
+    * [x] [DoubleLinkedList](./src/linkedList/doubleLinkedList.js)
     * [StaticLinkedList](./src/linkedList/StaticLinkedList.js)
-    * [LRUCache](./src/linkedList/LRU.js)
+    * [x] [LRUCache](./src/linkedList/LRU.js)
 
 * Queue
-    * [Queue](./src/Queue/Queue.js)
-    * [CycleQueue](./src/Queue/CycleQueue.js)
-    * [PriorityQueue](./src/Queue/PriorityQueue.js)
+    * [x] [Queue](./src/Queue/Queue.js)
+    * [x] [CycleQueue](./src/Queue/CycleQueue.js)
+    * [x] [PriorityQueue](./src/Queue/PriorityQueue.js)
 
 * Stack
-    * [stack](./src/Stack/index.js)
+    * [x] [stack](./src/Stack/index.js)
 
 * String
     * HeapString
