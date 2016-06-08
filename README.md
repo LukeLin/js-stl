@@ -3,9 +3,8 @@
 classic data structures implemented in javascript.
 
 1. npm install
-2.
-- npm run build     // for production build
-- npm run build:dev // for development build
+2.  - npm run build     // for production build
+    - npm run build:dev // for development build
 
 
 #### directory
