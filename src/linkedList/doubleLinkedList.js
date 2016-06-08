@@ -22,7 +22,7 @@ class Node {
 }
 
 function defaultCompare(a, b) {
-    return a - b;
+    return a === b;
 }
 
 export default class DoubleLinkedList {
@@ -32,9 +32,25 @@ export default class DoubleLinkedList {
         this.size = 0;
         this.compare = compare;
 
-        for (let i = 0; i < sqList.length; ++i) {
-            this.push(sqList[i]);
+        if(sqList && sqList.length) {
+            for (let item of sqList) {
+                this.push(item);
+            }
         }
+    }
+
+    *[Symbol.iterator](){
+        let current = this.head;
+
+        while (current) {
+            yield current.data;
+
+            current = current.next;
+        }
+    }
+    
+    get length() {
+        return this.size;
     }
 
     push(data) {
@@ -60,8 +76,6 @@ export default class DoubleLinkedList {
 
         if (!this.head) {
             this.head = this.tail = new Node(data);
-            this.head.next = this.tail;
-            this.tail.prev = this.head;
         } else {
             let node = new Node(data, null, this.head);
             this.head.prev = node;
@@ -94,6 +108,12 @@ export default class DoubleLinkedList {
         this.head.next.prev = null;
         this.head = this.head.next;
     }
+    
+    update(index, data){
+        let node = this.findByIndex(index, true);
+        node.data = data;
+        return this;
+    }
 
     remove(data) {
         if (typeof data === 'function') throw new Error('data argument required');
@@ -101,7 +121,7 @@ export default class DoubleLinkedList {
         let current = this.head;
 
         while (current) {
-            if (this.compare(data, current.data) === 0) {
+            if (this.compare(data, current.data)) {
                 --this.size;
 
                 if (current === this.head) {
@@ -142,7 +162,7 @@ export default class DoubleLinkedList {
 
         while (current) {
             ++index;
-            if (this.compare(data, current.data) === 0) return index;
+            if (this.compare(data, current.data)) return index;
 
             current = current.next;
         }
@@ -150,7 +170,7 @@ export default class DoubleLinkedList {
         return -1;
     }
 
-    findByIndex(index = 0) {
+    findByIndex(index = 0, returnNode) {
         let current = this.head;
         let j = 0;
 
@@ -160,7 +180,7 @@ export default class DoubleLinkedList {
              current = current.next;
          }
 
-        return current.data;
+        return returnNode ? current : current.data;
     }
 
     forEach(cb = null) {
@@ -168,7 +188,7 @@ export default class DoubleLinkedList {
 
         let current = this.head;
 
-        while (current && current !== this.tail) {
+        while (current) {
             cb(current.data);
 
             current = current.next;
@@ -199,6 +219,11 @@ a.unshift(1);
 a.push(4);
 console.log(a.indexOf(4));
 console.log(a.findByIndex(2));
+
+for(let item of a){
+    console.log(item);
+}
+
 a.pop();
 a.shift();
 a.remove(2);
