@@ -35,7 +35,8 @@ module.exports = {
     LinkedList: {
         DoubleLinkedList: require('./linkedList/DoubleLinkedList'),
         LinearList: require('./linkedList/LinearList'),
-        StaticLinkedList: require('./LinkedList/StaticLinkedList')
+        StaticLinkedList: require('./linkedList/StaticLinkedList'),
+        LRUCache: require('./linkedList/LRU').default
     },
     
     Queue: {

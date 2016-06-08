@@ -34,6 +34,7 @@ classic data structures implemented in javascript.
     * [LinearList](./src/linkedList/LinearList.js)
     * [DoubleLinkedList](./src/linkedList/DoubleLinkedList.js)
     * [StaticLinkedList](./src/linkedList/StaticLinkedList.js)
+    * [LRUCache](./src/linkedList/LRU.js)
 
 * Queue
     * [Queue](./src/Queue/Queue.js)

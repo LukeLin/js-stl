@@ -16,7 +16,7 @@ export default class LinkedList {
 
         if (sqList) {
             for (let i = 0, len = sqList.length; i < len; ++i)
-                this.add(sqList[i]);
+                this.push(sqList[i]);
         } 
     }
     
@@ -73,7 +73,7 @@ export default class LinkedList {
     }
 
     // add data
-    add (data) {
+    push (data) {
         if (this.head === null) {
             this.head = new Node(data);
             this.tail = this.head;
@@ -324,7 +324,7 @@ function intersect(list, bList) {
         if (p.data < q.data) p = p.next;
         else if (q.data > q.data) q = q.next;
         else {
-            cList.add(q.data);
+            cList.push(q.data);
             p = p.next;
             q = q.next;
         }
@@ -397,7 +397,7 @@ function intersect_delete(list, b, c) {
 }
 
 var list = new LinkedList();
-list.add('b');
+list.push('b');
 list.unshift('a');
 list.insertAfter('b', 'c');
 console.log(list.item(2));
@@ -412,7 +412,7 @@ list.remove('a');
 console.log(list);
 
 let list2 = new LinkedList();
-list2.add('c');
+list2.push('c');
 list2.unshift('d');
 list2.insertAfter('d', 'b');
 console.log(JSON.stringify(list2));

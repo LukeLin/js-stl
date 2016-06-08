@@ -3,7 +3,7 @@ describe('linkedList tests', function(){
   var list = new List();
 
   it('should find the second item', function(){
-    list.add('b');
+    list.push('b');
     expect(list.head.data).toBe('b');
     expect(list.tail.next).toBe(null);
 
@@ -25,7 +25,7 @@ describe('linkedList tests', function(){
   var list2 = new List();
 
   it('should match the json', function(){
-    list2.add('c');
+    list2.push('c');
     list2.unshift('d');
     list2.insertAfter('d', 'b');
     expect(JSON.stringify(list2)).toBe('{"head":{"data":"d","next":{"data":"b","next":{"data":"c","next":null}}},"tail":{"data":"c","next":null}}');

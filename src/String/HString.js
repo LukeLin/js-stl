@@ -58,7 +58,7 @@ export default class HString {
         position = ~~position || 0;
         len = ~~len || this.length;
         if (position < 0 || position > this.length - 1 || len < 0 || len > this.length - position)
-            throw new Error('unexpected paramater');
+            throw new Error('unexpected parameter');
 
         let sub = new HString();
         stringCopy(sub.ch, this.ch, 0, len - 1, position);
