@@ -8,7 +8,7 @@ classic data structures implemented in javascript.
 - npm run build:dev // for development build
 
 
-directory
+#### directory
 
 * Array
     * [CrossList](./src/Array/CrossList.js)
@@ -16,34 +16,32 @@ directory
     * [algorithms](./src/Array/algorithms.js)
 
 * Binary Tree
-    * BinaryTree   ParentTree, ChildTree, ChildSiblingTree
-    * EBTNode
-    * PBTNode
-    * huffManCoding
-    * backtracking
+    * [BinaryTree](./src/BinaryTree/BinaryTree.js)
+    * [huffManCoding](./src/BinaryTree/huffManCoding.js)
+    * [backtracking](./src/algorithms/backtracking.js)
 
 * Generalized List
-    * GList
+    * [GList](./src/GeneralizedList/GList.js)
 
 * Graph
-    * AdjacencyListGraph
-    * AdjacencyMatrixGraph
-    * AMLGraph
-    * OLGraph
+    * [AdjacencyListGraph](./src/Graph/AdjacencyListGraph.js)
+    * [AdjacencyMatrixGraph](./src/Graph/AdjacencyMatrixGraph.js)
+    * [AMLGraph](./src/Graph/AMLGraph.js)
+    * [OLGraph](./src/Graph/OLGraph.js)
 
 * LinkedList
-    * linkedList
-    * linearList
-    * doubleLinkedList
-    * staticLinkedList
+    * [LinkedList](./src/linkedList/LinkedList.js)
+    * [LinearList](./src/linkedList/LinearList.js)
+    * [DoubleLinkedList](./src/linkedList/DoubleLinkedList.js)
+    * [StaticLinkedList](./src/linkedList/StaticLinkedList.js)
 
 * Queue
-    * Queue
-    * CycleQueue
-    * PriorityQueue
+    * [Queue](./src/Queue/Queue.js)
+    * [CycleQueue](./src/Queue/CycleQueue.js)
+    * [PriorityQueue](./src/Queue/PriorityQueue.js)
 
 * Stack
-    * stack
+    * [stack](./src/Stack/index.js)
 
 * String
     * HeapString
@@ -106,16 +104,16 @@ directory
         * bucketSort
 
 
-博客地址：
+### 博客地址：
 
-栈   http://www.html-js.com/article/2168<br>
-队列  http://www.html-js.com/article/2169<br>
-广义表 http://www.html-js.com/article/2084<br>
-二叉树的遍历和基本操作 http://www.html-js.com/article/2170<br>
-树和森林    http://www.html-js.com/article/2177<br>
-最优二叉树与回溯法   http://www.html-js.com/article/2178<br>
-图的概念和存储结构   http://www.html-js.com/article/2378<br>
-图的遍历    http://www.html-js.com/article/2423<br>
-查找/检索 之 静态查找    http://www.html-js.com/article/2714<br>
-动态查找（一） * 二叉排序树    http://www.html-js.com/article/2761
-todo ..
+* [栈](http://www.html-js.com/article/2168)
+* [队列](http://www.html-js.com/article/2169)
+* [广义表](http://www.html-js.com/article/2084)
+* [二叉树的遍历和基本操作](http://www.html-js.com/article/2170)
+* [树和森林](http://www.html-js.com/article/2177)
+* [最优二叉树与回溯法](http://www.html-js.com/article/2178)
+* [图的概念和存储结构](http://www.html-js.com/article/2378)
+* [图的遍历](http://www.html-js.com/article/2423)
+* [查找/检索之静态查找](http://www.html-js.com/article/2714)
+* [动态查找（一）*二叉排序树](http://www.html-js.com/article/2761)
+* todo ..

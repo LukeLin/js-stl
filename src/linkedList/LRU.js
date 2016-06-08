@@ -2,7 +2,7 @@
  * LRU( Least recently used )
  */
 
-import DoubleLinkedList from './doubleLinkedList';
+import DoubleLinkedList from './DoubleLinkedList';
 
 const LIMIT = 20;
 

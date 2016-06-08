@@ -13,12 +13,12 @@ module.exports = {
     },
     
     BinaryTree: {
-        BinaryThreadTree: require('./BinaryTree/BinaryThreadTree'),
+        // BinaryThreadTree: require('./BinaryTree/BinaryThreadTree'),
         BinaryTree: require('./BinaryTree/BinaryTree'),
-        EBTNode: require('./BinaryTree/EBTNode'),
+        // EBTNode: require('./BinaryTree/EBTNode'),
         huffManCoding: require('./BinaryTree/huffManCoding'),
-        MFSet: require('./BinaryTree/MFSet'),
-        PBTNode: require('./BinaryTree/PBTNode')
+        // MFSet: require('./BinaryTree/MFSet'),
+        // PBTNode: require('./BinaryTree/PBTNode')
     },
     
     GeneralizedList: {
@@ -33,8 +33,8 @@ module.exports = {
     },
     
     LinkedList: {
-        DoubleLinkedList: require('./LinkedList/DoubleLinkedList'),
-        LinearList: require('./LinkedList/LinearList'),
+        DoubleLinkedList: require('./linkedList/DoubleLinkedList'),
+        LinearList: require('./linkedList/LinearList'),
         StaticLinkedList: require('./LinkedList/StaticLinkedList')
     },
     

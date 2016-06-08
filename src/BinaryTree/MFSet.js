@@ -21,7 +21,8 @@ export class MFSet extends ParentTree {
     find(i) {
         if (i < 0 || i > this.nodes.length - 1) return -1;
         // 找集合S中i所在子集的根
-        for (let j = i; this.nodes[j].parent > 0; j = this.nodes[j].parent);
+        let j;
+        for (j = i; this.nodes[j].parent > 0; j = this.nodes[j].parent);
 
         return j;
     }
@@ -53,7 +54,9 @@ export class MFSet extends ParentTree {
     fix(i) {
         if (i < 0 || i > this.nodes.length - 1) return false;
 
-        for (let j = i; this.nodes[j].parent > 0; j = this.nodes[j].parent);
+        let j;
+        
+        for (j = i; this.nodes[j].parent > 0; j = this.nodes[j].parent);
 
         for (let k = i, t = this.nodes[k].parent; k !== j; k = t) this.nodes[k].parent = j;
     }

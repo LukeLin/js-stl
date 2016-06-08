@@ -28,7 +28,7 @@ CycleQueue.prototype = {
         this.base = {};
         this.front = this.rear = 0;
     },
-    size: function () {
+    get size() {
         return (this.rear - this.front + this.MAXQSIZE) % this.MAXQSIZE;
     },
     peekAt: function (index) {

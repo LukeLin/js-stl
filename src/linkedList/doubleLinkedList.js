@@ -14,14 +14,14 @@
  */
 
 class Node {
-    constructor(data, prev = null, next = null){
+    constructor(data, prev = null, next = null) {
         this.data = data;
         this.prev = prev;
         this.next = next;
     }
 }
 
-function defaultCompare(a, b){
+function defaultCompare(a, b) {
     return a - b;
 }
 
@@ -32,20 +32,18 @@ export default class DoubleLinkedList {
         this.size = 0;
         this.compare = compare;
 
-        for(let i = 0; i < sqList.length; ++i){
+        for (let i = 0; i < sqList.length; ++i) {
             this.push(sqList[i]);
         }
     }
 
-    push(data){
-        if(typeof data === 'undefined') throw new Error('data argument required');
+    push(data) {
+        if (typeof data === 'undefined') throw new Error('data argument required');
 
         ++this.size;
 
-        if(!this.head) {
+        if (!this.head) {
             this.head = this.tail = new Node(data);
-            this.head.next = this.tail;
-            this.tail.prev = this.head;
         } else {
             let node = new Node(data, this.tail, null);
             this.tail.next = node;
@@ -55,12 +53,12 @@ export default class DoubleLinkedList {
         return data;
     }
 
-    unshift(data){
-        if(typeof data === 'undefined') throw new Error('data argument required');
+    unshift(data) {
+        if (typeof data === 'undefined') throw new Error('data argument required');
 
         ++this.size;
 
-        if(!this.head) {
+        if (!this.head) {
             this.head = this.tail = new Node(data);
             this.head.next = this.tail;
             this.tail.prev = this.head;
@@ -73,8 +71,8 @@ export default class DoubleLinkedList {
         return data;
     }
 
-    pop(){
-        if(!this.tail) {
+    pop() {
+        if (!this.tail) {
             this.head = this.tail = null;
             return;
         }
@@ -82,11 +80,11 @@ export default class DoubleLinkedList {
         --this.size;
 
         this.tail.prev.next = null;
-        this.tail = this.tail.prev
+        this.tail = this.tail.prev;
     }
 
-    shift(){
-        if(!this.head){
+    shift() {
+        if (!this.head) {
             this.head = this.tail = null;
             return;
         }
@@ -97,33 +95,33 @@ export default class DoubleLinkedList {
         this.head = this.head.next;
     }
 
-    remove(data){
-        if(typeof data === 'function') throw new Error('data argument required');
-        
+    remove(data) {
+        if (typeof data === 'function') throw new Error('data argument required');
+
         let current = this.head;
 
-        do {
-            if(this.compare(data, current.data) === 0){
+        while (current) {
+            if (this.compare(data, current.data) === 0) {
                 --this.size;
 
-                if(current === this.head){
+                if (current === this.head) {
                     this.head = this.head.next;
 
-                    if(this.head){
+                    if (this.head) {
                         this.head.prev = null;
                     } else {
                         this.head = this.tail = null;
                     }
-                    
-                } else if(current = this.tail){
+
+                } else if (current === this.tail) {
                     this.tail = this.tail.prev;
 
-                    if(this.tail){
+                    if (this.tail) {
                         this.tail.prev.next = null;
                     } else {
                         this.head = this.tail = null;
                     }
-                    
+
                 } else {
                     current.prev.next = current.next;
                     current.next.prev = current.prev;
@@ -133,66 +131,65 @@ export default class DoubleLinkedList {
             }
 
             current = current.next;
-
-        } while(current && current !== this.tail);
+        }
 
         return false;
     }
 
-    indexOf(data){
+    indexOf(data) {
         let current = this.head;
         let index = -1;
 
-        do {
+        while (current) {
             ++index;
-            if(this.compare(data, current.data) === 0) break;
+            if (this.compare(data, current.data) === 0) return index;
 
             current = current.next;
-        } while(current && current !== this.tail);
+        }
 
-        return index;
+        return -1;
     }
 
-    findByIndex(index = 0){
+    findByIndex(index = 0) {
         let current = this.head;
         let j = 0;
 
-        do {
-            if(j++ === index) break;
+         while (current) {
+             if (j++ === index) break;
 
-            current = current.next;
-        } while(current && current !== this.tail);
+             current = current.next;
+         }
 
         return current.data;
     }
 
-    forEach(cb = null){
-        if(typeof cb !== 'function') throw new Error('argument should be a function');
+    forEach(cb = null) {
+        if (typeof cb !== 'function') throw new Error('argument should be a function');
 
         let current = this.head;
 
-        do {
+        while (current && current !== this.tail) {
             cb(current.data);
 
             current = current.next;
-        } while(current && current !== this.tail);
+        }
     }
 
-    toJSON(){
+    toJSON() {
         let list = [];
         let current = this.head;
 
-        do {
+        while (current) {
             list.push(current.data);
 
             current = current.next;
-        } while(current && current !== this.tail);
+        }
 
         return list;
     }
 
-    toString(){
-        return JSON.stringify(this.toJSON());
+    toString() {
+        return this.toJSON() + '';
     }
 }
 
@@ -200,7 +197,7 @@ export default class DoubleLinkedList {
 let a = new DoubleLinkedList([2, 3]);
 a.unshift(1);
 a.push(4);
-a.indexOf(3);
+console.log(a.indexOf(4));
 console.log(a.findByIndex(2));
 a.pop();
 a.shift();
