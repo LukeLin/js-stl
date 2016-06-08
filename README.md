@@ -33,7 +33,7 @@ classic data structures implemented in javascript.
     * [x] [LinkedList](./src/linkedList/LinkedList.js)
     * [x] [LinearList](./src/linkedList/LinearList.js)
     * [x] [DoubleLinkedList](./src/linkedList/doubleLinkedList.js)
-    * [StaticLinkedList](./src/linkedList/StaticLinkedList.js)
+    * [ ] [StaticLinkedList](./src/linkedList/StaticLinkedList.js)
     * [x] [LRUCache](./src/linkedList/LRU.js)
 
 * Queue
