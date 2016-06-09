@@ -250,28 +250,27 @@ RecNode *linkhash[m]，其中RecNode是结点类型，每个分量的初值为�
 
  */
 
-import LinkedList from '../linkedList/LinkedList';
+import LinkedList from '../List/LinkedList';
 
-function HashTable(){
-    this.data = [];
-    // 当前数据元素个数;
-    this.count = 0;
-    // 当前容量
-    this.sizeIndex = 0;
-}
 
-var hashSize = buildHashSize(977, 20);
+let hashSize = buildHashSize(977, 20);
 
-HashTable.prototype = {
-    constructor: HashTable,
+export class HashTable {
+    constructor() {
+        this.data = [];
+        // 当前数据元素个数;
+        this.count = 0;
+        // 当前容量
+        this.sizeIndex = 0;
+    }
 
     // 使用线性探测法解决冲突
-    search: function(key){
-        var max = hashSize[this.sizeIndex];
-        var p = hash(key, max);
-        var c = 0;
+    search(key) {
+        let max = hashSize[this.sizeIndex];
+        let p = hash(key, max);
+        let c = 0;
 
-        while(p < max && this.data[p] != null && key !== this.data[p]){
+        while (p < max && this.data[p] != null && key !== this.data[p]) {
             p = collision(key, ++c, max);
         }
 
@@ -280,18 +279,18 @@ HashTable.prototype = {
             collisionTimes: c,
             index: p
         };
-    },
+    }
 
-    insert: function(key){
-        var max = hashSize[this.sizeIndex];
-        if(this.count >= max) return {success: false, errormsg: 'table overflowed'};
+    insert(key) {
+        let max = hashSize[this.sizeIndex];
+        if (this.count >= max) return { success: false, errormsg: 'table overflowed' };
 
-        var ret = this.search(key);
-        var p = ret.index;
-        var c = ret.collisionTimes;
+        let ret = this.search(key);
+        let p = ret.index;
+        let c = ret.collisionTimes;
 
-        if(ret.success) return false;
-        else if(c < hashSize[this.sizeIndex] / 2){
+        if (ret.success) return false;
+        else if (c < hashSize[this.sizeIndex] / 2) {
             this.data[p] = key;
             ++this.count;
             return true;
@@ -299,21 +298,21 @@ HashTable.prototype = {
             this.recreateHashTable();
             return false;
         }
-    },
+    }
 
-    remove: function(key){
-        if(!this.count) return false;
+    remove(key) {
+        if (!this.count) return false;
 
-        var max = hashSize[this.sizeIndex];
-        var p = hash(key, max);
-        var c = 0;
+        let max = hashSize[this.sizeIndex];
+        let p = hash(key, max);
+        let c = 0;
 
-        while(key !== this.data[p])
+        while (key !== this.data[p])
             p = collision(key, ++c, max);
 
 
-        if(key === this.data[p]) {
-            var data = this.data[p];
+        if (key === this.data[p]) {
+            let data = this.data[p];
             this.data.splice(p, 1);
             --this.count;
 
@@ -321,18 +320,18 @@ HashTable.prototype = {
         }
 
         return false;
-    },
+    }
 
-    recreateHashTable: function(){
+    recreateHashTable() {
         return ++this.sizeIndex < hashSize.length;
     }
 
 };
 
 // ELFhash字符串散列函数
-function hash(str, max){
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
+function hash(str, max) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
         hash = (hash << 5) + hash + str.charCodeAt(i);
         hash = hash & hash; // Convert to 32bit integer
         hash = Math.abs(hash);
@@ -340,7 +339,7 @@ function hash(str, max){
     return hash % max;
 }
 
-function collision(key, times, max){
+function collision(key, times, max) {
     // 线性探测法
     return (hash(key, max) + times) % max;
 }
@@ -348,19 +347,19 @@ function collision(key, times, max){
 function isPrime(n) {
     if (n <= 3) return n > 1;
     if (n % 2 === 0 || n % 3 === 0) return false;
-    for (var  i = 5; i * i <= n; i += 6) {
+    for (let i = 5; i * i <= n; i += 6) {
         if (n % i === 0 || n % (i + 2) === 0) return false;
     }
 
     return true;
 }
 
-function buildHashSize(begin, length){
-    var hashSize = [];
+function buildHashSize(begin, length) {
+    let hashSize = [];
 
-    while(1){
-        if(hashSize.length >= length) break;
-        if(isPrime(begin)) hashSize.push(begin);
+    while (1) {
+        if (hashSize.length >= length) break;
+        if (isPrime(begin)) hashSize.push(begin);
         ++begin;
     }
 
@@ -369,7 +368,7 @@ function buildHashSize(begin, length){
 
 // 开放定址法
 //hashSize = [5, 7]; // for test. will be deleted
-var test = new HashTable();
+let test = new HashTable();
 test.insert('17');
 test.insert('60');
 test.insert('29');
@@ -386,48 +385,48 @@ test.remove('40');
 
 
 // 使用链地址法解决冲突的哈希表
-function LinkedListHashTable(){
-    // 当前数据元素个数;
-    this.count = 0;
-    // 当前容量
-    this.sizeIndex = 0;
-    this.hNodes = [];
-}
-LinkedListHashTable.prototype = {
-    constructor: LinkedListHashTable,
 
-    search: function(key){
-        var max = hashSize[this.sizeIndex];
-        var i = hash(key, max);
-        var t = this.hNodes;
+export class LinkedListHashTable {
+    constructor() {
+        // 当前数据元素个数;
+        this.count = 0;
+        // 当前容量
+        this.sizeIndex = 0;
+        this.hNodes = [];
+    }
 
-        if(t[i] == null) return {success: false, index: i};
+    search(key) {
+        let max = hashSize[this.sizeIndex];
+        let i = hash(key, max);
+        let t = this.hNodes;
 
-        var p = t[i];
-        var data = null;
+        if (t[i] == null) return { success: false, index: i };
 
-        p.each(function(node){
-            if(node.data === key) {
+        let p = t[i];
+        let data = null;
+
+        p.each(function (node) {
+            if (node.data === key) {
                 data = node.data;
                 return true;
             }
         });
 
-        return {success: data === key, index: i};
-    },
+        return { success: data === key, index: i };
+    }
 
-    insert: function(key){
-        var max = hashSize[this.sizeIndex];
-        if(this.count >= max) return {success: false, errormsg: 'table overflowed'};
+    insert(key) {
+        let max = hashSize[this.sizeIndex];
+        if (this.count >= max) return { success: false, errormsg: 'table overflowed' };
 
-        var ret = this.search(key);
-        var index = ret.index;
+        let ret = this.search(key);
+        let index = ret.index;
 
-        if(ret.success) return false;
+        if (ret.success) return false;
 
-        if(!this.hNodes[index]) this.hNodes[index] = new LinkedList();
+        if (!this.hNodes[index]) this.hNodes[index] = new LinkedList();
 
-        if(this.hNodes[index].size() < hashSize[this.sizeIndex] / 2) {
+        if (this.hNodes[index].size() < hashSize[this.sizeIndex] / 2) {
             this.hNodes[index].orderInsert(key);
             ++this.count;
             return true;
@@ -435,30 +434,30 @@ LinkedListHashTable.prototype = {
             this.recreateHashTable();
             return false;
         }
-    },
+    }
 
-    remove: function(key){
-        if(!this.count) return false;
+    remove(key) {
+        if (!this.count) return false;
 
-        var ret = this.search(key);
+        let ret = this.search(key);
 
-        if(ret.success) {
-            var index = ret.index;
-            var data = ret.data;
+        if (ret.success) {
+            let index = ret.index;
+            let data = ret.data;
             this.hNodes[index]['remove'](key);
             --this.count;
             return data;
         }
 
         return false;
-    },
+    }
 
-    recreateHashTable: function(){
+    recreateHashTable() {
         return ++this.sizeIndex < hashSize.length;
     }
 };
 
-var test2 = new LinkedListHashTable();
+let test2 = new LinkedListHashTable();
 test2.insert('17');
 test2.insert('60');
 test2.insert('29');

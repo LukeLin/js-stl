@@ -26,6 +26,10 @@ export default class LRUCache {
     remove(key){
         return this.__cache.remove({ key });
     }
+
+    clear(){
+        return this.___cache.clear();
+    }
     
     get(key){
         let index = this.__cache.indexOf({ key });

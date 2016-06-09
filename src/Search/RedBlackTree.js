@@ -86,10 +86,10 @@
 */
 import BSTNode from './BinarySortedTree';
 
-var RED = 'red';
-var BLACK = 'black';
+const RED = 'red';
+const BLACK = 'black';
 
-class RedBlackNode extends BSTNode {
+export class RedBlackNode extends BSTNode {
     constructor(data = null, ...rest){
         super(data, ...rest);
 
@@ -122,8 +122,8 @@ class RedBlackTree {
      * @param data
      */
     find(data){
-        var z = this.root;
-        var me = this;
+        let z = this.root;
+        let me = this;
 
         return (function find(z, data){
             if(z == me.nil || data === z.data) return z;
@@ -138,11 +138,11 @@ class RedBlackTree {
      * @param {*} data
      */
     add(data){
-        var z = new RedBlackNode(data);
+        let z = new RedBlackNode(data);
         z.leftChild = this.nil;
         z.rightChild = this.nil;
-        var y = this.nil;
-        var x = this.root;
+        let y = this.nil;
+        let x = this.root;
 
         // 找到要插入位置的结点y
         while(x != this.nil){
@@ -189,7 +189,7 @@ class RedBlackTree {
      * @param {RedBlackNode} z 待删除结点
      */
     removeNode(z){
-        var x, y;
+        let x, y;
 
         // 找到待删除结点的父结点或相邻待替换结点
         if(z.leftChild == this.nil || z.rightChild == this.nil)
@@ -215,9 +215,9 @@ class RedBlackTree {
 
     // 算法导论上的删除结点
     removeNode2(z){
-        var y = z;
-        var originalYColor = y.color;
-        var x;
+        let y = z;
+        let originalYColor = y.color;
+        let x;
 
         if(z.leftChild == this.nil) {
             x = z.rightChild;
@@ -273,7 +273,7 @@ class RedBlackTree {
     successor(z){
         if(z.rightChild != this.nil) return this.min(z.rightChild);
 
-        var y = z.parent;
+        let y = z.parent;
 
         while(y != this.nil && z == y.rightChild){
             z = y;
@@ -297,7 +297,7 @@ class RedBlackTree {
      * @returns {*}
      */
     remove(key){
-        var z = this.find(key);
+        let z = this.find(key);
 
         if(z == this.nil) return false;
 
@@ -309,7 +309,7 @@ RedBlackTree.prototype._rotateLeft = rotate('left');
 RedBlackTree.prototype._rotateRight = rotate('right');
 
 function rotate(dir){
-    var c1, c2;
+    let c1, c2;
     if( dir === 'left') {
         c1 = 'rightChild';
         c2 = 'leftChild';
@@ -319,7 +319,7 @@ function rotate(dir){
     }
 
     return function(x){
-        var y = x[c1];
+        let y = x[c1];
         x[c1] = y[c2];
 
         if(y[c2] != this.nil) y[c2].parent = x;
@@ -335,7 +335,7 @@ function rotate(dir){
 }
 
 function addFixup(dir){
-    var c1, c2, rotate1, rotate2;
+    let c1, c2, rotate1, rotate2;
     if( dir === 'left') {
         c1 = 'rightChild';
         c2 = 'leftChild';
@@ -352,7 +352,7 @@ function addFixup(dir){
         // note: 注释以左边为情况
 
         // 叔结点
-        var y = z.parent.parent[c1];
+        let y = z.parent.parent[c1];
 
         // 插入修复情况1：如果当前结点的父结点是红色且祖父结点的另一个子结点（叔结点）是红色
         // 将当前节点的父节点和叔叔节点涂黑，祖父结点涂红，把当前结点指向祖父节点，从新的当前节点重新开始算法。
@@ -379,13 +379,13 @@ function addFixup(dir){
     };
 }
 
-var leftAddFixup = addFixup('left');
-var rightAddFixup = addFixup('right');
-var leftRemoveFixup = removeFixup('left');
-var rightRemoveFixup = removeFixup('right');
+let leftAddFixup = addFixup('left');
+let rightAddFixup = addFixup('right');
+let leftRemoveFixup = removeFixup('left');
+let rightRemoveFixup = removeFixup('right');
 
 function removeFixup(dir){
-    var c1, c2, r1, r2;
+    let c1, c2, r1, r2;
     if(dir === 'left') {
         c1 = 'rightChild';
         c2 = 'leftChild';
@@ -402,7 +402,7 @@ function removeFixup(dir){
         // note: 注释以左边为情况
 
         // 叔结点
-        var w = z.parent[c1];
+        let w = z.parent[c1];
 
         // 删除修复情况1：当前节点是黑+黑且兄弟节点为红色(此时父节点和兄弟节点的子节点分为黑)。
         // 解法：把父节点染成红色，把兄弟结点染成黑色，之后重新进入算法
@@ -440,7 +440,7 @@ function removeFixup(dir){
 }
 
 
-var test = new RedBlackTree();
+let test = new RedBlackTree();
 test.add(13);
 test.add(8);
 test.add(17);

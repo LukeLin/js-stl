@@ -19,31 +19,37 @@
  */
 
 // 用堆实现优先队列
-function PriorityQueue(){
-    this.heap = [];
-}
-exports.PriorityQueue = PriorityQueue;
-PriorityQueue.prototype = {
-    constructor: PriorityQueue,
-    enQueue: function(value, priority){
+
+export default class PriorityQueue {
+    constructor() {
+        this.heap = [];
+    }
+
+    get size(){
+        return this.heap.length;
+    }
+
+    enQueue(value, priority = 0) {
+        if(typeof value === 'undefined') throw new Error('argument required');
+
         // 将当前节点追加到堆尾
         this.heap.push({
-            value: value,
-            priority: priority
+            value,
+            priority
         });
 
         // 如果只有一个节点，则不需要进行筛选操作
-        if(this.heap.length === 1) return;
+        if (this.heap.length === 1) return;
 
         // 获取最后一个非叶子节点，并进行堆调整
         upHeapAdjust(this.heap, (this.heap.length >> 1) - 1);
-    },
-    deQueue: function(){
-        if(!this.heap.length) return null;
+    }
+    deQueue() {
+        if (!this.heap.length) return null;
 
-        var heap = this.heap;
+        let heap = this.heap;
         // 出队列操作，弹出数据头元素
-        var data = heap[0];
+        let data = heap[0];
         // 用尾元素填充头元素
         heap[0] = heap[heap.length - 1];
         // 删除尾节点
@@ -54,25 +60,29 @@ PriorityQueue.prototype = {
 
         return data;
     }
-};
+
+    clear(){
+        this.heap = [];
+    }
+}
 
 // 对堆进行上滤操作，使得满足堆性质
-function upHeapAdjust(heap, parent){
-    var len = heap.length;
+function upHeapAdjust(heap, parent) {
+    let len = heap.length;
 
-    while(parent >= 0){
-        var leftChild = 2 * parent + 1;
-        var rightChild = leftChild + 1;
-        var max = leftChild;
+    while (parent >= 0) {
+        let leftChild = 2 * parent + 1;
+        let rightChild = leftChild + 1;
+        let max = leftChild;
 
-        if(rightChild < len) {
+        if (rightChild < len) {
             max = heap[leftChild].priority < heap[rightChild].priority
                 ? rightChild : leftChild;
         }
 
         // 如果parent节点小于它的某个子节点的话，此时筛选操作
-        if(heap[parent].priority < heap[max].priority) {
-            var temp = heap[parent];
+        if (heap[parent].priority < heap[max].priority) {
+            let temp = heap[parent];
             heap[parent] = heap[max];
             heap[max] = temp;
 
@@ -83,21 +93,21 @@ function upHeapAdjust(heap, parent){
 }
 
 // 对堆进行下滤操作，使得满足堆性质
-function downHeapAdjust(heap, parent){
-    var len = heap.length;
+function downHeapAdjust(heap, parent) {
+    let len = heap.length;
 
-    while(2 * parent + 1 < len){
-        var leftChild = 2 * parent + 1;
-        var rightChild = leftChild + 1;
-        var max = leftChild;
+    while (2 * parent + 1 < len) {
+        let leftChild = 2 * parent + 1;
+        let rightChild = leftChild + 1;
+        let max = leftChild;
 
-        if(rightChild < len) {
+        if (rightChild < len) {
             max = heap[leftChild].priority < heap[rightChild].priority
                 ? rightChild : leftChild;
         }
 
-        if(heap[parent].priority < heap[max].priority) {
-            var temp = heap[parent];
+        if (heap[parent].priority < heap[max].priority) {
+            let temp = heap[parent];
             heap[parent] = heap[max];
             heap[max] = temp;
 
@@ -106,7 +116,7 @@ function downHeapAdjust(heap, parent){
     }
 }
 
-var test = new PriorityQueue();
+let test = new PriorityQueue();
 test.enQueue(8, 5);
 test.enQueue(7, 2);
 test.enQueue(6, 1);

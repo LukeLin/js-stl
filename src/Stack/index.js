@@ -17,6 +17,11 @@ export default class Stack {
         this.top = null;
         this.length = 0;
     }
+
+    get size(){
+        return this.length;
+    }
+
     isEmpty(){
         return this.length === 0;
     }

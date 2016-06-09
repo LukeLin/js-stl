@@ -1,7 +1,7 @@
 /**
  * Created by ldp on 2015/2/7.
  */
-import LinkedList from '../../LinkedList/LinkedList';
+import LinkedList from '../../List/LinkedList';
 import Queue from '../../Queue/Queue';
 var defaultCompare = require('../defaultComparision');
 

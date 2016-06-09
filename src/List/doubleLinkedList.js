@@ -53,6 +53,14 @@ export default class DoubleLinkedList {
         return this.size;
     }
 
+    clear(){
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+
+        return true;
+    }
+
     push(data) {
         if (typeof data === 'undefined') throw new Error('data argument required');
 

@@ -32,11 +32,11 @@ module.exports = {
         OLGraph: require('./Graph/OLGraph')
     },
     
-    LinkedList: {
-        DoubleLinkedList: require('./linkedList/DoubleLinkedList'),
-        LinearList: require('./linkedList/LinearList'),
-        StaticLinkedList: require('./linkedList/StaticLinkedList'),
-        LRUCache: require('./linkedList/LRU').default
+    List: {
+        DoubleLinkedList: require('./List/DoubleLinkedList'),
+        LinearList: require('./List/LinearList'),
+        StaticLinkedList: require('./List/StaticLinkedList'),
+        LRUCache: require('./List/LRU').default
     },
     
     Queue: {

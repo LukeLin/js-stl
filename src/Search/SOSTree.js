@@ -19,7 +19,7 @@
  Δpi =   ∑wj - ∑wj   最小，即 Δpi = Min {Δpj }
  再分别对 {rl,rl+1,…,ri-1} 和 {ri+1,ri+2,…,rh} 分别构造次优查找树
  */
-var BinaryTree = require('../BinaryTree/BinaryTree').BinaryTree;
+import { BinaryTree } from '../BinaryTree/BinaryTree';
 
 /**
  * 由有序表sTable[low..high]及其累计权值表weights递归构造次优查找树
@@ -30,13 +30,13 @@ var BinaryTree = require('../BinaryTree/BinaryTree').BinaryTree;
  * @param {Number} high
  */
 function secondOptimal(tree, sTable, sWeights, low, high) {
-    var i = low;
-    var min = Math.abs(sWeights[high] - sWeights[low]);
-    var dw = sWeights[high] + (sWeights[low - 1] || 0);
+    let i = low;
+    let min = Math.abs(sWeights[high] - sWeights[low]);
+    let dw = sWeights[high] + (sWeights[low - 1] || 0);
 
     // 选择最小的△Pi值
-    for (var j = low + 1; j <= high; ++j) {
-        var t = Math.abs(dw - sWeights[j] - sWeights[j - 1]);
+    for (let j = low + 1; j <= high; ++j) {
+        let t = Math.abs(dw - sWeights[j] - sWeights[j - 1]);
         if (t < min) {
             i = j;
             min = t;
@@ -44,7 +44,7 @@ function secondOptimal(tree, sTable, sWeights, low, high) {
     }
 
     // 调整树根权，选择邻近权值较大的关键字
-    var a = 0, b, c = 0;
+    let a = 0, b, c = 0;
     if (i - 1 >= low)  b = sWeights[i] - sWeights[i - 1];
     if (i - 2 >= low) a = sWeights[i - 1] - sWeights[i - 2];
     if (i + 1 < high) c = sWeights[i + 1] - sWeights[i];
@@ -68,7 +68,7 @@ function secondOptimal(tree, sTable, sWeights, low, high) {
     }
 }
 
-var tree = new BinaryTree();
+let tree = new BinaryTree();
 secondOptimal(tree, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'], [1, 2, 4, 9, 12, 16, 20, 23, 28], 0, 8);
 console.log(tree);
 
@@ -78,11 +78,11 @@ console.log(tree);
  * @param {Object} obj 有序表，数据元素含有权域weight
  */
 function createSOSTree(obj) {
-    var tree;
+    let tree;
     if (obj.elems.length === 0) tree = null;
     else {
         // 求累计权值表
-        var sw = findSW(obj.weights);
+        let sw = findSW(obj.weights);
         tree = new BinaryTree();
         secondOptimal(tree, obj.elems, sw, 0, obj.elems.length - 1);
     }
@@ -91,16 +91,16 @@ function createSOSTree(obj) {
 }
 
 function findSW(sTable) {
-    var sw = [sTable[0]];
+    let sw = [sTable[0]];
 
-    for (var i = 1; i < sTable.length; ++i) {
+    for (let i = 1; i < sTable.length; ++i) {
         sw[i] = sw[i - 1] + sTable[i];
     }
 
     return sw;
 }
 
-var sosTree = createSOSTree({
+let sosTree = createSOSTree({
     elems: ['A', 'B', 'C', 'D', 'E'],
     weights: [1, 30, 2, 29, 3]
 });

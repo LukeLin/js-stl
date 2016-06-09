@@ -28,7 +28,7 @@ classic data structures implemented in javascript.
     * [x] [AMLGraph](./src/Graph/AMLGraph.js)
     * [x] [OLGraph](./src/Graph/OLGraph.js)
 
-* LinkedList
+* List
     * [x] [LinkedList](./src/linkedList/LinkedList.js)
     * [x] [LinearList](./src/linkedList/LinearList.js)
     * [x] [DoubleLinkedList](./src/linkedList/doubleLinkedList.js)
@@ -55,7 +55,7 @@ classic data structures implemented in javascript.
     * [x] [fibonacciSearch](./src/Search/fibonacciSearch.js)
     * [x] [SecondOptimalSearchTree](./src/Search/SOSTree.js)
     * [x] [BinarySortedTree](./src/Search/BinarySortedTree.js)
-    * [ ] [AVLTree](./src/Search/AVLTree.js)
+    * [x] [AVLTree](./src/Search/AVLTree.js)
     * [x] [RedBlackTree](./src/Search/RedBlackTree.js)
     * [x] [BTree](./src/Search/BTree.js)
     * [x] [B+Tree](./src/Search/BPlusTree.js)

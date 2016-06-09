@@ -61,6 +61,35 @@ export default class LinkedList {
         return head;
     }
 
+    pop(){
+        let current = this.head;
+        let previous = this.head;
+        let elem;
+
+        while (current !== null) {
+            if (this.tail === current) {
+                if (current === this.head) {
+                    elem = this.tail.data;
+                    this.head = null;
+                    break;
+                }
+
+                this.tail = previous;
+
+                previous.next = current.next;
+                elem = current.data;
+                break;
+            }
+
+            previous = current;
+            current = current.next;
+        }
+
+        if (this.head === null) this.tail = null;
+
+        return elem ? elem : false;
+    }
+
     // append node
     append (node) {
         if (this.head !== null) {
@@ -167,6 +196,12 @@ export default class LinkedList {
 
         for (let current = this.head; current; current = current.next)
             if (callback(current)) break;
+    }
+
+    *[Symbol.iterator](){
+        for(let current = this.head; current; current = current.next){
+            yield current.data;
+        }
     }
 
     size () {
@@ -482,3 +517,9 @@ test.orderInsert(9);
 
 intersect_delete(test, a, b);
 console.log(test);
+
+var popTest = new LinkedList();
+popTest.push(1);
+popTest.push(2);
+popTest.pop();
+popTest.pop();

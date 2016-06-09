@@ -4,10 +4,10 @@
 
 // 循环队列
 export default class CycleQueue {
-    constructor(){
+    constructor(maxsize = 100){
         this.base = {};
         this.front = this.rear = 0;
-        this.MAXQSIZE = 100;
+        this.MAXQSIZE = maxsize;
     }
 
     enQueue(data) {
