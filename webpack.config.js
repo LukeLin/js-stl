@@ -64,7 +64,9 @@ module.exports = {
         filename: DEBUG ? "./[name]-debug.js" : "./[name]-min.js",
         chunkFilename: DEBUG ? "./[name]-debug.js" : "./[name]-min.js",
         publicPath: '',
-        pathinfo: false
+        pathinfo: false,
+        libraryTarget: 'umd',
+        library: 'DS'
     },
 
     cache: DEBUG,
@@ -75,7 +77,7 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.jsx?$/,
+                test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
                 loader: 'babel',
                 query: {
@@ -83,12 +85,6 @@ module.exports = {
                     plugins: ['transform-runtime'],
                     cacheDirectory: true
                 }
-            },
-
-            {
-                test: /\.json$/,
-                exclude: /node_modules/,
-                loaders: ['json-loader']
             }
         ],
         noParse: []
@@ -109,13 +105,5 @@ module.exports = {
 
         alias: {
         }
-    },
-
-    devServer: DEBUG && {
-        contentBase: './dist/',
-        hot: true,
-        noInfo: false,
-        inline: true,
-        stats: {colors: true}
     }
 };
