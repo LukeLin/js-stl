@@ -67,6 +67,9 @@ classic data structures implemented in javascript.
     * [x] [HashTable](./src/Search/HashTable.js)
     * [ ] Treap    todo
     * [ ] SplayTree    todo
+    * [ ] BitMap    todo
+    * [ ] Bloom Filter  todo
+    * [ ] Heap  todo
 
 * Sort
     * [x] [insertion sort](./src/Sort/insertion/index.js)
