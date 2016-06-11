@@ -3,7 +3,7 @@
  */
 
 import StaticLinkedList from '../../List/StaticLinkedList';
-var defaultCompare = require('../defaultComparision');
+import defaultCompare from '../defaultComparision';
 
 /*
  插入排序

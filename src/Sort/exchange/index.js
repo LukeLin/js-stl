@@ -2,7 +2,7 @@
  * Created by Luke on 2015/2/2.
  */
 
-var defaultCompare = require('../defaultComparision');
+import defaultCompare from '../defaultComparision';
 
 /*
  交换排序
@@ -40,24 +40,22 @@ var defaultCompare = require('../defaultComparision');
 
  */
 
-function bubbleSort(sqList, comp){
-    if(comp == null) comp = defaultCompare;
-    for(var i = 1, len = sqList.length; i < len; ++i){
-        var change = 0;
+export function bubbleSort(sqList, comp = defaultCompare) {
+    for (let i = 1, len = sqList.length; i < len; ++i) {
+        let change = 0;
 
-        for(var j = 0; j <= len - i; ++j){
-            if(comp(sqList[j + 1], sqList[j]) < 0) {
+        for (let j = 0; j <= len - i; ++j) {
+            if (comp(sqList[j + 1], sqList[j]) < 0) {
                 change = 1;
-                var temp = sqList[j];
+                let temp = sqList[j];
                 sqList[j] = sqList[j + 1];
                 sqList[j + 1] = temp;
             }
         }
 
-        if(!change) break;
+        if (!change) break;
     }
 }
-exports.bubbleSort = bubbleSort;
 
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
@@ -66,15 +64,15 @@ console.log('bubbleSort:\n' + arr + '');
 
 
 // 冒泡改进1
-function bubbleSort2(sqList, comp){
-    if(comp == null) comp = defaultCompare;
-    var len = sqList.length;
-    var change = len - 1;
+export function bubbleSort2(sqList, comp = defaultCompare) {
+    let len = sqList.length;
+    let change = len - 1;
 
-    while(change){
-        for(var c = 0, i = 0; i < change; ++i){
-            if(comp(sqList[i], sqList[i + 1]) > 0) {
-                var temp = sqList[i];
+    while (change) {
+        let c = 0;
+        for (let i = 0; i < change; ++i) {
+            if (comp(sqList[i], sqList[i + 1]) > 0) {
+                let temp = sqList[i];
                 sqList[i] = sqList[i + 1];
                 sqList[i + 1] = temp;
                 // c指示这一趟冒泡中发生交换的元素
@@ -85,7 +83,6 @@ function bubbleSort2(sqList, comp){
         change = c;
     }
 }
-exports.bubbleSort2 = bubbleSort2;
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
 bubbleSort2(arr);
@@ -93,20 +90,19 @@ console.log('bubbleSort2:\n' + arr + '');
 
 
 // 相邻两趟反方向起泡的冒泡排序算法
-function cockTailSort(sqList, comp){
-    if(comp == null) comp = defaultCompare;
-    var len = sqList.length;
+export function cockTailSort(sqList, comp = defaultCompare) {
+    let len = sqList.length;
     // 冒泡上下界
-    var low = 0, high = len - 1;
-    var change = 1;
-    var temp;
+    let low = 0, high = len - 1;
+    let change = 1;
+    let temp;
 
-    while(low < high && change){
+    while (low < high && change) {
         change = 0;
 
         // 从上向下起泡
-        for(var i = low; i < high; ++i){
-            if(comp(sqList[i], sqList[i + 1]) > 0) {
+        for (let i = low; i < high; ++i) {
+            if (comp(sqList[i], sqList[i + 1]) > 0) {
                 temp = sqList[i];
                 sqList[i] = sqList[i + 1];
                 sqList[i + 1] = temp;
@@ -117,8 +113,8 @@ function cockTailSort(sqList, comp){
         --high;
 
         // 从下向上起泡
-        for(i = high; i > low; --i){
-            if(comp(sqList[i], sqList[i - 1]) < 0) {
+        for (let i = high; i > low; --i) {
+            if (comp(sqList[i], sqList[i - 1]) < 0) {
                 temp = sqList[i];
                 sqList[i] = sqList[i - 1];
                 sqList[i - 1] = temp;
@@ -129,7 +125,6 @@ function cockTailSort(sqList, comp){
         ++low;
     }
 }
-exports.cockTailSort = cockTailSort;
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
 cockTailSort(arr);
@@ -137,25 +132,24 @@ console.log('cockTailSort:\n' + arr + '');
 
 
 // 改进3
-function cockTailSort2(sqList, comp){
-    if(comp == null) comp = defaultCompare;
-    var b = {};
-    var len = sqList.length;
+export function cockTailSort2(sqList, comp = defaultCompare) {
+    let b = {};
+    let len = sqList.length;
     // d为冒泡方向标识， 1为向上，-1为向下
-    var d = 1;
+    let d = 1;
     // b[0]为冒泡上界，b[2]为冒泡上界，b[1]无用
     b[0] = 0;
     b[2] = len - 1;
-    var change = 1;
+    let change = 1;
 
-    while(b[0] < b[2] && change){
+    while (b[0] < b[2] && change) {
         change = 0;
 
         // 统一的冒泡算法
-        for(var i = b[1 - d]; i !== b[1 + d]; i += d){
+        for (let i = b[1 - d]; i !== b[1 + d]; i += d) {
             // 注意这个交换条件
-            if(comp(sqList[i], sqList[i + d]) * d > 0){
-                var temp = sqList[i];
+            if (comp(sqList[i], sqList[i + d]) * d > 0) {
+                let temp = sqList[i];
                 sqList[i] = sqList[i + d];
                 sqList[i + d] = temp;
                 change = 1;
@@ -168,7 +162,6 @@ function cockTailSort2(sqList, comp){
         d *= -1;
     }
 }
-exports.cockTailSort2 = cockTailSort2;
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
 cockTailSort2(arr);
@@ -221,13 +214,13 @@ console.log('cockTailSort2:\n' + arr + '');
 
  */
 
-function partition1(sqList, low, high){
-    var temp = sqList[low];
+function partition1(sqList, low, high) {
+    let temp = sqList[low];
 
-    while(low < high){
-        while(low < high && sqList[high] >= temp) --high;
+    while (low < high) {
+        while (low < high && sqList[high] >= temp)--high;
         sqList[low] = sqList[high];
-        while(low < high && sqList[low] <= temp) ++low;
+        while (low < high && sqList[low] <= temp)++low;
         sqList[high] = sqList[low];
     }
 
@@ -238,21 +231,21 @@ function partition1(sqList, low, high){
 
 // 优化一趟快速排序方法： 随机化partition
 // 最坏情况效率大幅提升，时间复杂度T(n)=O(n㏒2n)
-function partition2(sqList, low, high){
-    var temp;
-    var n = high - low + 1;
-    var rand = Math.floor(Math.random() * n) + low;
+function partition2(sqList, low, high) {
+    let temp;
+    let n = high - low + 1;
+    let rand = Math.floor(Math.random() * n) + low;
 
-    //var rand = (low + high) >> 1;
+    //let rand = (low + high) >> 1;
     temp = sqList[high];
     sqList[high] = sqList[rand];
     sqList[rand] = temp;
 
-    var i = low - 1;
-    var pivot = sqList[high];
+    let i = low - 1;
+    let pivot = sqList[high];
 
-    for(var j = low; j < high; ++j){
-        if(sqList[j] <= pivot) {
+    for (let j = low; j < high; ++j) {
+        if (sqList[j] <= pivot) {
             ++i;
             temp = sqList[i];
             sqList[i] = sqList[j];
@@ -267,23 +260,23 @@ function partition2(sqList, low, high){
     return i;
 }
 
-function partition(sqList, low, high, comp){
-    var temp;
-    var i = low;
-    var j = high + 1;
-    var rand = Math.floor(Math.random() * (high - low)) + low + 1;
-    //var rand = (low + high) >> 1;
+function partition(sqList, low, high, comp) {
+    let temp;
+    let i = low;
+    let j = high + 1;
+    let rand = Math.floor(Math.random() * (high - low)) + low + 1;
+    //let rand = (low + high) >> 1;
 
     temp = sqList[low];
     sqList[low] = sqList[rand];
     sqList[rand] = temp;
 
-    var x = sqList[low];
+    let x = sqList[low];
 
-    while(1){
-        while(comp(sqList[++i], x) < 0 && i < high);
-        while(comp(sqList[--j], x) > 0);
-        if(i >= j) break;
+    while (1) {
+        while (comp(sqList[++i], x) < 0 && i < high);
+        while (comp(sqList[--j], x) > 0);
+        if (i >= j) break;
         temp = sqList[i];
         sqList[i] = sqList[j];
         sqList[j] = temp;
@@ -295,18 +288,19 @@ function partition(sqList, low, high, comp){
     return j;
 }
 
-function quickSortRecursive(sqList, low, high, comp){
-    if(comp == null) comp = defaultCompare;
-    if(low == null) low = 0;
-    if(high == null) high = sqList.length - 1;
+export function quickSortRecursive(
+    sqList = [],
+    low = 0,
+    high = sqList.length - 1,
+    comp = defaultCompare
+) {
+    if (low >= high) return;
 
-    if(low >= high) return;
-
-    var k = partition(sqList, low, high, comp);
+    let k = partition(sqList, low, high, comp);
     quickSortRecursive(sqList, low, k - 1, comp);
     quickSortRecursive(sqList, k + 1, high, comp);
 }
-exports.quickSortRecursive = quickSortRecursive;
+
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
 quickSortRecursive(arr);
@@ -316,19 +310,20 @@ console.log('quickSortRecursive:\n' + arr + '');
 /*
 快排递归算法优化，在最坏情况下堆栈深度为O(logn)
  */
-function quickSortRecursive2(sqList, low, high, comp){
-    if(comp == null) comp = defaultCompare;
-    if(low == null) low = 0;
-    if(high == null) high = sqList.length - 1;
-
-    while(low < high){
-        var k = partition(sqList, low, high, comp);
+export function quickSortRecursive2(
+    sqList = [],
+    low = 0,
+    high = sqList.length - 1,
+    comp = defaultCompare
+) {
+    while (low < high) {
+        let k = partition(sqList, low, high, comp);
 
         // 对两个子数组中较小的一个子数组进行递归调用。
         // 较小子数组的大小最多为原数组大小一半，
         // 由于每次递归调用的数组大小至少减少一半，所以递归调用的次数
         // 最多为O(logn)
-        if(k - low + 1 < high - k) {
+        if (k - low + 1 < high - k) {
             quickSortRecursive2(sqList, low, k - 1, comp);
             low = k + 1;
         } else {
@@ -337,21 +332,22 @@ function quickSortRecursive2(sqList, low, high, comp){
         }
     }
 }
-exports.quickSortRecursive2 = quickSortRecursive2;
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
 quickSortRecursive2(arr);
 console.log('quickSortRecursive2:\n' + arr + '');
 
 
-function quickSortNonRecursive(sqList, low, high, comp){
-    if(comp == null) comp = defaultCompare;
-    if(low == null) low = 0;
-    if(high == null) high = sqList.length - 1;
-    var stack = [];
-    var k;
+export function quickSortNonRecursive(
+    sqList = [],
+    low = 0,
+    high = sqList.length - 1,
+    comp = defaultCompare
+) {
+    let stack = [];
+    let k;
 
     do {
-        while(low < high){
+        while (low < high) {
             k = partition(sqList, low, high, comp);
             // 第二个子序列的上,下界分别入栈
             stack.push(high, k + 1);
@@ -359,35 +355,36 @@ function quickSortNonRecursive(sqList, low, high, comp){
             high = k - 1;
         }
 
-        if(!stack.length) return;
+        if (!stack.length) return;
 
         low = stack.pop();
         high = stack.pop();
-    } while(1);
+    } while (1);
 }
-exports.quickSortNonRecursive = quickSortNonRecursive;
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
 quickSortNonRecursive(arr);
 console.log('quickSortNonRecursive:\n' + arr + '');
 
 // 优化版本
-function quickSort(sqList, low, high, comp){
-    if(comp == null) comp = defaultCompare;
-    if(low == null) low = 0;
-    if(high == null) high = sqList.length - 1;
-    var stack = [];
-    var pivot;
+export function quickSort(
+    sqList = [],
+    low = 0,
+    high = sqList.length - 1,
+    comp = defaultCompare
+) {
+    let stack = [];
+    let pivot;
 
     do {
         // 如果当前子序列长度大于3且尚未排好序
-        if(high - low > 2) {
+        if (high - low > 2) {
             // 进行一趟划分
             pivot = partition(sqList, low, high, comp);
 
             // 吧长的子序列边界入栈，
             // 短的子序列留待下次排序
-            if(high - pivot > pivot - low) {
+            if (high - pivot > pivot - low) {
                 stack.push(high, pivot + 1);
                 //stack.push();
                 high = pivot - 1;
@@ -399,43 +396,42 @@ function quickSort(sqList, low, high, comp){
         }
         // 如果当前子序列长度小于3，且尚未排好序，
         // 直接进行比较排序买当前子序列标志为已排好序
-        else if(low < high && high - low < 3) {
+        else if (low < high && high - low < 3) {
             easySort(sqList, low, high, comp);
             low = high;
         }
         // 如果当前子序列已排好序但栈中还有未排序的子序列
         // 从栈中取出一个子序列
         else {
-            if(!stack.length) return;
+            if (!stack.length) return;
 
             low = stack.pop();
             high = stack.pop();
         }
-    } while(1);
+    } while (1);
 }
-exports.quickSort = quickSort;
 
-function easySort(sqList, low, high, comp){
-    var temp;
+function easySort(sqList, low, high, comp) {
+    let temp;
 
-    if(high - low === 1) {
-        if(comp(sqList[low], sqList[high]) > 0) {
+    if (high - low === 1) {
+        if (comp(sqList[low], sqList[high]) > 0) {
             temp = sqList[low];
             sqList[low] = sqList[high];
             sqList[high] = temp;
         }
     } else {
-        if(comp(sqList[low], sqList[low + 1]) > 0) {
+        if (comp(sqList[low], sqList[low + 1]) > 0) {
             temp = sqList[low];
             sqList[low] = sqList[low + 1];
             sqList[low + 1] = temp;
         }
-        if(comp(sqList[low + 1], sqList[high]) > 0) {
+        if (comp(sqList[low + 1], sqList[high]) > 0) {
             temp = sqList[low + 1];
             sqList[low + 1] = sqList[high];
             sqList[high] = temp;
         }
-        if(comp(sqList[low], sqList[low + 1]) > 0) {
+        if (comp(sqList[low], sqList[low + 1]) > 0) {
             temp = sqList[low];
             sqList[low] = sqList[low + 1];
             sqList[low + 1] = temp;
@@ -449,17 +445,16 @@ console.log('quickSort:\n' + arr + '');
 
 
 // 奇偶交换排序
-function oddEvenSort(sqList, comp){
-    if(comp == null) comp = defaultCompare;
-    var change = 1;
-    var temp;
-    var len = sqList.length;
+export function oddEvenSort(sqList = [], comp = defaultCompare) {
+    let change = 1;
+    let temp;
+    let len = sqList.length;
 
-    while(change){
+    while (change) {
         change = 0;
         // 对所有奇数进行一趟比较
-        for(var i = 1; i < len - 1; i += 2){
-            if(comp(sqList[i], sqList[i + 1]) > 0) {
+        for (let i = 1; i < len - 1; i += 2) {
+            if (comp(sqList[i], sqList[i + 1]) > 0) {
                 temp = sqList[i];
                 sqList[i] = sqList[i + 1];
                 sqList[i + 1] = temp;
@@ -469,8 +464,8 @@ function oddEvenSort(sqList, comp){
         }
 
         // 对所有偶数进行一趟比较
-        for(i = 0; i < len - 1; i += 2){
-            if(comp(sqList[i], sqList[i + 1]) > 0) {
+        for (let i = 0; i < len - 1; i += 2) {
+            if (comp(sqList[i], sqList[i + 1]) > 0) {
                 temp = sqList[i];
                 sqList[i] = sqList[i + 1];
                 sqList[i + 1] = temp;
@@ -480,7 +475,6 @@ function oddEvenSort(sqList, comp){
         }
     }
 }
-exports.oddEvenSort = oddEvenSort;
 
 var arr = [23, 38, 22, 45, 23, 67, 31, 15, 41];
 oddEvenSort(arr);
@@ -492,18 +486,18 @@ console.log('oddEvenSort:\n' + arr + '');
 思路：
 设立三个指针，其中j表示当前元素；i以前的元素全部为红色；k以后的颜色全为蓝色。这样就可以根据j的颜色把其交换到序列的前面或者后面。
  */
-var RED = 0;
-var WHITE = 1;
-var BLUE = 2;
+const RED = 0;
+const WHITE = 1;
+const BLUE = 2;
 
-function flagArrange(colors){
-    var i = 0;
-    var j = 0;
-    var k = colors.length - 1;
-    var temp;
+function flagArrange(colors) {
+    let i = 0;
+    let j = 0;
+    let k = colors.length - 1;
+    let temp;
 
-    while(j <= k){
-        switch(colors[j]){
+    while (j <= k) {
+        switch (colors[j]) {
             case RED:
                 temp = colors[i];
                 colors[i] = colors[j];

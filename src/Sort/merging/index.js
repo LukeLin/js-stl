@@ -3,7 +3,7 @@
  */
 import LinkedList from '../../List/LinkedList';
 import Queue from '../../Queue/Queue';
-var defaultCompare = require('../defaultComparision');
+import defaultCompare from '../defaultComparision';
 
 /*
  归并排序

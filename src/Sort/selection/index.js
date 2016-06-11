@@ -2,7 +2,7 @@
  * Created by luke on 2015/2/2.
  */
 
-var defaultCompare = require('../defaultComparision');
+import defaultCompare from '../defaultComparision';
 
 /*
 选择排序

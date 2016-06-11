@@ -2,6 +2,8 @@
  * Created by ldp on 2015/2/18.
  */
 
+import { quickSort } from '../exchange/index';
+
 /*
  计数排序
 
@@ -25,9 +27,9 @@
  */
 
 function maxElem(arr){
-    var max = arr[0];
+    let max = arr[0];
 
-    for(var i = 1, len = arr.length; i < len; ++i)
+    for(let i = 1, len = arr.length; i < len; ++i)
         if(max < arr[i]) max = arr[i];
 
     return max;
@@ -39,26 +41,24 @@ function maxElem(arr){
  * @param {Number} k 数组中最大的元素值
  * @returns {Array}
  */
-function countSort(sqList, k){
-    if(k == null) k = maxElem(sqList);
-    var len = sqList.length;
-    var c = [];
-    var b = [];
+export function countSort(sqList = [], k = maxElem(sqList)){
+    let len = sqList.length;
+    let c = [];
+    let b = [];
 
     // 初始化辅助数组
-    for(var i = 0; i <= k; ++i) c[i] = 0;
+    for(let i = 0; i <= k; ++i) c[i] = 0;
     // 计数数组A中值等于C数组下标的个数
-    for(i = 0; i < len; ++i) c[sqList[i]]++;
+    for(let i = 0; i < len; ++i) c[sqList[i]]++;
     // 计数数组A中值小于等于C数组下标的个数
-    for(i = 1; i <= k; ++i) c[i] += c[i - 1];
-    for(i = len - 1; i >= 0; --i) {
+    for(let i = 1; i <= k; ++i) c[i] += c[i - 1];
+    for(let i = len - 1; i >= 0; --i) {
         b[c[sqList[i]] - 1] = sqList[i];
         --c[sqList[i]];
     }
 
-    for(i = 0; i < len; ++i) sqList[i] = b[i];
+    for(let i = 0; i < len; ++i) sqList[i] = b[i];
 }
-exports.countSort = countSort;
 
 var arr = [100, 93, 97, 92, 96, 99, 92, 89, 93, 97, 90, 94, 92, 95];
 countSort(arr, 100);
@@ -89,10 +89,10 @@ console.log(arr + '');
 
 // 求数据的最大位数
 function maxBit(arr){
-    var d = 1;
-    var p = 10;
+    let d = 1;
+    let p = 10;
 
-    for(var i = 0, n = arr.length; i < n; ++i){
+    for(let i = 0, n = arr.length; i < n; ++i){
         while(arr[i] >= p){
             p *= 10;
             ++d;
@@ -102,39 +102,37 @@ function maxBit(arr){
     return d;
 }
 
-function radixSort(arr, d){
-    d = d || maxBit(arr);
-    var n = arr.length;
-    var temp = [];
+export function radixSort(arr = [], d = maxBit(arr)){
+    let n = arr.length;
+    let temp = [];
     // 计数器
-    var count = [];
-    var radix = 1;
+    let count = [];
+    let radix = 1;
 
     // 进行d次排序
-    for(var i = 1; i <= d; ++i){
+    for(let i = 1; i <= d; ++i){
         // 每次分配前清空计数器
-        for(var j = 0; j < 10; ++j)
+        for(let j = 0; j < 10; ++j)
             count[j] = 0;
         // 统计每个桶中的记录数
-        for(j = 0; j < n; ++j){
-            var k = Math.floor(arr[j] / radix) % 10;
+        for(let j = 0; j < n; ++j){
+            let k = Math.floor(arr[j] / radix) % 10;
             ++count[k];
         }
-        for(j = 1; j < 10; ++j)
+        for(let j = 1; j < 10; ++j)
             count[j] += count[j - 1];
         // 将所有桶中记录依次收集到tmp中
-        for(j = n - 1; j >= 0; --j){
-            k = Math.floor(arr[j] / radix) % 10;
+        for(let j = n - 1; j >= 0; --j){
+            let k = Math.floor(arr[j] / radix) % 10;
             temp[--count[k]] = arr[j];
         }
         //将临时数组的内容复制到arr中
-        for(j = 0; j < n; ++j)
+        for(let j = 0; j < n; ++j)
             arr[j] = temp[j];
 
         radix *= 10;
     }
 }
-exports.radixSort = radixSort;
 
 var arr = [100, 93, 97, 92, 96, 99, 92, 89, 93, 97, 90, 94, 92, 95];
 radixSort(arr, 100);
@@ -169,39 +167,39 @@ console.log(arr + '');
  总结： 桶排序的平均时间复杂度为线性的O(N+C)，其中C=N*(logN-logM)。如果相对于同样的N，桶数量M越大，其效率越高，最好的时间复杂度达到O(N)。 当然桶排序的空间复杂度 为O(N+M)，如果输入数据非常庞大，而桶的数量也非常多，则空间代价无疑是昂贵的。此外，桶排序是稳定的。
  */
 
-var BUCKETSNUM = 10;
-var quickSort = require('../exchange/index').quickSort;
+const BUCKETSNUM = 10;
 
 function bucketSort(sqList){
-    var  n = sqList.length;
-    var bucketA = [];
-    var b = [];
+    let  n = sqList.length;
+    let bucketA = [];
+    let b = [];
 
     // 初始化桶
-    for(var i = 0; i < BUCKETSNUM; ++i){
+    for(let i = 0; i < BUCKETSNUM; ++i){
         b[i] = [];
         bucketA[i] = 0;
 
-        for(var j = 0; j < n; ++j)
+        for(let j = 0; j < n; ++j)
             b[i][j] = Infinity;
     }
 
     // 给桶填装数据
-    for(i = 0; i < n; ++i){
-        var data = sqList[i];
+    for(let i = 0; i < n; ++i){
+        let data = sqList[i];
         // noto: 这里的映射函数是针对1-100之间的实数
-        var bucket = Math.floor(data / BUCKETSNUM);
+        let bucket = Math.floor(data / BUCKETSNUM);
         b[bucket][bucketA[bucket]] = data;
         ++bucketA[bucket];
     }
 
     // 针对每个桶进行快速排序
-    for(i = 0; i < BUCKETSNUM; ++i){
+    for(let i = 0; i < BUCKETSNUM; ++i){
         if(bucketA[i] !== 0) {
             quickSort(b[i], 0, bucketA[i] - 1);
-            //for(j = 1; j < bucketA[i]; ++j){
-            //    var p = b[i][j];
-            //    for(var k = j - 1; k >= 0 && p < b[i][k]; --k){
+            //for(let j = 1; j < bucketA[i]; ++j){
+            //    let p = b[i][j];
+            //    let k;
+            //    for(k = j - 1; k >= 0 && p < b[i][k]; --k){
             //        b[i][k + 1] = b[i][k];
             //    }
             //    b[i][k + 1] = p;
@@ -213,10 +211,10 @@ function bucketSort(sqList){
     //console.log(bucketA);
 
     // 复制回去
-    var num = 0;
-    for(i = 0; i < BUCKETSNUM; ++i){
+    let num = 0;
+    for(let i = 0; i < BUCKETSNUM; ++i){
         if(bucketA[i] !== 0) {
-            for(j = 0; j < bucketA[i]; ++j){
+            for(let j = 0; j < bucketA[i]; ++j){
                 sqList[num++] = b[i][j];
             }
         }
