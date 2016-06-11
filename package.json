@@ -5,7 +5,7 @@
   "main": "./src/index.js",
   "scripts": {
     "build": "set NODE_ENV=production&&webpack --progress --colors",
-    "build:dev": "set NODE_ENV=development&&webpack --progress --colors",
+    "build:dev": "set NODE_ENV=development&&webpack --progress --colors --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

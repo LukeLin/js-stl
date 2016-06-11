@@ -7,11 +7,7 @@ let DEBUG = (process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'developmen
 let plugins = [
     new webpack.optimize.OccurrenceOrderPlugin()
 ];
-if (DEBUG) {
-    plugins.push(
-        new webpack.HotModuleReplacementPlugin()
-    );
-} else {
+if (!DEBUG) {
     plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             compress: {
@@ -43,33 +39,20 @@ if (DEBUG) {
     );
 }
 
-let appEntry = [
-    //'babel-polyfill',
-    './src/index.js'
-];
-if(DEBUG) {
-    appEntry.push(
-        //'webpack-dev-server/client?http://0.0.0.0:8000',
-        'webpack/hot/dev-server'
-    );
-}
-
 module.exports = {
     target: 'web',
-    entry: {
-        'data-structure': appEntry
-    },
+    entry: './src/index.js',
     output: {
         path: './dist/',
-        filename: DEBUG ? "./[name]-debug.js" : "./[name]-min.js",
-        chunkFilename: DEBUG ? "./[name]-debug.js" : "./[name]-min.js",
+        filename: DEBUG ? "./DS-debug.js" : "./DS-min.js",
+        chunkFilename: DEBUG ? "./DS-debug.js" : "./DS-min.js",
         publicPath: '',
         pathinfo: false,
         libraryTarget: 'umd',
         library: 'DS'
     },
 
-    cache: DEBUG,
+    cache: true,
     debug: DEBUG,
 
     devtool: DEBUG && "#inline-source-map",
