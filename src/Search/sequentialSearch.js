@@ -13,7 +13,7 @@
  ◆ 包含查找不成功时：查找失败的比较次数为n，若成功与不成功的概率相等，对每个记录的查找概率为Pi=1/(2n)，则平均查找长度ASL：3（n+1）/4
  */
 
-function sequentialSearch(sTable, key) {
+export default function sequentialSearch(sTable, key) {
     for (var i = sTable.length - 1; i >= 0 && sTable[i] !== key; --i);
     return i;
 }

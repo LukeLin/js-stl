@@ -40,7 +40,7 @@ function fib(n) {
  * @param key
  * @param n
  */
-function fibonacciSearch(sTable, key, n = sTable.length) {
+export default function fibonacciSearch(sTable, key, n = sTable.length) {
     let low = 0;
     let high = n - 1;
     let f1 = fib(n);

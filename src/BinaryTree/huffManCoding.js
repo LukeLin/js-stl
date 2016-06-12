@@ -30,7 +30,7 @@ function HuffmanNode(weight, parent, leftChild, rightChild) {
     this.leftChild = leftChild || 0;
     this.rightChild = rightChild || 0;
 }
-export function huffManCoding(weights) {
+export default function huffManCoding(weights) {
     let n = weights.length;
     if (n < 1) return;
 

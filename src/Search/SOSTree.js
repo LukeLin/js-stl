@@ -29,7 +29,7 @@ import { BinaryTree } from '../BinaryTree/BinaryTree';
  * @param {Number} low
  * @param {Number} high
  */
-function secondOptimal(tree, sTable, sWeights, low, high) {
+export function secondOptimal(tree, sTable, sWeights, low, high) {
     let i = low;
     let min = Math.abs(sWeights[high] - sWeights[low]);
     let dw = sWeights[high] + (sWeights[low - 1] || 0);
@@ -77,7 +77,7 @@ console.log(tree);
  * 由有序表构造一棵次优查找树
  * @param {Object} obj 有序表，数据元素含有权域weight
  */
-function createSOSTree(obj) {
+export function createSOSTree(obj) {
     let tree;
     if (obj.elems.length === 0) tree = null;
     else {

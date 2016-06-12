@@ -89,7 +89,7 @@ import BSTNode from './BinarySortedTree';
 const RED = 'red';
 const BLACK = 'black';
 
-export class RedBlackNode extends BSTNode {
+class RedBlackNode extends BSTNode {
     constructor(data = null, ...rest){
         super(data, ...rest);
 
@@ -110,7 +110,7 @@ class RedBlackLeaf {
     }
 }
 
-class RedBlackTree {
+export default class RedBlackTree {
     constructor(){
         // 哨兵
         this.nil = new RedBlackLeaf();

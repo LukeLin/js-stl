@@ -55,12 +55,11 @@ function OLVexNode(data, firstIn, firstOut) {
  * @param {Number} arcnum 有向图的当前弧数
  * @constructor
  */
-function OLGraph(xList, vexnum, arcnum) {
+export default function OLGraph(xList, vexnum, arcnum) {
     this.xList = xList || [];
     this.vexnum = vexnum || 0;
     this.arcnum = arcnum || 0;
 }
-exports.OLGraph = OLGraph;
 OLGraph.prototype = {
     constructor: OLGraph,
 

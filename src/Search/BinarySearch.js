@@ -30,7 +30,7 @@
  */
 
 // 非递归式
-function binarySearch(sTable, key) {
+export function binarySearch(sTable, key) {
     let low = 0;
     let high = sTable.length - 1;
 
@@ -50,7 +50,7 @@ console.log('binarySearch: ');
 console.log(binarySearch([1, 2, 3, 4, 5], 1));  // 0
 
 // 递归式
-function binarySearchRecursive(sTable, key, low = 0, high = sTable.length - 1) {
+export function binarySearchRecursive(sTable, key, low = 0, high = sTable.length - 1) {
     if(low > high) return -1;
 
     let mid = (low + high) >> 1;
