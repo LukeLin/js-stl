@@ -52,9 +52,9 @@ import defaultCompare from '../defaultComparision';
 
  */
 
-var nCount = 0;
-var nonRecursiveCount = 0;
-var recursiveCount = 0;
+let nCount = 0;
+let nonRecursiveCount = 0;
+let recursiveCount = 0;
 
 /**
  * 将有序的sr[s1..e1]和sr[s2..e2]归并为有序的tr[s1..e2]
@@ -63,11 +63,11 @@ var recursiveCount = 0;
  * @param e1
  * @param e2
  */
-function merge(sr, s1, e1, e2, comp){
-    var temp = [];
-    var i = s1;
-    var j = e1 + 1;
-    var k = 0;
+function merge(sr, s1, e1, e2, comp = defaultCompare){
+    let temp = [];
+    let i = s1;
+    let j = e1 + 1;
+    let k = 0;
 
     while(i <= e1 && j <= e2){
         if(comp(sr[i], sr[j]) < 0) temp[k++] = sr[i++];
@@ -86,15 +86,11 @@ function merge(sr, s1, e1, e2, comp){
  * @param {Number} s
  * @param {Number} t
  */
-function mergeSortRecursive(sr, s, t, comp){
-    if (comp == null) comp = defaultCompare;
-    if(s == null) s = 0;
-    if(t == null) t = sr.length - 1;
-
+export function mergeSortRecursive(sr, s = 0, t = sr.length - 1, comp = defaultCompare){
     if(s >= t) return;
 
     // 将sr[s..t]平分为sr[s..m]和sr[m+1..t]
-    var m = (s + t) >> 1;
+    let m = (s + t) >> 1;
     // 递归地将sr[s..m]归并为有序的sr[s..m]
     mergeSortRecursive(sr, s, m, comp);
     // 递归地将sr[m+1..t]归并为有序的sr[m+1..t]
@@ -102,7 +98,6 @@ function mergeSortRecursive(sr, s, t, comp){
     // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
     merge(sr, s, m, t, comp);
 }
-exports.mergeSortRecursive = mergeSortRecursive;
 
 
 console.log('\n\nmergeSortRecursive:');
@@ -112,10 +107,9 @@ console.log(arr + '');
 
 
 
-function mergeSortNonRecursive(sr, comp){
-    if (comp == null) comp = defaultCompare;
-    var j, k;
-    for(var d = 1, n = sr.length - 1; d < n; d *= 2) {
+export function mergeSortNonRecursive(sr, comp = defaultCompare){
+    let j, k;
+    for(let d = 1, n = sr.length - 1; d < n; d *= 2) {
         // 一趟归并排序算法
         j = 0;
 
@@ -131,7 +125,6 @@ function mergeSortNonRecursive(sr, comp){
         else merge(sr, j, n, n, comp);
     }
 }
-exports.mergeSortNonRecursive = mergeSortNonRecursive;
 
 console.log('\nmergeSortNonRecursive:');
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
@@ -149,10 +142,11 @@ console.log(arr + '');
 
 // 扫描得到子串的函数
 function pass(sqList, rec, comp){
-    var num = 0;
+    let num = 0;
     rec[num++] = 0;
+    let len = sqList.length;
 
-    for(var i = 1, len = sqList.length; i < len; ++i){
+    for(let i = 1; i < len; ++i){
         if(comp(sqList[i], sqList[i + 1]) > 0) rec[num++] = i + 1;
     }
     rec[num++] = len;
@@ -160,20 +154,17 @@ function pass(sqList, rec, comp){
     return num;
 }
 
-function natureMergeSort(sqList, comp){
-    if (comp == null) comp = defaultCompare;
-    var rec = [];
+export function natureMergeSort(sqList, comp = defaultCompare){
+    let rec = [];
 
     //num=2说明已经排好序了
     //每循环一次，进行一次pass()操作
-    for(var num = pass(sqList, rec, comp); num !== 2; num = pass(sqList, rec, comp)){
-        for(var i = 0; i + 2 < num; i += 2) {
+    for(let num = pass(sqList, rec, comp); num !== 2; num = pass(sqList, rec, comp)){
+        for(let i = 0; i + 2 < num; i += 2) {
             merge(sqList, rec[i], rec[i + 1] - 1, rec[i + 2] - 1, comp);
         }
     }
 }
-
-exports.natureMergeSort = natureMergeSort;
 
 console.log('\nnatureMergeSort:');
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
@@ -189,21 +180,20 @@ console.log(nCount);
 /*
 双向自然合并排序是根据欲排序数据局部不是升序就是降序的自然有序特点,先线性扫描出自然有序的子数组段,再进行合并排序.扫描时的有序数段长度越长,段数越少,对应合并树的层数就会越少,算法的效率越高.
  */
-var naturalMergeSort = (function(){
+export let naturalMergeSort = (function(){
     return naturalMergeSort;
 
-    function naturalMergeSort(a, comp){
-        if (comp == null) comp = defaultCompare;
-        var b = [];
-        var n = a.length;
+    function naturalMergeSort(a, comp = defaultCompare){
+        let b = [];
+        let n = a.length;
         while(!mergeRuns(a, b, n, comp));
     }
 
     function mergeRuns(a, b, n, comp){
-        var i = 0;
-        var k = 0;
-        var asc = true;
-        var x;
+        let i = 0;
+        let k = 0;
+        let asc = true;
+        let x;
 
         while(i < n){
             k = i;
@@ -221,10 +211,10 @@ var naturalMergeSort = (function(){
     }
 
     function merge(a, b, low, high, asc, comp){
-        var k = asc ? low : high;
-        var c = asc ? 1 : -1;
-        var i = low;
-        var j = high;
+        let k = asc ? low : high;
+        let c = asc ? 1 : -1;
+        let i = low;
+        let j = high;
 
         while(i <= j){
             if(comp(a[i], a[j]) <= 0) b[k] = a[i++];
@@ -235,8 +225,6 @@ var naturalMergeSort = (function(){
     }
 })();
 
-exports.naturalMergeSort = naturalMergeSort;
-
 console.log('\nnaturalMergeSort:');
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 naturalMergeSort(arr);
@@ -244,22 +232,20 @@ console.log(arr + '');
 
 
 // 链表存储结构的自然合并排序
-var linkedListNaturalMergeSort = (function(){
+export let linkedListNaturalMergeSort = (function(){
     return mergeSort;
 
-    function mergeSort(linkedlist, needReplace, comp){
-        if (comp == null) comp = defaultCompare;
+    function mergeSort(linkedlist, needReplace = true, comp = defaultCompare){
         if(!linkedlist) return linkedlist;
 
-        var queue = new Queue();
-        var list = linkedlist.head;
+        let queue = new Queue();
+        let list = linkedlist.head;
 
         if(!list || !list.next) return linkedlist;
 
-        needReplace = needReplace == null ? true : needReplace;
-        var u = list;
-        var t = list;
-        var v;
+        let u = list;
+        let t = list;
+        let v;
         // 将递增的结点放入到队列中（会被切断）
         for(; t; t = u){
             while(u && u.next && comp(u.data, u.next.data) <= 0)
@@ -274,8 +260,8 @@ var linkedListNaturalMergeSort = (function(){
         // 合并结点
         while(queue.size){
             queue.enQueue(t);
-            var a = queue.deQueue();
-            var b = queue.deQueue();
+            let a = queue.deQueue();
+            let b = queue.deQueue();
             t = merge(a, b, comp);
         }
 
@@ -285,8 +271,8 @@ var linkedListNaturalMergeSort = (function(){
     }
 
     function merge(a, b, comp){
-        var c = new LinkedList();
-        var head = {data: null, next: null};
+        let c = new LinkedList();
+        let head = {data: null, next: null};
         c.head = head;
         c = c.head;
 
@@ -307,7 +293,6 @@ var linkedListNaturalMergeSort = (function(){
         return head.next;
     }
 })();
-exports.linkedListNaturalMergeSort = linkedListNaturalMergeSort;
 
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 var linkedList = new LinkedList(arr);

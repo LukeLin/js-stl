@@ -34,20 +34,19 @@ import defaultCompare from '../defaultComparision';
  */
 
 
-function simpleSelectionSort(sqList, comp) {
-    if (comp == null) comp = defaultCompare;
-    for (var i = 0, len = sqList.length; i < len; ++i) {
-        for (var k = i, j = k + 1; j < len; ++j)
+export function simpleSelectionSort(sqList, comp = defaultCompare) {
+    for (let i = 0, len = sqList.length; i < len; ++i) {
+        let k = i;
+        for (let j = k + 1; j < len; ++j)
             if (comp(sqList[j], sqList[k]) < 0) k = j;
 
         if (k !== i) {
-            var temp = sqList[k];
+            let temp = sqList[k];
             sqList[k] = sqList[i];
             sqList[i] = temp;
         }
     }
 }
-exports.simpleSelectionSort = simpleSelectionSort;
 
 var arr = [7, 4, -2, 19, 13, 6];
 simpleSelectionSort(arr);
@@ -134,10 +133,10 @@ http://blog.csdn.net/zz198808/article/details/7678055
  * @param {Number} m
  */
 function heapAdjust(sqList, s, m, comp) {
-    var rc = sqList[s];
+    let rc = sqList[s];
 
     // 沿关键字较大的孩子结点向下筛选
-    for (var j = 2 * s + 1; j <= m; j = j * 2 + 1) {
+    for (let j = 2 * s + 1; j <= m; j = j * 2 + 1) {
         // j为关键字较大的记录下标
         if (j < m && comp(sqList[j], sqList[j + 1]) < 0) ++j;
         // rc应插入在位置s上
@@ -149,17 +148,16 @@ function heapAdjust(sqList, s, m, comp) {
     sqList[s] = rc;
 }
 
-function heapSort(sqList, comp) {
-    if (comp == null) comp = defaultCompare;
-    var len = sqList.length;
+export function heapSort(sqList, comp = defaultCompare) {
+    let len = sqList.length;
     // 建立大堆顶
-    for (var i = (len >> 1) - 1; i >= 0; --i)
+    for (let i = (len >> 1) - 1; i >= 0; --i)
         heapAdjust(sqList, i, len - 1, comp);
 
-    for (i = len - 1; i > 0; --i) {
+    for (let i = len - 1; i > 0; --i) {
         // 将堆顶记录和当前未经排序子序列sqList[0..i]中
         // 最后一个记录相互交换
-        var temp = sqList[i];
+        let temp = sqList[i];
         sqList[i] = sqList[0];
         sqList[0] = temp;
 
@@ -167,7 +165,6 @@ function heapSort(sqList, comp) {
         heapAdjust(sqList, 0, i - 1, comp);
     }
 }
-exports.heapSort = heapSort;
 
 var arr = [1, 3, 4, 5, 7, 2, 6, 8, 0];
 heapSort(arr);
