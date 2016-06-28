@@ -38,21 +38,20 @@ import defaultCompare from '../defaultComparision';
 
  */
 
-function straightInsertSort(sqList, comp) {
-    if (comp == null) comp = defaultCompare;
-    for (var i = 1, len = sqList.length; i < len; ++i) {
+export function straightInsertSort(sqList, comp = defaultCompare) {
+    for (let i = 1, len = sqList.length; i < len; ++i) {
         // 设置哨兵, 当设置sqList[-1] = sqList[i]时，经测试效率更慢
         // 因为js里面的变量作用域在函数内的
-        var temp = sqList[i];
+        let temp = sqList[i];
         // 查找插入位置，并将记录后移
-        for(var j = i - 1; j >= 0 && comp(temp, sqList[j]) < 0; --j)
+        let j = i - 1;
+        for(; j >= 0 && comp(temp, sqList[j]) < 0; --j)
             sqList[j + 1] = sqList[j];
 
         // 插入到正确位置
         sqList[j + 1] = temp;
     }
 }
-exports.straightInsertSort = straightInsertSort;
 
 var a = [7, 4, -2, 19, 13, 6];
 straightInsertSort(a);
@@ -70,28 +69,26 @@ console.log(a + '');
 
  */
 
-function binaryInsertSort(sqList, comp) {
-    if (comp == null) comp = defaultCompare;
-    for (var i = 1, len = sqList.length; i < len; ++i) {
-        var temp = sqList[i];
-        var low = 0;
-        var high = i - 1;
+export function binaryInsertSort(sqList, comp = defaultCompare) {
+    for (let i = 1, len = sqList.length; i < len; ++i) {
+        let temp = sqList[i];
+        let low = 0;
+        let high = i - 1;
 
         while (low <= high) {
-            var mid = (low + high) >> 1;
+            let mid = (low + high) >> 1;
 
             if (comp(temp, sqList[mid]) < 0) high = mid - 1;
             else low = mid + 1;
         }
 
-        for (var j = i - 1; j >= high + 1; --j) {
+        for (let j = i - 1; j >= high + 1; --j) {
             sqList[j + 1] = sqList[j];
         }
 
         sqList[high + 1] = temp;
     }
 }
-exports.binaryInsertSort = binaryInsertSort;
 
 var b = [30, 13, 70, 85, 39, 42, 6, 20];
 binaryInsertSort(b);
@@ -111,15 +108,15 @@ console.log(b + '');
  在2-路插入排序中，移动记录的次数约为n2/8 。但当L[1]是待排序记录中关键字最大或最小的记录时，2-路插入排序就完全失去了优越性。
  */
 
-function path2InsertSort(sqList, comp) {
-    if (comp == null) comp = defaultCompare;
-    var d = [sqList[0]];
+export function path2InsertSort(sqList, comp = defaultCompare) {
+    let d = [sqList[0]];
     // first、final分别指示d中排好序的记录的第1个和最后1个记录的位置。
-    var first = 0;
-    var final = 0;
+    let first = 0;
+    let final = 0;
+    let len = sqList.length;
 
-    for (var i = 1, len = sqList.length; i < len; ++i) {
-        var item = sqList[i];
+    for (let i = 1; i < len; ++i) {
+        let item = sqList[i];
 
         // 待插入记录小于d中最小值，插入到d[first]之前（不需移动d数组的元素）。
         if (comp(item, d[first]) < 0) {
@@ -133,7 +130,7 @@ function path2InsertSort(sqList, comp) {
         // 待插入记录大于d中最小值，小于d中最大值，插入到d的中间（需要移动d数组的元素）。
         else {
             // 移动d尾部元素以便按序插入记录。
-            var j = final++;
+            let j = final++;
             while (comp(item, d[j]) < 0) {
                 d[(j + 1) % len] = d[j];
                 j = (j - 1) % len;
@@ -143,11 +140,10 @@ function path2InsertSort(sqList, comp) {
     }
 
     // 循环把d赋给sqList
-    for (i = 0; i < len; ++i) {
+    for (let i = 0; i < len; ++i) {
         sqList[i] = d[(i + first) % len];
     }
 }
-exports.path2InsertSort = path2InsertSort;
 
 var c = [49, 38, 65, 13, 97, 27, 76, 5, 100, 78, 15, 15, 20];
 path2InsertSort(c);
@@ -177,16 +173,15 @@ console.log(c + '');
 
 
 // 表插入排序
-function staticLinkedListInsertSort(sllist, comp) {
-    if (comp == null) comp = defaultCompare;
+export function staticLinkedListInsertSort(sllist, comp = defaultCompare) {
     // 构成循环链表
     sllist[0].cur = 1;
     sllist[1].cur = 0;
 
-    var p, q;
-    for (var i = 2, len = sllist.length; i <= len; ++i) {
+    let p, q;
+    for (let i = 2, len = sllist.length; i <= len; ++i) {
         p = 0;
-        var x = sllist[i].data;
+        let x = sllist[i].data;
 
         while (sllist[p].cur && comp(sllist[sllist[p].cur].data, x) < 0)
             p = sllist[p].cur;
@@ -201,18 +196,18 @@ exports.staticLinkedListInsertSort = staticLinkedListInsertSort;
 
 // 重排静态链表，静态链表下标已排好序
 function arrange(sllist) {
-    var p = sllist[0].cur;
+    let p = sllist[0].cur;
 
-    for (var i = 1, len = sllist.length; i < len; ++i) {
+    for (let i = 1, len = sllist.length; i < len; ++i) {
         // 第i个记录在list中的当前位置应不小于i
         // 找到第i个记录，并用p指示其在list中当前位置
         while (p < i) p = sllist[p].cur;
         // q指向尚未调整的表尾
-        var q = sllist[p].cur;
+        let q = sllist[p].cur;
 
         if (p !== i) {
             // 交换记录，使第i个记录到位
-            var temp = sllist[p];
+            let temp = sllist[p];
             sllist[p] = sllist[i];
             sllist[i] = temp;
             // 指向被移走的记录，使得以后可有while循环找到
@@ -267,10 +262,11 @@ console.log(d);
  */
 
 function shellInsert(sqList, dk, comp) {
-    for (var i = dk, len = sqList.length; i < len; ++i) {
-        var temp = sqList[i];
+    for (let i = dk, len = sqList.length; i < len; ++i) {
+        let temp = sqList[i];
         if (comp(temp, sqList[i - dk]) < 0) {
-            for (var j = i - dk; j >= 0 && comp(temp, sqList[j]) < 0; j -= dk)
+            let j = i - dk;
+            for (; j >= 0 && comp(temp, sqList[j]) < 0; j -= dk)
                 sqList[j + dk] = sqList[j];
 
             sqList[j + dk] = temp;
@@ -278,20 +274,18 @@ function shellInsert(sqList, dk, comp) {
     }
 }
 
-function shellSort(sqList, comp) {
-    if (comp == null) comp = defaultCompare;
-    var delta = createDelta(sqList.length);
+export function shellSort(sqList, comp = defaultCompare) {
+    let delta = createDelta(sqList.length);
     //console.log(delta);
-    for (var k = 0, t = delta.length; k < t; ++k) {
+    for (let k = 0, t = delta.length; k < t; ++k) {
         shellInsert(sqList, delta[k], comp);
     }
 }
-exports.shellSort = shellSort;
 
 function createDelta(n) {
-    var arr = [];
-    var t = (Math.log(n - 1) / Math.log(2)) | 0;  // Math.log(n - 1) / Math.log(2), Math.log(n + 1) / Math.log(2)
-    for(var k = 0; k <= t; ++k)
+    let arr = [];
+    let t = (Math.log(n - 1) / Math.log(2)) | 0;  // Math.log(n - 1) / Math.log(2), Math.log(n + 1) / Math.log(2)
+    for(let k = 0; k <= t; ++k)
         arr[k] = Math.pow(2, t - k) + 1;    // Math.pow(2, t - i + 1) - 1, Math.pow(2, t - i) + 1
 
     arr[arr.length] = 1;
