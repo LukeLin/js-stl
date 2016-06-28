@@ -67,34 +67,32 @@ function niBoLan2BoLan(str){
 
 console.log(niBoLan2BoLan('abc+*d-'));  // -*a+bcd
 
-function getLongestRepeatingSubstring(str){
-    var lrs1, lrs2;
-    for(var maxLen = 0, i = 0; i < str.length; ++i){
-        for(var k = 0, j = 0; j < str.length; ++j){
-            if(str[j] == str[j + i + 1]) ++k;
+function getLongestRepeatSubStr(str){
+    let maxLen = 0;
+    let results = [];
+
+    for(let i = 0; i < str.length; ++i){
+        for(let j = 0, k = 0; j < str.length; ++j){
+            if(str[j] === str[j + i + 1]) ++k;
             else k = 0;
 
-            if(k > maxLen) {
-                lrs1 = j - k + 1;
-                maxLen = k + 1;
-                lrs2 = lrs1 + maxLen;
+            if(k > maxLen){
+                maxLen = k;
+                results = [str.substring(j - k + 1, j + 1)];
+            } else if(maxLen && k === maxLen) {
+                results.push(str.substring(j - k + 1, j + 1));
             }
         }
     }
 
-    if(maxLen){
-        console.log('Longest Repeating Substring length: ' + maxLen);
-        console.log('Position 1: %d  Position 2: %d Substring: %s', lrs1, lrs2, str.substring(lrs1, lrs2));
-    } else {
-        console.log('No Repeating Substring found!');
-    }
+    return results;
 }
 
-getLongestRepeatingSubstring('abcdefghi');
-
-getLongestRepeatingSubstring('abbccddddc');
-
-getLongestRepeatingSubstring('abcdbcdbcb ');
+console.log(getLongestRepeatSubStr('abacddd'));
+console.log(getLongestRepeatSubStr('ababcd'));
+console.log(getLongestRepeatSubStr('abcdefghi'));
+console.log(getLongestRepeatSubStr('abbccddddc'));
+console.log(getLongestRepeatSubStr('abcdbcdbcb'));
 
 
 function getLongestPublicSubstring(s, t){
