@@ -1,10 +1,12 @@
 
 let webpack = require('webpack');
 let fs = require('fs');
+let HappyPack = require('happypack');
 
 let DEBUG = (process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development') || false;
 
 let plugins = [
+    new HappyPack({ id: 'js' }),
     new webpack.optimize.OccurrenceOrderPlugin()
 ];
 if (!DEBUG) {
@@ -67,7 +69,8 @@ module.exports = {
                     presets: ['es2015', 'stage-0'],
                     plugins: ['transform-runtime'],
                     cacheDirectory: true
-                }
+                },
+                happy: { id: 'js' }
             }
         ],
         noParse: []
