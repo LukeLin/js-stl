@@ -72,7 +72,7 @@ function getLongestRepeatSubStr(str){
     let results = [];
 
     for(let i = 0; i < str.length; ++i){
-        for(let j = 0, k = 0; j < str.length; ++j){
+        for(let j = 0, k = 0; j < str.length && j + i + 1 < str.length; ++j){
             if(str[j] === str[j + i + 1]) ++k;
             else k = 0;
 
