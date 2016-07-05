@@ -1,4 +1,4 @@
-# data-structure-with-js
+# js-stl
 
 classic data structures implemented in javascript.
 

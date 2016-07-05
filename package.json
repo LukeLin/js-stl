@@ -1,5 +1,5 @@
 {
-  "name": "data-structure-with-js",
+  "name": "js-stl",
   "version": "0.5.7",
   "description": "data structure",
   "main": "./lib/index.js",
