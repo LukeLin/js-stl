@@ -2,10 +2,11 @@
   "name": "data-structure-with-js",
   "version": "0.5.7",
   "description": "data structure",
-  "main": "./src/index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "build": "set NODE_ENV=production&&webpack --progress --colors",
     "build:dev": "set NODE_ENV=development&&webpack --progress --colors --watch",
+    "build:lib": "babel src --out-dir lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

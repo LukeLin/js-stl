@@ -1,10 +1,3 @@
-/**
- * Created by lukelin on 2016/4/30.
- */
-
-if(!process.browser){
-    require('babel-register');
-}
 
 module.exports = {
     Array: {
