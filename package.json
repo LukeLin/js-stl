@@ -1,5 +1,5 @@
 {
-  "name": "js-stl",
+  "name": "js-stl-polyfill",
   "version": "0.5.7",
   "description": "data structure",
   "main": "./lib/index.js",
