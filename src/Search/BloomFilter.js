@@ -159,13 +159,8 @@ export default class BloomFilter {
     }
 
     _setBit(bit){
-        let pos = 0;
-        let shift = bit;
-
-        while(shift > 7){
-            ++pos;
-            shift -= 8;
-        }
+        let pos = Math.floor(bit / 8);
+        let shift = bit % 8;
 
         let bitField = this.buffer[pos];
         bitField |= (0x1 << shift);
@@ -173,13 +168,8 @@ export default class BloomFilter {
     }
 
     _getBit(bit){
-        let pos = 0;
-        let shift = bit;
-
-        while(shift > 7){
-            ++pos;
-            shift -= 8;
-        }
+        let pos = Math.floor(bit / 8);
+        let shift = bit % 8;
 
         let bitField = this.buffer[pos];
 
