@@ -53,8 +53,218 @@
  先查找本地有无cache，如果没有则到其他兄弟 cache服务器上去查找。为了避免无谓的查询，在每个cache服务器上保存其兄弟服务器的缓存关键字，以bloomfilter方式存储，再去其他cache服务器查找之前，先检查该结构是否有url，如果有存在url，再去对应服务器查找。
  误判情况： 对应服务器不存在该URL的缓存。
 
+ Thanks to:
+ http://allenkim67.github.io/2016/05/17/nodejs-buffer-tutorial.html
  https://github.com/ceejbot/xx-bloom
  https://github.com/pierrec/js-xxhash
  */
 
+import { h32 as xxhash } from 'xxhashjs';
+import crypto  from 'crypto';
 
+const LN2_SQUARED = Math.LN2 * Math.LN2;
+
+
+export default class BloomFilter {
+    constructor(options = {}){
+        this.init(options);
+    }
+
+    init(options){
+        if(options.seeds){
+            this.seeds = options.seeds;
+            this.hashes = options.seeds.length;
+        } else {
+            this.seeds = [];
+            this.hashes = options.hashes || 0;
+
+            this._generateSeeds();
+        }
+
+        this.bits = options.bits || 1024;
+        this.buffer = Buffer.alloc(Math.ceil(this.bits / 8));
+
+        this.clear();
+    }
+
+    static optimize(itemCount, errorRate = 0.005){
+        let bits = Math.round(-1 * itemCount * Math.log(errorRate) / LN2_SQUARED);
+        let hashes = Math.round((bits / itemCount) * Math.LN2);
+
+        return {
+            bits,
+            hashes
+        };
+    }
+
+    static createOptimal(itemCount, errorRate){
+        let opts = this.constructor.optimize(itemCount, errorRate);
+
+        return new this.constructor(opts);
+    }
+
+    clear(){
+        //  buf.fill(0) to initialize a Buffer to zeroes
+        this.buffer.fill(0);
+    }
+
+    _generateSeeds(){
+        if(!this.seeds) this.seeds = [];
+
+        for(let i = 0; i < this.hashes; ++i){
+            // Generates cryptographically strong pseudo-random data. Generate 4 bytes.
+            let buf = crypto.randomBytes(4);
+            // Reads an unsigned 32-bit integer from the Buffer from index 0
+            this.seeds[i] = buf.readUInt32LE(0);
+
+            // Make sure we don't end up with two identical seeds,
+            // which is unlikely but possible.
+            for(let j = 0; j < i; ++j){
+                if(this.seeds[i] === this.seeds[j]){
+                    --i;
+                    break;
+                }
+            }
+        }
+    }
+
+    add(buf) {
+        if(Array.isArray(buf)){
+            for(let item of buf){
+                this.add(item);
+            }
+        } else {
+            buf = Buffer.from(buf);
+
+            for(let i = 0; i < this.hashes; ++i){
+                let hash = xxhash(buf, this.seeds[i]).toString();
+                let bit = hash % this.bits;
+                this._setBit(bit);
+            }
+        }
+    }
+
+    has(item){
+        item = Buffer.from(item);
+
+        for(let i = 0; i < this.hashes; ++i){
+            let hash = xxhash(item, this.seeds[i]).toString();
+            let bit = hash % this.bits;
+
+            let isInSet = this._getBit(bit);
+            if(!isInSet) return false;
+        }
+
+        return true;
+    }
+
+    _setBit(bit){
+        let pos = 0;
+        let shift = bit;
+
+        while(shift > 7){
+            ++pos;
+            shift -= 8;
+        }
+
+        let bitField = this.buffer[pos];
+        bitField |= (0x1 << shift);
+        this.buffer[pos] = bitField;
+    }
+
+    _getBit(bit){
+        let pos = 0;
+        let shift = bit;
+
+        while(shift > 7){
+            ++pos;
+            shift -= 8;
+        }
+
+        let bitField = this.buffer[pos];
+
+        return (bitField & (0x1 << shift)) !== 0;
+    }
+}
+
+var filter = new BloomFilter({ hashes: 8, bits: 1024 });
+filter.add(['cat', 'dog', 'coati', 'red panda']);
+console.log(filter.has('cat'));
+console.log(filter.has('coat'));
+console.log(filter.has('null'));
+
+
+class CountingBloomFilter extends BloomFilter {
+    constructor(opts = {}){
+        super(opts);
+    }
+
+    init(opts){
+        if (opts.seeds) {
+            this.seeds = opts.seeds;
+            this.hashes = opts.seeds.length;
+        } else {
+            this.hashes = opts.hashes || 8;
+            this._generateSeeds();
+        }
+
+        this.bits = opts.bits || 1024;
+        this.buffer = Buffer.alloc(this.bits);
+
+        this.clear();
+    }
+
+    static createOptimal(itemCount, errorRate){
+        let opts = BloomFilter.optimize(itemCount, errorRate);
+        return new this.constructor(opts);
+    }
+
+    clear(){
+        super.clear();
+
+        this.overflow = 0;
+    }
+
+    _setBit(bit){
+        // no-op at overflow
+        if(this.buffer[bit] === 255){
+            ++this.overflow;
+            return;
+        }
+
+        ++this.buffer[bit];
+    }
+
+    _unSetBit(bit){
+        if(this.buffer[bit] === 255 || this.buffer[bit] === 0)
+            return;
+
+        --this.buffer[bit];
+    }
+
+    _getBit(bit){
+        return this.buffer[bit] !== 0;
+    }
+
+    get hasOverflowed(){
+        return this.overflow > 0;
+    }
+
+    remove(item){
+        if(!Buffer.isBuffer(item)) item = Buffer.from(item);
+
+        for(let i = 0; i < this.seeds.length; ++i){
+            let hash = xxhash(item, this.seeds[i]).toString();
+            let bit = hash % this.bits;
+
+            this._unSetBit(bit);
+        }
+    }
+}
+console.log('CountingBloomFilter')
+var filter = new CountingBloomFilter({ hashes: 8, bits: 1024 });
+filter.add(['cat', 'dog', 'coati', 'red panda']);
+console.log(filter.has('cat'));
+filter.remove('cat');
+console.log(filter.has('cat'));
+console.log(filter.has('coat'));

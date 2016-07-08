@@ -47,7 +47,8 @@ module.exports = {
         HashTable: require('./Search/HashTable'),
         RedBlackTree: require('./Search/RedBlackTree').default,
         sequentialSearch: require('./Search/sequentialSearch').default,
-        SOSTree: require('./Search/SOSTree')
+        SOSTree: require('./Search/SOSTree'),
+        BloomFilter: require('./Search/BloomFilter')
     },
 
     Sort: {

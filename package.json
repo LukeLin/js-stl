@@ -1,6 +1,6 @@
 {
   "name": "js-stl-polyfill",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "data structure",
   "main": "./lib/index.js",
   "scripts": {
@@ -52,6 +52,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.10.3",
     "babel-plugin-transform-runtime": "^6.9.0",
     "babel-register": "^6.9.0",
-    "babel-runtime": "^6.9.2"
+    "babel-runtime": "^6.9.2",
+    "xxhashjs": "^0.2.1"
   }
 }
