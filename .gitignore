@@ -4,4 +4,5 @@ projectFilesBackup/
 webpack-assets.json
 .vscode
 lib
+browser
 .happypack

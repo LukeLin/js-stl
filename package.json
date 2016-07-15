@@ -8,7 +8,7 @@
     "build": "set NODE_ENV=production&&webpack --progress --colors",
     "build:dev": "set NODE_ENV=development&&webpack --progress --colors --watch",
     "build:lib": "babel src --out-dir lib",
-    "build:browser": "babel --presets es2015 --plugins transform-runtime src --out-dir brwoser",
+    "build:browser": "babel --presets es2015 --plugins transform-runtime src --out-dir browser",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
