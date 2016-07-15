@@ -1,12 +1,14 @@
 {
   "name": "js-stl-polyfill",
-  "version": "0.6.0",
+  "version": "0.6.5",
   "description": "data structure",
   "main": "./lib/index.js",
+  "browser": "./browser/index.js",
   "scripts": {
     "build": "set NODE_ENV=production&&webpack --progress --colors",
     "build:dev": "set NODE_ENV=development&&webpack --progress --colors --watch",
     "build:lib": "babel src --out-dir lib",
+    "build:browser": "babel --presets es2015 --plugins transform-runtime src --out-dir brwoser",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,6 +23,12 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/LukeLin/js-stl/issues"
+  },
+  "babel": {
+    "plugins": [
+      "transform-es2015-modules-commonjs",
+      "transform-runtime"
+    ]
   },
   "engines": {
     "node": ">=6.0.0"
