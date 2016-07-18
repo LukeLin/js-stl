@@ -1,6 +1,6 @@
 # js-stl
 
-classic data structures implemented in javascript.
+Classic and high performance data structures implemented in javascript.
 
 1. npm install
 2. npm run build            // for production build
@@ -9,7 +9,7 @@ classic data structures implemented in javascript.
 5. npm run build:lib        // for node server build
 
 
-#### directory
+#### Directory
 
 * Array
     * [x] [CrossList](./src/Array/CrossList.js)
@@ -43,7 +43,7 @@ classic data structures implemented in javascript.
     * [x] [PriorityQueue](./src/Queue/PriorityQueue.js)
 
 * Stack
-    * [x] [stack](./src/Stack/index.js)
+    * [x] [Stack](./src/Stack/index.js)
 
 * String
     * [x] [HeapString](./src/String/HString.js)
