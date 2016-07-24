@@ -436,8 +436,8 @@ console.log(specifiedBinarySearch(arr, 5));
     })();
 
     // 链表存储结构的自然合并排序
-    var LinkedList = require('../LinkedList/LinkedList');
-    var Queue = require('../Queue/Queue').Queue;
+    var LinkedList = require('../List/LinkedList').default;
+    var Queue = require('../Queue/Queue').default;
 
     // 链表存储结构的自然合并排序
     var linkedListNaturalMergeSort = (function () {
