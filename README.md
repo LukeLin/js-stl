@@ -107,18 +107,3 @@ Classic and high performance data structures implemented in javascript.
         * [x] countSort
         * [x] radixSort
         * [x] bucketSort
-
-
-### 博客地址：
-
-* [栈](http://www.html-js.com/article/2168)
-* [队列](http://www.html-js.com/article/2169)
-* [广义表](http://www.html-js.com/article/2084)
-* [二叉树的遍历和基本操作](http://www.html-js.com/article/2170)
-* [树和森林](http://www.html-js.com/article/2177)
-* [最优二叉树与回溯法](http://www.html-js.com/article/2178)
-* [图的概念和存储结构](http://www.html-js.com/article/2378)
-* [图的遍历](http://www.html-js.com/article/2423)
-* [查找/检索之静态查找](http://www.html-js.com/article/2714)
-* [动态查找（一）*二叉排序树](http://www.html-js.com/article/2761)
-* todo ..
