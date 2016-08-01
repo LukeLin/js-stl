@@ -145,7 +145,7 @@ export default class DoubleLinkedList {
                     this.tail = this.tail.prev;
 
                     if (this.tail) {
-                        this.tail.prev.next = null;
+                        this.tail.next = null;
                     } else {
                         this.head = this.tail = null;
                     }
