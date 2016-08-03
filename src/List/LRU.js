@@ -97,4 +97,20 @@ a.remove('john');
 a.remove('angela');
 console.log(a + '');
 
+// test case:
+// Input:
+// 2,[add(2,1),add(1,1),add(2,3),add(4,1),get(1),get(2)]
+// Expected:
+// [ false, { key: 2, value: 3 } ]
+console.log('add');
+
+let b = new LRUCache([], 2);
+b.add(2,1);
+b.add(1,1);
+b.add(2,3);
+b.add(4,1);
+console.log([b.get(1), b.get(2)]);
+
+console.log('~add');
+
 console.log('LRUCacheEnd');
