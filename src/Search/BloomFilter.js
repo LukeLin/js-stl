@@ -206,7 +206,7 @@ class CountingBloomFilter extends BloomFilter {
 
     static createOptimal(itemCount, errorRate){
         let opts = BloomFilter.optimize(itemCount, errorRate);
-        return new this.constructor(opts);
+        return new this(opts);
     }
 
     clear(){

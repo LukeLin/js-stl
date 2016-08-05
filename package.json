@@ -1,14 +1,14 @@
 {
   "name": "js-stl-polyfill",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "description": "data structure",
   "main": "./lib/index.js",
-  "browser": "./browser/index.js",
+  "browser": "./es5/index.js",
   "scripts": {
     "build": "set NODE_ENV=production&&webpack --progress --color",
     "build:dev": "set NODE_ENV=development&&webpack --progress --color",
     "build:lib": "babel src --out-dir lib",
-    "build:browser": "babel --presets es2015 --plugins transform-runtime src --out-dir browser",
+    "build:es5": "babel --presets es2015 --plugins transform-runtime src --out-dir es5",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
