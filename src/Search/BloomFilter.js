@@ -98,9 +98,9 @@ export default class BloomFilter {
     }
 
     static createOptimal(itemCount, errorRate){
-        let opts = this.constructor.optimize(itemCount, errorRate);
+        let opts = this.optimize(itemCount, errorRate);
 
-        return new this.constructor(opts);
+        return new this(opts);
     }
 
     clear(){
