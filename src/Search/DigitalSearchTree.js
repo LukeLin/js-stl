@@ -76,9 +76,9 @@
  http://www.raychase.net/1783
  */
 
-const LEAF = 'leaf';
-const BRANCH = 'branch';
-const TERMINAL = new String('$');
+const LEAF = Symbol('leaf');
+const BRANCH = Symbol('branch');
+const TERMINAL = Symbol('$');
 
 export class DoubleLinkedTree {
     constructor(symbol = 'root', kind = BRANCH, info = null) {
@@ -477,13 +477,3 @@ test.remove('LI');
 test.insert('LI');
 test.insert('LAN');
 test.insert('LIU');
-
-
-/*
- 关于字典树的优化的数据结构有Patricia Tree，Suffix Tree
- todo 有空再实现
-
- 相关资料：
- http://blog.csdn.net/ljsspace/article/details/6571414
- */
-
