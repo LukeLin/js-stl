@@ -76,9 +76,9 @@
  http://www.raychase.net/1783
  */
 
-const LEAF = Symbol('leaf');
-const BRANCH = Symbol('branch');
-const TERMINAL = Symbol('$');
+const LEAF = 'leaf';
+const BRANCH = 'branch';
+const TERMINAL = new String('$');
 
 export class DoubleLinkedTree {
     constructor(symbol = 'root', kind = BRANCH, info = null) {
