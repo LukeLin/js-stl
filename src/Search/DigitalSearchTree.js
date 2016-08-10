@@ -320,8 +320,8 @@ function removeNode(trieNode, order, clear) {
 }
 
 export class TrieTree {
-    constructor(kind) {
-        this.kind = kind || BRANCH;
+    constructor(kind = BRANCH) {
+        this.kind = kind;
         this.parent = null;
 
         if (kind === LEAF) {
