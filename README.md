@@ -31,11 +31,11 @@ Classic and high performance data structures implemented in javascript.
     * [x] [OLGraph](./src/Graph/OLGraph.js)
 
 * List
-    * [x] [LinkedList](./src/linkedList/LinkedList.js)
-    * [x] [LinearList](./src/linkedList/LinearList.js)
-    * [x] [DoubleLinkedList](./src/linkedList/doubleLinkedList.js)
-    * [ ] [StaticLinkedList](./src/linkedList/StaticLinkedList.js)
-    * [x] [LRUCache](./src/linkedList/LRU.js)
+    * [x] [LinkedList](./src/List/LinkedList.js)
+    * [x] [LinearList](./src/List/LinearList.js)
+    * [x] [DoubleLinkedList](./src/List/doubleLinkedList.js)
+    * [ ] [StaticLinkedList](./src/List/StaticLinkedList.js)
+    * [x] [LRUCache](./src/List/LRU.js)
 
 * Queue
     * [x] [Queue](./src/Queue/Queue.js)
