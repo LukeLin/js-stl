@@ -70,7 +70,7 @@ Classic and high performance data structures implemented in javascript.
     * [ ] Treap    todo
     * [ ] SplayTree    todo
     * [ ] BitMap    todo
-    * [x] [Bloom Filter](./src/SearchBloomFilter.js)
+    * [x] [Bloom Filter](./src/Search/BloomFilter.js)
     * [ ] Heap  todo
 
 * Sort
