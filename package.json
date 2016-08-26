@@ -34,21 +34,21 @@
   },
   "homepage": "https://github.com/LukeLin/js-stl#readme",
   "devDependencies": {
-    "babel-cli": "^6.11.4",
-    "babel-core": "^6.11.4",
-    "babel-loader": "^6.2.4",
+    "babel-cli": "^6.14.0",
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
     "babel-plugin-transform-runtime": "^6.12.0",
-    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-es2015": "^6.14.0",
     "babel-runtime": "^6.11.6",
-    "del": "^2.2.1",
-    "happypack": "^2.1.1",
+    "del": "^2.2.2",
+    "happypack": "^2.2.1",
     "jasmine-core": "^2.4.1",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^1.0.1",
     "karma-commonjs": "0.0.13",
     "karma-coverage": "^0.5.5",
     "karma-jasmine": "^0.3.8",
-    "webpack": "^1.13.1"
+    "webpack": "^1.13.2"
   },
   "dependencies": {
     "xxhashjs": "^0.2.1"
