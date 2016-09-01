@@ -60,7 +60,7 @@
  */
 
 import { h32 as xxhash } from 'xxhashjs';
-import crypto  from 'crypto';
+import { randomBytes }  from 'crypto';
 
 const LN2_SQUARED = Math.LN2 * Math.LN2;
 
@@ -113,7 +113,7 @@ export default class BloomFilter {
 
         for(let i = 0; i < this.hashes; ++i){
             // Generates cryptographically strong pseudo-random data. Generate 4 bytes.
-            let buf = crypto.randomBytes(4);
+            let buf = randomBytes(4);
             // Reads an unsigned 32-bit integer from the Buffer from index 0
             this.seeds[i] = buf.readUInt32LE(0);
 
