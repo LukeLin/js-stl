@@ -67,7 +67,12 @@ module.exports = {
                 loader: 'babel',
                 query: {
                     presets: ['es2015'],
-                    plugins: ['transform-runtime'],
+                    plugins: [
+                        ["transform-runtime", {
+                            "polyfill": false,
+                            "regenerator": true
+                        }]
+                    ],
                     cacheDirectory: true
                 },
                 happy: { id: 'js' }
