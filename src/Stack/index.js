@@ -141,7 +141,7 @@ function numTransform(number, rad) {
 
     while (number) {
         s.push(number % rad);
-        number = parseInt(number / 8, 10);
+        number = parseInt(number / rad, 10);
     }
 
     let arr = [];
