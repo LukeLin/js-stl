@@ -214,7 +214,7 @@ export default class AdjacencyListGraph {
      * @param {String} i
      * @param {String} j
      */
-    exist_path_DFS(i, j) {
+    existPathDFS(i, j) {
         let visited = [];
         i = this.locateVex(i);
         j = this.locateVex(j);
@@ -241,7 +241,7 @@ export default class AdjacencyListGraph {
      * @param {String} i
      * @param {String} j
      */
-    exist_path_BFS(i, j) {
+    existPathBFS(i, j) {
         i = this.locateVex(i);
         j = this.locateVex(j);
         let visited = [];
@@ -268,7 +268,7 @@ export default class AdjacencyListGraph {
      * @param {String} j
      * @param {Number} k
      */
-    exist_path_len(i, j, k) {
+    existPathLen(i, j, k) {
         i = this.locateVex(i);
         j = this.locateVex(j);
         let visited = [];
@@ -300,9 +300,9 @@ export default class AdjacencyListGraph {
      * @param {Number} k
      *
      * @example
-     *  graph.find_all_path('v1', 'v2', 0);
+     *  graph.findAllPaths('v1', 'v2', 0);
      */
-    find_all_path(u, v, k) {
+    findAllPaths(u, v, k) {
         u = this.locateVex(u);
         v = this.locateVex(v);
         let path = [];
@@ -882,11 +882,11 @@ g2.BFSTraverse(function (v) {
     console.log(this.vertices[v].data);
 });
 
-console.log('DFS: expect false: ' + adjListGraph.exist_path_DFS('v1', 'v4'));
-console.log('DFS: expect true: ' + adjListGraph.exist_path_DFS('v1', 'v2'));
+console.log('DFS: expect false: ' + adjListGraph.existPathDFS('v1', 'v4'));
+console.log('DFS: expect true: ' + adjListGraph.existPathDFS('v1', 'v2'));
 
-console.log('BFS : expect false: ' + adjListGraph.exist_path_BFS('v1', 'v4'));
-console.log('BFS :expect true: ' + adjListGraph.exist_path_BFS('v1', 'v2'));
+console.log('BFS : expect false: ' + adjListGraph.existPathBFS('v1', 'v4'));
+console.log('BFS :expect true: ' + adjListGraph.existPathBFS('v1', 'v2'));
 
 
 
