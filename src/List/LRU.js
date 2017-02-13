@@ -9,7 +9,7 @@ const LIMIT = 20;
 export default class LRUCache {
     constructor(sqList, limit = LIMIT){
         this.limit = limit;
-        sqList = (sqList && sqList.length) ? sqList && sqList.length.slice(0, this.limit) : [];
+        sqList = (sqList && sqList.length) ? sqList && sqList.slice(0, this.limit) : [];
         this.__cache = new DoubleLinkedList(sqList, function(a, b){
             return a.key === b.key;
         });
