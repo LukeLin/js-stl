@@ -44,10 +44,16 @@ export default class LinkedList {
                 pb = b.head;
             }
         }
-
-        if (pa) c.append(pa);
-        else c.append(pb);
-
+        
+        if (pa) {
+            c.append(pa);
+            c.tail = a.tail;
+        }
+        else {
+            c.append(pb);
+            c.tail = b.tail;
+        }
+        
         return c;
     }
 
