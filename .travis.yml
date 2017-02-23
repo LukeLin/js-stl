@@ -7,4 +7,4 @@ install:
     npm --version
     npm install --registry http://registry.npmjs.org
 script:
-    - npm run test-ci
+    - npm run test
