@@ -1,3 +1,7 @@
+[![Build](https://img.shields.io/travis/LukeLin/js-stl.svg)](https://travis-ci.org/LukeLin/js-stl)
+
+
+
 # js-stl
 
 Classic and high performance data structures implemented in javascript.
