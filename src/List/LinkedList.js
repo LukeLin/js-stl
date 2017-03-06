@@ -200,8 +200,9 @@ export default class LinkedList {
     each (callback) {
         if (typeof callback !== 'function') return;
 
-        for (let current = this.head; current; current = current.next)
-            if (callback(current)) break;
+        for (let current = this.head, index = 0; current; current = current.next) {
+            if (callback(current, index++)) break;
+        }
     }
 
     *[Symbol.iterator](){
