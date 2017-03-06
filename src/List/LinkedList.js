@@ -10,7 +10,7 @@ class Node {
 }
 
 export default class LinkedList {
-    constructor(sqList){
+    constructor(sqList = []){
         this.head = null;
         this.tail = null;
 
@@ -20,6 +20,12 @@ export default class LinkedList {
         } 
     }
     
+    /**
+     * merge list, note: this operation will delete a and b nodes.
+     * @param {LinkedList} a 
+     * @param {LinkedList} b
+     * @param {*} compare 
+     */
     static mergeList (a, b, compare = compFn) {
         let ha = a.head;
         let hb = b.head;
@@ -233,6 +239,11 @@ export default class LinkedList {
         return str;
     }
 
+    /**
+     * insert element by order
+     * @param {*} data 
+     * @param {Function} cmp 
+     */
     orderInsert (data, cmp) {
         cmp = typeof cmp === 'function' ? cmp : (a, b) => {
             if (a > b)
@@ -335,6 +346,7 @@ export default class LinkedList {
         let p = this.head;
         let q = p.next;
         let s = q.next;
+        this.tail = p;
         p.next = null;
 
         while (s.next) {
@@ -438,56 +450,6 @@ function intersect_delete(list, b, c) {
     list.tail = r;
 }
 
-var list = new LinkedList();
-list.push('b');
-list.unshift('a');
-list.insertAfter('b', 'c');
-console.log(list.item(2));
-console.log(JSON.stringify(list));
-list.each(function (node) {
-    if (node.data === 'b') {
-        console.log('get b in each');
-    }
-});
-list.remove('c');
-list.remove('a');
-console.log(list);
-
-let list2 = new LinkedList();
-list2.push('c');
-list2.unshift('d');
-list2.insertAfter('d', 'b');
-console.log(JSON.stringify(list2));
-
-let list3 = LinkedList.mergeList(list, list2);
-console.log(list3);
-
-
-var list = new LinkedList();
-
-list.orderInsert(5);
-list.orderInsert(2);
-list.orderInsert(3);
-list.orderInsert(1);
-list.orderInsert(4);
-list.orderInsert(4);
-list.orderInsert(6);
-list.orderInsert(6);
-list.orderInsert(7);
-
-list.delete_between(5, 8);
-console.log('delete-between:  ');
-console.log(list);
-
-list.orderInsert(2);
-list.orderInsert(3);
-list.orderInsert(1);
-
-list.delete_equal();
-console.log(list);
-
-list.reverse();
-console.log(list);
 
 let a = new LinkedList();
 a.orderInsert(1);
@@ -524,9 +486,3 @@ test.orderInsert(9);
 
 intersect_delete(test, a, b);
 console.log(test);
-
-var popTest = new LinkedList();
-popTest.push(1);
-popTest.push(2);
-popTest.pop();
-popTest.pop();

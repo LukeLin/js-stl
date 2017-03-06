@@ -1,20 +1,21 @@
 var List = require('./complete-LinkedList');
 
-function Term(coef, expn) {
-    // 系数
-    this.coef = coef || null;
-    // 指数
-    this.expn = expn || null;
+class Term {
+    constructor(coef = null, expn = null){
+        // 系数
+        this.coef = coef;
+        // 指数
+        this.expn = expn;
+    }
 }
 
 // 一元多项式
-function Polynomial() {
-    List.call(this);
-}
-Polynomial.prototype = {
-    __proto__: List.prototype,
+class Polynomial extends List {
+    constructor(...args) {
+        super(...args);
+    }
 
-    locateElem: function (elem, compare) {
+    locateElem(elem, compare) {
         var current = this.head;
         var prev = current;
         var obj;
@@ -37,13 +38,13 @@ Polynomial.prototype = {
         }
 
         return obj;
-    },
-    initList: function () {
+    }
+    initList() {
         this.head = List.makeNode();
         this.head.data = new Term();
         this.tail = this.head;
-    },
-    cmp: function (a, b) {
+    }
+    cmp(a, b) {
         if (a.expn < b.expn) {
             return -1;
         } else if (a.expn === b.expn) {
@@ -51,9 +52,9 @@ Polynomial.prototype = {
         } else {
             return 1;
         }
-    },
+    }
     // 输入m项的系数和指数，建立表示一元多项式的有序链表p
-    createPolyn: function (elems, elems2) {
+    createPolyn(elems, elems2) {
         var m = elems.length;
         this.initList();
         var h = this.head;
@@ -72,9 +73,9 @@ Polynomial.prototype = {
 
             e = {};
         }
-    },
+    }
     // 多项式加法，a = a + b
-    addPolyn: function (b) {
+    addPolyn(b) {
         var a = this;
         // ha, hb分别指向头结点
         var ha = a.head;
@@ -125,7 +126,8 @@ Polynomial.prototype = {
             a.append(qb);
         }
     }
-};
+}
+
 
 var test = new Polynomial();
 test.createPolyn([-1, 2, 4], [1, 2, 3]);
