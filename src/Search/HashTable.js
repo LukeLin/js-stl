@@ -405,7 +405,7 @@ export class LinkedListHashTable {
         let p = t[i];
         let data = null;
 
-        p.each(function (node) {
+        p.forEach(function (node) {
             if (node.data === key) {
                 data = node.data;
                 return true;
@@ -426,7 +426,7 @@ export class LinkedListHashTable {
 
         if (!this.hNodes[index]) this.hNodes[index] = new LinkedList();
 
-        if (this.hNodes[index].size() < hashSize[this.sizeIndex] / 2) {
+        if (this.hNodes[index].size < hashSize[this.sizeIndex] / 2) {
             this.hNodes[index].orderInsert(key);
             ++this.count;
             return true;

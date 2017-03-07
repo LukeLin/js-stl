@@ -70,9 +70,7 @@ describe('linkedList tests', function () {
   var list3 = new List(arr);
 
   it('LinkedList iterating', function () {
-    console.log('iterating')
-    console.log(list);
-    list.each(function (node, index) {
+    list.forEach(function (node, index) {
       assert.equal(node.data, arr[index]);
     });
 
@@ -99,15 +97,15 @@ describe('linkedList tests', function () {
     assert.deepEqual(list, result);
   });
 
-  it('LinkedList delete_between', function(){
-    list.delete_between(5, 8);
+  it('LinkedList deleteBetween', function(){
+    list.deleteBetween(5, 8);
 
     var result = new List([1, 2, 3, 4, 4, 5]);
     assert.deepEqual(list, result);
   });
 
-  it('LinkedList delete_equal', function () {
-    list.delete_equal();
+  it('LinkedList deleteEqual', function () {
+    list.deleteEqual();
 
     var result = new List([1, 2, 3, 4, 5]);
     assert.deepEqual(list, result);

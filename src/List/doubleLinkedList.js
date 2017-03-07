@@ -21,7 +21,7 @@ function defaultCompare(a, b) {
 }
 
 export default class DoubleLinkedList {
-    constructor(sqList, compare = defaultCompare) {
+    constructor(sqList = [], compare = defaultCompare) {
         this.head = null;
         this.tail = null;
         this.size = 0;
@@ -57,7 +57,7 @@ export default class DoubleLinkedList {
     }
 
     push(data) {
-        if (typeof data === 'undefined') throw new Error('data argument required');
+        if (typeof data === 'undefined') throw new Error('param data required');
 
         ++this.size;
 
@@ -73,7 +73,7 @@ export default class DoubleLinkedList {
     }
 
     unshift(data) {
-        if (typeof data === 'undefined') throw new Error('data argument required');
+        if (typeof data === 'undefined') throw new Error('param data required');
 
         ++this.size;
 
