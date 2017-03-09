@@ -190,9 +190,10 @@ export default class DoubleLinkedList {
         if (typeof cb !== 'function') throw new Error('argument should be a function');
 
         let current = this.head;
+        let index = 0;
 
         while (current) {
-            cb(current.data);
+            cb(current.data, index++);
 
             current = current.next;
         }

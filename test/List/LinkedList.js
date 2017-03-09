@@ -70,13 +70,15 @@ describe('linkedList tests', function () {
   var list3 = new List(arr);
 
   it('LinkedList iterating', function () {
-    list.forEach(function (node, index) {
-      assert.equal(node.data, arr[index]);
+    list3.forEach(function (data, index) {
+      assert.equal(data, arr[index]);
     });
 
-    for (let [index, node] of list){
-      assert.equal(node.data, arr[index]);
-    }
+    let iterator = list3[Symbol.iterator]();
+    assert.equal(iterator.next().value, 1);
+    assert.equal(iterator.next().value, 2);
+    assert.equal(iterator.next().value, 3);
+    assert.equal(iterator.next().value, 4);
   });
 
   var list = new List();

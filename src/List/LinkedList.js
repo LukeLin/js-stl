@@ -237,7 +237,7 @@ export default class LinkedList {
         if (typeof callback !== 'function') return;
 
         for (let current = this.head, index = 0; current; current = current.next) {
-            if (callback(current, index++)) break;
+            if (callback(current.data, index++)) break;
         }
     }
 
