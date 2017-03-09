@@ -5,7 +5,7 @@ describe('DoubleLinkedList tests', function () {
     let arr = [2, 3];
     let list = new DoubleLinkedList(arr);
 
-    it('DoubleLinkedList init', function () {
+    it('init', function () {
         assert.equal(list.head.prev, null);
         assert.equal(list.head.data, 2);
         assert.equal(list.head.next.data, 3);
@@ -21,7 +21,7 @@ describe('DoubleLinkedList tests', function () {
         assert.equal(list.tail.prev.prev, null);
     });
 
-    it('DoubleLinkedList iterating', function(){
+    it('iterator', function(){
         let iterator = list[Symbol.iterator]();
         assert.equal(iterator.next().value, 2);
         assert.equal(iterator.next().value, 3);

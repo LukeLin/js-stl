@@ -5,7 +5,7 @@ describe('linkedList tests', function () {
 
   var list = new List();
 
-  it('LinkedList operating', function () {
+  it('push pop unshift shift insertAfter', function () {
     list.push('b');
     assert.equal(list.head.data, 'b');
     assert.equal(list.tail.next, null);
@@ -16,6 +16,8 @@ describe('linkedList tests', function () {
     assert.equal(list.tail.next, null);
 
     list.unshift('a');
+    list.unshift('b');
+    list.shift('b');
     assert.equal(list.head.data, 'a');
     assert.equal(list.head.next.data, 'b');
 
@@ -24,7 +26,7 @@ describe('linkedList tests', function () {
     assert.equal(list.tail.data, 'c');
   });
 
-  it('LinkedList removing', function () {
+  it('remove', function () {
     assert.equal(list.remove('c'), 'c');
     list.remove('a');
     assert.equal(list.head.data, 'b');
@@ -57,7 +59,7 @@ describe('linkedList tests', function () {
     assert.deepEqual(list2, result);
   });
 
-  it('LinkedList mergeList', function () {
+  it('mergeList', function () {
     var list3 = List.mergeList(list, list2);
 
     assert.equal(list3.head.data, 'b');
@@ -69,7 +71,7 @@ describe('linkedList tests', function () {
   var arr = [1,2,3,4];
   var list3 = new List(arr);
 
-  it('LinkedList iterating', function () {
+  it('iterator', function () {
     list3.forEach(function (data, index) {
       assert.equal(data, arr[index]);
     });
@@ -83,7 +85,7 @@ describe('linkedList tests', function () {
 
   var list = new List();
 
-  it('LinkedList orderInsert', function(){
+  it('orderInsert', function(){
     list.orderInsert(5);
     list.orderInsert(2);
     list.orderInsert(3);
@@ -99,21 +101,21 @@ describe('linkedList tests', function () {
     assert.deepEqual(list, result);
   });
 
-  it('LinkedList deleteBetween', function(){
+  it('deleteBetween', function(){
     list.deleteBetween(5, 8);
 
     var result = new List([1, 2, 3, 4, 4, 5]);
     assert.deepEqual(list, result);
   });
 
-  it('LinkedList deleteEqual', function () {
+  it('deleteEqual', function () {
     list.deleteEqual();
 
     var result = new List([1, 2, 3, 4, 5]);
     assert.deepEqual(list, result);
   });
 
-  it('LinkedList reverse', function () {
+  it('reverse', function () {
     list.reverse();
 
     var result = new List([5, 4, 3, 2, 1]);
