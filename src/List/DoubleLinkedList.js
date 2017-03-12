@@ -96,8 +96,12 @@ export default class DoubleLinkedList {
 
         --this.size;
 
+        let data = this.tail.data;
+
         this.tail.prev.next = null;
         this.tail = this.tail.prev;
+
+        return data;
     }
 
     shift() {
@@ -108,18 +112,33 @@ export default class DoubleLinkedList {
 
         --this.size;
 
+        let data = this.head.data;
+
         this.head.next.prev = null;
         this.head = this.head.next;
+
+        return data;
     }
     
+    /**
+     * update the value of existing node by index
+     * @param {Number} index 
+     * @param {*} data 
+     */
     update(index, data){
         let node = this.findByIndex(index, true);
-        node.data = data;
-        return this;
+
+        if (node) node.data = data;
+        
+        return !!node;
     }
 
+    /**
+     * Remove the first matched data
+     * @param {*} data 
+     */
     remove(data) {
-        if (typeof data === 'function') throw new Error('data argument required');
+        if (typeof data === 'function') throw new Error('Param data required');
 
         let current = this.head;
 
@@ -156,7 +175,7 @@ export default class DoubleLinkedList {
             current = current.next;
         }
 
-        return false;
+        return null;
     }
 
     indexOf(data) {
@@ -173,6 +192,11 @@ export default class DoubleLinkedList {
         return -1;
     }
 
+    /**
+     * find node or data by index
+     * @param {Number} index 
+     * @param {Boolean} returnNode true: return the node object; otherwise return data;
+     */
     findByIndex(index = 0, returnNode) {
         let current = this.head;
         let j = 0;
@@ -183,7 +207,7 @@ export default class DoubleLinkedList {
              current = current.next;
          }
 
-        return returnNode ? current : current.data;
+         return returnNode ? current : (current ? current.data : null);
     }
 
     forEach(cb = null) {
@@ -218,18 +242,18 @@ export default class DoubleLinkedList {
 }
 
 
-let a = new DoubleLinkedList([2, 3]);
-a.unshift(1);
-a.push(4);
-console.log(a.indexOf(4));
-console.log(a.findByIndex(2));
+// let a = new DoubleLinkedList([2, 3]);
+// a.unshift(1);
+// a.push(4);
+// console.log(a.indexOf(4));
+// console.log(a.findByIndex(2));
 
-for(let item of a){
-    console.log(item);
-}
+// for(let item of a){
+//     console.log(item);
+// }
 
-a.pop();
-a.shift();
-a.remove(2);
-a.remove(32);
-a.remove(3);
+// a.pop();
+// a.shift();
+// a.remove(2);
+// a.remove(32);
+// a.remove(3);
