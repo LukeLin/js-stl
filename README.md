@@ -6,7 +6,7 @@
 
 Classic and high performance data structures implemented in javascript.
 
-1. npm install
+1. npm i
 2. npm run build            // for production build
 3. npm run build:dev        // for development build
 4. babel-node ./src/xx.js   // run xx.js
