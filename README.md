@@ -11,6 +11,7 @@ Classic and high performance data structures implemented in javascript.
 3. npm run build:dev        // for development build
 4. babel-node ./src/xx.js   // run xx.js
 5. npm run build:es5        // for node server build
+6. npm test                 // run tests
 
 
 #### Directory
