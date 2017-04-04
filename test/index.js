@@ -5,3 +5,5 @@ require('./List/DoubleLinkedList');
 require('./List/LRU');
 
 require('./Stack.js');
+
+require('./Queue/Queue.js');

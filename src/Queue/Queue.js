@@ -11,27 +11,27 @@ export default class Queue {
         this.rear = this.front = null;
         this.size = 0;
     }
-    isEmpty(){
+    isEmpty() {
         return this.rear === null;
     }
-    clear () {
+    clear() {
         this.rear = this.front = null;
         this.size = 0;
     }
-    getHead () {
+    getHead() {
         return this.front ? this.front.data : null;
     }
-    enQueue (elem) {
+    enQueue(elem) {
         if (this.front === null) {
-            this.rear = this.front = {data: elem, next: null};
+            this.rear = this.front = { data: elem, next: null };
         } else {
-            let p = {data: elem, next: null};
+            let p = { data: elem, next: null };
             this.rear.next = p;
             this.rear = p;
         }
         this.size++;
     }
-    deQueue () {
+    deQueue() {
         if (this.front) {
             let elem = this.front.data;
             this.front = this.front.next;
@@ -44,14 +44,24 @@ export default class Queue {
             return null;
         }
     }
-    queueTraverse (iterator) {
+    forEach(iterator) {
+        if (typeof iterator !== 'function')
+            throw new Error('iterator should be function');
+
         let current = this.front;
         while (current) {
             if (iterator(current.data)) break;
             current = current.next;
         }
     }
-    peekAt (index = 0) {
+    *[Symbol.iterator]() {
+        let current = this.front;
+        while (current) {
+            yield current.data;
+            current = current.next;
+        }
+    }
+    peekAt(index = 0) {
         if (index < this.size) {
             let current = this.front;
             for (let i = 0; i < index; i++) {
@@ -60,9 +70,9 @@ export default class Queue {
             return current.data;
         }
 
-        return null;
+        return -1;
     }
-    toString () {
+    toString() {
         if (this.front === null) {
             return null;
         }
@@ -78,57 +88,3 @@ export default class Queue {
         return arr;
     }
 }
-
-let queue = new Queue();
-queue.enQueue(1);
-queue.deQueue();
-queue.enQueue(2);
-queue.enQueue(3);
-console.log(queue.peekAt(0));
-console.log(queue.peekAt(1));
-console.log(queue.peekAt(2));
-console.log(queue.peekAt(3));
-console.log(queue.toString().join());
-
-
-
-// 类似广度优先遍历
-function repaintColor(matrix, i, j, color){
-    let old = matrix[i][j];
-    let queue = new Queue();
-    let m = matrix.length - 1;
-    let n = matrix[0].length - 1;
-
-    queue.enQueue({x: i, y: j});
-
-    while(queue.rear){
-        let a = queue.deQueue();
-        let x = a.x;
-        let y = a.y;
-
-        if(x >= 1) setColor(x - 1, y);
-        if(y >= 1) setColor(x, y - 1);
-        if(x < m) setColor(x + 1, y);
-        if(y < n) setColor(x, y + 1);
-    }
-
-    function setColor(x, y){
-        if(matrix[x][y] === old) {
-            matrix[x][y] = color;
-            queue.enQueue({x: x, y: y});
-        }
-    }
-}
-
-let matrix = [];
-
-for(let i = 0; i < 8; i++){
-    matrix[i] = [];
-    for(let j = 0; j < 8; j++){
-        matrix[i][j] = 0;
-    }
-}
-
-repaintColor(matrix, 4, 5, 1);
-console.log(matrix);
-
