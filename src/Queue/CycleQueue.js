@@ -2,7 +2,15 @@
  * Created by ldp on 2015/1/19.
  */
 
-// 循环队列
+/**
+ * 循环队列
+ * 
+ * 用处：约瑟夫环
+ * 优点：为充分利用向量空间，克服"假溢出"现象的方法是：将向量空间想象为一个首尾相接的圆环，并称这种向量为循环向量。存储在其中的队列称为循环队列（Circular Queue）。
+ * 
+ * @export
+ * @class CycleQueue
+ */
 export default class CycleQueue {
     constructor(maxsize = 100){
         this.base = {};
