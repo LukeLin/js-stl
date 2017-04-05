@@ -11,16 +11,20 @@ export default class Queue {
         this.rear = this.front = null;
         this.size = 0;
     }
+
     isEmpty() {
         return this.rear === null;
     }
+
     clear() {
         this.rear = this.front = null;
         this.size = 0;
     }
+
     getHead() {
         return this.front ? this.front.data : null;
     }
+
     enQueue(elem) {
         if (this.front === null) {
             this.rear = this.front = { data: elem, next: null };
@@ -31,6 +35,7 @@ export default class Queue {
         }
         this.size++;
     }
+
     deQueue() {
         if (this.front) {
             let elem = this.front.data;
@@ -44,6 +49,7 @@ export default class Queue {
             return null;
         }
     }
+
     forEach(iterator) {
         if (typeof iterator !== 'function')
             throw new Error('iterator should be function');
@@ -54,6 +60,7 @@ export default class Queue {
             current = current.next;
         }
     }
+
     *[Symbol.iterator]() {
         let current = this.front;
         while (current) {
@@ -61,6 +68,7 @@ export default class Queue {
             current = current.next;
         }
     }
+
     peekAt(index = 0) {
         if (index < this.size) {
             let current = this.front;
@@ -72,6 +80,7 @@ export default class Queue {
 
         return -1;
     }
+    
     toString() {
         if (this.front === null) {
             return null;

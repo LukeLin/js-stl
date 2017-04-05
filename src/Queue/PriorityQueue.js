@@ -18,8 +18,12 @@
 出队操作时，我们采取的方案是：弹出堆顶元素，然后将叶子层中的最右子节点赋给堆顶，同样这时也会可能存在破坏堆的性质，最后我们要被迫进行下滤操作。
  */
 
-// 用堆实现优先队列
-
+/**
+ * 用堆实现优先队列
+ * 
+ * @export
+ * @class PriorityQueue
+ */
 export default class PriorityQueue {
     constructor() {
         this.heap = [];
@@ -44,6 +48,7 @@ export default class PriorityQueue {
         // 获取最后一个非叶子节点，并进行堆调整
         upHeapAdjust(this.heap, (this.heap.length >> 1) - 1);
     }
+    
     deQueue() {
         if (!this.heap.length) return null;
 
