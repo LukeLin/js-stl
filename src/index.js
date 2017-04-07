@@ -65,6 +65,7 @@ module.exports = {
         HString: require('./String/HString').default,
         LString: require('./String/LString').default,
         SString: require('./String/SString').default
+        // todo string algorithms
     },
 
     Heap: require('./Heap').default
