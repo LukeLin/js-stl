@@ -51,40 +51,6 @@
 
  */
 
-
-// 顺序存储结构
-(function () {
-    // 顺序存储结构的遍历
-    let tree = [1, 2, 3, 4, 5, , 6, , , 7];
-
-    console.log('preOrder:');
-    void function preOrderRecursive(x, visit) {
-        visit(tree[x]);
-        if (tree[2 * x + 1]) preOrderRecursive(2 * x + 1, visit);
-        if (tree[2 * x + 2]) preOrderRecursive(2 * x + 2, visit);
-    }(0, (value) => {
-        console.log(value);
-    });
-
-    console.log('inOrder:');
-    void function inOrderRecursive(x, visit) {
-        if (tree[2 * x + 1]) inOrderRecursive(2 * x + 1, visit);
-        visit(tree[x]);
-        if (tree[2 * x + 2]) inOrderRecursive(2 * x + 2, visit);
-    }(0, (value) => {
-        console.log(value);
-    });
-
-    console.log('postOrder:');
-    void function postOrderRecursive(x, visit) {
-        if (tree[2 * x + 1]) postOrderRecursive(2 * x + 1, visit);
-        if (tree[2 * x + 2]) postOrderRecursive(2 * x + 2, visit);
-        visit(tree[x]);
-    }(0, (value) => {
-        console.log(value);
-    });
-}());
-
 import Stack from '../Stack/index';
 import Queue from '../Queue/Queue';
 
@@ -100,8 +66,8 @@ export class BinaryTree {
     // 判断两棵树是否相似
     isSimilar(tree) {
         return !!(tree &&
-        ((this.leftChild && this.leftChild.isSimilar(tree.leftChild)) || (!this.leftChild && !tree.leftChild)) &&
-        ((this.rightChild && this.rightChild.isSimilar(tree.rightChild)) || (!this.rightChild && !tree.rightChild)));
+            ((this.leftChild && this.leftChild.isSimilar(tree.leftChild)) || (!this.leftChild && !tree.leftChild)) &&
+            ((this.rightChild && this.rightChild.isSimilar(tree.rightChild)) || (!this.rightChild && !tree.rightChild)));
     }
 
     createBinaryTree(tree) {
@@ -124,11 +90,33 @@ export class BinaryTree {
         });
     }
 
-    /** Prefix iteration */
-    * [Symbol.iterator]() {
-        yield this.data;
-        if(this.leftChild) yield* this.leftChild;
-        if(this.rightChild) yield* this.rightChild;
+    /**
+     * 
+     * 根据type类型使用不同顺序迭代，默认前序遍历
+     * 1: 前序 2: 中序 3: 后序
+     * @param {Number} iteratorType
+     * 
+     * @memberOf BinaryTree
+     */
+    *[Symbol.iterator](iteratorType = 1) {
+        switch (iteratorType) {
+            case 1:
+                yield this.data;
+                if (this.leftChild) yield* this.leftChild;
+                if (this.rightChild) yield* this.rightChild;
+                break;
+            case 2:
+                if (this.leftChild) yield* this.leftChild;
+                yield this.data;
+                if (this.rightChild) yield* this.rightChild;
+                break;
+            case 3:
+                if (this.leftChild) yield* this.leftChild;
+                if (this.rightChild) yield* this.rightChild;
+                yield this.data;
+                break;
+        }
+
     }
 
     // 先序遍历二叉树的非递归算法
@@ -233,7 +221,7 @@ export class BinaryTree {
         void function recurse(node) {
             if (node) {
                 if (++count === k)
-                    data =  node.data;
+                    data = node.data;
                 else {
                     recurse(node.leftChild);
                     recurse(node.rightChild);
@@ -261,16 +249,16 @@ export class BinaryTree {
         if (this.rightChild) this.rightChild.revoluteBinaryTree();
     }
 
-    revoluteNonRecursive(){
+    revoluteNonRecursive() {
         var stack = [];
         stack.push(this);
 
-        while(stack.length){
+        while (stack.length) {
             let node = stack.pop();
             [node.leftChild, node.rightChild] = [node.rightChild, node.leftChild];
 
-            if(node.leftChild) stack.push(node.leftChild);
-            if(node.rightChild) stack.push(node.rightChild);
+            if (node.leftChild) stack.push(node.leftChild);
+            if (node.rightChild) stack.push(node.rightChild);
         }
     }
 
@@ -280,15 +268,15 @@ export class BinaryTree {
         let stack = new Stack();
         stack.push(this);
 
-        while(stack.length){
+        while (stack.length) {
             let node = stack.pop();
 
-            if(node.data === x) {
+            if (node.data === x) {
                 count = node.getDepth();
                 break;
             } else {
-                if(node.leftChild) stack.push(node.leftChild);
-                if(node.rightChild) stack.push(node.rightChild);
+                if (node.leftChild) stack.push(node.leftChild);
+                if (node.rightChild) stack.push(node.rightChild);
             }
         }
 
@@ -317,7 +305,7 @@ export class BinaryTree {
      * @param {Function} cb 拷贝过程中会执行的回调，可以用来拷贝其它自定义属性
      * @returns {Cstr} 返回新的实例
      */
-    copy(cb = function(){}) {
+    copy(cb = function () { }) {
         // 用来存放本体结点的栈
         let stack1 = new Stack();
         // 用来存放新二叉树结点的栈
@@ -405,7 +393,7 @@ export class BinaryTree {
         return height * max;
     }
 
-    // 求树结点的子孙总数填入descNum域中，并返回
+    // 求树结点的子孙总数填入descNum字段中，并返回
     descNum() {
         return function recurse(node) {
             let d;
@@ -462,7 +450,7 @@ function findPath(tree, node, i = 0) {
 let global = Function('return this;')();
 
 // 求深度等于树的高度减一的最靠左的结点
-function printPath_maxDepthS1(tree){
+function printPath_maxDepthS1(tree) {
     let maxh = tree.getDepth();
     let path = [];
 
@@ -491,7 +479,7 @@ var test = new BinaryTree();
 test.createBinaryTree(tree);
 
 console.log('iterator: ');
-for(let x of test){
+for (let x of test) {
     console.log(x);
 }
 

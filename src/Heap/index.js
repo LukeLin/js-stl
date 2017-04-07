@@ -98,14 +98,13 @@ function defaultCompre(a, b) {
 }
 
 
-var arr = [1, 0, 5, 4, 3];
-var heap = new Heap();
-for (let ele of arr) {
-    heap.add(ele);
-}
-console.log(`heap: ${heap.arr.join(',')}`);
-for (let ele of arr) {
-    heap.remove();
-    console.log(`heap: ${heap.arr.join(',')}`);
-}
-
+// var arr = [1, 0, 5, 4, 3];
+// var heap = new Heap();
+// for (let ele of arr) {
+//     heap.add(ele);
+// }
+// console.log(`heap: ${heap.arr.join(',')}`);
+// for (let ele of arr) {
+//     heap.remove();
+//     console.log(`heap: ${heap.arr.join(',')}`);
+// }

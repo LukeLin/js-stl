@@ -1,6 +1,6 @@
 {
   "name": "js-stl-polyfill",
-  "version": "0.6.11",
+  "version": "0.6.15",
   "description": "data structure",
   "main": "./lib/index.js",
   "browser": "./es5/index.js",

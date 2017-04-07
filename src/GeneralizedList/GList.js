@@ -206,20 +206,6 @@ export default class GLNode {
     // 层序遍历的问题，一般都是借助队列来完成的，每次从队头
     // 取出一个元素的同时把它下一层的孩子插入队尾，这是层序遍历的基本思想
     orderPrint (){
-        let queue = [];
-        for(let p = this; p; p = p.ptr.tp) queue.push(p);
-
-        while(queue.length){
-            let r = queue.shift();
-            if(r.tag === ATOM) console.log(r.atom);
-            else {
-                for(r = r.ptr.hp; r; r = r.ptr.tp)
-                    queue.push(r);
-            }
-        }
-    }
-
-    orderPrint2 (){
         let queue = new Queue();
 
         for(let p = this; p; p = p.ptr.tp) queue.enQueue(p);

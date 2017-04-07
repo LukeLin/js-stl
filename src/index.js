@@ -1,17 +1,17 @@
 
 module.exports = {
     Array: {
-        CrossList: require('./Array/CrossList').default,
-        TSMatrix: require('./Array/TSMatrix').default
+        // CrossList: require('./Array/CrossList').default,
+        // TSMatrix: require('./Array/TSMatrix').default
+        // todo array algorithms
     },
     
     BinaryTree: {
         // BinaryThreadTree: require('./BinaryTree/BinaryThreadTree'),
         BinaryTree: require('./BinaryTree/BinaryTree'),
-        // EBTNode: require('./BinaryTree/EBTNode'),
         huffManCoding: require('./BinaryTree/huffManCoding').default,
+        BinaryTreeArray: require('./BinaryTree/BinaryTreeArray.js')
         // MFSet: require('./BinaryTree/MFSet'),
-        // PBTNode: require('./BinaryTree/PBTNode')
     },
     
     GeneralizedList: require('./GeneralizedList/GList').default,
@@ -65,5 +65,7 @@ module.exports = {
         HString: require('./String/HString').default,
         LString: require('./String/LString').default,
         SString: require('./String/SString').default
-    }
+    },
+
+    Heap: require('./Heap').default
 };
