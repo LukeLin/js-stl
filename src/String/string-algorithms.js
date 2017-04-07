@@ -152,3 +152,6 @@ function getLongestPublicSubstring(s, t){
 getLongestPublicSubstring('qwabcdaabcde', 'abcabcdeos');
 
 getLongestPublicSubstring('abbrabcd', 'cdababd');
+
+// http://dsqiu.iteye.com/blog/1700312
+// todo

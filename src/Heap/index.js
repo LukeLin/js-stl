@@ -10,7 +10,7 @@ export default class Heap {
         this.compare = compare;
     }
 
-    push(elem) {
+    add(elem) {
         this.arr.push(elem);
 
         if (this.arr.length === 1) return;
@@ -18,7 +18,7 @@ export default class Heap {
         this._upHeapAdjust((this.arr.length >> 1) - 1);
     }
 
-    pop() {
+    remove() {
         if (!this.arr.length) return;
 
         let heap = this.arr;
@@ -36,6 +36,10 @@ export default class Heap {
         return data;
     }
 
+    clear() {
+        this.arr.length = 0;
+    }
+
     // 对堆进行上滤操作，使得满足堆性质
     _upHeapAdjust(parent) {
         let heap = this.arr;
@@ -47,7 +51,7 @@ export default class Heap {
             let max = leftChild;
 
             if (rightChild < len) {
-                max = this.compare(heap[leftChild], heap[rightChild])
+                max = this.compare(heap[leftChild], heap[rightChild]) < 0
                     ? rightChild : leftChild;
             }
 
@@ -74,7 +78,7 @@ export default class Heap {
             let max = leftChild;
 
             if (rightChild < len) {
-                max = this.compare(heap[leftChild], heap[rightChild])
+                max = this.compare(heap[leftChild], heap[rightChild]) < 0
                     ? rightChild : leftChild;
             }
 
@@ -97,11 +101,11 @@ function defaultCompre(a, b) {
 var arr = [1, 0, 5, 4, 3];
 var heap = new Heap();
 for (let ele of arr) {
-    heap.push(ele);
+    heap.add(ele);
 }
 console.log(`heap: ${heap.arr.join(',')}`);
 for (let ele of arr) {
-    heap.pop();
+    heap.remove();
     console.log(`heap: ${heap.arr.join(',')}`);
 }
 

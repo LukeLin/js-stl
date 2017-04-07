@@ -8,3 +8,4 @@ require('./Stack.js');
 
 require('./Queue/Queue.js');
 require('./Queue/CycleQueue.js');
+require('./Queue/PriorityQueue.js');

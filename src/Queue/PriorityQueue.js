@@ -18,6 +18,8 @@
 出队操作时，我们采取的方案是：弹出堆顶元素，然后将叶子层中的最右子节点赋给堆顶，同样这时也会可能存在破坏堆的性质，最后我们要被迫进行下滤操作。
  */
 
+import Heap from '../Heap';
+
 /**
  * 用堆实现优先队列
  * 
@@ -26,116 +28,30 @@
  */
 export default class PriorityQueue {
     constructor() {
-        this.heap = [];
+        this.heap = new Heap(function(a, b){
+            return a.priority - b.priority;
+        });
     }
 
     get size(){
-        return this.heap.length;
+        return this.heap.arr.length;
     }
 
     enQueue(value, priority = 0) {
         if(typeof value === 'undefined') throw new Error('argument required');
 
         // 将当前节点追加到堆尾
-        this.heap.push({
+        this.heap.add({
             value,
             priority
         });
-
-        // 如果只有一个节点，则不需要进行筛选操作
-        if (this.heap.length === 1) return;
-
-        // 获取最后一个非叶子节点，并进行堆调整
-        upHeapAdjust(this.heap, (this.heap.length >> 1) - 1);
     }
     
     deQueue() {
-        if (!this.heap.length) return null;
-
-        let heap = this.heap;
-        // 出队列操作，弹出数据头元素
-        let data = heap[0];
-        // 用尾元素填充头元素
-        heap[0] = heap[heap.length - 1];
-        // 删除尾节点
-        heap.pop();
-
-        //然后从根节点下滤堆
-        downHeapAdjust(heap, 0);
-
-        return data;
+        return this.heap.remove();
     }
 
     clear(){
-        this.heap = [];
+        this.heap.clear();
     }
 }
-
-// 对堆进行上滤操作，使得满足堆性质
-function upHeapAdjust(heap, parent) {
-    let len = heap.length;
-
-    while (parent >= 0) {
-        let leftChild = 2 * parent + 1;
-        let rightChild = leftChild + 1;
-        let max = leftChild;
-
-        if (rightChild < len) {
-            max = heap[leftChild].priority < heap[rightChild].priority
-                ? rightChild : leftChild;
-        }
-
-        // 如果parent节点小于它的某个子节点的话，此时筛选操作
-        if (heap[parent].priority < heap[max].priority) {
-            let temp = heap[parent];
-            heap[parent] = heap[max];
-            heap[max] = temp;
-
-            // 继续进行更上一层的过滤
-            parent = Math.ceil(parent / 2) - 1;
-        } else break;
-    }
-}
-
-// 对堆进行下滤操作，使得满足堆性质
-function downHeapAdjust(heap, parent) {
-    let len = heap.length;
-
-    while (2 * parent + 1 < len) {
-        let leftChild = 2 * parent + 1;
-        let rightChild = leftChild + 1;
-        let max = leftChild;
-
-        if (rightChild < len) {
-            max = heap[leftChild].priority < heap[rightChild].priority
-                ? rightChild : leftChild;
-        }
-
-        if (heap[parent].priority < heap[max].priority) {
-            let temp = heap[parent];
-            heap[parent] = heap[max];
-            heap[max] = temp;
-
-            parent = max;
-        } else break;
-    }
-}
-
-let test = new PriorityQueue();
-test.enQueue(8, 5);
-test.enQueue(7, 2);
-test.enQueue(6, 1);
-test.enQueue(5, 4);
-test.enQueue(4, 7);
-test.enQueue(3, 3);
-test.enQueue(2, 8);
-test.enQueue(1, 10);
-console.log(test.deQueue());
-console.log(test.deQueue());
-console.log(test.deQueue());
-console.log(test.deQueue());
-console.log(test.deQueue());
-console.log(test.deQueue());
-console.log(test.deQueue());
-console.log(test.deQueue());
-console.log(test.deQueue());
