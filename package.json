@@ -42,9 +42,8 @@
     "babel-register": "^6.23.0",
     "babel-runtime": "^6.23.0",
     "del": "^2.2.2",
-    "happypack": "^2.2.1",
     "mocha": "^3.2.0",
-    "webpack": "^1.14.0"
+    "webpack": "^2.3.3"
   },
   "dependencies": {
     "xxhashjs": "^0.2.1"

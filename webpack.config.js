@@ -1,22 +1,19 @@
 
 let webpack = require('webpack');
 let fs = require('fs');
-let HappyPack = require('happypack');
+let path = require('path');
 
 let DEBUG = (process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development') || false;
 
-let plugins = [
-    new HappyPack({ id: 'js' }),
-    new webpack.optimize.OccurrenceOrderPlugin()
-];
+let plugins = [];
 if (!DEBUG) {
     plugins.push(
         new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            },
             output: {
                 comments: false
+            },
+            compress: {
+                warnings: false
             },
             sourceMap: false
         }),
@@ -31,21 +28,25 @@ if (!DEBUG) {
                 );
             });
         },
-        new webpack.optimize.DedupePlugin(),
         new webpack.DefinePlugin({
             'process.env': {
                 NODE_ENV: JSON.stringify('production')
             }
-        }),
-        new webpack.NoErrorsPlugin()
+        })
+    );
+} else {
+    plugins.push(
+        new webpack.LoaderOptionsPlugin({
+            debug: true
+        })
     );
 }
 
 module.exports = {
     target: 'web',
-    entry: './src/index.js',
+    entry: path.resolve('./src/index.js'),
     output: {
-        path: './dist/',
+        path: path.resolve('./dist/'),
         filename: DEBUG ? "./DS-debug.js" : "./DS-min.js",
         chunkFilename: DEBUG ? "./DS-debug.js" : "./DS-min.js",
         publicPath: '',
@@ -55,32 +56,37 @@ module.exports = {
     },
 
     cache: true,
-    debug: DEBUG,
 
     devtool: DEBUG && "#inline-source-map",
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: 'babel',
-                query: {
-                    presets: [
-                        ['es2015', { "loose": true }]
-                    ],
-                    plugins: [
-                        ["transform-runtime", {
-                            "polyfill": false,
-                            "regenerator": true
-                        }]
-                    ],
-                    cacheDirectory: true
-                },
-                happy: { id: 'js' }
+                use: [{
+                    loader: 'babel-loader',
+                    options: {
+                        cacheDirectory: true,
+                        presets: [
+                            [
+                                "es2015",
+                                {
+                                    loose: true,
+                                    modules: false
+                                }
+                            ]
+                        ],
+                        plugins: [
+                            ["transform-runtime", {
+                                "polyfill": false,
+                                "regenerator": true
+                            }]
+                        ]
+                    }
+                }]
             }
-        ],
-        noParse: []
+        ]
     },
 
     plugins: plugins,
@@ -89,12 +95,11 @@ module.exports = {
     },
 
     resolve: {
-        modulesDirectories: [
-            "node_modules",
-            "web_modules"
+        modules: [
+            "node_modules"
         ],
 
-        extensions: ["", ".js", ".jsx", ".es6", '.json'],
+        extensions: [".js", ".es6", '.json'],
 
         alias: {
         }
