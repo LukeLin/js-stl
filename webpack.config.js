@@ -81,7 +81,8 @@ module.exports = {
                             ["transform-runtime", {
                                 "polyfill": false,
                                 "regenerator": true
-                            }]
+                            }],
+                            "transform-class-properties"
                         ]
                     }
                 }]
