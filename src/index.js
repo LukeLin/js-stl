@@ -43,6 +43,7 @@ module.exports = {
         BPlusTree: require('./Search/BPlusTree'),
         BTree: require('./Search/BTree'),
         DigitalSearchTree: require('./Search/DigitalSearchTree'),
+        SuffixTree: require('./Search/SuffixTree.js').default,
         fibonacciSearch: require('./Search/fibonacciSearch').default,
         HashTable: require('./Search/HashTable'),
         RedBlackTree: require('./Search/RedBlackTree').default,

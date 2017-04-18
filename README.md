@@ -70,7 +70,7 @@ Classic and high performance data structures implemented in javascript.
         * [x] DoubleLinkedTree
         * [x] TrieTree
         * [ ] PatriciaTree    todo
-        * [ ] SuffixTree    todo
+    * [x] [SuffixTree](./src/Search/SuffixTree.js)
     * [x] [HashTable](./src/Search/HashTable.js)
     * [ ] Treap    todo
     * [ ] SplayTree    todo

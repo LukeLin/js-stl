@@ -13,3 +13,263 @@ http://www.cnblogs.com/gaochundong/p/suffix_tree.html
 http://vickyqi.com/2015/11/27/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%90%8E%E7%BC%80%E6%A0%91Java%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81/
 */
 
+class Node {
+    constructor(){
+        // the index of a node with a matching suffix, representing a suffix link.
+        // -1 indicates this node has no suffix link.
+        this.suffixNode = -1;
+    }
+
+    toString(){
+        return `Node(suffix link: ${ this.suffixNode })`;
+    }
+}
+
+class Edge {
+    /**
+     * Creates an instance of Edge.
+     * @param {any} firstCharIndex  index of start of string part represented by this edge
+     * @param {any} lastCharIndex index of end of string part represented by this edge
+     * @param {any} sourceNodeIndex ndex of source node of edge
+     * @param {any} destNodeIndex index of destination node of edge
+     * 
+     * @memberOf Edge
+     */
+    constructor(firstCharIndex, lastCharIndex, sourceNodeIndex, destNodeIndex){
+        this.firstCharIndex = firstCharIndex;
+        this.lastCharIndex = lastCharIndex;
+        this.sourceNodeIndex = sourceNodeIndex;
+        this.destNodeIndex = destNodeIndex;
+    }
+
+    get length (){
+        return this.lastCharIndex - this.firstCharIndex;
+    }
+
+    toString(){
+        return `Edge(${this.sourceNodeIndex}, ${this.destNodeIndex}, ${this.firstCharIndex}, ${this.lastCharIndex})`;
+    }
+}
+/**
+ * Represents a suffix from first_char_index to last_char_index.
+ * 
+ * @class Suffix
+ */
+class Suffix {
+    /**
+     * Creates an instance of Suffix.
+     * @param {any} sourceNodeIndex index of node where this suffix starts
+     * @param {any} firstCharIndex index of start of suffix in string
+
+     * @param {any} lastCharIndex index of end of suffix in string
+     * 
+     * @memberOf Suffix
+     */
+    constructor(sourceNodeIndex, firstCharIndex, lastCharIndex){
+        this.sourceNodeIndex = sourceNodeIndex;
+        this.firstCharIndex = firstCharIndex;
+        this.lastCharIndex = lastCharIndex;
+    }
+
+    get length(){
+        return this.lastCharIndex - this.firstCharIndex;
+    }
+
+    get explicit(){
+        return this.firstCharIndex > this.lastCharIndex
+    }
+
+    get implicit(){
+        return this.lastCharIndex >= this.firstCharIndex;
+    }
+}
+
+/**
+ * A suffix tree for string matching. Uses Ukkonen's algorithm
+    for construction.
+ * 
+ * @class SuffixTree
+ */
+export default class SuffixTree {
+    constructor(string, caseInsensitive){
+        this.string = string;
+        this.caseInsensitive = caseInsensitive;
+        this.N = string.length - 1;
+        this.nodes = [new Node()];
+        this.edges = {};
+        this.active = new Suffix(0, 0, -1);
+
+        if(caseInsensitive) {
+            this.string = string.toLowerCase();
+        }
+
+        for(let i = 0; i < string.length; ++i){
+            this.addPrefix(i);
+        }
+    }
+
+    /**
+     * Lists edges in the suffix tree
+     * 
+     * @returns 
+     * 
+     * @memberOf SuffixTree
+     */
+    toString(){
+        let currentIndex = this.N;
+        let s = `\tStart \tEnd \tSuf \tFirst \tLast \tString\n`;
+        let values = Object.values(this.edges);
+        values.sort((a, b) => a.x - b.x);
+
+        for(let edge of values){
+            if(edge.sourceNodeIndex === -1) continue;
+
+            s += `\t${edge.sourceNodeIndex} \t${edge.destNodeIndex} \t${this.nodes[edge.destNodeIndex].suffixNode} \t${edge.firstCharIndex} \t${edge.lastCharIndex} \t`;
+
+            let top = Math.min(currentIndex, edge.lastCharIndex);
+            s += this.string.substring(edge.firstCharIndex, top + 1) + '\n';
+        }
+
+        return s;
+    }
+
+    /**
+     * The core construction method.
+     * 
+     * @param {any} lastCharIndex 
+     * 
+     * @memberOf SuffixTree
+     */
+    addPrefix(lastCharIndex){
+        let lastParentNode = -1;
+        let e = null;
+        let parentNode = -1;
+
+        while(true){
+            parentNode = this.active.sourceNodeIndex;
+
+            if(this.active.explicit){
+                // prefix is already in tree
+                if(this.edges[`${this.active.sourceNodeIndex}-${this.string[lastCharIndex]}`]) break;
+            } else {
+                e = this.edges[`${this.active.sourceNodeIndex}-${this.string[this.active.firstCharIndex]}`];
+
+                // prefix is already in tree
+                if(this.string[e.firstCharIndex + this.active.length+ 1] === this.string[lastCharIndex]) break;
+
+                parentNode = this._splitEdge(e, this.active);;
+            }
+
+            this.nodes.push(new Node());
+            e = new Edge(lastCharIndex, this.N, parentNode, this.nodes.length - 1);
+            this._insertEdge(e);
+
+            if(lastParentNode > 0){
+                this.nodes[lastParentNode].suffixNode = parentNode;
+            }
+            lastParentNode = parentNode;
+
+            if(this.active.sourceNodeIndex === 0){
+                this.active.firstCharIndex += 1;
+            } else {
+                this.active.sourceNodeIndex = this.nodes[this.active.sourceNodeIndex].suffixNode;
+            }
+
+            this._canonizeSuffix(this.active);
+        }
+
+        if(lastParentNode > 0) {
+            this.nodes[lastParentNode].suffixNode = parentNode;
+        }
+
+        this.active.lastCharIndex += 1;
+        this._canonizeSuffix(this.active);
+    }
+
+    _insertEdge(edge){
+        this.edges[`${edge.sourceNodeIndex}-${this.string[edge.firstCharIndex]}`] = edge;
+    }
+
+    _removeEdge(edge){
+        delete this.edges[`${edge.sourceNodeIndex}-${this.string[edge.firstCharIndex]}`];
+    }
+
+    _splitEdge(edge, suffix){
+        this.nodes.push(new Node());
+        let e = new Edge(edge.firstCharIndex, edge.firstCharIndex + suffix.length, suffix.sourceNodeIndex, this.nodes.length - 1);
+
+        this._removeEdge(edge);
+        this._insertEdge(e);
+        
+        // need to add node for each edge
+        this.nodes[e.destNodeIndex].suffixNode = suffix.sourceNodeIndex;
+        edge.firstCharIndex += suffix.length + 1;
+        edge.sourceNodeIndex = e.destNodeIndex;
+
+        this._insertEdge(edge);
+
+        return e.destNodeIndex;
+    }
+
+    /**
+     * This canonizes the suffix, walking along its suffix string until it 
+        is explicit or there are no more matched nodes
+     * 
+     * @param {any} suffix 
+     * 
+     * @memberOf SuffixTree
+     */
+    _canonizeSuffix(suffix){
+        if(!suffix.explicit){
+            let e = this.edges[`${suffix.sourceNodeIndex}-${this.string[suffix.firstCharIndex]}`];
+            if(e.length <= suffix.length){
+                suffix.firstCharIndex += e.length + 1;
+                suffix.sourceNodeIndex = e.destNodeIndex;
+                this._canonizeSuffix(suffix);
+            }
+        }
+    }
+
+    /**
+     * Returns the index of substring in string or -1 if it
+        is not found.
+     * 
+     * @param {any} substr 
+     * 
+     * @memberOf SuffixTree
+     */
+    find(substr){
+        if(!substr) return -1;
+
+        if(this.caseInsensitive) substr = substr.toLowerCase();
+
+        let currentNode = 0;
+        let i = 0;
+        let ln = 0;
+        let edge = null;
+
+        while(i < substr.length){
+            edge = this.edges[`${currentNode}-${substr[i]}`];
+
+            if(!edge) return -1;
+
+            ln = Math.min(edge.length + 1, substr.length - i);
+
+            if(substr.substring(i, i + ln) !== this.string.substring(edge.firstCharIndex, edge.firstCharIndex + ln)) return -1;
+
+            i += edge.length + 1;
+            currentNode = edge.destNodeIndex;
+        }
+
+        return edge.firstCharIndex - substr.length + ln;
+    }
+}
+
+let str = 'I need to be searched';
+let tree = new SuffixTree(str);
+console.log(tree.find('sear'));
+console.log(tree + '');
+
+let tree2 = new SuffixTree('mississippi');
+console.log(tree2 + '');
+console.log(tree2.find('pp'));
