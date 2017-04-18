@@ -5,19 +5,19 @@
 // 顺序存储结构的遍历
 export function preOrderRecursive(tree, x, visit) {
     visit(tree[x]);
-    if (tree[2 * x + 1]) preOrderRecursive(2 * x + 1, visit);
-    if (tree[2 * x + 2]) preOrderRecursive(2 * x + 2, visit);
+    if (tree[2 * x + 1]) preOrderRecursive(tree, 2 * x + 1, visit);
+    if (tree[2 * x + 2]) preOrderRecursive(tree, 2 * x + 2, visit);
 };
 
 export function inOrderRecursive(tree, x, visit) {
-    if (tree[2 * x + 1]) inOrderRecursive(2 * x + 1, visit);
+    if (tree[2 * x + 1]) inOrderRecursive(tree, 2 * x + 1, visit);
     visit(tree[x]);
-    if (tree[2 * x + 2]) inOrderRecursive(2 * x + 2, visit);
+    if (tree[2 * x + 2]) inOrderRecursive(tree, 2 * x + 2, visit);
 }
 
 export function postOrderRecursive(tree, x, visit) {
-    if (tree[2 * x + 1]) postOrderRecursive(2 * x + 1, visit);
-    if (tree[2 * x + 2]) postOrderRecursive(2 * x + 2, visit);
+    if (tree[2 * x + 1]) postOrderRecursive(tree, 2 * x + 1, visit);
+    if (tree[2 * x + 2]) postOrderRecursive(tree, 2 * x + 2, visit);
     visit(tree[x]);
 }
 
@@ -34,6 +34,6 @@ inOrderRecursive(tree, 0, (value) => {
 });
 
 console.log('postOrder:');
-postOrderRecursive(0, (value) => {
+postOrderRecursive(tree, 0, (value) => {
     console.log(value);
 });
