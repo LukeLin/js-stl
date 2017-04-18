@@ -9,6 +9,21 @@
 
 一个利用后缀树的典型应用是LCS（Longest Common Substring）最大公共子串问题。采用动态规划也可以很容易地解决LCS问题，但它的时空复杂度均为O(N*M)，对于大多数应用是够了，可是，如果两个字符串是DNA序列，要从中间找出公共子串，O(N*M)的时空复杂度显然是无法接受的。而采用后缀树，复杂度就只是后缀树创建的复杂度，即O(N)
 
+后缀树的应用
+
+1.查找字符串 Pattern 是否在于字符串 Text 中
+    方案：用 Text 构造后缀树，按在 Trie 中搜索字串的方法搜索 Pattern 即可。若 Pattern 在 Text 中，则 Pattern 必然是 Text 的某个后缀的前缀。
+2.计算指定字符串 Pattern 在字符串 Text 中的出现次数
+    方案：用 Text+'$' 构造后缀树，搜索 Pattern 所在节点下的叶节点数目即为重复次数。如果 Pattern 在 Text 中重复了 c 次，则 Text 应有 c 个后缀以 Pattern 为前缀。
+3.查找字符串 Text 中的最长重复子串
+    方案：用 Text+'$' 构造后缀树，搜索 Pattern 所在节点下的最深的非叶节点。从 root 到该节点所经历过的字符串就是最长重复子串。
+4.查找两个字符串 Text1 和 Text2 的最长公共部分
+    方案：连接 Text1+'#' + Text2+'$' 形成新的字符串并构造后缀树，找到最深的非叶节点，且该节点的叶节点既有 '#' 也有 '$'。
+5.查找给定字符串 Text 里的最长回文
+回文指："abcdefgfed" 中对称的字符串 "defgfed"。
+回文半径指：回文 "defgfed" 的回文半径 "defg" 长度为 4，半径中心为字母 "g"。
+    方案：将 Text 整体反转形成新的字符串 Text2，例如 "abcdefgfed" => "defgfedcba"。连接 Text+'#' + Text2+'$' 形成新的字符串并构造后缀树，然后将问题转变为查找 Text 和 Text1 的最长公共部分。
+
 http://www.cnblogs.com/gaochundong/p/suffix_tree.html
 http://vickyqi.com/2015/11/27/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%90%8E%E7%BC%80%E6%A0%91Java%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81/
 */
