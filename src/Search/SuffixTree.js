@@ -288,3 +288,6 @@ console.log(tree + '');
 let tree2 = new SuffixTree('mississippi');
 console.log(tree2 + '');
 console.log(tree2.find('pp'));
+
+let tree3 = new SuffixTree('abcabxabcd');
+console.log(tree3 + '');

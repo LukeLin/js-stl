@@ -5,8 +5,8 @@
   "main": "./lib/index.js",
   "browser": "./es5/index.js",
   "scripts": {
-    "build": "set NODE_ENV=production&&webpack --progress --color",
-    "build:dev": "set NODE_ENV=development&&webpack --progress --color",
+    "build": "cross-env NODE_ENV=production webpack --progress --color",
+    "build:dev": "cross-env NODE_ENV=development webpack --progress --color",
     "build:lib": "babel src --out-dir lib",
     "build:es5": "babel --presets es2015 --plugins transform-runtime src --out-dir es5",
     "test": "mocha ./test/index.js"
@@ -43,6 +43,7 @@
     "babel-preset-es2015": "^6.22.0",
     "babel-register": "^6.23.0",
     "babel-runtime": "^6.23.0",
+    "cross-env": "^4.0.0",
     "del": "^2.2.2",
     "mocha": "^3.2.0",
     "webpack": "^2.3.3"
