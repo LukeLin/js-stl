@@ -134,7 +134,7 @@ export default class SuffixTree {
         let currentIndex = this.N;
         let s = `\tStart \tEnd \tSuf \tFirst \tLast \tString\n`;
         let values = Object.values(this.edges);
-        values.sort((a, b) => a.x - b.x);
+        values.sort((a, b) => a.sourceNodeIndex - b.sourceNodeIndex);
 
         for(let edge of values){
             if(edge.sourceNodeIndex === -1) continue;
