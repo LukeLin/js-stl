@@ -49,7 +49,8 @@ module.exports = {
         RedBlackTree: require('./Search/RedBlackTree').default,
         sequentialSearch: require('./Search/sequentialSearch').default,
         SOSTree: require('./Search/SOSTree'),
-        BloomFilter: require('./Search/BloomFilter')
+        BloomFilter: require('./Search/BloomFilter'),
+        ConsistentHash: require('./Search/ConsistentHash.js')
     },
 
     Sort: {
