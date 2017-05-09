@@ -64,7 +64,7 @@ export default class ConsistentHash {
     getNode(key){
         if(!this.length) return 0;
 
-        let hash = this.crypto(key);
+        let hash = this.crypto(key + '');
         let pos = this._getClockwiseNearestNode(hash);
 
         return this.ring[this.keys[pos]];
@@ -110,7 +110,7 @@ let consistentHash = new ConsistentHash(servers, {
 
 let buckets = [];
 for(let i = 0; i < 10; ++i){
-    let id = consistentHash.getNode(i + '').id;
+    let id = consistentHash.getNode(i).id;
     buckets.push(id);
     console.log(`item[${ i }] is in node[${ buckets[i] }]`);
 }
