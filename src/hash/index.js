@@ -110,3 +110,23 @@ function crc32(str, seed) {
 console.log(crc32('test', 31)); // -804963899
 console.log(crc32('abc', 31)); // 576628111
 console.log(crc32('abb', 31)); // 1431934233
+
+console.log('fnv1a');
+const FNV32_INIT = 0x811c9dc5;
+
+/*
+ * return the 32-bit FNV1a hash of a string.
+ */
+function fnv1a(text) {
+  const buffer = (text instanceof Buffer) ? text : new Buffer(text, "utf-8");
+  let rv = FNV32_INIT;
+  for (let i = 0; i < buffer.length; i++) {
+    rv ^= buffer[i];
+    // js can't really do int multiplication.
+    rv += (rv << 1) + (rv << 4) + (rv << 7) + (rv << 8) + (rv << 24);
+  }
+  return rv >>> 0;
+}
+console.log(fnv1a('test', 31)); // 2949673445
+console.log(fnv1a('abc', 31)); // 440920331
+console.log(fnv1a('abb', 31)); // 424142712
