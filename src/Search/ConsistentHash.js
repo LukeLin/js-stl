@@ -53,6 +53,7 @@ export default class ConsistentHash {
         this.keys = Object.keys(this.ring).sort();        
     }
 
+    // todo replace this with jump consistent hash
     crypto(str){
         return crypto.createHash(this.algorithm).update(str).digest('hex');
     }
