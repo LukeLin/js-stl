@@ -1,36 +1,8 @@
 /**
  * 常用查找哈希算法
  */
-console.log('rotatingHash');
-function rotatingHash(key = '', prime) {
-    let hash = 0;
-    for (let i = 0; i < key.length; ++i) {
-        hash = (hash << 4) ^ (hash >> 28) ^ key.charCodeAt(i);
-    }
-    return (hash % prime);
-}
-console.log(rotatingHash('test', 31)); // 13
-console.log(rotatingHash('abc', 31)); // 23
-console.log(rotatingHash('abb', 31)); // 22
 
-console.log('rsHash');
-function rsHash(key = '') {
-    let b = 378551;
-    let a = 63689;
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-        hash = hash * a + key.charCodeAt(i);
-        a = a * b;
-    }
-    return hash
-    // return (hash & 0x7FFFFFFF);
-}
-console.log(rsHash('test', 31)); // 13
-console.log(rsHash('abc', 31)); // 23
-console.log(rsHash('abb', 31)); // 22
-
-console.log('adler32');
-function adler32(str) {
+export function adler32(str) {
     var a = 1, b = 0, L = str.length, M = 0, c = 0, d = 0;
 
     for (var i = 0; i < L;) {
@@ -59,11 +31,10 @@ function adler32(str) {
     }
     return ((b % 65521) << 16) | (a % 65521);
 }
-console.log(adler32('test', 31)); // 73204161
-console.log(adler32('abc', 31)); // 38600999
-console.log(adler32('abb', 31)); // 38535462
+// console.log(adler32('test', 31)); // 73204161
+// console.log(adler32('abc', 31)); // 38600999
+// console.log(adler32('abb', 31)); // 38535462
 
-console.log('crc32');
 function signed_crc_table() {
 	var c = 0, table = new Array(256);
 
@@ -84,7 +55,7 @@ function signed_crc_table() {
 }
 
 var T = signed_crc_table();
-function crc32(str, seed) {
+export function crc32(str, seed) {
 	var C = seed ^ -1;
 	for(var i = 0, L=str.length, c, d; i < L;) {
 		c = str.charCodeAt(i++);
@@ -107,17 +78,16 @@ function crc32(str, seed) {
 	}
 	return C ^ -1;
 }
-console.log(crc32('test', 31)); // -804963899
-console.log(crc32('abc', 31)); // 576628111
-console.log(crc32('abb', 31)); // 1431934233
+// console.log(crc32('test', 31)); // -804963899
+// console.log(crc32('abc', 31)); // 576628111
+// console.log(crc32('abb', 31)); // 1431934233
 
-console.log('fnv1a');
 const FNV32_INIT = 0x811c9dc5;
 
 /*
  * return the 32-bit FNV1a hash of a string.
  */
-function fnv1a(text) {
+export function fnv1a(text) {
   const buffer = (text instanceof Buffer) ? text : new Buffer(text, "utf-8");
   let rv = FNV32_INIT;
   for (let i = 0; i < buffer.length; i++) {
@@ -127,6 +97,6 @@ function fnv1a(text) {
   }
   return rv >>> 0;
 }
-console.log(fnv1a('test', 31)); // 2949673445
-console.log(fnv1a('abc', 31)); // 440920331
-console.log(fnv1a('abb', 31)); // 424142712
+// console.log(fnv1a('test', 31)); // 2949673445
+// console.log(fnv1a('abc', 31)); // 440920331
+// console.log(fnv1a('abb', 31)); // 424142712
