@@ -27,7 +27,8 @@ module.exports = {
         DoubleLinkedList: require('./List/DoubleLinkedList').default,
         LinearList: require('./List/LinearList'),
         StaticLinkedList: require('./List/StaticLinkedList').default,
-        LRUCache: require('./List/LRU').default
+        LRUCache: require('./List/LRU').default,
+        SkipList: require('./List/SkipList.js').default
     },
     
     Queue: {

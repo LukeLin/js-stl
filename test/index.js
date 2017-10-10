@@ -13,3 +13,5 @@ require('./Queue/PriorityQueue.js');
 require('./GeneralizedList.js');
 
 require('./BinaryTree/BinaryTree.js')
+
+require('../src/List/SkipList.js');
