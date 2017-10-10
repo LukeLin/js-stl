@@ -41,6 +41,7 @@ Classic and high performance data structures implemented in javascript.
     * [x] [DoubleLinkedList](./src/List/doubleLinkedList.js)
     * [ ] [StaticLinkedList](./src/List/StaticLinkedList.js)
     * [x] [LRUCache](./src/List/LRU.js)
+    * [x] [SkipList](./src/List/SkipList.js)
 
 * Queue
     * [x] [Queue](./src/Queue/Queue.js)
