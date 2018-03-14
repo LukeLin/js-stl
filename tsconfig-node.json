@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "ts-lib",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "jsx": "react"
+  },
+  "include": [
+    "ts-src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

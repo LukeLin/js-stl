@@ -44,7 +44,7 @@ if (!DEBUG) {
 
 module.exports = {
     target: 'web',
-    entry: path.resolve('./src/index.js'),
+    entry: path.resolve('./ts-src/index.ts'),
     output: {
         path: path.resolve('./dist/'),
         filename: DEBUG ? "./DS-debug.js" : "./DS-min.js",
@@ -61,32 +61,11 @@ module.exports = {
 
     module: {
         rules: [
-            {
-                test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
-                use: [{
-                    loader: 'babel-loader',
-                    options: {
-                        cacheDirectory: true,
-                        presets: [
-                            [
-                                "es2015",
-                                {
-                                    loose: true,
-                                    modules: false
-                                }
-                            ]
-                        ],
-                        plugins: [
-                            ["transform-runtime", {
-                                "polyfill": false,
-                                "regenerator": true
-                            }],
-                            "transform-class-properties"
-                        ]
-                    }
-                }]
-            }
+            // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
+            { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+
+            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
     },
 
@@ -100,7 +79,7 @@ module.exports = {
             "node_modules"
         ],
 
-        extensions: [".js", ".es6", '.json'],
+        extensions: [".js", ".es6", '.json', '.ts', '.tsx'],
 
         alias: {
         }

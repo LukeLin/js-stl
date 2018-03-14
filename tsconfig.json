@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "commonjs",
+      "outDir": "ts-dist",
+      "sourceMap": true,
+      "noImplicitAny": true,
+      "jsx": "react"
+    },
+    "include": [
+      "ts-src"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
+  }
