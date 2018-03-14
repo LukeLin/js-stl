@@ -57,7 +57,7 @@ export default class DoubleLinkedList {
         return this.size;
     }
 
-    clear(){
+    public clear(){
         this.head = null;
         this.tail = null;
         this.size = 0;
@@ -65,7 +65,7 @@ export default class DoubleLinkedList {
         return true;
     }
 
-    push(data: any) {
+    public push(data: any) {
         if (typeof data === 'undefined') throw new Error('param data required');
 
         ++this.size;
@@ -81,7 +81,7 @@ export default class DoubleLinkedList {
         return data;
     }
 
-    unshift(data: any) {
+    public unshift(data: any) {
         if (typeof data === 'undefined') throw new Error('param data required');
 
         ++this.size;
@@ -97,7 +97,7 @@ export default class DoubleLinkedList {
         return data;
     }
 
-    pop() {
+    public pop() {
         if (!this.tail) {
             this.head = this.tail = null;
             return;
@@ -113,7 +113,7 @@ export default class DoubleLinkedList {
         return data;
     }
 
-    shift() {
+    public shift() {
         if (!this.head) {
             this.head = this.tail = null;
             return;
@@ -134,7 +134,7 @@ export default class DoubleLinkedList {
      * @param {Number} index 
      * @param {*} data 
      */
-    update(index: number, data: any){
+    public update(index: number, data: any){
         let node = this.findByIndex(index, true);
 
         if (node) node.data = data;
@@ -146,7 +146,7 @@ export default class DoubleLinkedList {
      * Remove the first matched data
      * @param {*} data 
      */
-    remove(data: any) {
+    public remove(data: any) {
         if (typeof data === 'function') throw new Error('Param data required');
 
         let current = this.head;
@@ -187,7 +187,7 @@ export default class DoubleLinkedList {
         return null;
     }
 
-    indexOf(data: any) {
+    public indexOf(data: any) {
         let current = this.head;
         let index = -1;
 
@@ -206,7 +206,7 @@ export default class DoubleLinkedList {
      * @param {Number} index 
      * @param {Boolean} returnNode true: return the node object; otherwise return data;
      */
-    findByIndex(index: number = 0, returnNode?: boolean) {
+    public findByIndex(index: number = 0, returnNode?: boolean) {
         let current = this.head;
         let j = 0;
 
@@ -219,7 +219,7 @@ export default class DoubleLinkedList {
          return returnNode ? current : (current ? current.data : null);
     }
 
-    forEach(cb: Function | null = null) {
+    public forEach(cb: Function | null = null) {
         if (typeof cb !== 'function') throw new Error('argument should be a function');
 
         let current = this.head;
@@ -232,7 +232,7 @@ export default class DoubleLinkedList {
         }
     }
 
-    toJSON() {
+    public toJSON() {
         let list = [];
         let current = this.head;
 
@@ -245,7 +245,7 @@ export default class DoubleLinkedList {
         return list;
     }
 
-    toString() {
+    public toString() {
         return this.toJSON() + '';
     }
 }
