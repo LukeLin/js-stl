@@ -196,17 +196,17 @@ class DoubleLinkedList {
     }
 }
 exports.default = DoubleLinkedList;
-let a = new DoubleLinkedList([2, 3]);
-a.unshift(1);
-a.push(4);
-console.log(a.indexOf(4));
-console.log(a.findByIndex(2));
-for (let item of a) {
-    console.log(item);
-}
-a.pop();
-a.shift();
-a.remove(2);
-a.remove(32);
-a.remove(3);
+// let a = new DoubleLinkedList([2, 3]);
+// a.unshift(1);
+// a.push(4);
+// console.log(a.indexOf(4));
+// console.log(a.findByIndex(2));
+// for(let item of a){
+//     console.log(item);
+// }
+// a.pop();
+// a.shift();
+// a.remove(2);
+// a.remove(32);
+// a.remove(3);
 //# sourceMappingURL=DoubleLinkedList.js.map
