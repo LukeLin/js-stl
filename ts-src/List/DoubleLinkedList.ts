@@ -8,7 +8,7 @@
  * 双向链表也可以有循环表。
  */
 
-class Node {
+export class Node {
     data: any;
     prev: Node;
     next: Node;

@@ -15,6 +15,7 @@ class Node {
         this.next = next;
     }
 }
+exports.Node = Node;
 function defaultCompare(a, b) {
     return a === b;
 }
