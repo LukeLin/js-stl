@@ -116,6 +116,3 @@ Classic and high performance data structures implemented in javascript.
         * [x] countSort
         * [x] radixSort
         * [x] bucketSort
-
-### TODOs:
-- update dependencies
