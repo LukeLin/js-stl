@@ -150,7 +150,7 @@ LineEditor.prototype = {
         }
 
         let result = '';
-        let current = stack.length;
+        let current = stack.top;
         while (current) {
             result = current.data + result;
             current = current.next;
