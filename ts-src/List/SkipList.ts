@@ -7,7 +7,7 @@
 interface SkipNode extends Array<any> {
 }
 
-function makeNode(level: number, key?: string, value?: any): SkipNode {
+function makeNode(level: number, key?: string | number, value?: any): SkipNode {
 	var node = new Array(4 + level);
 	node[0] = key;
 	node[1] = value;
@@ -117,7 +117,7 @@ class SkipList {
 		return node;
 	}
 
-	insert(key: string, value: any) {
+	insert(key: string | number, value: any) {
 		var update = this._update.slice(0);
 		var node = this._findLess(update, key);
 		var prev = node;
@@ -140,7 +140,7 @@ class SkipList {
 		}
 	}
 
-	remove(key: string) {
+	remove(key: string | number) {
 		var update = this._update.slice(0);
 		var node = this._findLess(update, key);
 		node = node[3];
