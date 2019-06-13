@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ed57b53d0e64ff8a200d31577cf6881)](https://app.codacy.com/app/LukeLin/js-stl?utm_source=github.com&utm_medium=referral&utm_content=LukeLin/js-stl&utm_campaign=Badge_Grade_Dashboard)
 [![Build](https://img.shields.io/travis/LukeLin/js-stl.svg)](https://travis-ci.org/LukeLin/js-stl)
 
 
