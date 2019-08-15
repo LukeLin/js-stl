@@ -59,3 +59,27 @@
         }
     })(states);
 })();
+
+(() => {
+    // https://leetcode-cn.com/problems/zigzag-conversion/
+    var convert = function(s, numRows) {
+        if(numRows <= 1) return s;
+        
+        let ret = '';
+        let size = 2 * numRows - 2;
+        
+        for(let i = 0; i < numRows; ++i) {
+            for(let j = i; j < s.length; j += size){
+                ret += s[j];
+                let tmp = j + size - 2 * i;
+                if(i != 0 && i != numRows - 1 && tmp < s.length) {
+                    ret += s[tmp];
+                }
+            }
+        }
+        
+        return ret;
+    };
+
+    convert('LEETCODEISHIRING', 3);
+})();
