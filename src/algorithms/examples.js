@@ -109,3 +109,33 @@
 
     console.log(isMatch('aab', 'c*a*b'));
 })();
+
+(() => {
+    // https://leetcode-cn.com/problems/integer-to-roman/
+    var intToRoman = function(num) {
+        let ret = '';
+        let roman = ['M', 'D', 'C', 'L', 'X', 'V', 'I'];
+        let value = [1000, 500, 100, 50, 10, 5, 1];
+
+        for(let n = 0; n < 7; n += 2) {
+            let x = Math.floor(num / value[n]);
+
+            if(x < 4) {
+                for(let i = 1; i <= x; ++i) ret += roman[n];
+            } else if(x === 4) {
+                ret += roman[n] + roman[n - 1];
+            } else if(x > 4 && x < 9) {
+                ret += roman[n - 1];
+                for(let i = 6; i <= x; ++i) ret += roman[n]; 
+            } else if(x === 9) {
+                ret += roman[n] + roman[n - 2];
+            }
+
+            num %= value[n];
+        }
+
+        return ret;
+    };
+
+    console.log(intToRoman(1994));
+})();
