@@ -2,7 +2,7 @@
  * Created by luke on 2015/2/2.
  */
 
-import defaultCompare from '../defaultComparision';
+import defaultCompare from "../defaultComparision";
 
 /*
 选择排序
@@ -33,25 +33,22 @@ import defaultCompare from '../defaultComparision';
 
  */
 
-
 export function simpleSelectionSort(sqList, comp = defaultCompare) {
-    for (let i = 0, len = sqList.length; i < len; ++i) {
-        let k = i;
-        for (let j = k + 1; j < len; ++j)
-            if (comp(sqList[j], sqList[k]) < 0) k = j;
+  for (let i = 0, len = sqList.length; i < len; ++i) {
+    let k = i;
+    for (let j = k + 1; j < len; ++j) if (comp(sqList[j], sqList[k]) < 0) k = j;
 
-        if (k !== i) {
-            let temp = sqList[k];
-            sqList[k] = sqList[i];
-            sqList[i] = temp;
-        }
+    if (k !== i) {
+      let temp = sqList[k];
+      sqList[k] = sqList[i];
+      sqList[i] = temp;
     }
+  }
 }
 
 var arr = [7, 4, -2, 19, 13, 6];
 simpleSelectionSort(arr);
-console.log(arr + '');
-
+console.log(arr + "");
 
 /*
 树形选择排序
@@ -63,8 +60,6 @@ console.log(arr + '');
 
 但这种排序方法尚有辅助存储空间较多,和最大值进行多余比较等缺点。为了弥补这些缺陷，出现了另一种选择排序---堆排序
  */
-
-
 
 /*
 堆排序
@@ -133,39 +128,39 @@ http://blog.csdn.net/zz198808/article/details/7678055
  * @param {Number} m
  */
 function heapAdjust(sqList, s, m, comp) {
-    let rc = sqList[s];
+  let rc = sqList[s];
 
-    // 沿关键字较大的孩子结点向下筛选
-    for (let j = 2 * s + 1; j <= m; j = j * 2 + 1) {
-        // j为关键字较大的记录下标
-        if (j < m && comp(sqList[j], sqList[j + 1]) < 0) ++j;
-        // rc应插入在位置s上
-        if (comp(rc, sqList[j]) >= 0) break;
-        sqList[s] = sqList[j];
-        s = j;
-    }
+  // 沿关键字较大的孩子结点向下筛选
+  for (let j = 2 * s + 1; j <= m; j = j * 2 + 1) {
+    // j为关键字较大的记录下标
+    if (j < m && comp(sqList[j], sqList[j + 1]) < 0) ++j;
+    // rc应插入在位置s上
+    if (comp(rc, sqList[j]) >= 0) break;
+    sqList[s] = sqList[j];
+    s = j;
+  }
 
-    sqList[s] = rc;
+  sqList[s] = rc;
 }
 
 export function heapSort(sqList, comp = defaultCompare) {
-    let len = sqList.length;
-    // 建立大堆顶
-    for (let i = (len >> 1) - 1; i >= 0; --i)
-        heapAdjust(sqList, i, len - 1, comp);
+  let len = sqList.length;
+  // 建立大堆顶
+  for (let i = (len >> 1) - 1; i >= 0; --i)
+    heapAdjust(sqList, i, len - 1, comp);
 
-    for (let i = len - 1; i > 0; --i) {
-        // 将堆顶记录和当前未经排序子序列sqList[0..i]中
-        // 最后一个记录相互交换
-        let temp = sqList[i];
-        sqList[i] = sqList[0];
-        sqList[0] = temp;
+  for (let i = len - 1; i > 0; --i) {
+    // 将堆顶记录和当前未经排序子序列sqList[0..i]中
+    // 最后一个记录相互交换
+    let temp = sqList[i];
+    sqList[i] = sqList[0];
+    sqList[0] = temp;
 
-        // 将sqList[0..i - 1]重新调整为大堆顶
-        heapAdjust(sqList, 0, i - 1, comp);
-    }
+    // 将sqList[0..i - 1]重新调整为大堆顶
+    heapAdjust(sqList, 0, i - 1, comp);
+  }
 }
 
 var arr = [1, 3, 4, 5, 7, 2, 6, 8, 0];
 heapSort(arr);
-console.log(arr + '');
+console.log(arr + "");

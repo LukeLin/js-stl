@@ -1,9 +1,9 @@
 /**
  * Created by ldp on 2015/2/7.
  */
-import LinkedList from '../../List/LinkedList';
-import Queue from '../../Queue/Queue';
-import defaultCompare from '../defaultComparision';
+import LinkedList from "../../List/LinkedList";
+import Queue from "../../Queue/Queue";
+import defaultCompare from "../defaultComparision";
 
 /*
  归并排序
@@ -63,21 +63,21 @@ let recursiveCount = 0;
  * @param e1
  * @param e2
  */
-function merge(sr, s1, e1, e2, comp = defaultCompare){
-    let temp = [];
-    let i = s1;
-    let j = e1 + 1;
-    let k = 0;
+function merge(sr, s1, e1, e2, comp = defaultCompare) {
+  let temp = [];
+  let i = s1;
+  let j = e1 + 1;
+  let k = 0;
 
-    while(i <= e1 && j <= e2){
-        if(comp(sr[i], sr[j]) < 0) temp[k++] = sr[i++];
-        else temp[k++] = sr[j++];
-    }
-    while(i <= e1) temp[k++] = sr[i++];
-    while(j <= e2) temp[k++] = sr[j++];
+  while (i <= e1 && j <= e2) {
+    if (comp(sr[i], sr[j]) < 0) temp[k++] = sr[i++];
+    else temp[k++] = sr[j++];
+  }
+  while (i <= e1) temp[k++] = sr[i++];
+  while (j <= e2) temp[k++] = sr[j++];
 
-    // 复制回去
-    for(i = s1, k = 0; i <= e2; ++i, ++k) sr[i] = temp[k];
+  // 复制回去
+  for (i = s1, k = 0; i <= e2; ++i, ++k) sr[i] = temp[k];
 }
 
 /**
@@ -86,51 +86,52 @@ function merge(sr, s1, e1, e2, comp = defaultCompare){
  * @param {Number} s
  * @param {Number} t
  */
-export function mergeSortRecursive(sr, s = 0, t = sr.length - 1, comp = defaultCompare){
-    if(s >= t) return;
+export function mergeSortRecursive(
+  sr,
+  s = 0,
+  t = sr.length - 1,
+  comp = defaultCompare
+) {
+  if (s >= t) return;
 
-    // 将sr[s..t]平分为sr[s..m]和sr[m+1..t]
-    let m = (s + t) >> 1;
-    // 递归地将sr[s..m]归并为有序的sr[s..m]
-    mergeSortRecursive(sr, s, m, comp);
-    // 递归地将sr[m+1..t]归并为有序的sr[m+1..t]
-    mergeSortRecursive(sr, m + 1, t, comp);
-    // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
-    merge(sr, s, m, t, comp);
+  // 将sr[s..t]平分为sr[s..m]和sr[m+1..t]
+  let m = (s + t) >> 1;
+  // 递归地将sr[s..m]归并为有序的sr[s..m]
+  mergeSortRecursive(sr, s, m, comp);
+  // 递归地将sr[m+1..t]归并为有序的sr[m+1..t]
+  mergeSortRecursive(sr, m + 1, t, comp);
+  // 将sr[s..m]和sr[m+1..t]归并到sr[s..t];
+  merge(sr, s, m, t, comp);
 }
 
-
-console.log('\n\nmergeSortRecursive:');
+console.log("\n\nmergeSortRecursive:");
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 mergeSortRecursive(arr);
-console.log(arr + '');
+console.log(arr + "");
 
+export function mergeSortNonRecursive(sr, comp = defaultCompare) {
+  let j, k;
+  for (let d = 1, n = sr.length - 1; d < n; d *= 2) {
+    // 一趟归并排序算法
+    j = 0;
 
-
-export function mergeSortNonRecursive(sr, comp = defaultCompare){
-    let j, k;
-    for(let d = 1, n = sr.length - 1; d < n; d *= 2) {
-        // 一趟归并排序算法
-        j = 0;
-
-        // 子序列两两归并
-        while((k = (j + 2 * d - 1)) < n){
-            merge(sr, j,  j + d - 1, k, comp);
-            j = k + 1;
-        }
-
-        // 剩余元素个数超过一个子序列长度
-        if(j + d - 1 < n) merge(sr, j, j + d - 1, n, comp);
-        // 剩余子序列复制
-        else merge(sr, j, n, n, comp);
+    // 子序列两两归并
+    while ((k = j + 2 * d - 1) < n) {
+      merge(sr, j, j + d - 1, k, comp);
+      j = k + 1;
     }
+
+    // 剩余元素个数超过一个子序列长度
+    if (j + d - 1 < n) merge(sr, j, j + d - 1, n, comp);
+    // 剩余子序列复制
+    else merge(sr, j, n, n, comp);
+  }
 }
 
-console.log('\nmergeSortNonRecursive:');
+console.log("\nmergeSortNonRecursive:");
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 mergeSortNonRecursive(arr);
-console.log(arr + '');
-
+console.log(arr + "");
 
 // 自然合并排序
 // http://www.cnblogs.com/liushang0419/archive/2011/09/19/2181476.html
@@ -139,38 +140,40 @@ console.log(arr + '');
 自然归并是归并排序的一个变形，效率更高一些，可以在归并排序非递归实现的基础上进行修改.对于已经一个已经给定数组a,通常存在多个长度大于1的已经自然排好的子数组段,因此用一次对数组a的线性扫描就可以找出所有这些排好序的子数组段,然后再对这些子数组段俩俩合并.
  */
 
-
 // 扫描得到子串的函数
-function pass(sqList, rec, comp){
-    let num = 0;
-    rec[num++] = 0;
-    let len = sqList.length;
+function pass(sqList, rec, comp) {
+  let num = 0;
+  rec[num++] = 0;
+  let len = sqList.length;
 
-    for(let i = 1; i < len; ++i){
-        if(comp(sqList[i], sqList[i + 1]) > 0) rec[num++] = i + 1;
-    }
-    rec[num++] = len;
+  for (let i = 1; i < len; ++i) {
+    if (comp(sqList[i], sqList[i + 1]) > 0) rec[num++] = i + 1;
+  }
+  rec[num++] = len;
 
-    return num;
+  return num;
 }
 
-export function natureMergeSort(sqList, comp = defaultCompare){
-    let rec = [];
+export function natureMergeSort(sqList, comp = defaultCompare) {
+  let rec = [];
 
-    //num=2说明已经排好序了
-    //每循环一次，进行一次pass()操作
-    for(let num = pass(sqList, rec, comp); num !== 2; num = pass(sqList, rec, comp)){
-        for(let i = 0; i + 2 < num; i += 2) {
-            merge(sqList, rec[i], rec[i + 1] - 1, rec[i + 2] - 1, comp);
-        }
+  //num=2说明已经排好序了
+  //每循环一次，进行一次pass()操作
+  for (
+    let num = pass(sqList, rec, comp);
+    num !== 2;
+    num = pass(sqList, rec, comp)
+  ) {
+    for (let i = 0; i + 2 < num; i += 2) {
+      merge(sqList, rec[i], rec[i + 1] - 1, rec[i + 2] - 1, comp);
     }
+  }
 }
 
-console.log('\nnatureMergeSort:');
+console.log("\nnatureMergeSort:");
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 natureMergeSort(arr);
-console.log(arr + '');
-
+console.log(arr + "");
 
 console.log(recursiveCount);
 console.log(nonRecursiveCount);
@@ -180,121 +183,120 @@ console.log(nCount);
 /*
 双向自然合并排序是根据欲排序数据局部不是升序就是降序的自然有序特点,先线性扫描出自然有序的子数组段,再进行合并排序.扫描时的有序数段长度越长,段数越少,对应合并树的层数就会越少,算法的效率越高.
  */
-export let naturalMergeSort = (function(){
-    return naturalMergeSort;
+export let naturalMergeSort = (function() {
+  return naturalMergeSort;
 
-    function naturalMergeSort(a, comp = defaultCompare){
-        let b = [];
-        let n = a.length;
-        while(!mergeRuns(a, b, n, comp));
+  function naturalMergeSort(a, comp = defaultCompare) {
+    let b = [];
+    let n = a.length;
+    while (!mergeRuns(a, b, n, comp));
+  }
+
+  function mergeRuns(a, b, n, comp) {
+    let i = 0;
+    let k = 0;
+    let asc = true;
+    let x;
+
+    while (i < n) {
+      k = i;
+      // 找到最后一个递增序列元素
+      do x = a[i++];
+      while (i < n && comp(x, a[i]) <= 0);
+      // 找到最后一个递减序列元素
+      while (i < n && comp(x, a[i]) >= 0) x = a[i++];
+      // 归并递增序列和递减序列，结果可能递增或递减
+      merge(a, b, k, i - 1, asc, comp);
+      asc = !asc;
     }
 
-    function mergeRuns(a, b, n, comp){
-        let i = 0;
-        let k = 0;
-        let asc = true;
-        let x;
+    // 当k等于0时代表a已经排好序了
+    return k === 0;
+  }
 
-        while(i < n){
-            k = i;
-            // 找到最后一个递增序列元素
-            do x = a[i++]; while(i < n && comp(x, a[i]) <= 0);
-            // 找到最后一个递减序列元素
-            while(i < n && comp(x, a[i]) >= 0) x = a[i++];
-            // 归并递增序列和递减序列，结果可能递增或递减
-            merge(a, b, k, i - 1, asc, comp);
-            asc = !asc;
-        }
+  function merge(a, b, low, high, asc, comp) {
+    let k = asc ? low : high;
+    let c = asc ? 1 : -1;
+    let i = low;
+    let j = high;
 
-        // 当k等于0时代表a已经排好序了
-        return k === 0;
+    while (i <= j) {
+      if (comp(a[i], a[j]) <= 0) b[k] = a[i++];
+      else b[k] = a[j--];
+      k += c;
     }
-
-    function merge(a, b, low, high, asc, comp){
-        let k = asc ? low : high;
-        let c = asc ? 1 : -1;
-        let i = low;
-        let j = high;
-
-        while(i <= j){
-            if(comp(a[i], a[j]) <= 0) b[k] = a[i++];
-            else b[k] = a[j--];
-            k += c;
-        }
-        for(i = k = low, j = high; i <= j; ++i, ++k) a[i] = b[k];
-    }
+    for (i = k = low, j = high; i <= j; ++i, ++k) a[i] = b[k];
+  }
 })();
 
-console.log('\nnaturalMergeSort:');
+console.log("\nnaturalMergeSort:");
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 naturalMergeSort(arr);
-console.log(arr + '');
-
+console.log(arr + "");
 
 // 链表存储结构的自然合并排序
-export let linkedListNaturalMergeSort = (function(){
-    return mergeSort;
+export let linkedListNaturalMergeSort = (function() {
+  return mergeSort;
 
-    function mergeSort(linkedlist, needReplace = true, comp = defaultCompare){
-        if(!linkedlist) return linkedlist;
+  function mergeSort(linkedlist, needReplace = true, comp = defaultCompare) {
+    if (!linkedlist) return linkedlist;
 
-        let queue = new Queue();
-        let list = linkedlist.head;
+    let queue = new Queue();
+    let list = linkedlist.head;
 
-        if(!list || !list.next) return linkedlist;
+    if (!list || !list.next) return linkedlist;
 
-        let u = list;
-        let t = list;
-        let v;
-        // 将递增的结点放入到队列中（会被切断）
-        for(; t; t = u){
-            while(u && u.next && comp(u.data, u.next.data) <= 0)
-                u = u.next;
-            v = u;
-            u = u.next;
-            v.next = null;
-            queue.enQueue(t);
-        }
-
-        t = queue.deQueue();
-        // 合并结点
-        while(queue.size){
-            queue.enQueue(t);
-            let a = queue.deQueue();
-            let b = queue.deQueue();
-            t = merge(a, b, comp);
-        }
-
-        if(needReplace) linkedlist.head = t;
-
-        return t;
+    let u = list;
+    let t = list;
+    let v;
+    // 将递增的结点放入到队列中（会被切断）
+    for (; t; t = u) {
+      while (u && u.next && comp(u.data, u.next.data) <= 0) u = u.next;
+      v = u;
+      u = u.next;
+      v.next = null;
+      queue.enQueue(t);
     }
 
-    function merge(a, b, comp){
-        let c = new LinkedList();
-        let head = {data: null, next: null};
-        c.head = head;
-        c = c.head;
-
-        while(a && b){
-            if(comp(a.data, b.data) < 0) {
-                c.next = a;
-                c = a;
-                a = a.next;
-            } else {
-                c.next = b;
-                c = b;
-                b = b.next;
-            }
-        }
-
-        c.next = a ? a : b;
-
-        return head.next;
+    t = queue.deQueue();
+    // 合并结点
+    while (queue.size) {
+      queue.enQueue(t);
+      let a = queue.deQueue();
+      let b = queue.deQueue();
+      t = merge(a, b, comp);
     }
+
+    if (needReplace) linkedlist.head = t;
+
+    return t;
+  }
+
+  function merge(a, b, comp) {
+    let c = new LinkedList();
+    let head = { data: null, next: null };
+    c.head = head;
+    c = c.head;
+
+    while (a && b) {
+      if (comp(a.data, b.data) < 0) {
+        c.next = a;
+        c = a;
+        a = a.next;
+      } else {
+        c.next = b;
+        c = b;
+        b = b.next;
+      }
+    }
+
+    c.next = a ? a : b;
+
+    return head.next;
+  }
 })();
 
 var arr = [49, 38, 65, 97, 76, 13, 27, 49, 55, 4];
 var linkedList = new LinkedList(arr);
 linkedListNaturalMergeSort(linkedList);
-console.log(linkedList + '');
+console.log(linkedList + "");
