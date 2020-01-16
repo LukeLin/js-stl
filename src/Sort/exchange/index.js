@@ -206,7 +206,7 @@ console.log('cockTailSort2:\n' + arr + '');
      ② 对所得到的两个子序列进行快速排序的时间：
         Tavg(n)=C(n)+Tavg(k-1)+Tavg(n-k)          ……
 
- 快速排序的平均时间复杂度是：T(n)=O(n㏒2n)
+ 快速排序的平均时间复杂度是：T(n)=O(n㏒n)
  从所需要的附加空间来看，快速排序算法是递归调用，系统内用堆栈保存递归参数，当每次划分比较均匀时，栈的最大深度为[㏒2n]+1 。
 
  快速排序的空间复杂度是：S(n)=O(㏒2n)
@@ -230,7 +230,7 @@ function partition1(sqList, low, high) {
 }
 
 // 优化一趟快速排序方法： 随机化partition
-// 最坏情况效率大幅提升，时间复杂度T(n)=O(n㏒2n)
+// 最坏情况效率大幅提升，时间复杂度T(n)=O(n㏒n)
 function partition2(sqList, low, high) {
     let temp;
     let n = high - low + 1;
